@@ -16,7 +16,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-
 public class WindowFrame extends JFrame {
 
 	private Canvas leonsThing;
