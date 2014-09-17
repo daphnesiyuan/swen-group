@@ -63,6 +63,7 @@ public class WindowFrame extends JFrame {
 		ImageIcon help = new ImageIcon(WindowFrame.class.getResource("startMenuImages/help.png"));
 
 		startButton = new JButton(start);
+		loadButton = new JButton(load);
 
 		setButton(startButton);
 
