@@ -64,6 +64,7 @@ public class WindowFrame extends JFrame {
 
 		startButton = new JButton(start);
 		loadButton = new JButton(load);
+		helpButton = new JButton(help);
 
 		setButton(startButton);
 
