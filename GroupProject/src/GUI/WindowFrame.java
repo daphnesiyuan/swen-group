@@ -67,6 +67,7 @@ public class WindowFrame extends JFrame {
 		helpButton = new JButton(help);
 
 		setButton(startButton);
+		setButton(loadButton);
 
 		//startButton.setRolloverEnabled(true);
 		//startButton.setRolloverIcon(new RolloverIcon(start));
