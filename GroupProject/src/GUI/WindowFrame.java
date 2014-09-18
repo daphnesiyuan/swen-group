@@ -66,7 +66,7 @@ public class WindowFrame extends JFrame {
 		loadButton = new JButton(load);
 		helpButton = new JButton(help);
 
-		setButton(startButton);
+		//setButton(startButton);
 		setButton(loadButton);
 
 		//startButton.setRolloverEnabled(true);
@@ -80,7 +80,7 @@ public class WindowFrame extends JFrame {
 		button.addActionListener(handler);
 
 
-		startPanel.add(button);
+		startPanel.add(button, BorderLayout.EAST);
 		startPanel.validate();
 
 	}
