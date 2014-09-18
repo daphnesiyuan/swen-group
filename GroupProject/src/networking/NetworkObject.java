@@ -8,6 +8,6 @@ package networking;
 public class NetworkObject {
 
 	public NetworkObject(Client client, Object object){
-		
+		System.out.println("Made new NetworkObject");
 	}
 }
