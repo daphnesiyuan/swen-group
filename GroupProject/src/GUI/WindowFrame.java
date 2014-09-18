@@ -74,7 +74,6 @@ public class WindowFrame extends JFrame {
 	}
 
 	public void setButton(JButton button){
-		System.out.println("testing git");
 		button.setBorder(BorderFactory.createEmptyBorder());
 		button.setContentAreaFilled(false);
 		button.setLocation(1000, 500);
