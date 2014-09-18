@@ -134,7 +134,7 @@ public class Client implements Runnable{
 		try{
 
 
-			while( !socket.isClosed() ){
+			while( true ){
 
 				// Wait for text
 				try{

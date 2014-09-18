@@ -24,7 +24,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 	// The client of this run that is talking to the server
 	private Client client;
 
-	// Server if this chat client wants to start their own publci serfer for everyoen to connect to
+	// Server if this chat client wants to start their own public server for everyone to connect to
 	private Server server;
 
 	private int port = 32768;
@@ -53,7 +53,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 	}
 
 	private void setUpGui(){
-		JFrame frame = new JFrame("Chat Client");
+		JFrame frame = new JFrame("Chat Room");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(650,300);
 		frame.setLayout(new FlowLayout());
@@ -143,17 +143,19 @@ public class ChatRoom implements ActionListener, ClientListener{
 				// Attempt to send a message to the server
 				if( server == null ){
 
+
 					// Start a new server
 					server = new Server();
 
 					// Attempt to connect to the server
-					connectToServer(client.getClientIPAddress(), port);
+					if( connectToServer(server.getIPAddress(), port) ){
 
-					// Change button
-					startServer.setText("Stop Server");
+						// Change button
+						startServer.setText("Stop Server");
 
-					// Don't allow us to connect to other servers
-					connect.setEnabled(false);
+						// Don't allow us to connect to other servers
+						connect.setEnabled(false);
+					}
 				}
 			}
 			else{

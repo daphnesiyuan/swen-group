@@ -71,13 +71,19 @@ public class Server implements Runnable{
 
 				// Create a thread for each client
 				ClientThread cl = new ClientThread(clientSocket, clientSocket.getInetAddress().getHostAddress(), name);
-				clients.add(cl);
-				cl.start();
+
+
 
 				// See if this is a new client
-				if( clients.contains( cl ) ){
-					System.out.print(cl.getName() + " has connected.\n");
+				if( !clients.contains( cl ) ){
+
+					// Tell everyone the new client has joined the server
+					processServerMessage(cl.getName() + " has Connected.\n");
 				}
+
+				// Add the client to our list
+				clients.add(cl);
+				cl.start();
 			}
 		}
 		catch(Exception e){
@@ -162,12 +168,6 @@ public class Server implements Runnable{
 		for( int i = 0; i < clients.size(); i++ ){
 			try {
 
-				// Check if client is connected
-				if( clients.get(i).socket.isClosed() || clients.get(i).socket.isOutputShutdown() || !clients.get(i).socket.isConnected()){
-					removeClient(i--);
-					continue;
-				}
-
 				// Valid connection
 				// Send text to this client
 				ObjectOutputStream out = new ObjectOutputStream(clients.get(i).socket.getOutputStream());
@@ -178,7 +178,7 @@ public class Server implements Runnable{
 				out.flush();
 			} catch (IOException e) {
 
-
+				// More broken clients
 				if( e.getMessage().equals("Broken pipe") ){
 					System.out.print("Handling broken pipe connection\n");
 					removeClient(i--);
