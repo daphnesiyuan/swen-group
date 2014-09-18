@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 public class Drawing extends JPanel implements KeyListener{
 
+	int testin;
 	int scale = 40;
 	int width = 1 * scale;
 	int height =width;
