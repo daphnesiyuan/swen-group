@@ -137,18 +137,44 @@ public class ChatRoom implements ActionListener, ClientListener{
 		}
 		else if( ae.getSource() == startServer ){
 
-			// Attempt to send a message to the server
-			if( server == null ){
-				server = new Server();
-				startServer.setEnabled(false);
 
-				connectToServer();
+			if( startServer.getText().equals("Start Server")){
+
+				// Attempt to send a message to the server
+				if( server == null ){
+
+					// Start a new server
+					server = new Server();
+
+					// Attempt to connect to the server
+					connectToServer(client.getClientIPAddress(), port);
+
+					// Change button
+					startServer.setText("Stop Server");
+
+					// Don't allow us to connect to other servers
+					connect.setEnabled(false);
+				}
 			}
+			else{
+
+				// Stop the server
+				server.stop();
+				server = null;
+
+				// Change button
+				startServer.setText("Start Server");
+
+				// Allow us to connect to other servers
+				connect.setEnabled(true);
+			}
+
+
 		}
 		else if( ae.getSource() == connect || ae.getSource() == IPConnection ){
 
 			// Attempt to connect to the server
-			connectToServer();
+			connectToServer(IPConnection.getText(), port);
 		}
 		else if( ae.getSource () == name ){
 
@@ -157,22 +183,31 @@ public class ChatRoom implements ActionListener, ClientListener{
 		}
 	}
 
-
-	public void connectToServer(){
+	/**
+	 * Attempt to connect to the server with the given ip and port
+	 * @param ip IPAddress of server to connect to
+	 * @param port Port
+	 */
+	public boolean connectToServer(String ip, int port){
 
 		try {
-			if( client.connect(IPConnection.getText(), port) ){
+			if( client.connect(ip, port) ){
 				chatHistory.append("Connected to " + IPConnection.getText() + ":" + port + "\n");
+				return true;
 			}
 
 
 		} catch (UnknownHostException e) {
 			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
 			e.printStackTrace();
+
 		} catch (IOException e) {
 			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
 			e.printStackTrace();
 		}
+
+		// Could not connect
+		return false;
 	}
 
 

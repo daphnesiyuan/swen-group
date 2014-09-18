@@ -238,7 +238,7 @@ public class Server implements Runnable{
 		 */
 		public void run() {
 
-			while( true ){
+			while( running ){
 
 				// Receive Input
 				try {
@@ -398,10 +398,10 @@ public class Server implements Runnable{
 		}
 	}
 
-	private class CommandException extends RuntimeException{
-
-		public CommandException(){
-
-		}
+	/**
+	 * Stops the server from running
+	 */
+	public void stop() {
+		running = false;
 	}
 }
