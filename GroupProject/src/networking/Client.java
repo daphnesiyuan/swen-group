@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Calendar;
 
 
 public class Client implements Runnable{
@@ -32,7 +33,14 @@ public class Client implements Runnable{
 	 * @param name
 	 */
 	public void setName(String name){
-		this.clientName = name;
+
+		// Tell the server to update this clients name as well!
+		try {
+			sendData("set " + clientName + " name " + name);
+			this.clientName = name;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -103,21 +111,22 @@ public class Client implements Runnable{
 
 	/**
 	 * Sends the given object to the server that the client is connected to
-	 * @param object Object to sent to the server for processing
-	 * @throws NetworkException
+	 * @param data Object to sent to the server for processing
 	 */
-	public void sendObject(Object object) throws NetworkException{
-		try {
+	public boolean sendData(Object data) throws IOException{
 
-			// Send to server
-			outputStream = new ObjectOutputStream(socket.getOutputStream());
-			outputStream.writeObject(object);
-			outputStream.flush();
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
+		// Check if we have a connection
+		if( socket == null || socket.isClosed() ){
+			return false;
 		}
+
+		// Send to server
+		outputStream = new ObjectOutputStream(socket.getOutputStream());
+		outputStream.writeObject(new NetworkObject(clientName, Calendar.getInstance(), data));
+		outputStream.flush();
+
+		//Data sent successfully
+		return true;
 	}
 
 	@Override
@@ -125,7 +134,7 @@ public class Client implements Runnable{
 		try{
 
 
-			while( !socket.isClosed() ){
+			while( true ){
 
 				// Wait for text
 				try{
@@ -133,7 +142,7 @@ public class Client implements Runnable{
 				}catch(IOException e ){ continue; }
 
 				// Send object to client that is waiting for data
-				listener.retrieveObject(inputStream.readObject());
+				listener.retrieveObject((NetworkObject)inputStream.readObject());
 			}
 
 

@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,7 +15,7 @@ import javax.swing.JTextField;
 
 
 /**
- * Basic chat room used to demonstrate the networking comparison between a client and server
+ * Basic chat room used to demonstrate the networking comparison between a client and server for those wanting to send something over the nwtwork.
  * @author veugeljame
  *
  */
@@ -25,6 +24,8 @@ public class ChatRoom implements ActionListener, ClientListener{
 	// The client of this run that is talking to the server
 	private Client client;
 
+	// Server if this chat client wants to start their own public server for everyone to connect to
+	private Server server;
 
 	private int port = 32768;
 
@@ -37,19 +38,24 @@ public class ChatRoom implements ActionListener, ClientListener{
 	private JTextField IPConnection;
 	private JLabel connectLabel;
 	private JButton connect;
+	private JButton startServer;
 	private JTextField name;
 
 
 	public ChatRoom(){
 
+		// Set up a basic client for this ChatRoom
+		// Tell this chat room to wait for input from the server that sends data to this client
 		client = new Client(this);
+
+		// Set up interface
 		setUpGui();
 	}
 
 	private void setUpGui(){
-		JFrame frame = new JFrame("Chat Client");
+		JFrame frame = new JFrame("Chat Room");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(600,320);
+		frame.setSize(650,300);
 		frame.setLayout(new FlowLayout());
 
 		JLabel yourIP = new JLabel("Your IP: " + client.getClientIPAddress() );
@@ -68,6 +74,8 @@ public class ChatRoom implements ActionListener, ClientListener{
 		connectLabel = new JLabel("Connect To: ");
 		connect = new JButton("Connect");
 		connect.addActionListener(this);
+		startServer = new JButton("Start Server");
+		startServer.addActionListener(this);
 
 		chatHistory = new JTextArea(15,15);
 		chatHistory.setEditable(false);
@@ -85,59 +93,138 @@ public class ChatRoom implements ActionListener, ClientListener{
 		frame.getContentPane().add(connectLabel);
 		frame.getContentPane().add(IPConnection);
 		frame.getContentPane().add(connect);
+		frame.getContentPane().add(startServer);
 		frame.getContentPane().add(scroll);
 		frame.getContentPane().add(message);
 		frame.getContentPane().add(send);
 		frame.setVisible(true);
 	}
 
+	/**
+	 * Send a chat message to the server
+	 * @param chatMessage text a user has entered to send to the everyone to view
+	 * @return True if the message was sent and no exceptions were thrown
+	 */
+	private boolean sendMessageToServer(String chatMessage){
+
+		try {
+
+			// Send the chat message to the server
+			client.sendData(chatMessage);
+		} catch (IOException e) {
+
+			// Could not send message to the server
+			chatHistory.append("Could not send message!\n");
+			e.printStackTrace();
+			return false;
+		}
+
+		// Message sent successfully
+		return true;
+	}
+
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
+
+		// Sends a message out to the client
 		if( ae.getSource() == message || ae.getSource() == send ){
 
-			// Sends a message out to the client
-			String text = message.getText();
-			client.sendObject(text);
-
-			// Changes the text field to null
-			message.setText("");
+			// Attempt to send a message to the server
+			if( sendMessageToServer(message.getText()) ){
+				message.setText("");
+			}
 		}
-		else if( ae.getSource() == connect || ae.getSource() == IPConnection ){
-			try {
-				// Attempt to connect to the server
-				if( client.connect(IPConnection.getText(), port) ){
-					chatHistory.append("Connected to " + IPConnection.getText() + ":" + port + "\n");
+		else if( ae.getSource() == startServer ){
+
+
+			if( startServer.getText().equals("Start Server")){
+
+				// Attempt to send a message to the server
+				if( server == null ){
+
+
+					// Start a new server
+					server = new Server();
+
+					// Attempt to connect to the server
+					if( connectToServer(server.getIPAddress(), port) ){
+
+						// Change button
+						startServer.setText("Stop Server");
+
+						// Don't allow us to connect to other servers
+						connect.setEnabled(false);
+					}
 				}
+			}
+			else{
 
+				// Stop the server
+				server.stop();
+				server = null;
 
-			} catch (UnknownHostException e) {
-				chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
-				e.printStackTrace();
-			} catch (IOException e) {
-				chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
-				e.printStackTrace();
+				// Change button
+				startServer.setText("Start Server");
+
+				// Allow us to connect to other servers
+				connect.setEnabled(true);
 			}
 
+
+		}
+		else if( ae.getSource() == connect || ae.getSource() == IPConnection ){
+
+			// Attempt to connect to the server
+			connectToServer(IPConnection.getText(), port);
 		}
 		else if( ae.getSource () == name ){
+
+			// Change the name of the client
 			client.setName(name.getText());
-			chatHistory.append("Your Name changed to " + client.getName() + "\n");
 		}
+	}
+
+	/**
+	 * Attempt to connect to the server with the given ip and port
+	 * @param ip IPAddress of server to connect to
+	 * @param port Port
+	 */
+	public boolean connectToServer(String ip, int port){
+
+		try {
+			if( client.connect(ip, port) ){
+				chatHistory.append("Connected to " + IPConnection.getText() + ":" + port + "\n");
+				return true;
+			}
+
+
+		} catch (UnknownHostException e) {
+			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
+			e.printStackTrace();
+
+		} catch (IOException e) {
+			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
+			e.printStackTrace();
+		}
+
+		// Could not connect
+		return false;
 	}
 
 
 
 
 	@Override
-	public synchronized void retrieveObject(Object object) {
+	public synchronized void retrieveObject(NetworkObject data) {
 
-		// We know we are sending text over the net
-		// Cast to string to get the message
-		String text = (String)object;
+		// We have received new data from the server
+		// Since data has a toString() method that draws the message as we want it on all monitors
+		// Just draw data
+		// If we want to get the chatMessage directly, we can use (String)data.getData()
+		chatHistory.append(data + "\n");
 
-		// Update our history with the new text
-		chatHistory.append(text + "\n");
+		// Scroll to the bottom of the page
 		scroll.getVerticalScrollBar().setValue(scroll.getMaximumSize().height);
 
 	}
