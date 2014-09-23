@@ -7,3 +7,4 @@
 /Server$ClientThread.class
 /Server$ServerTextListener.class
 /Server.class
+/Server$CommandParser.class

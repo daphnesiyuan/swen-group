@@ -7,6 +7,9 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -17,12 +20,15 @@ import javax.swing.JPanel;
 
 public class Drawing extends JPanel implements KeyListener{
 
+
+	Room testRoom = new Room();
 	int testin;
 	int scale = 40;
 	int width = 1 * scale;
 	int height =width;
 	Point corner = new Point(350,100);
 	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
+	boolean rotated90;
 
 		int[][] room = new int[][] {
 				{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 },
@@ -48,14 +54,65 @@ public class Drawing extends JPanel implements KeyListener{
 
 
 		g.setColor(Color.WHITE);
-		for(int i = 0; i < room.length; i++){
-			for (int j = 0; j < room.length; j++) {
+		for(int i = 0; i < testRoom.getTiles().length; i++){
+			for (int j = 0; j < testRoom.getTiles().length; j++) {
 				int x = j * width;
 				int y = i * height;
-				placetile(room[i][j], twoDToIso(new Point(x, y)), g);
+				//placetile(room[i][j], twoDToIso(new Point(x, y)), g);
 				//break;
+				placetileTest(testRoom.getTiles()[i][j], twoDToIso(new Point(x, y)), g);
 			}
 		}
+	}
+
+
+	private void placetileTest(Tile tile, Point pt, Graphics g) {
+		// TODO Auto-generated method stub
+		java.net.URL imageURL = Drawing.class.getResource(tile.getClass().getName()+".png");
+		Image img = null;
+		try {
+			img = ImageIO.read(imageURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (rotated90){
+
+			// Flip the image horizontally
+			AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+			tx.translate(-img.getWidth(null), 0);
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+			img = op.filter((BufferedImage) img, null);
+		}
+
+		int imgHeight = ((int) img.getHeight(null)/20);
+		g.drawImage(img, corner.x+pt.x - width, corner.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
+
+		for(Items i: tile.getItems()){
+			drawItem(i,pt,g);
+		}
+	}
+
+
+	private void drawItem(Items item, Point pt, Graphics g) {
+		java.net.URL imageURL = Drawing.class.getResource(item.getClass().getName()+".png");
+		Image img = null;
+		try {
+			img = ImageIO.read(imageURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (rotated90){
+			// Flip the image horizontally
+			AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+			tx.translate(-img.getWidth(null), 0);
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+			img = op.filter((BufferedImage) img, null);
+		}
+
+		int imgHeight = ((int) img.getHeight(null)/20);
+		g.drawImage(img, corner.x+pt.x - width, corner.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
 	}
 
 
@@ -73,10 +130,12 @@ public class Drawing extends JPanel implements KeyListener{
 			e.printStackTrace();
 		}
 
+
+
 		int imgHeight = ((int) img.getHeight(null) / img.getWidth(null) ) + 1 * height;
 		//int y = img.getHeight(null) - (height/2);
 		int y = (int) (height );
-		System.out.println((int)20/img.getHeight(null));
+		//System.out.println((int)20/img.getHeight(null));
 
 		if(i == 3){g.drawImage(img, corner.x+pt.x - width, corner.y+pt.y - (height/2) - (y),width*2, height*2, null);}
 		else
@@ -147,7 +206,7 @@ function isoTo2D(pt:Point):Point{
 		if (keysDown.contains(KeyEvent.VK_Z))
 			scale--;
 
-		System.out.println(corner.x);
+		//System.out.println(corner.x);
 		repaint();
 
 	}
@@ -155,16 +214,19 @@ function isoTo2D(pt:Point):Point{
 
 	private void rotate90() {
 		// TODO Auto-generated method stub
-	    int w = room.length;
-	    int h = room[0].length;
-	    int[][] ret = new int[h][w];
+	    int w = testRoom.tiles.length;
+	    int h = testRoom.tiles[0].length;
+	    Tile[][] ret = new Tile[h][w];
 	    for (int i = 0; i < h; ++i) {
 	        for (int j = 0; j < w; ++j) {
-	            ret[i][j] = room[w - j - 1][i];
+	            ret[i][j] = testRoom.tiles[w - j - 1][i];
 
 	        }
 	    }
-	    room = ret;
+	    testRoom.tiles = ret;
+
+	    if (rotated90) rotated90 = false;
+	    else rotated90 = true;
 	}
 
 

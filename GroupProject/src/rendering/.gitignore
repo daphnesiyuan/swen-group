@@ -1,2 +1,10 @@
 /Drawing.class
 /Render.class
+/Room.class
+/Tile.class
+/Lava.class
+/Carpet.class
+/Wall.class
+/Door.class
+/Items.class
+/Rattle.class
