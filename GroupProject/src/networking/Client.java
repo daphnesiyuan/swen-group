@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 import java.util.Calendar;
 
 /**
- *
+ *Abstract Client class that holds all the required features when connecting, sending and receiving data from/to the server
  * @author veugeljame
  *
  */

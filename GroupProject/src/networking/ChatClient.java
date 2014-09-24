@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 /**
- *
+ *Chat Client that deals with the main aspects of the Chat program when it comes to the client
  * @author veugeljame
  *
  */

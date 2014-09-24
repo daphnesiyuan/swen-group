@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 /**
- *
+ *Basic abstract server class that contains the required features of a server alogn with features of admins, pinging and more.
  * @author veugeljame
  *
  */
