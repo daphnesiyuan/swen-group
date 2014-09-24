@@ -23,7 +23,7 @@ public abstract class Server implements Runnable {
 																// IP Addresses
 
 	// Pings from IP to time sent
-	private HashMap<String, Long> pings = new HashMap<String, Long>();
+	private HashMap<String, Calendar> pings = new HashMap<String, Calendar>();
 
 	private String IPAddress;
 	private int port = 32768;
@@ -191,12 +191,40 @@ public abstract class Server implements Runnable {
 	 */
 	protected synchronized void pingClients() {
 
+		final HashMap<String, Calendar> sentPings = new HashMap<String, Calendar>();
+
 		// Send a ping to every client
 		for (int i = 0; i < clients.size(); i++) {
 			clients.get(i).sendData("/ping all");
+
+			sentPings.put(clients.get(i).IPAddress, Calendar.getInstance());
 		}
 
+		final long time = System.nanoTime();
+		final long runTime = 10000;
+		Thread pingThread = new Thread(){
+			@Override
+			public void run(){
 
+				long lapse = System.nanoTime();
+				if( sentPings.isEmpty() || (time + runTime) > lapse){
+					//stop();
+				}
+
+				// Check for pings
+				/*if( !pings.isEmpty() ){
+
+					for( String sentIP : sentPings.keySet() ){
+
+						// Has this IP been sent back to us yet?
+						if( pings.containsKey(sentIP)){
+							// Remove from everywhere
+						}
+					}
+
+				}*/
+			}
+		};
 	}
 
 	public void sendToAllClients(String message) {
@@ -280,7 +308,7 @@ public abstract class Server implements Runnable {
 					// Check if the data sent back to us was a ping all
 					if( ((String)data.getData()).equals("/ping all") ){
 						if( pings.containsKey(data.getIPAddress()) ){
-							//pings.
+							pings.put(data.getIPAddress(), data.getCalendar());
 						}
 						continue;
 					}

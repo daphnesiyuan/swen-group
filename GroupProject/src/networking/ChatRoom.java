@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -35,6 +36,7 @@ public class ChatRoom implements ActionListener{
 	private JTextField message;
 	private JButton send;
 
+	private String publicIP = "173.255.249.21";
 
 	private JTextField IPConnection;
 	private JLabel connectLabel;
@@ -72,7 +74,7 @@ public class ChatRoom implements ActionListener{
 		frame.setLayout(new FlowLayout());
 
 		JLabel yourIP = new JLabel("Your IP: " + client.getClientIPAddress() );
-		IPConnection = new JTextField(client.getClientIPAddress());
+		IPConnection = new JTextField(publicIP);
 		IPConnection.setPreferredSize(new Dimension(110,25));
 		IPConnection.addActionListener(this);
 		name = new JTextField( "" );
@@ -224,6 +226,7 @@ public class ChatRoom implements ActionListener{
 			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
 			e.printStackTrace();
 		}
+
 
 		// Could not connect
 		return false;
