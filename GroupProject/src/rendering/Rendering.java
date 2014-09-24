@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 
 
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
 
 public class Rendering extends JPanel implements KeyListener{
 
