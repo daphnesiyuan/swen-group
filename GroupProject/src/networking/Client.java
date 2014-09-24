@@ -8,14 +8,16 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Calendar;
 
-
-public class Client implements Runnable{
-
-	private ClientListener listener;
+/**
+ *
+ * @author veugeljame
+ *
+ */
+public abstract class Client implements Runnable{
 
 	private Socket socket;
 	private String IPAddress = "null";
-	private String clientName;
+
 
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
@@ -26,19 +28,12 @@ public class Client implements Runnable{
 	 * Creates a new Client object with a link to who is waiting for information from the server
 	 * @param listener Who is waiting for information from the server
 	 */
-	public Client(ClientListener listener){ this.listener = listener; }
+	public Client(){
 
-	/**
-	 * Changes the name of the client to be displayed through-out the game
-	 * @param name
-	 */
-	public void setName(String name){
-
-		// Tell the server to update this clients name as well!
 		try {
-			sendData("set " + clientName + " name " + name);
-			this.clientName = name;
-		} catch (IOException e) {
+			IPAddress = InetAddress.getLocalHost().getHostAddress();
+
+		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 	}
@@ -67,13 +62,14 @@ public class Client implements Runnable{
 
 	/**
 	 * Attempts to connect to the given IPAddress and port number of the
-	 * @param IPAddress
+	 * @param IPAddress IPAddress of the connection to connect as
+	 * @param ID Identification of this client
 	 * @param port Default: 32768
 	 * @return True if connection worked, otherwise a exception gets thrown
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public boolean connect(String IPAddress, int port) throws UnknownHostException, IOException{
+	public boolean connect(String IPAddress, String ID, int port) throws UnknownHostException, IOException{
 
 
 		// Check if we have a current Socket, close if we do
@@ -84,9 +80,9 @@ public class Client implements Runnable{
 		// Attempt Connection
 		socket = new Socket(IPAddress,port);
 
-		// Wait for us to be given the name
+		// Give the server our name
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-		out.writeObject(clientName);
+		out.writeObject(ID);
 		out.flush();
 
 		// Start our new socket
@@ -101,32 +97,13 @@ public class Client implements Runnable{
 	/**
 	 * Attempts to connect to the given IPAddress and port number of the
 	 * @param server The server to connect to
+	 * @param ID Identification of this client
 	 * @return True if connection worked, otherwise a exception gets thrown
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public boolean connect(Server server) throws UnknownHostException, IOException{
-		return connect(server.getIPAddress(), server.getPort());
-	}
-
-	/**
-	 * Sends the given object to the server that the client is connected to
-	 * @param data Object to sent to the server for processing
-	 */
-	public boolean sendData(Object data) throws IOException{
-
-		// Check if we have a connection
-		if( socket == null || socket.isClosed() ){
-			return false;
-		}
-
-		// Send to server
-		outputStream = new ObjectOutputStream(socket.getOutputStream());
-		outputStream.writeObject(new NetworkObject(clientName, Calendar.getInstance(), data));
-		outputStream.flush();
-
-		//Data sent successfully
-		return true;
+	public boolean connect(Server server, String ID) throws UnknownHostException, IOException{
+		return connect(server.getIPAddress(), ID, server.getPort());
 	}
 
 	@Override
@@ -141,8 +118,17 @@ public class Client implements Runnable{
 					inputStream = new ObjectInputStream(socket.getInputStream());
 				}catch(IOException e ){ continue; }
 
+				// Get data sent to us
+				NetworkObject data = (NetworkObject)inputStream.readObject();
+
+				// Check for a ping
+				if( ((String)data.getData()).equals("/ping all") ){
+					sendData(IPAddress, "/ping all");
+					continue;
+				}
+
 				// Send object to client that is waiting for data
-				listener.retrieveObject((NetworkObject)inputStream.readObject());
+				retrieveObject(data);
 			}
 
 
@@ -167,10 +153,31 @@ public class Client implements Runnable{
 	}
 
 	/**
-	 * Returns the name placed as this client
+	 * Sends the given object to the server that the client is connected to
+	 * @param data Object to sent to the server for processing
+	 */
+	protected boolean sendData(String name, Object data) throws IOException{
+
+		// Check if we have a connection
+		if( socket == null || socket.isClosed() ){
+			return false;
+		}
+
+		// Send to server
+		outputStream = new ObjectOutputStream(socket.getOutputStream());
+		outputStream.writeObject(new NetworkObject(IPAddress, name, data));
+		outputStream.flush();
+
+		// Data sent successfully
+		return true;
+	}
+
+	/**
+	 * Servers send out objects as data to all their clients.
+	 * This method is called once a single object is sent to a client to be handled by who is listening.
+	 * Method MUST be synchronized
+	 * @param data The data sent from a server to be handled
 	 * @return
 	 */
-	public String getName() {
-		return clientName;
-	}
+	public abstract void retrieveObject(NetworkObject data);
 }

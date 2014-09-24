@@ -15,26 +15,35 @@ public class NetworkObject implements Serializable{
 	 */
 	private static final long serialVersionUID = 3965982154655961725L;
 	private final Object data; // What's being sent through the network
-	private final String name; // Name of the client that sent the message
+	private final String name; // Name of who sent the packet
+	private final String IPAddress; // IP of who sent the data
 	private final Calendar calendar; // When the file was sent
 
 	/**
 	 * Creates a new NetworkObject and attaches the IPAddress of the client that sends the data
-	 * @param name IP of the client sending the data
+	 * @param IPAddress IP of the client sending the data
+	 * @param name Name of the client sending the data
 	 * @param data The data wanting to be sent through the network
 	 */
-	public NetworkObject(String name, Calendar calendar, Object data){
+	public NetworkObject(String IPAddress, String name, Object data){
 		this.data = data;
+		this.IPAddress = IPAddress;
 		this.name = name;
-		this.calendar = calendar;
+		this.calendar = Calendar.getInstance();
 	}
 
 	/**
-	 * Returns the IP Address of the client that sent the object
-	 * @return
+	 * Creates a new NetworkObject and attaches the IPAddress of the client that sends the data
+	 * @param IPAddress IP of the client sending the data
+	 * @param name Name of the client sending the data
+	 * @param data The data wanting to be sent through the network
+	 * @param calendar Date on the calendar for when the object was sent through the network
 	 */
-	public String getName() {
-		return name;
+	public NetworkObject(String IPAddress, String name, Object data, Calendar calendar){
+		this.data = data;
+		this.name = name;
+		this.IPAddress = IPAddress;
+		this.calendar = calendar;
 	}
 
 	/**
@@ -54,11 +63,33 @@ public class NetworkObject implements Serializable{
 	}
 
 	/**
-	 * Displays the information about the data being sent through the network wit ha timestamp
-	 * "time" "name": "data"
+	 * Displays whatever is stored inside data
 	 */
 	public String toString(){
-		String timeText = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
-		return timeText + " " + name + ": " + data;
+		return getTime() + " " + name + ": " + data.toString();
+	}
+
+	/**
+	 * Gets the time that the packet was sent
+	 * @return
+	 */
+	public String getTime(){
+		return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+	}
+
+	/**
+	 * Gets the name of the person that sent the packet
+	 * @return Name String of the name
+	 */
+	public String getName(){
+		return name;
+	}
+
+	/**
+	 * Gets the IPAddress of the client that sent the packet
+	 * @return String containing the IP of the sender
+	 */
+	public String getIPAddress() {
+		return IPAddress;
 	}
 }
