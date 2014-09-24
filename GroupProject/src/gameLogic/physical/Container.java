@@ -44,6 +44,11 @@ public class Container extends Item{
 		return false;
 	}
 
+	@Override
+	public int getWeight() {
+		return weight;
+	}
+
 
 
 }

@@ -48,5 +48,11 @@ public class Furniture extends Item{
 	}
 
 
+	@Override
+	public int getWeight() {
+		return weight;
+	}
+
+
 
 }

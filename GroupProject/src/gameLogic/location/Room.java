@@ -8,9 +8,10 @@ import java.util.List;
 
 public class Room {
 
-	List<Tile2D> tiles;
+	Tile2D[][] tiles;
 	List <? extends Item> items;
 	List<Character> characters;
+
 	List<Door> doors;
 	List<Floor> floors;
 	List<Floor> spawns;
@@ -20,28 +21,25 @@ public class Room {
 
 
 
-	public Room(int r, List<Tile2D> roomTiles, List<? extends Item> roomitems) {
+	public Room(int r, Tile2D[][] roomTiles, List<? extends Item> roomitems) {
 		roomNumber = r;
 		tiles = roomTiles;
 		items = roomitems;
 	}
 
 	public Item getItemAt(int x, int y){
-		for(Item item : items){
-			if((item.getTile().xPos==x)&&(item.getTile().yPos==y)){
-				return item;
-			}
-		}
-			return null;
+		return tiles[x][y].getItem();
 	}
-	public List<Tile2D> getTiles(){
+
+	public Tile2D[][] getTiles(){
 		return tiles;
 	}
 
 
 	public boolean checkValidCharacterMove(GameCharacter mover, Tile2D move) {
+
 		// if the move is the characters current square - return false
-		if(mover.getCurrentTile().getXPos() == move.getXPos() || mover.getCurrentTile().getYPos() == move.getYPos()) return false;
+		if(mover.getCurrentTile().equals(move)) return false;
 
 		// if the move is in a different room to the characters current room - return false
 		if(move.getRoom()!= mover.getCurrentRoom()) return false;

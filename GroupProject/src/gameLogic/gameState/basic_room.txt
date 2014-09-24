@@ -1,0 +1,14 @@
+1
+W D W W W E
+W F F F W E
+W F F F W E
+W F F F W E
+W F F F W E
+W F F F W E
+W S S S W E
+W W W W W E
+ER
+K 4 4 1 T
+EI
+0 1 2 0 1
+EF
