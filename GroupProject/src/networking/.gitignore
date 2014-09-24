@@ -8,3 +8,7 @@
 /Server$ServerTextListener.class
 /Server.class
 /Server$CommandParser.class
+/ChatClient.class
+/ChatServer$CommandParser.class
+/ChatServer$ServerTextListener.class
+/ChatServer.class

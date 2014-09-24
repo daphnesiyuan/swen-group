@@ -3,6 +3,7 @@ package rendering;
 import gameLogic.gameState.NewGame;
 import gameLogic.location.Room;
 import gameLogic.location.Tile2D;
+import gameLogic.location.*;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -46,20 +47,20 @@ public class Rendering extends JPanel implements KeyListener{
 	}
 
 	private void drawLocation(Graphics g) {
-		ArrayList<Tile2D> tiles = (ArrayList<Tile2D>) room.getTiles();
-		for(int i = 0; i < tiles.size(); i++){
-			int x = tiles.get(i).getXPos() * width;
-			int y = tiles.get(i).getYPos() * height;
-			String tileName = tiles.get(i).getClass().getName();
-			placeTile(twoDToIso(new Point(x,y)),tileName,g);
+		Tile2D[][] tiles = room.getTiles();
+		for(int i = 0; i < tiles.length; i++){
+			for (int j = 0; j < tiles[i].length; j++) {
+				int x = i * width;
+				int y = j * height;
+				String tileName = tiles[i][j].getClass().getName();
+				placeTile(twoDToIso(new Point(x,y)),tileName,g);
+			}
 		}
-
 	}
 
 	private void placeTile(Point pt, String tileName, Graphics g) {
 		System.out.println(tileName);
 		java.net.URL imageURL = Rendering.class.getResource(tileName+".png");
-		//System.out.println(imageURL.toString());
 
 		Image img = null;
 		try {
@@ -67,15 +68,6 @@ public class Rendering extends JPanel implements KeyListener{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-
-		//		if (rotated90){
-//			// Flip the image horizontally
-//			AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-//			tx.translate(-img.getWidth(null), 0);
-//			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-//			img = op.filter((BufferedImage) img, null);
-//		}
 		int imgHeight = ((int) img.getHeight(null)/20);
 
 		g.drawImage(img, corner.x+pt.x - width, corner.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
@@ -87,11 +79,10 @@ public class Rendering extends JPanel implements KeyListener{
 		  tempPt.x = pt.x - pt.y;
 		  tempPt.y = (pt.x + pt.y) / 2;
 		  return(tempPt);
-		}
+	}
 
 	private void drawInventory(Graphics g) {
 		// TODO Auto-generated method stub
-
 	}
 
 	private void drawCompas(Graphics g) {
@@ -105,23 +96,19 @@ public class Rendering extends JPanel implements KeyListener{
 		return dimension;
 	}
 
-
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 }
