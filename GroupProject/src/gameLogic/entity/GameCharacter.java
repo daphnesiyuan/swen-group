@@ -1,14 +1,15 @@
 package gameLogic.entity;
 
-import gameState.NewGame;
+
+import gameLogic.gameState.NewGame;
+import gameLogic.location.Door;
+import gameLogic.location.Room;
+import gameLogic.location.Tile2D;
+import gameLogic.physical.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import location.Door;
-import location.Room;
-import location.Tile2D;
-import physical.Item;
 
 public class GameCharacter {
 	String Description;
