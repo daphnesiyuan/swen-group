@@ -1,6 +1,7 @@
 package gameLogic.entity;
 
 
+import gameLogic.gameState.Game;
 import gameLogic.gameState.NewGame;
 import gameLogic.location.Door;
 import gameLogic.location.Room;
@@ -21,20 +22,16 @@ public class GameCharacter {
 
 	Tile2D currentTile;
 
-	NewGame game;
-
-	// all rooms in the house in this list
-	private List<Room> roomsInGame;
+	Game game;
 
 
-	public GameCharacter(String name, Tile2D start, Room cr, NewGame n){
+	public GameCharacter(String name, Tile2D start, Game n){
 		currentTile = start;
-		currentRoom = cr;
+		currentRoom = start.getRoom();
 		game = n;
 
 		Inventory = new ArrayList<Item>();
 
-		roomsInGame = game.getRoomsInGame();
 
 
 	}
@@ -49,16 +46,23 @@ public class GameCharacter {
 		if(move instanceof Door){
 			Door door = (Door)move;
 			if(door.getRoom()!=currentRoom) return false;
+
+			if(door.getLocked()){
+
+			}
+
+
 			else{
 				int newRoomIndex = door.getToRoomIndex();
 				int newX = door.getToRoomXPos();
 				int newY = door.getToRoomYPos();
-				for(Room room : roomsInGame){
-					if(room.getRoomNumber()== newRoomIndex){
-						return changeRoom(newRoomIndex);
-					}
-				}
-				return false;
+
+				Room newRoom = game.getRoom(newRoomIndex);
+
+				//Room does not exist in game
+				if(newRoom==null) return false;
+
+				return changeRoom(newRoomIndex,newX,newY);
 			}
 
 		}
@@ -68,7 +72,8 @@ public class GameCharacter {
 
 	}
 
-	private boolean changeRoom(int newRoomIndex){
+	private boolean changeRoom(int newRoomIndex, int newX, int newY){
+
 
 		return false;
 	}

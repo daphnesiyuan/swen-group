@@ -1,5 +1,9 @@
 package gameLogic.location;
 
+import gameLogic.physical.Key;
+
+import java.util.List;
+
 public class Door extends Tile2D {
 
 
@@ -11,11 +15,36 @@ public class Door extends Tile2D {
 	private int toRoomXPos;
 	private int toRoomYPos;
 
+	private boolean locked;
+
+	private List<Key> unlockKeys;
+
 	public Door(int x, int y, String t) {
 		super(x, y, t);
 		toRoomIndex = -1;
 
+
 	}
+
+	public boolean getLocked(){
+		return locked;
+
+	}
+
+	public void setLocked(){
+		locked = !locked;
+	}
+
+	public List<Key> getKeys(){
+		return unlockKeys;
+	}
+
+	public void setKeys(List<Key> keys){
+		unlockKeys = keys;
+	}
+
+
+
 
 	public void setToRoomIndex(int ri) {
 		toRoomIndex = ri;

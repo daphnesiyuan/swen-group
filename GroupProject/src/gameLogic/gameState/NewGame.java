@@ -32,83 +32,53 @@ import rendering.Drawing;
  * @author Ryan Griffin
  */
 public class NewGame {
-
-	// all rooms in the house in this list
 	private List<Room> roomsInGame;
-
-	// a subset of characters, that are being played for this game instance
 	private List<GameCharacter> activeCharacters;
-
-	// The characters start / spawn in a room - list of all start locations in the game - universal spawn field (not local to room creation method) allows for spawn positions in multiple rooms
-	// This should be used for accessing spawn points as opposed to the List<Spawn> in each Room object.
 	private List<Floor> spawnTiles;
 
+	private Room startRoom;
 
-	// Toggle debugging / testing / development code on / off
 	private boolean testing;
 
+	private Game game;
 
-	/**
-	 * The Constructor receives a varying length array of strings, each String is the path for a file that contains data for individual rooms
-	 * The NewGame Object extracts that information, and constructs the neccesary game objects relative to the information.
-	 * @param gameRooms
-	 */
-	public NewGame(String [] gameRooms){
-		if(gameRooms.length == 0 ) throw new InvalidParameterException("No room file paths were given for game construction, "
-				+ "Game start terminated");
-
-		testing = true;
+	public NewGame(Game g){
+		game = g;
 
 
 		roomsInGame = new ArrayList<Room>();
-
-
-		// Reminder : this is the universal collection for all spawns in the game
 		spawnTiles = new ArrayList<Floor>();
 
 
-		for(String path : gameRooms){
-			loadRoom(path);
-		}
+		String roomPath = "/GroupProject/src/gameLogic/gameState/basic_room";
 
-		// The start room should always be the first argument provided, it is the room given to the character constructor as their initial 'currentRoom'.
-		Room startRoom = roomsInGame.get(0);
-		if(startRoom == null) System.out.println("No room provided for characters to spawn in");
+		// for each different room path
+		roomsInGame.add(loadRoomData(roomPath));
 
+		activeCharacters = createCharacters();
 
-		// Temporary list of String - mimics the function of a list containing clients usernames - for now has one name in it, so one character is created
-		List<String> temp = new ArrayList<String>();
-		temp.add("Ryan Griffin");
+		game.setRoomsInGame(roomsInGame);
+		game.setActiveCharacters(activeCharacters);
 
 
-		// Attempt to populate the list of playing characters, with given parameter - client username
-		activeCharacters = createCharacters(temp,startRoom);		// passed to create characters method
-		if(activeCharacters==null) System.out.println("Could not create characters for game, no characters were created");
-
-
-		if(testing) System.out.println("Number of spawn tiles: " + spawnTiles.size());
 	}
 
 
-	/**
-	 * All clients playing the game must provide a user name as a string to have a GameCharacter constructed for them
-	 * @param clientStrings
-	 * @return
-	 */
-	private List<GameCharacter> createCharacters(List<String> clientStrings, Room startRoom) {
+	private List<GameCharacter> createCharacters() {
+
+		List<String> clientStrings = new ArrayList<String>();
+		clientStrings.add("Ryan Griffin");
 
 		List<GameCharacter> characters = new ArrayList<GameCharacter>();
+
 		for(String s : clientStrings){
 			Floor spawnXY = spawnXY();
-			if(spawnXY==null) throw new UnsupportedOperationException("There is not enough spawn tiles in this room, for "
-					+ " the number of provided users - game start terminated");
-
-			GameCharacter player = new GameCharacter(s,spawnXY,startRoom,this);
+			GameCharacter player = new GameCharacter(s,spawnXY,game);
 			characters.add(player);
-
 		}
-		if(characters.size()>0)return characters;
-		return null;
+
+		return characters;
+
 	}
 
 
@@ -123,58 +93,8 @@ public class NewGame {
 	}
 
 
-
-
-	/**
-	 * Given a path for a room file, construct a Room and its associated tiles and in room objects
-	 * @param roomPath
-	 */
-	private void loadRoom(String roomPath){
-
-
-		java.net.URL pathURL = NewGame.class.getResource("br.txt");
-
-		// Item collections are created locally - each room will have a different set of items
+	private Room loadRoomData(String roomPath) {
 		List<Item> roomItems = new ArrayList<Item>();
-
-
-		// to construct a room - need the path for its data, and a list to hold its items
-		Room room = loadRoomData(pathURL,roomItems);
-
-
-		if(room==null) System.out.println("Could not load room data from file for room: " + roomPath);
-		else{
-			if(testing){
-				System.out.println("Room data loaded");
-			}
-		}
-
-
-
-
-		// Rooms hold information for each of the tiles, and each piece of furniture they contain
-
-
-		roomsInGame.add(room);
-
-
-
-	}
-
-
-
-
-	/**
-	 * Given a String parameter - data from a file (file path is parameter) is loaded and constructs collections of room attributes
-	 * Given an empty collection that allows Items, roomItems will be contain all items in the room, after they have been read from the room file data
-	 * @param roomPath
-	 * @param roomItems
-	 * @return Room - returns a contructed, finished , populated room structure
-	 */
-	private Room loadRoomData(java.net.URL roomPath1, List<Item> roomItems) {
-		String roomPath = roomPath1.toString();
-		// Tile count provided per room - debugging
-		int tilesLoaded = 0;
 
 		// roomNumber is an index to uniquely identify any room in the game.
 		int roomNumber;
@@ -189,9 +109,6 @@ public class NewGame {
 
 		// Initial Buffer arrays to hold data loaded from file, the data will be swapped to more appropriately sized array
 		Tile2D[][] tileBuffer = new Tile2D[1024][1024];
-
-
-
 
 
 		// Rooms will contain information about all of the following they contain;
@@ -221,7 +138,6 @@ public class NewGame {
 				// Case : End of room data file, exit loading.
 				// Case : Room data file empty, exit loading - display warning.
 				if(tileString==null){
-					if(tilesLoaded == 0) System.out.println("empty file - no tiles were data loaded for room :" + roomPath);
 					break;
 				}
 
@@ -296,7 +212,6 @@ public class NewGame {
 					}
 
 					col++;
-					tilesLoaded ++;
 
 				}
 			}
@@ -304,10 +219,6 @@ public class NewGame {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
-		} finally{
-			if(testing){
-				System.out.println("Tiles loaded from room file: " + tilesLoaded);
-			}
 		}
 
 
@@ -498,36 +409,5 @@ public class NewGame {
 		}
 	}
 
-	public List<Room> getRoomsInGame() {
-		return roomsInGame;
-	}
 
-
-	public void setRoomsInGame(List<Room> roomsInGame) {
-		this.roomsInGame = roomsInGame;
-	}
-
-
-	public List<GameCharacter> getActiveCharacters() {
-		return activeCharacters;
-	}
-
-
-	public void setActiveCharacters(List<GameCharacter> activeCharacters) {
-		this.activeCharacters = activeCharacters;
-	}
-
-
-	public List<Floor> getSpawnTiles() {
-		return spawnTiles;
-	}
-
-
-	public void setSpawnTiles(List<Floor> spawnTiles) {
-		this.spawnTiles = spawnTiles;
-	}
-
-	public static void main(String[] args){
-		new NewGame(args);
-	}
 }
