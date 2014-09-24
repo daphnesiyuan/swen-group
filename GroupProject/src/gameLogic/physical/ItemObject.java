@@ -58,6 +58,11 @@ String itemObjectType;
 
 	}
 
+	@Override
+	public int getWeight() {
+		return weight;
+	}
+
 
 
 }

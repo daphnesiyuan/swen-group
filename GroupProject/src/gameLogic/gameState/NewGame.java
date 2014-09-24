@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+import rendering.Drawing;
+
 
 
 /**
@@ -46,7 +48,6 @@ public class NewGame {
 	private boolean testing;
 
 
-
 	/**
 	 * The Constructor receives a varying length array of strings, each String is the path for a file that contains data for individual rooms
 	 * The NewGame Object extracts that information, and constructs the neccesary game objects relative to the information.
@@ -61,7 +62,10 @@ public class NewGame {
 
 		roomsInGame = new ArrayList<Room>();
 
+
+		// Reminder : this is the universal collection for all spawns in the game
 		spawnTiles = new ArrayList<Floor>();
+
 
 		for(String path : gameRooms){
 			loadRoom(path);
@@ -127,11 +131,15 @@ public class NewGame {
 	 */
 	private void loadRoom(String roomPath){
 
+
+		java.net.URL pathURL = NewGame.class.getResource("br.txt");
+
 		// Item collections are created locally - each room will have a different set of items
 		List<Item> roomItems = new ArrayList<Item>();
 
 
-		Room room = loadRoomData(roomPath,roomItems);
+		// to construct a room - need the path for its data, and a list to hold its items
+		Room room = loadRoomData(pathURL,roomItems);
 
 
 		if(room==null) System.out.println("Could not load room data from file for room: " + roomPath);
@@ -149,12 +157,6 @@ public class NewGame {
 
 		roomsInGame.add(room);
 
-		if(testing){
-			printRoomData(room);
-		}
-
-
-
 
 
 	}
@@ -167,17 +169,29 @@ public class NewGame {
 	 * Given an empty collection that allows Items, roomItems will be contain all items in the room, after they have been read from the room file data
 	 * @param roomPath
 	 * @param roomItems
-	 * @return
+	 * @return Room - returns a contructed, finished , populated room structure
 	 */
-	private Room loadRoomData(String roomPath, List<Item> roomItems) {
+	private Room loadRoomData(java.net.URL roomPath1, List<Item> roomItems) {
+		String roomPath = roomPath1.toString();
 		// Tile count provided per room - debugging
 		int tilesLoaded = 0;
 
 		// roomNumber is an index to uniquely identify any room in the game.
 		int roomNumber;
 
-		// Tiles that the room contains
-		List<Tile2D> roomTiles = new ArrayList<Tile2D>();
+
+		// variables to use when loading data from files and arrays are being popualted, will determine height and width of room, as well as size of tile array
+		int rowInc = 0;
+		int rowLength = 0;
+		int colLength = 0;
+
+
+
+		// Initial Buffer arrays to hold data loaded from file, the data will be swapped to more appropriately sized array
+		Tile2D[][] tileBuffer = new Tile2D[1024][1024];
+
+
+
 
 
 		// Rooms will contain information about all of the following they contain;
@@ -194,7 +208,7 @@ public class NewGame {
 
 
 			int row = 0;
-			int tile = 0;
+			int col = 0;
 			String tileString;
 
 			// first line of room data is an integer, it specifies the room number
@@ -213,14 +227,12 @@ public class NewGame {
 
 				// Case : Scan information  for entire room finished, begin scanning room object data. Room Data terminated with 'ER'.
 				else if(tileString.equals("ER")){
-					scanRoomObjects(scan, roomItems,roomTiles);
-
+					scanRoomObjects(scan, tileBuffer, roomItems);
 				}
 
 				// Case : Scan information  for Object data finished, begin scanning room Door data. object Data terminated with 'EI'.
 				else if(tileString.equals("EI")){
-					scanRoomDoors(scan,roomTiles,roomDoors);
-
+					scanRoomDoors(scan,tileBuffer,roomDoors);
 				}
 
 				// Case : Scan information  for the entire file has finished (three parts) - information loaded for room structure, items and doors. Close resources.
@@ -237,7 +249,9 @@ public class NewGame {
 				// Case : Scan line for room data finished, begin scanning next line of room data. Lines of room data terminated with 'E' Character
 				else if(tileString.equals("E")){
 					row++;
-					tile = 0;
+					col = 0;
+					colLength++;
+					rowLength = rowInc;
 					continue;
 				}
 
@@ -247,36 +261,41 @@ public class NewGame {
 
 					// Case : tile is wall
 					if(tileString.equals("W")){
-						Tile2D wall = new Wall(tile,row,tileString);
-						roomTiles.add(wall);
+						Tile2D wall = new Wall(col,row,tileString);
+						tileBuffer[row][col] = wall;
 						roomWalls.add((Wall) wall);
+						rowInc++;
 					}
 
 					// Case : tile is Door
 					else if(tileString.equals("D")){
-						Tile2D door = new Door(tile,row,tileString);
-						roomTiles.add(door);
+						Tile2D door = new Door(col,row,tileString);
+						tileBuffer[row][col] = door;
 						roomDoors.add((Door) door);
+						rowInc++;
 					}
 
 					// Case : tile is Floor
 					else if(tileString.equals("F")){
-						Tile2D floor = new Floor(tile,row,tileString,false);
-						roomTiles.add(floor);
+						Tile2D floor = new Floor(col,row,tileString,false);
+						tileBuffer[row][col] = floor;
 						roomFloors.add((Floor) floor);
+						rowInc++;
 					}
 
 					// Case : tile is spawn point
 					else if (tileString.equals("S")){
-						Tile2D spawn = new Floor(tile,row,tileString,true);
+						Tile2D spawn = new Floor(col,row,tileString,true);
 
 						spawnTiles.add((Floor) spawn);
 
-						roomTiles.add(spawn);
+						tileBuffer[row][col] = spawn;
 						roomSpawns.add((Floor) spawn);
 						roomFloors.add((Floor) spawn);
+						rowInc++;
 					}
-					tile++;
+
+					col++;
 					tilesLoaded ++;
 
 				}
@@ -291,8 +310,20 @@ public class NewGame {
 			}
 		}
 
+
+		// create an appropriately sized array, populate from buffer
+		Tile2D[][] roomTiles = new Tile2D[rowLength][colLength];
+		for(int i = 0; i<rowLength; i++){
+			for(int j = 0; j<colLength; j++){
+				if(tileBuffer[i][j]!=null){
+					roomTiles[i][i] = tileBuffer[i][j];
+				}
+			}
+		}
+
 		// Finished room - contains info: roomNumber and the items and tiles it possess.
 		Room room = new Room(roomNumber,roomTiles,roomItems);
+
 		room.setDoors(roomDoors);
 		room.setFloors(roomFloors);
 		room.setSpawns(roomSpawns);
@@ -300,9 +331,14 @@ public class NewGame {
 
 
 		// Bidirectional accessibility - each of the tiles in a room will know which room they are a part of.
-		for(Tile2D tile : roomTiles){
-			tile.setRoom(room);
+		for(int i = 0; i<rowLength; i++){
+			for(int j = 0; j<colLength; j++){
+				if(roomTiles[i][j]!=null){
+					roomTiles[i][i].setRoom(room);
+				}
+			}
 		}
+
 
 		return room;
 	}
@@ -335,36 +371,36 @@ public class NewGame {
 	 *
 	 * NB: this method does not deal with doors in the room - they are constructed in  scanRoomDoors().
 	 *
-	 * @param s - scan data from room file
+	 * @param scan - scan data from room file
 	 * @param roomItems - an empty collection to add the Room item information to.
 	 * @param roomTiles	- allow for Bidirectional reachability between Items and their associated tiles.
 	 */
 
-	private void scanRoomObjects(Scanner s, List<Item> roomItems, List<Tile2D> roomTiles){
+	private void scanRoomObjects(Scanner scan, Tile2D[][] roomTiles, List<Item> roomItems){
 		String objectString;
 
-		while(s.hasNext()){
-			objectString = s.next();
+		while(scan.hasNext()){
+			objectString = scan.next();
 			if(objectString == null) return;
 
 			// Case : Sofa  - furniture Obj
 			if(objectString.equals("S")){
-				int xPos = s.nextInt();
-				int yPos = s.nextInt();
-				int weight = s.nextInt();
-				String movable = s.next();
+				int xPos = scan.nextInt();
+				int yPos = scan.nextInt();
+				int weight = scan.nextInt();
+				String movable = scan.next();
 
 
 				// Get Objects respective tile on board - associate them.
-				Tile2D itemLocation = null;
-				for(Tile2D tile : roomTiles){
-					if((tile.getXPos()==xPos)&&(tile.getYPos()==yPos)){
-						itemLocation = tile;
-					}
-				}
+				Tile2D itemLocation = roomTiles[xPos][yPos];
+
 
 				// Check - is Items given location within the bounds of the rooms walls, and also not located on a wall or a door
-				if(!(itemLocation instanceof Floor)) System.out.println("Item provided in room data has invalid location coordinates");
+				if((!(itemLocation instanceof Floor))|| (itemLocation == null) ){
+					System.out.println("Item provided in room data has invalid location coordinates");
+					scan.nextLine();
+					continue;
+				}
 				else{
 					Furniture sofa = new Furniture("Sofa",itemLocation,weight,movable);
 					roomItems.add(sofa);
@@ -374,22 +410,21 @@ public class NewGame {
 
 			// Case : Key - itemObject Obj
 			else if(objectString.equals("K")){
-				int xPos = s.nextInt();
-				int yPos = s.nextInt();
-				int weight = s.nextInt();
-				String movable = s.next();
+				int xPos = scan.nextInt();
+				int yPos = scan.nextInt();
+				int weight = scan.nextInt();
+				String movable = scan.next();
 
 
 				// Get Objects respective tile on board - associate them.
-				Tile2D itemLocation = null;
-				for(Tile2D tile : roomTiles){
-					if((tile.getXPos()==xPos)&&(tile.getYPos()==yPos)){
-						itemLocation = tile;
-					}
-				}
+				Tile2D itemLocation = roomTiles[xPos][yPos];
 
 				// Check - is Items given location within the bounds of the rooms walls, and also not located on a wall.
-				if(!(itemLocation instanceof Floor)) System.out.println("Item provided in room data has invalid location coordinates");
+				if((!(itemLocation instanceof Floor))|| (itemLocation == null)){
+					System.out.println("Item provided in room data has invalid location coordinates");
+					scan.nextLine();
+					continue;
+				}
 				else{
 					ItemObject key = new ItemObject("Key",itemLocation,weight,movable);
 					roomItems.add(key);
@@ -399,22 +434,21 @@ public class NewGame {
 
 			// Case : Container	container Obj
 			else if(objectString.equals("C")){
-				int xPos = s.nextInt();
-				int yPos = s.nextInt();
-				int weight = s.nextInt();
-				String movable = s.next();
+				int xPos = scan.nextInt();
+				int yPos = scan.nextInt();
+				int weight = scan.nextInt();
+				String movable = scan.next();
 
 
 				// Get Objects respective tile on board - associate them.
-				Tile2D itemLocation = null;
-				for(Tile2D tile : roomTiles){
-					if((tile.getXPos()==xPos)&&(tile.getYPos()==yPos)){
-						itemLocation = tile;
-					}
-				}
+				Tile2D itemLocation = roomTiles[xPos][yPos];
 
 				// Check - is Items given location within the bounds of the rooms walls, and also not located on a wall.
-				if(!(itemLocation instanceof Floor)) System.out.println("Item provided in room data has invalid location coordinates");
+				if((!(itemLocation instanceof Floor))||(itemLocation == null)){
+					System.out.println("Item provided in room data has invalid location coordinates");
+					scan.nextLine();
+					continue;
+				}
 				else{
 					Container container = new Container("container",itemLocation,weight,movable);
 					roomItems.add(container);
@@ -443,7 +477,7 @@ public class NewGame {
 	 * @param roomtiles	- A list of room tiles that the room contains
 	 * @param roomDoors - to check that the door in part three of the file matches a room in part one.
 	 */
-	private void scanRoomDoors(Scanner scan, List<Tile2D> roomtiles, List<Door> roomDoors){
+	private void scanRoomDoors(Scanner scan, Tile2D[][] roomtiles, List<Door> roomDoors){
 		int xPos = scan.nextInt();
 		int yPos = scan.nextInt();
 		int toRoomIndex = scan.nextInt();
@@ -462,40 +496,6 @@ public class NewGame {
 			door.setToRoomX(toRoomXPos);
 			door.setToRoomY(toRoomYPos);
 		}
-	}
-
-
-	/**
-	 * Debugging method to ensure room data is loaded correctly
-	 * The printed information should closely resemble the construct of the in game room.
-	 * @param room
-	 */
-	private void printRoomData(Room room) {
-		String print = "\n";
-
-
-		int width = -1;
-		for(Tile2D tile : room.getTiles()){
-			if(tile.getXPos()> width){
-				width = tile.getXPos();
-			}
-		}
-
-
-		for(Tile2D tile : room.getTiles()){
-			if(width == tile.getXPos()){
-				print += tile.getType();
-				print += "\n";
-
-			}
-			else{
-				print += tile.getType();
-			}
-		}
-
-		System.out.println(print);
-
-
 	}
 
 	public List<Room> getRoomsInGame() {

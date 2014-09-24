@@ -8,9 +8,10 @@ import java.util.List;
 
 public class Room {
 
-	List<Tile2D> tiles;
+	Tile2D[][] tiles;
 	List <? extends Item> items;
 	List<Character> characters;
+
 	List<Door> doors;
 	List<Floor> floors;
 	List<Floor> spawns;
@@ -20,7 +21,7 @@ public class Room {
 
 
 
-	public Room(int r, List<Tile2D> roomTiles, List<? extends Item> roomitems) {
+	public Room(int r, Tile2D[][] roomTiles, List<? extends Item> roomitems) {
 		roomNumber = r;
 		tiles = roomTiles;
 		items = roomitems;
@@ -34,7 +35,9 @@ public class Room {
 		}
 			return null;
 	}
-	public List<Tile2D> getTiles(){
+
+
+	public Tile2D[][] getTiles(){
 		return tiles;
 	}
 
