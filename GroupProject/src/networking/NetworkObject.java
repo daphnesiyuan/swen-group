@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 /**
- * Object of which is sent through the network.
+ * Object of which is sent through the network containing data on who send the package, what was sent and when it was sent
  * @author veugeljame
  *
  */

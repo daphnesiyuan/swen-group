@@ -2,6 +2,7 @@ package networking;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -9,7 +10,7 @@ import java.net.UnknownHostException;
 import java.util.Calendar;
 
 /**
- *
+ *Abstract Client class that holds all the required features when connecting, sending and receiving data from/to the server
  * @author veugeljame
  *
  */
