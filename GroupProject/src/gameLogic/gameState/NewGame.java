@@ -29,6 +29,8 @@ import java.util.Scanner;
  *
  * @author Ryan Griffin
  */
+//TEST
+
 public class NewGame {
 	private List<Room> roomsInGame;
 	private List<GameCharacter> activeCharacters;
