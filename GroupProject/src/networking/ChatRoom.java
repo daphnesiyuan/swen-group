@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,13 +20,13 @@ import javax.swing.JTextField;
  * @author veugeljame
  *
  */
-public class ChatRoom implements ActionListener, ClientListener{
+public class ChatRoom implements ActionListener{
 
 	// The client of this run that is talking to the server
-	private Client client;
+	private ChatClient client;
 
 	// Server if this chat client wants to start their own public server for everyone to connect to
-	private Server server;
+	private ChatServer server;
 
 	private int port = 32768;
 
@@ -46,10 +47,22 @@ public class ChatRoom implements ActionListener, ClientListener{
 
 		// Set up a basic client for this ChatRoom
 		// Tell this chat room to wait for input from the server that sends data to this client
-		client = new Client(this);
+		client = new ChatClient();
 
 		// Set up interface
 		setUpGui();
+
+		// Loop forever
+		while( true ){
+
+			chatHistory.setText(client.getChatHistory());
+
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void setUpGui(){
@@ -131,7 +144,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 		if( ae.getSource() == message || ae.getSource() == send ){
 
 			// Attempt to send a message to the server
-			if( sendMessageToServer(message.getText()) ){
+			if( !message.getText().equals("") && sendMessageToServer(message.getText()) ){
 				message.setText("");
 			}
 		}
@@ -145,7 +158,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 
 
 					// Start a new server
-					server = new Server();
+					server = new ChatServer();
 
 					// Attempt to connect to the server
 					if( connectToServer(server.getIPAddress(), port) ){
@@ -161,7 +174,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 			else{
 
 				// Stop the server
-				server.stop();
+				server.stopServer();
 				server = null;
 
 				// Change button
@@ -193,8 +206,12 @@ public class ChatRoom implements ActionListener, ClientListener{
 	public boolean connectToServer(String ip, int port){
 
 		try {
-			if( client.connect(ip, port) ){
+			if( client.connect(ip, name.getText(), port) ){
 				chatHistory.append("Connected to " + IPConnection.getText() + ":" + port + "\n");
+
+				// Request chat history
+				client.sendData("/get history");
+
 				return true;
 			}
 
@@ -210,23 +227,6 @@ public class ChatRoom implements ActionListener, ClientListener{
 
 		// Could not connect
 		return false;
-	}
-
-
-
-
-	@Override
-	public synchronized void retrieveObject(NetworkObject data) {
-
-		// We have received new data from the server
-		// Since data has a toString() method that draws the message as we want it on all monitors
-		// Just draw data
-		// If we want to get the chatMessage directly, we can use (String)data.getData()
-		chatHistory.append(data + "\n");
-
-		// Scroll to the bottom of the page
-		scroll.getVerticalScrollBar().setValue(scroll.getMaximumSize().height);
-
 	}
 
 	public static void main(String[] args){
