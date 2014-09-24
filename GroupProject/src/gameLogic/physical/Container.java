@@ -1,20 +1,25 @@
 package gameLogic.physical;
 
+import gameLogic.entity.GameCharacter;
+import gameLogic.location.Floor;
 import gameLogic.location.Tile2D;
 
 
 public class Container extends Item{
 
-	boolean movable;
+	private int xPos;
+	private int yPos;
+	private int weight;
 
-	int xPos;
-	int yPos;
+	private boolean movable;
 
-	int weight;
+	private String itemObjectType;
 
-	Tile2D location;
+	private Tile2D location;
 
-	String containerType;
+	private boolean inInventory;
+
+	private String containerType;
 
 	public Container(String type, Tile2D l, int w,String m) {
 
@@ -40,13 +45,39 @@ public class Container extends Item{
 
 	@Override
 	public boolean moveItemTo(Tile2D toTile) {
-		// TODO Auto-generated method stub
-		return false;
+
+		// If item isnt movable
+		if(!movable) return false;
+
+		// If trying to move Item directly out of room
+		if(location.getRoom()!=toTile.getRoom()) return false;
+
+		// If moving to same tile
+		if(toTile.equals(location)) return false;
+
+		// If move location is a wall or door
+		if(!(toTile instanceof Floor)) return false;
+
+		return true;
+
 	}
 
 	@Override
 	public int getWeight() {
 		return weight;
+	}
+
+	@Override
+	public String interactWith(GameCharacter gc) {
+		if(!inInventory){
+			gc.getInventory().add(this);
+			inInventory = true;
+			return new String("You Picked up the Container: "+ containerType);
+		}
+		else{
+			return containerType;
+		}
+
 	}
 
 

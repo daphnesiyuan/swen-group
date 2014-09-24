@@ -9,7 +9,7 @@ import gameLogic.location.Wall;
 import gameLogic.physical.Container;
 import gameLogic.physical.Furniture;
 import gameLogic.physical.Item;
-import gameLogic.physical.ItemObject;
+import gameLogic.physical.Key;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-
-import rendering.Drawing;
 
 
 
@@ -337,7 +335,7 @@ public class NewGame {
 					continue;
 				}
 				else{
-					ItemObject key = new ItemObject("Key",itemLocation,weight,movable);
+					Key key = new Key("Key",itemLocation,weight,movable);
 					roomItems.add(key);
 					itemLocation.addItem(key);
 				}

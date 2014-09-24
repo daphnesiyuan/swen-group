@@ -3,14 +3,11 @@ package gameLogic.gameState;
 import gameLogic.entity.GameCharacter;
 import gameLogic.location.Floor;
 import gameLogic.location.Room;
+import gameLogic.location.Tile2D;
+import gameLogic.physical.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-
-// TEST
-
 
 
 public class  Game {
@@ -33,6 +30,29 @@ public class  Game {
 		// newgame will set up the game, and populate this game object
 		NewGame newgame = new NewGame(this);
 	}
+
+	public boolean moveCharacterTo(String charName, Tile2D move){
+		//TODO plausible to have gameCharacter id as int?
+		GameCharacter mover = null;
+
+		for(GameCharacter character : activeCharacters){
+			if(character.getName().equals(charName)){
+				mover = character;
+			}
+		}
+		if(mover==null) return false;
+		return mover.moveTo(move);
+	}
+
+	public boolean characterInteractWithItem(String charName, Item item){
+		for(GameCharacter character : activeCharacters){
+			if(character.getName().equals(charName)){
+				return character.interact(item);
+			}
+		}
+		return false;
+	}
+
 
 
 

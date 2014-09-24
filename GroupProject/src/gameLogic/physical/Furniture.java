@@ -1,20 +1,24 @@
 package gameLogic.physical;
 
+import gameLogic.entity.GameCharacter;
+import gameLogic.location.Floor;
 import gameLogic.location.Tile2D;
 
 public class Furniture extends Item{
 
+	private int xPos;
+	private int yPos;
+	private int weight;
 
-	boolean movable;
+	private boolean movable;
 
-	int xPos;
-	int yPos;
-	Tile2D location;
+	private String itemObjectType;
 
-	int weight;
+	private Tile2D location;
 
-	String furnitureType;
+	private boolean inInventory;
 
+	private String furnitureType;
 
 	public Furniture(String type, Tile2D l, int w,String m) {
 		furnitureType = type;
@@ -43,8 +47,21 @@ public class Furniture extends Item{
 
 	@Override
 	public boolean moveItemTo(Tile2D toTile) {
-		// TODO Auto-generated method stub
-		return false;
+
+		// If item isnt movable
+		if(!movable) return false;
+
+		// If trying to move Item directly out of room
+		if(location.getRoom()!=toTile.getRoom()) return false;
+
+		// If moving to same tile
+		if(toTile.equals(location)) return false;
+
+		// If move location is a wall or door
+		if(!(toTile instanceof Floor)) return false;
+
+		return true;
+
 	}
 
 
@@ -53,6 +70,12 @@ public class Furniture extends Item{
 		return weight;
 	}
 
+
+	@Override
+	public String interactWith(GameCharacter gc) {
+			return furnitureType;
+
+	}
 
 
 }

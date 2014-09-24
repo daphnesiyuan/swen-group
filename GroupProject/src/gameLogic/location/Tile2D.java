@@ -15,7 +15,7 @@ public class Tile2D {
 	String type;
 	Room room;
 
-	List<Item>itemsOnTile;
+	List <Item> itemsOnTile;
 
 
 	public Tile2D(int x, int y, String t) {
@@ -56,9 +56,6 @@ public class Tile2D {
 		return type;
 	}
 
-
-
-
 	public void setRoom(Room r) {
 		room = r;
 
@@ -68,10 +65,10 @@ public class Tile2D {
 		return room;
 	}
 
+	// Can a Character move on top of this tile
+	public boolean canMoveTo(){
+		return true;
 
-	public boolean canMoveTo() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 

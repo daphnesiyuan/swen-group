@@ -16,7 +16,16 @@ public class GameCharacter {
 	String Description;
 
 
-	List <? extends Item> Inventory;
+	List <Item> Inventory;
+
+	public List<Item> getInventory() {
+		return Inventory;
+	}
+
+	public void setInventory(List<Item> inventory) {
+		Inventory = inventory;
+	}
+
 
 	Room currentRoom;
 
@@ -24,17 +33,27 @@ public class GameCharacter {
 
 	Game game;
 
+	String name;
 
-	public GameCharacter(String name, Tile2D start, Game n){
+
+	public GameCharacter(String n, Tile2D start, Game g){
+		name = n;
 		currentTile = start;
 		currentRoom = start.getRoom();
-		game = n;
+		game = g;
 
 		Inventory = new ArrayList<Item>();
 
 
 
 	}
+
+	public String getName(){
+		return name;
+
+	}
+
+
 
 
 	public boolean moveTo(Tile2D move){
@@ -48,22 +67,15 @@ public class GameCharacter {
 			if(door.getRoom()!=currentRoom) return false;
 
 			if(door.getLocked()){
-
+				//TODO storing information about keys etc - Antonia
 			}
 
+			int newRoomIndex = door.getToRoomIndex();
+			int newX = door.getToRoomXPos();
+			int newY = door.getToRoomYPos();
 
-			else{
-				int newRoomIndex = door.getToRoomIndex();
-				int newX = door.getToRoomXPos();
-				int newY = door.getToRoomYPos();
+			return changeRoom(newRoomIndex,newX,newY);
 
-				Room newRoom = game.getRoom(newRoomIndex);
-
-				//Room does not exist in game
-				if(newRoom==null) return false;
-
-				return changeRoom(newRoomIndex,newX,newY);
-			}
 
 		}
 
@@ -73,17 +85,22 @@ public class GameCharacter {
 	}
 
 	private boolean changeRoom(int newRoomIndex, int newX, int newY){
-
-
+		List<Room> rooms = game.getRoomsInGame();
+		for(Room room : rooms){
+			if(room.getRoomNumber()==newRoomIndex){
+				currentRoom = room;
+				return true;
+			}
+		}
 		return false;
 	}
 
 
 
 
-	public boolean interact(int x, int y, String action){
-		return false;
-
+	public boolean interact(Item item){
+		//TODO check item range from character
+		return item.interactWith(this) != null;
 	}
 
 
