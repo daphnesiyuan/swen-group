@@ -45,6 +45,42 @@ public abstract class Server implements Runnable {
 		// Start listening for clients!
 		Thread myThread = new Thread(this);
 		myThread.start();
+		
+		// Check for dead clients
+		Thread checkClients = new Thread(){
+			
+			final long MAX_DISCONNECT_TIME = 5000;
+			
+			@Override
+			public void run(){
+				
+				while( true ){
+					
+					ArrayList<String> dead = new ArrayList<String>();
+					long currentMillis = Calendar.getInstance().getTimeInMillis();
+					
+					// Check for last pings
+					for( String IP : pings.keySet() ){
+						Calendar date = pings.get(IP);
+						if( ( date.getTimeInMillis() + MAX_DISCONNECT_TIME ) > currentMillis ){
+							dead.add(IP);
+						}
+					}
+					
+					while( !dead.isEmpty() ){
+						removeClient(getClientFromIP(dead.remove(0)));
+					}
+					
+					try {
+						sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		checkClients.start();
 	}
 
 	/**
@@ -79,8 +115,13 @@ public abstract class Server implements Runnable {
 				if (!clients.contains(cl)) {
 
 					// Tell everyone the new client has joined the server
-					retrieveObject(createNetworkObject(cl.getName() + " has Connected."));
+					sendToAllClients(cl.getName() + " has Connected.");
 				}
+				else{
+					removeClient(cl);
+				}
+				
+				
 				// Add the client to our list
 				clients.add(cl);
 				cl.start();
@@ -116,8 +157,7 @@ public abstract class Server implements Runnable {
 
 			// Check if this client has disconnected
 			if (!clients.contains(c)) {
-				retrieveObject(createNetworkObject(c.getName()
-						+ " has Disconnected."));
+				sendToAllClients(c.getName() + " has Disconnected.");
 			}
 
 		} catch (IOException e) {
@@ -289,7 +329,7 @@ public abstract class Server implements Runnable {
 		 */
 		public void run() {
 
-			while (running) {
+			while (socket != null && !socket.isClosed()) {
 
 				// Receive Input
 				try {

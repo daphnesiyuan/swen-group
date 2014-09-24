@@ -18,8 +18,8 @@ public class ChatServer extends Server {
 		super();
 
 		// Server listens for input directly to servers terminal Thread
-		Thread serverTextBox = new Thread(new ServerTextListener());
-		serverTextBox.start();
+		//Thread serverTextBox = new Thread(new ServerTextListener());
+		//serverTextBox.start();
 	}
 
 	@Override
