@@ -14,7 +14,6 @@ import java.util.List;
 public class GameCharacter {
 	String Description;
 
-	Client client;
 
 	List <? extends Item> Inventory;
 
@@ -56,10 +55,10 @@ public class GameCharacter {
 				int newY = door.getToRoomYPos();
 				for(Room room : roomsInGame){
 					if(room.getRoomNumber()== newRoomIndex){
-						// if find room
+						return changeRoom(newRoomIndex);
 					}
 				}
-				// if room doesnt change
+				return false;
 			}
 
 		}
@@ -68,6 +67,14 @@ public class GameCharacter {
 		return true;
 
 	}
+
+	private boolean changeRoom(int newRoomIndex){
+
+		return false;
+	}
+
+
+
 
 	public boolean interact(int x, int y, String action){
 		return false;
