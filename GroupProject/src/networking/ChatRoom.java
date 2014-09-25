@@ -57,6 +57,7 @@ public class ChatRoom implements ActionListener{
 		while( true ){
 
 			chatHistory.setText(client.getChatHistory());
+			//chatHistory.getSc
 
 			try {
 				Thread.sleep(10);

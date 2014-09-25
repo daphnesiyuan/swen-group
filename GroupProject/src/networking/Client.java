@@ -2,7 +2,6 @@ package networking;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -121,15 +120,7 @@ public abstract class Client implements Runnable{
 				}catch(IOException e ){ continue; }
 
 				// Get data sent to us
-				NetworkObject data;
-				Object object = inputStream.readObject();
-				try{
-					data = (NetworkObject)object;
-				}catch(Exception e){
-					System.out.println("data: " + object);
-					e.printStackTrace();
-					continue;
-				}
+				NetworkObject data = (NetworkObject)inputStream.readObject();
 
 				// Check for a ping
 				if( ((String)data.getData()).equals("/ping all") ){

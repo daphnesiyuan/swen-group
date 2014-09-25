@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,7 +17,7 @@ import java.util.HashMap;
  * @author veugeljame
  *
  */
-public abstract class Server implements Runnable {
+public abstract class Server implements Runnable{
 
 	private ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 	private ArrayList<String> admins = new ArrayList<String>(); // List of admin
@@ -27,8 +28,7 @@ public abstract class Server implements Runnable {
 
 	private String IPAddress;
 	private int port = 32768;
-
-	private boolean running = true;
+	private ServerSocket serverSocket;
 
 	protected Server() {
 
@@ -45,20 +45,20 @@ public abstract class Server implements Runnable {
 		// Start listening for clients!
 		Thread myThread = new Thread(this);
 		myThread.start();
-		
+
 		// Check for dead clients
 		Thread checkClients = new Thread(){
-			
+
 			final long MAX_DISCONNECT_TIME = 5000;
-			
+
 			@Override
 			public void run(){
-				
+
 				while( true ){
-					
+
 					ArrayList<String> dead = new ArrayList<String>();
 					long currentMillis = Calendar.getInstance().getTimeInMillis();
-					
+
 					// Check for last pings
 					for( String IP : pings.keySet() ){
 						Calendar date = pings.get(IP);
@@ -66,11 +66,11 @@ public abstract class Server implements Runnable {
 							dead.add(IP);
 						}
 					}
-					
+
 					while( !dead.isEmpty() ){
 						removeClient(getClientFromIP(dead.remove(0)));
 					}
-					
+
 					try {
 						sleep(5000);
 					} catch (InterruptedException e) {
@@ -81,25 +81,28 @@ public abstract class Server implements Runnable {
 			}
 		};
 		checkClients.start();
+
+		// What happens when shut down
+		Runtime.getRuntime().addShutdownHook(new Thread(){
+			@Override
+			public void run(){
+				System.out.println("SHUT DOWN BITCH");
+				stopServer();
+			}
+		});
 	}
 
 	/**
 	 * Clients interact with server
 	 */
 	public void run() {
-		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(port);
 			System.out.print("Servers IP: " + IPAddress + " : " + port + "\n");
 			System.out.print("Waiting for clients...\n");
 
 			// Keep the server constantly running
-			while (running) {
-
-				// Check if the server socket is valid
-				if (serverSocket == null || serverSocket.isClosed()) {
-					System.out.print("Connection for the server has been closed!.\n");
-				}
+			while (serverSocket != null && !serverSocket.isClosed()) {
 
 				// Someone connects to the server
 				Socket clientSocket = serverSocket.accept();
@@ -114,31 +117,34 @@ public abstract class Server implements Runnable {
 				// See if this is a new client
 				if (!clients.contains(cl)) {
 
-					// Tell everyone the new client has joined the server
-					sendToAllClients(cl.getName() + " has Connected.");
+					// Tell our sub server that we have a new clinet
+					newClientConnection(cl);
 				}
 				else{
+					// Remove the old connection
 					removeClient(cl);
+
+					// We have rejoined
+					clientRejoins(cl);
 				}
-				
-				
+
+
 				// Add the client to our list
 				clients.add(cl);
 				cl.start();
 			}
+		}  catch ( SocketException e ){
+
 		} catch (Exception e) {
 			System.out.print("\n====\n" + e.getMessage() + "\n====\n");
 			e.printStackTrace();
-		} finally {
-			if (serverSocket != null && !serverSocket.isClosed()) {
-				try {
-					serverSocket.close();
-					System.out.print("\n====\n SERVER CLOSING SOCKET \n====\n");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		}finally {
+			// Close our clients
+			while( !clients.isEmpty() ){
+				removeClient(clients.get(0));
 			}
 		}
+		System.out.print("WARNING: The Server has been closed\n");
 	}
 
 	/**
@@ -152,16 +158,12 @@ public abstract class Server implements Runnable {
 		int index = clients.indexOf(clientThread);
 		ClientThread c = clients.remove(index);
 
-		try {
-			c.socket.close();
+		c.stopClient();
 
-			// Check if this client has disconnected
-			if (!clients.contains(c)) {
-				sendToAllClients(c.getName() + " has Disconnected.");
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
+		// Check if this client has disconnected
+		if (!clients.contains(c)) {
+			sendToAllClients(c.getName() + " has Disconnected.");
+			System.out.println(c.getName() + " has Disconnected.");
 		}
 	}
 
@@ -275,6 +277,14 @@ public abstract class Server implements Runnable {
 
 	}
 
+	public void sendToAllClients(NetworkObject data) {
+
+		for (int i = 0; i < clients.size(); i++) {
+			clients.get(i).sendData(data);
+		}
+
+	}
+
 	protected void sendToClient(String clientIP, String chatHistory2) {
 
 		// TODO HACK. Make FASTER!
@@ -356,6 +366,8 @@ public abstract class Server implements Runnable {
 					// Sent data to our subclass for processing
 					retrieveObject(data);
 
+				} catch (SocketException e) {
+					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
@@ -365,7 +377,18 @@ public abstract class Server implements Runnable {
 		}
 
 		public void sendData(Object object) {
-			sendData(new NetworkObject(IPAddress, getName(), object));
+			sendData(new NetworkObject(IPAddress, "Note:", object));
+		}
+
+		public void stopClient(){
+			if( socket != null && !socket.isClosed()){
+				try {
+					socket.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 
 		public void sendData(NetworkObject data) {
@@ -456,7 +479,11 @@ public abstract class Server implements Runnable {
 	 * Stops the server from running
 	 */
 	public void stopServer() {
-		running = false;
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public synchronized boolean isAdmin(String IP){
@@ -471,4 +498,9 @@ public abstract class Server implements Runnable {
 	}
 
 	public abstract void retrieveObject(NetworkObject data);
+
+
+
+	public abstract void newClientConnection(ClientThread cl);
+	public abstract void clientRejoins(ClientThread cl);
 }
