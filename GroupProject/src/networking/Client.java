@@ -16,7 +16,7 @@ import java.net.UnknownHostException;
 public abstract class Client implements Runnable{
 
 	private Socket socket;
-	private String IPAddress = "null";
+	protected String IPAddress = "null";
 
 
 	private ObjectInputStream inputStream;

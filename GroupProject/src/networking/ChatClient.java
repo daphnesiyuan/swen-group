@@ -2,6 +2,7 @@ package networking;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Scanner;
 
 /**
  *Chat Client that deals with the main aspects of the Chat program when it comes to the client
@@ -29,9 +30,8 @@ public class ChatClient extends Client {
 		// Tell the server to update this clients name as well!
 		try {
 			// Try and change it on the servers
-			if( sendData("/name " + name) ){
-				this.clientName = name;
-			}
+			sendData("/name " + name);
+			this.clientName = name;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -56,6 +56,19 @@ public class ChatClient extends Client {
 
 	@Override
 	public synchronized void retrieveObject(NetworkObject data) {
+
+		// Check for commands
+		if( data.getIPAddress().equals(IPAddress) ){
+			Scanner scan = new Scanner((String)data.getData());
+			if( scan.hasNext("/name") ){
+				scan.next();
+
+				// Check if we REALLY are assigning our name
+				if( scan.hasNext() ){
+					this.clientName = scan.next();
+				}
+			}
+		}
 
 		// Save the message
 		appendMessage(data.toString());

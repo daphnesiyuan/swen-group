@@ -41,7 +41,6 @@ public class ChatRoom implements ActionListener{
 	private JLabel connectLabel;
 	private JButton connect;
 	private JButton startServer;
-	private JTextField name;
 
 
 	public ChatRoom(){
@@ -76,12 +75,8 @@ public class ChatRoom implements ActionListener{
 		IPConnection = new JTextField(publicIP);
 		IPConnection.setPreferredSize(new Dimension(110,25));
 		IPConnection.addActionListener(this);
-		name = new JTextField( "" );
-		name.addActionListener(this);
 		try {
-			name.setText( InetAddress.getLocalHost().getHostName() );
-			client.setName(name.getText() );
-
+			client.setName( InetAddress.getLocalHost().getHostName() );
 		} catch (UnknownHostException e) {e.printStackTrace();}
 
 
@@ -102,8 +97,6 @@ public class ChatRoom implements ActionListener{
 		send.addActionListener(this);
 
 		frame.getContentPane().add(yourIP);
-		frame.getContentPane().add(new JLabel("Name: "));
-		frame.getContentPane().add(name);
 		frame.getContentPane().add(connectLabel);
 		frame.getContentPane().add(IPConnection);
 		frame.getContentPane().add(connect);
@@ -192,11 +185,6 @@ public class ChatRoom implements ActionListener{
 			// Attempt to connect to the server
 			connectToServer(IPConnection.getText(), port);
 		}
-		else if( ae.getSource () == name ){
-
-			// Change the name of the client
-			client.setName(name.getText());
-		}
 	}
 
 	/**
@@ -207,7 +195,7 @@ public class ChatRoom implements ActionListener{
 	public boolean connectToServer(String ip, int port){
 
 		try {
-			if( client.connect(ip, name.getText(), port) ){
+			if( client.connect(ip, client.getName(), port) ){
 				client.appendMessage("Connected to " + IPConnection.getText() + ":" + port);
 
 				// Request chat history
