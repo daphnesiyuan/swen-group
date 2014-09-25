@@ -57,7 +57,6 @@ public class ChatRoom implements ActionListener{
 		while( true ){
 
 			chatHistory.setText(client.getChatHistory());
-			//chatHistory.getSc
 
 			try {
 				Thread.sleep(10);
@@ -129,7 +128,7 @@ public class ChatRoom implements ActionListener{
 		} catch (IOException e) {
 
 			// Could not send message to the server
-			chatHistory.append("Could not send message!\n");
+			client.appendMessage("Could not send message!\n");
 			e.printStackTrace();
 			return false;
 		}
@@ -209,7 +208,7 @@ public class ChatRoom implements ActionListener{
 
 		try {
 			if( client.connect(ip, name.getText(), port) ){
-				chatHistory.append("Connected to " + IPConnection.getText() + ":" + port + "\n");
+				client.appendMessage("Connected to " + IPConnection.getText() + ":" + port);
 
 				// Request chat history
 				client.sendData("/get history");
@@ -217,16 +216,16 @@ public class ChatRoom implements ActionListener{
 				return true;
 			}
 			else{
-				chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
+				client.appendMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			}
 
 
 		} catch (UnknownHostException e) {
-			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
+			client.appendMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			e.printStackTrace();
 
 		} catch (IOException e) {
-			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
+			client.appendMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			e.printStackTrace();
 		}
 

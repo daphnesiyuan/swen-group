@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Calendar;
 
 /**
  *Abstract Client class that holds all the required features when connecting, sending and receiving data from/to the server
@@ -77,7 +76,7 @@ public abstract class Client implements Runnable{
 		if( socket != null && !socket.isClosed()){
 			socket.close();
 		}
-		
+
 		//Wait for us to stop listening to the current socket
 		if( myThread != null ){
 			try {
@@ -88,7 +87,11 @@ public abstract class Client implements Runnable{
 		}
 
 		// Attempt Connection
-		socket = new Socket(IPAddress,port);
+		try{
+			socket = new Socket(IPAddress,port);
+		}catch( ConnectException e ){
+			return false;
+		}
 
 		// Give the server our name
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -129,7 +132,12 @@ public abstract class Client implements Runnable{
 				}catch(IOException e ){ continue; }
 
 				// Get data sent to us
-				NetworkObject data = (NetworkObject)inputStream.readObject();
+				NetworkObject data;
+				try{
+					data = (NetworkObject)inputStream.readObject();
+				}catch(SocketException e){
+					continue;
+				}
 
 				// Check for a ping
 				if( ((String)data.getData()).equals("/ping all") ){
@@ -159,7 +167,7 @@ public abstract class Client implements Runnable{
 					e.printStackTrace();
 				}
 			}
-			retrieveObject(new NetworkObject(IPAddress, "", "You have been disconnected"));
+			retrieveObject(new NetworkObject(IPAddress, "", "You have been Disconnected"));
 		}
 	}
 
@@ -175,7 +183,12 @@ public abstract class Client implements Runnable{
 		}
 
 		// Send to server
-		outputStream = new ObjectOutputStream(socket.getOutputStream());
+		try{
+			outputStream = new ObjectOutputStream(socket.getOutputStream());
+		}catch(SocketException e){
+			return false;
+		}
+
 		outputStream.writeObject(new NetworkObject(IPAddress, name, data));
 		outputStream.flush();
 

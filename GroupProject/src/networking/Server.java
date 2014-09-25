@@ -47,7 +47,7 @@ public abstract class Server implements Runnable{
 		myThread.start();
 
 		// Check for dead clients
-		Thread checkClients = new Thread(){
+		/*Thread checkClients = new Thread(){
 
 			final long MAX_DISCONNECT_TIME = 5000;
 
@@ -80,7 +80,7 @@ public abstract class Server implements Runnable{
 				}
 			}
 		};
-		checkClients.start();
+		checkClients.start();*/
 
 		// What happens when shut down
 		Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -122,7 +122,7 @@ public abstract class Server implements Runnable{
 				}
 				else{
 					// Remove the old connection
-					removeClient(cl);
+					removeClient(cl,true);
 
 					// We have rejoined
 					clientRejoins(cl);
@@ -141,7 +141,7 @@ public abstract class Server implements Runnable{
 		}finally {
 			// Close our clients
 			while( !clients.isEmpty() ){
-				removeClient(clients.get(0));
+				removeClient(clients.get(0),false);
 			}
 		}
 		System.out.print("WARNING: The Server has been closed\n");
@@ -150,19 +150,19 @@ public abstract class Server implements Runnable{
 	/**
 	 * Removes the client at the given location from our list of clients
 	 *
-	 * @param clientThread
+	 * @param client
 	 *            index to remove a client from
+	 * @param reconnecting
 	 */
-	private synchronized void removeClient(ClientThread clientThread) {
+	private synchronized void removeClient(ClientThread client, boolean reconnecting) {
 
-		int index = clients.indexOf(clientThread);
+		int index = clients.indexOf(client);
 		ClientThread c = clients.remove(index);
-
 		c.stopClient();
 
 		// Check if this client has disconnected
-		if (!clients.contains(c)) {
-			sendToAllClients(c.getName() + " has Disconnected.");
+		if ( !reconnecting ) {
+			sendToAllClients(c.getName() + " has Disconnected.", client);
 			System.out.println(c.getName() + " has Disconnected.");
 		}
 	}
@@ -269,18 +269,54 @@ public abstract class Server implements Runnable{
 		};
 	}
 
-	public void sendToAllClients(String message) {
+	/**
+	 * Sends the given message to all clients on the server, provided they aren't listen in "exceptions"
+	 * @param data Data to send to all the clients on the server
+	 * @param exceptions Clients to not send the data to
+	 */
+	public void sendToAllClients(Object data, ClientThread... exceptions) {
 
 		for (int i = 0; i < clients.size(); i++) {
-			clients.get(i).sendData(message);
+
+			ClientThread client = clients.get(i);
+
+			// Check if we shouldn't send it to this client
+			if( exceptions != null && exceptions.length > 0){
+				for( ClientThread ex : exceptions ){
+					if( ex.equals(client) ){
+						continue;
+					}
+				}
+			}
+
+			// Send the data to this client
+			client.sendData(data);
 		}
 
 	}
 
-	public void sendToAllClients(NetworkObject data) {
+	/**
+	 * Sends the given message to all clients on the server, provided they aren't listen in "exceptions"
+	 * @param data Data to send to all the clients on the server
+	 * @param exceptions Clients to not send the data to
+	 */
+	public void sendToAllClients(NetworkObject data, ClientThread... exceptions) {
 
 		for (int i = 0; i < clients.size(); i++) {
-			clients.get(i).sendData(data);
+
+			ClientThread client = clients.get(i);
+
+			// Check if we shouldn't send it to this client
+			if( exceptions != null && exceptions.length > 0){
+				for( ClientThread ex : exceptions ){
+					if( ex.equals(client) ){
+						continue;
+					}
+				}
+			}
+
+			// Send the data to this client
+			client.sendData(data);
 		}
 
 	}
@@ -377,7 +413,7 @@ public abstract class Server implements Runnable{
 		}
 
 		public void sendData(Object object) {
-			sendData(new NetworkObject(IPAddress, "Note:", object));
+			sendData(new NetworkObject(IPAddress, "Note", object));
 		}
 
 		public void stopClient(){
@@ -385,7 +421,6 @@ public abstract class Server implements Runnable{
 				try {
 					socket.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -408,7 +443,7 @@ public abstract class Server implements Runnable{
 
 				// More broken clients
 				if (e.getMessage().equals("Broken pipe")) {
-					removeClient(this);
+					removeClient(this,false);
 				}
 			}
 		}

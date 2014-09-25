@@ -1,6 +1,5 @@
 package networking;
 
-import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -244,18 +243,6 @@ public class ChatServer extends Server {
 
 			return true;
 		}
-
-		/**
-		 * Get the clientThread in this server with the matching name if there
-		 * is one
-		 *
-		 * @param name
-		 *            Of the ClientThread we want to find
-		 * @return ClientThread relating to the name or null if not found
-		 */
-		private ClientThread parseClient(String name) {
-			return getClientFromName(name);
-		}
 	}
 
 	public static void main(String[] args) {
@@ -266,13 +253,22 @@ public class ChatServer extends Server {
 	public void newClientConnection(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(cl.getName() + " has Connected.");
-		System.out.println(cl.getName() + " has Connected.");
+		sendToAllClients(cl.getName() + " has Connected.",cl);
 
+		// Display welcome message for the new client
 		cl.sendData(createNetworkObject("Welcome Message","\nType /help for commands"));
+
+		// Tell console this client connected
+		System.out.println(cl.getName() + " has Connected.");
 	}
 
 	@Override
 	public void clientRejoins(ClientThread cl) {
+
+		// Tell everyone the new client has joined the server
+		sendToAllClients(cl.getName() + " has Reconnected.",cl);
+
+		// Tell console this client connected
+		System.out.println(cl.getName() + " has Reconnected.");
 	}
 }

@@ -28,8 +28,10 @@ public class ChatClient extends Client {
 
 		// Tell the server to update this clients name as well!
 		try {
-			sendData("/name " + name);
-			this.clientName = name;
+			// Try and change it on the servers
+			if( sendData("/name " + name) ){
+				this.clientName = name;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -53,10 +55,10 @@ public class ChatClient extends Client {
 	}
 
 	@Override
-	public void retrieveObject(NetworkObject data) {
+	public synchronized void retrieveObject(NetworkObject data) {
 
 		// Save the message
-		chatHistory = chatHistory + data + "\n";
+		appendMessage(data.toString());
 
 		// Record when we last updated
 		lastUpdate = Calendar.getInstance();
@@ -68,6 +70,16 @@ public class ChatClient extends Client {
 	 */
 	public String getChatHistory(){
 		return chatHistory;
+	}
+
+	/**
+	 * Gets the chat history that has been sent to this client
+	 * @return String containing chat history
+	 */
+	public synchronized void appendMessage(String message){
+
+		// Save the message
+		chatHistory = chatHistory + message + "\n";
 	}
 
 	/**
