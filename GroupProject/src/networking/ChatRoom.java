@@ -215,6 +215,9 @@ public class ChatRoom implements ActionListener{
 
 				return true;
 			}
+			else{
+				chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
+			}
 
 
 		} catch (UnknownHostException e) {

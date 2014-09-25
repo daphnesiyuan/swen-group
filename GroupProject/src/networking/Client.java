@@ -75,8 +75,17 @@ public abstract class Client implements Runnable{
 
 
 		// Check if we have a current Socket, close if we do
-		if( socket != null ){
+		if( socket != null && !socket.isClosed()){
 			socket.close();
+		}
+		
+		//Wait for us to stop listening to the current socket
+		if( myThread != null ){
+			try {
+				myThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 		// Attempt Connection
@@ -113,7 +122,7 @@ public abstract class Client implements Runnable{
 		try{
 
 
-			while( true ){
+			while( socket != null && !socket.isClosed() ){
 
 				// Wait for text
 				try{
@@ -159,6 +168,7 @@ public abstract class Client implements Runnable{
 					e.printStackTrace();
 				}
 			}
+			retrieveObject(new NetworkObject(IPAddress, "", "You have been disconnected"));
 		}
 	}
 
