@@ -1,5 +1,6 @@
 package networking;
 
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,14 +19,15 @@ public class ChatServer extends Server {
 		super();
 
 		// Server listens for input directly to servers terminal Thread
-		//Thread serverTextBox = new Thread(new ServerTextListener());
-		//serverTextBox.start();
+		Thread serverTextBox = new Thread(new ServerTextListener());
+		serverTextBox.start();
 	}
 
 	@Override
 	public void retrieveObject(NetworkObject data) {
 
-		if( processCommand((String)data.getData(), data) ){
+		// Process a command if we wrote one and display the message
+		if( !processCommand((String)data.getData(), data) ){
 			return;
 		}
 
@@ -36,7 +38,7 @@ public class ChatServer extends Server {
 		System.out.println(data);
 
 		// Send it to all our clients
-		sendToAllClients((String)data.getData());
+		sendToAllClients(data);
 	}
 
 	/**
@@ -110,7 +112,7 @@ public class ChatServer extends Server {
 		public boolean parseCommand(Scanner scan, NetworkObject data) {
 
 			if (!scan.hasNext()) {
-				return false;
+				return true;
 			}
 
 			String command = scan.next();
@@ -135,7 +137,7 @@ public class ChatServer extends Server {
 			}
 
 			// Unknown command
-			return false;
+			return true;
 		}
 
 		private boolean parseClose(Scanner scan, NetworkObject data) {
@@ -146,14 +148,14 @@ public class ChatServer extends Server {
 			}
 
 			stopServer();
-			return true;
+			return false;
 		}
 
 		private boolean parseName(Scanner scan, NetworkObject data) {
 
 			// Check for name
 			if (!scan.hasNext()) {
-				return false;
+				return true;
 			}
 
 			// Get next command that SHOULD be a name
@@ -161,12 +163,12 @@ public class ChatServer extends Server {
 
 			// Check for failed client check
 			if (client == null) {
-				return false;
+				return true;
 			}
 
 			// Check for next name
 			if (!scan.hasNext()) {
-				return false;
+				return true;
 			}
 
 			// Get the name they want to assign their name to
@@ -185,7 +187,7 @@ public class ChatServer extends Server {
 
 			// Check for name
 			if (!scan.hasNext()) {
-				return false;
+				return true;
 			}
 
 			// What do we want to get?
@@ -197,10 +199,10 @@ public class ChatServer extends Server {
 				// Send history back to the client
 				sendHistoryToClient(data.getIPAddress());
 
-				return true;
+				return false;
 			}
 
-			return false;
+			return true;
 		}
 
 		private boolean parsePing(Scanner scan, NetworkObject data) {
@@ -210,7 +212,7 @@ public class ChatServer extends Server {
 
 			System.out.println(data.getName() + " pinged the server at " + delay + "ms");
 
-			return true;
+			return false;
 		}
 
 		private boolean parseAdmins(Scanner scan, NetworkObject data) {
@@ -223,7 +225,7 @@ public class ChatServer extends Server {
 
 			sendToClient(data.getIPAddress(), adminList);
 
-			return true;
+			return false;
 		}
 
 		private boolean parseHelp(Scanner scan, NetworkObject data) {
@@ -258,5 +260,19 @@ public class ChatServer extends Server {
 
 	public static void main(String[] args) {
 		new ChatServer();
+	}
+
+	@Override
+	public void newClientConnection(ClientThread cl) {
+
+		// Tell everyone the new client has joined the server
+		sendToAllClients(cl.getName() + " has Connected.");
+		System.out.println(cl.getName() + " has Connected.");
+
+		cl.sendData(createNetworkObject("Welcome Message","\nType /help for commands"));
+	}
+
+	@Override
+	public void clientRejoins(ClientThread cl) {
 	}
 }
