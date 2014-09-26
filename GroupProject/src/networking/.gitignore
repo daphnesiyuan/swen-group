@@ -12,3 +12,9 @@
 /ChatServer$CommandParser.class
 /ChatServer$ServerTextListener.class
 /ChatServer.class
+/Server$2.class
+/ChatMessage.class
+/GameClient.class
+/GameServer.class
+/Move.class
+/NetworkData.class
