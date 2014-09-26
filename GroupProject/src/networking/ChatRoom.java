@@ -198,9 +198,6 @@ public class ChatRoom implements ActionListener{
 			if( client.connect(ip, client.getName(), port) ){
 				client.appendWarningMessage("Connected to " + IPConnection.getText() + ":" + port);
 
-				// Request chat history
-				client.sendData("/get history");
-
 				return true;
 			}
 			else{

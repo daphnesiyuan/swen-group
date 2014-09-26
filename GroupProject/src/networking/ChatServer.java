@@ -29,7 +29,10 @@ public class ChatServer extends Server {
 		if( !processCommand(((ChatMessage)data.getData()).message, data) ){
 
 			// Send the data back to the client
-			getClientFromIP(data.getIPAddress()).sendData(data);
+			ClientThread sender = getClientFromIP(data.getIPAddress());
+			if( sender != null ){
+				sender.sendData(data);
+			}
 
 			// Don't do anything else
 			return;
