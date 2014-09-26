@@ -242,6 +242,7 @@ public class ChatServer extends Server {
 					+ "/ping -> Checks how fast your connection currently is\n"
 					+ "/get history -> Sends back the entire chat history\n"
 					+ "/admins -> lists the IP's of the admins\n"
+					+ "/clear -> clears all messages off the screen\n"
 					+ "/name 'string' -> changes your name\n\n"
 					+ "- ADMIN COMMANDS -\n"
 					+ "/close -> closes the server";

@@ -42,7 +42,7 @@ public class NetworkObject implements Serializable{
 	}
 
 	public String toString(){
-		return getTime() + " " + data.toString();
+		return data.toString();
 	}
 
 	/**

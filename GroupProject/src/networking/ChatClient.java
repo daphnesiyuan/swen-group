@@ -16,7 +16,8 @@ public class ChatClient extends Client {
 
 	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
-	private Calendar lastUpdate = null;
+	private Object modifiedLock = new Object();
+	private boolean modified = false;
 
 
 	/**
@@ -50,7 +51,17 @@ public class ChatClient extends Client {
 	public boolean sendData(String message) throws IOException{
 
 		ChatMessage chat = new ChatMessage(clientName, message);
+
+		// Client side commands
+		if( chat.message.equals("/clear") ){
+			chatHistory.clear();
+			setModified(true);
+			return true;
+		}
+
+		// Record client sided message
 		chatHistory.add(chat);
+		setModified(true);
 
 		return super.sendData(chat);
 	}
@@ -83,11 +94,12 @@ public class ChatClient extends Client {
 
 			// Save the message
 			chatHistory.add(chatMessage);
+			setModified(true);
 		}
 
 
 		// Record when we last updated
-		lastUpdate = Calendar.getInstance();
+		setModified(true);
 	}
 
 	/**
@@ -113,14 +125,19 @@ public class ChatClient extends Client {
 
 		// Save the message
 		chatHistory.add(new ChatMessage("WARNING",warning,true));
+		setModified(true);
 	}
 
-	/**
-	 * Returns the time we last got an update from the server
-	 * @return Calendar of when last update was
-	 */
-	public Calendar lastUpdate(){
-		return lastUpdate;
+	public boolean isModified() {
+		synchronized (modifiedLock){
+			return modified;
+		}
+	}
+
+	public void setModified(boolean modified) {
+		synchronized (modifiedLock){
+			this.modified = modified;
+		}
 	}
 
 }

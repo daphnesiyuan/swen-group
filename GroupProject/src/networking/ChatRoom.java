@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultCaret;
 
 
 /**
@@ -55,7 +57,14 @@ public class ChatRoom implements ActionListener{
 		// Loop forever
 		while( true ){
 
-			chatHistory.setText(client.getChatHistory());
+			// Update our text if anything has changed
+			if( client.isModified() ){
+				client.setModified(false);
+
+				chatHistory.setText(client.getChatHistory());
+				DefaultCaret caret = (DefaultCaret) chatHistory.getCaret();
+				caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+			}
 
 			try {
 				Thread.sleep(10);
