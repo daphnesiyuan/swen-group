@@ -39,11 +39,13 @@ public class Rendering extends JPanel implements KeyListener{
 	}
 
 	protected void paintComponent(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, this.getWidth(), this.getHeight());
-		drawLocation(g);
-		drawInventory(g);
-		drawCompas(g);
+//		g.setColor(Color.BLACK);
+//		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+//		drawLocation(g);
+//		drawInventory(g);
+//		drawCompas(g);
+		DrawWorld draw = new DrawWorld(null, this);
+		draw.redraw(g, room, null, null);
 	}
 
 	private void drawLocation(Graphics g) {
@@ -71,7 +73,6 @@ public class Rendering extends JPanel implements KeyListener{
 		int imgHeight = ((int) img.getHeight(null)/20);
 
 		g.drawImage(img, corner.x+pt.x - width, corner.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
-
 	}
 
 	private Point twoDToIso(Point pt) {
