@@ -191,7 +191,7 @@ public abstract class Server implements Runnable{
 
 		// Check client
 		if (client == null) {
-			throw new RuntimeException("Pinged by unknown client");
+			throw new RuntimeException("Pinged by unknown client " + data.getIPAddress());
 		}
 
 		// Valid Client
@@ -497,10 +497,13 @@ public abstract class Server implements Runnable{
 	 * Stops the server from running
 	 */
 	public void stopServer() {
-		try {
-			serverSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		if( serverSocket != null && !serverSocket.isClosed() ){
+			try {
+				serverSocket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

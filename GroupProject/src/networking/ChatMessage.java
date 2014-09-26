@@ -1,6 +1,7 @@
 package networking;
 
-import java.util.Calendar;
+import java.awt.Color;
+import java.util.Random;
 
 public class ChatMessage extends NetworkData{
 
@@ -10,6 +11,7 @@ public class ChatMessage extends NetworkData{
 	private static final long serialVersionUID = 3899197915705338681L;
 	public final String message;
 	public final String sendersName;
+	public final Color messageColor = new Color(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255));
 
 	public ChatMessage(String name, String message, boolean acknowledged){
 		this.sendersName = name;
