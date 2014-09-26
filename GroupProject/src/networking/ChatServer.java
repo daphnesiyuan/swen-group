@@ -3,6 +3,7 @@ package networking;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Scanner;
  */
 public class ChatServer extends Server {
 
-	private String chatHistory = "";
+	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
 	public ChatServer() {
 		super();
@@ -25,8 +26,9 @@ public class ChatServer extends Server {
 	@Override
 	public void retrieveObject(NetworkObject data) {
 
+		ChatMessage cm = (ChatMessage)data.getData();
 		// Process a command if we wrote one and display the message
-		if( !processCommand(((ChatMessage)data.getData()).message, data) ){
+		if( !processCommand(cm.message, data) ){
 
 			// Send the data back to the client
 			ClientThread sender = getClientFromIP(data.getIPAddress());
@@ -39,7 +41,7 @@ public class ChatServer extends Server {
 		}
 
 		// Save the message
-		chatHistory = chatHistory + data + "\n";
+		chatHistory.add(cm);
 
 		// Display for the server in console
 		System.out.println(data);
@@ -71,8 +73,13 @@ public class ChatServer extends Server {
 	 *            IP of who wants the history sent to them
 	 */
 	private synchronized void sendHistoryToClient(String clientIP) {
+		String history = "";
+		for (int i = 0; i < chatHistory.size(); i++) {
+			ChatMessage message = chatHistory.get(i);
+			history = history + message + "\n";
 
-		sendToClient(clientIP, new ChatMessage(chatHistory,true));
+		}
+		sendToClient(clientIP, new ChatMessage(history,true));
 	}
 
 	/**

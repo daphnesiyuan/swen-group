@@ -3,6 +3,7 @@ package networking;
 import gameLogic.location.Room;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
 
@@ -13,22 +14,28 @@ import java.util.Scanner;
  */
 public class GameClient extends Client {
 
-	// Client side room
+	// Client side of the game
+	private Object roomLock = new Object();
 	private Room room = null;
-	private Calendar lastUpdate = null;
 
-	// Client Interactions
+	private boolean modified = false;
+	private Object modifiedLock = new Object();
+
+	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
+
+
+	// Individual Client Fields
 	private String clientName;
-	private String chatHistory = "";
-
 
 
 	/**
 	 * Returns the client side version of the room that the player is currently in
 	 * @return Room containing the player and al lthe rooms contents
 	 */
-	public Room getRoom(){
-		return room;
+	public synchronized Room getRoom(){
+		synchronized(roomLock){
+			return room;
+		}
 	}
 
 	/**
@@ -40,7 +47,7 @@ public class GameClient extends Client {
 		// Tell the server to update this clients name as well!
 		try {
 			// Try and change it on the servers
-			sendData("/name " + name);
+			sendChatMessage("/name " + name);
 			this.clientName = name;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -59,18 +66,63 @@ public class GameClient extends Client {
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
 	 */
-	public boolean sendData(String interaction) throws IOException{
+	public boolean sendPerformedAction(String action) throws IOException{
 
-		// Send a new move object through the network
-		return super.sendData(new Move(interaction));
+		// Create a new chatMessage
+		Move chat = new Move(action);
+
+		// Send data to the server
+		return super.sendData(chat);
+	}
+
+	/**
+	 * Sends the given object to the server that the client is connected to
+	 * @param data Object to sent to the server for processing
+	 */
+	public boolean sendChatMessage(String message) throws IOException{
+
+		// Create a new chatMessage
+		ChatMessage chat = new ChatMessage(clientName, message);
+
+		// Client side commands
+		if( chat.message.equals("/clear") ){
+			chatHistory.clear();
+			setModified(true);
+			return true;
+		}
+
+		// Record client sided message
+		chatHistory.add(chat);
+		setModified(true);
+
+		// Send data to the server
+		return super.sendData(chat);
 	}
 
 	@Override
 	public synchronized void retrieveObject(NetworkObject data) {
 
+		// Check what type of data we were sent
+		if( data.getData() instanceof ChatMessage ){
+			// Sent a chat Message
+			retrievedChatMessage(data.getIPAddress(), (ChatMessage)data.getData());
+		}
+		else if( data.getData() instanceof Move ){
+			// We were sent a move
+			retrievedMove(data.getIPAddress(), (Move)data.getData());
+		}
+	}
+
+	/**
+	 * Process the supplied chat message sent from the server to this client.
+	 * @param sendersIPAddress IP of the senders IP Address
+	 * @param chatMessage Message that was sent from the given IP
+	 */
+	public synchronized void retrievedChatMessage(String sendersIPAddress, ChatMessage chatMessage){
+
 		// Check for commands
-		if( data.getIPAddress().equals(IPAddress) ){
-			Scanner scan = new Scanner(data.getData().toString());
+		if( sendersIPAddress.equals(IPAddress) ){
+			Scanner scan = new Scanner(chatMessage.message);
 			if( scan.hasNext("/name") ){
 				scan.next();
 
@@ -81,11 +133,36 @@ public class GameClient extends Client {
 			}
 		}
 
-		// Save the message
-		appendMessage(data.toString());
+		// Check if we have just gotten an acknowledgement
+		if( chatHistory.contains(chatMessage) ){
+
+			// Acknowledge the message
+			chatHistory.get(chatHistory.indexOf(chatMessage)).acknowledged = true;
+		}
+		else{
+
+			// Save the message
+			chatHistory.add(chatMessage);
+			setModified(true);
+		}
+
 
 		// Record when we last updated
-		lastUpdate = Calendar.getInstance();
+		setModified(true);
+	}
+
+	/**
+	 * Process the supplied chat message sent from the server to this client.
+	 * @param sendersIPAddress IP of the senders IP Address
+	 * @param chatMessage Message that was sent from the given IP
+	 */
+	public synchronized void retrievedMove(String sendersIPAddress, Move move){
+
+		//TODO Perform an action on the current room
+
+
+		// Record when we last updated
+		//setModified(true);
 	}
 
 	/**
@@ -93,25 +170,45 @@ public class GameClient extends Client {
 	 * @return String containing chat history
 	 */
 	public String getChatHistory(){
-		return chatHistory;
+		String history = "";
+		for (int i = 0; i < chatHistory.size(); i++) {
+			ChatMessage message = chatHistory.get(i);
+			history = history + message + "\n";
+
+		}
+
+		return history;
 	}
 
 	/**
 	 * Gets the chat history that has been sent to this client
 	 * @return String containing chat history
 	 */
-	public synchronized void appendMessage(String message){
+	public synchronized void appendWarningMessage(String warning){
 
 		// Save the message
-		chatHistory = chatHistory + message + "\n";
+		chatHistory.add(new ChatMessage("WARNING",warning,true));
+		setModified(true);
 	}
 
 	/**
-	 * Returns the time we last got an update from the server
-	 * @return Calendar of when last update was
+	 * Checks if the current client has had anything modified since the last refresh. Determines if the listener of this client needs to update or not.
+	 * @return True if something has changed in the chat
 	 */
-	public Calendar lastUpdate(){
-		return lastUpdate;
+	public boolean isModified() {
+		synchronized (modifiedLock){
+			return modified;
+		}
+	}
+
+	/**
+	 * Sets the current state of the clients modifications status to what's given.
+	 * @param modified
+	 */
+	public void setModified(boolean modified) {
+		synchronized (modifiedLock){
+			this.modified = modified;
+		}
 	}
 
 }
