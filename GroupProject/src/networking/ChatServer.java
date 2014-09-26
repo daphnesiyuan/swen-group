@@ -18,15 +18,20 @@ public class ChatServer extends Server {
 		super();
 
 		// Server listens for input directly to servers terminal Thread
-		Thread serverTextBox = new Thread(new ServerTextListener());
-		serverTextBox.start();
+		//Thread serverTextBox = new Thread(new ServerTextListener());
+		//serverTextBox.start();
 	}
 
 	@Override
 	public void retrieveObject(NetworkObject data) {
 
 		// Process a command if we wrote one and display the message
-		if( !processCommand((String)data.getData(), data) ){
+		if( !processCommand(((ChatMessage)data.getData()).message, data) ){
+
+			// Send the data back to the client
+			getClientFromIP(data.getIPAddress()).sendData(data);
+
+			// Don't do anything else
 			return;
 		}
 
@@ -64,7 +69,7 @@ public class ChatServer extends Server {
 	 */
 	private synchronized void sendHistoryToClient(String clientIP) {
 
-		sendToClient(clientIP, chatHistory);
+		sendToClient(clientIP, new ChatMessage(chatHistory,true));
 	}
 
 	/**
@@ -75,7 +80,7 @@ public class ChatServer extends Server {
 	private synchronized void processServerMessage(String message) {
 
 		// Process to everyone
-		retrieveObject(createNetworkObject("~Admin", message));
+		retrieveObject(new NetworkObject(IPAddress, new ChatMessage("~Admin", message, true)));
 	}
 
 	/**
@@ -143,7 +148,7 @@ public class ChatServer extends Server {
 
 			// Only admins can close the server
 			if( !isAdmin(data.getIPAddress()) ){
-				return false;
+				return true;
 			}
 
 			stopServer();
@@ -171,11 +176,11 @@ public class ChatServer extends Server {
 			}
 
 			// Get the name they want to assign their name to
-			String newName = scan.next();
+			String newName = scan.nextLine();
 
 			// set "name" name worked
-			retrieveObject(createNetworkObject(client.getName()
-					+ " has changed their name to " + newName));
+			retrieveObject(new NetworkObject(IPAddress, new ChatMessage(client.getName()
+					+ " has changed their name to " + newName,true)));
 
 			client.setName(newName);
 
@@ -209,7 +214,7 @@ public class ChatServer extends Server {
 			// Send history back to the client
 			long delay = pinged(data);
 
-			System.out.println(data.getName() + " pinged the server at " + delay + "ms");
+			System.out.println(((ChatMessage)data.getData()).sendersName + " pinged the server at " + delay + "ms");
 
 			return false;
 		}
@@ -222,7 +227,7 @@ public class ChatServer extends Server {
 				adminList = adminList + admin + "\n";
 			}
 
-			sendToClient(data.getIPAddress(), adminList);
+			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",adminList, true));
 
 			return false;
 		}
@@ -230,7 +235,7 @@ public class ChatServer extends Server {
 		private boolean parseHelp(Scanner scan, NetworkObject data) {
 
 			// Send history back to the client
-			String adminList = "\nList of Possible Commands:\n"
+			String commandList = "\nList of Possible Commands:\n"
 					+ "/ping -> Checks how fast your connection currently is\n"
 					+ "/get history -> Sends back the entire chat history\n"
 					+ "/admins -> lists the IP's of the admins\n"
@@ -239,7 +244,7 @@ public class ChatServer extends Server {
 					+ "/close -> closes the server";
 
 
-			sendToClient(data.getIPAddress(), adminList);
+			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",commandList, true));
 
 			return true;
 		}
@@ -253,10 +258,10 @@ public class ChatServer extends Server {
 	public void newClientConnection(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(cl.getName() + " has Connected.",cl);
+		sendToAllClients(new ChatMessage("~Admin",cl.getName() + " has Connected.", true),cl);
 
 		// Display welcome message for the new client
-		cl.sendData(createNetworkObject("Welcome Message","\nType /help for commands"));
+		cl.sendData(new ChatMessage("","Welcome Message::" + "\nType /help for commands", true));
 
 		// Tell console this client connected
 		System.out.println(cl.getName() + " has Connected.");
@@ -266,7 +271,7 @@ public class ChatServer extends Server {
 	public void clientRejoins(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(cl.getName() + " has Reconnected.",cl);
+		sendToAllClients(new ChatMessage("~Admin",cl.getName() + " has Reconnected.", true),cl);
 
 		// Tell console this client connected
 		System.out.println(cl.getName() + " has Reconnected.");

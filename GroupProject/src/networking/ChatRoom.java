@@ -121,7 +121,7 @@ public class ChatRoom implements ActionListener{
 		} catch (IOException e) {
 
 			// Could not send message to the server
-			client.appendMessage("Could not send message!\n");
+			client.appendWarningMessage("Could not send message!\n");
 			e.printStackTrace();
 			return false;
 		}
@@ -196,7 +196,7 @@ public class ChatRoom implements ActionListener{
 
 		try {
 			if( client.connect(ip, client.getName(), port) ){
-				client.appendMessage("Connected to " + IPConnection.getText() + ":" + port);
+				client.appendWarningMessage("Connected to " + IPConnection.getText() + ":" + port);
 
 				// Request chat history
 				client.sendData("/get history");
@@ -204,16 +204,16 @@ public class ChatRoom implements ActionListener{
 				return true;
 			}
 			else{
-				client.appendMessage("Could not connect to " + IPConnection.getText() + ":" + port);
+				client.appendWarningMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			}
 
 
 		} catch (UnknownHostException e) {
-			client.appendMessage("Could not connect to " + IPConnection.getText() + ":" + port);
+			client.appendWarningMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			e.printStackTrace();
 
 		} catch (IOException e) {
-			client.appendMessage("Could not connect to " + IPConnection.getText() + ":" + port);
+			client.appendWarningMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			e.printStackTrace();
 		}
 

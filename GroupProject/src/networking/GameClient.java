@@ -1,7 +1,8 @@
 package networking;
 
+import gameLogic.location.Room;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
 
@@ -10,25 +11,36 @@ import java.util.Scanner;
  * @author veugeljame
  *
  */
-public class ChatClient extends Client {
+public class GameClient extends Client {
 
-	private String clientName;
-
-	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
-
+	// Client side room
+	private Room room = null;
 	private Calendar lastUpdate = null;
+
+	// Client Interactions
+	private String clientName;
+	private String chatHistory = "";
+
 
 
 	/**
+	 * Returns the client side version of the room that the player is currently in
+	 * @return Room containing the player and al lthe rooms contents
+	 */
+	public Room getRoom(){
+		return room;
+	}
+
+	/**
 	 * Changes the name of the client to be displayed through-out the game
-	 * @param name
+	 * @param name Changes the players name and alerts the server as well
 	 */
 	public void setName(String name){
 
 		// Tell the server to update this clients name as well!
 		try {
 			// Try and change it on the servers
-			sendData(new ChatMessage("/name " + name));
+			sendData("/name " + name);
 			this.clientName = name;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -47,22 +59,18 @@ public class ChatClient extends Client {
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
 	 */
-	public boolean sendData(String message) throws IOException{
+	public boolean sendData(String interaction) throws IOException{
 
-		ChatMessage chat = new ChatMessage(clientName, message);
-		chatHistory.add(chat);
-
-		return super.sendData(chat);
+		// Send a new move object through the network
+		return super.sendData(new Move(interaction));
 	}
 
 	@Override
 	public synchronized void retrieveObject(NetworkObject data) {
 
-		ChatMessage chatMessage = (ChatMessage) data.getData();
-
 		// Check for commands
 		if( data.getIPAddress().equals(IPAddress) ){
-			Scanner scan = new Scanner(chatMessage.message);
+			Scanner scan = new Scanner(data.getData().toString());
 			if( scan.hasNext("/name") ){
 				scan.next();
 
@@ -73,18 +81,8 @@ public class ChatClient extends Client {
 			}
 		}
 
-		// Check if we have just gotten an acknowledgement
-		if( chatHistory.contains(chatMessage) ){
-
-			// Acknowledge the message
-			chatHistory.get(chatHistory.indexOf(chatMessage)).acknowledged = true;
-		}
-		else{
-
-			// Save the message
-			chatHistory.add(chatMessage);
-		}
-
+		// Save the message
+		appendMessage(data.toString());
 
 		// Record when we last updated
 		lastUpdate = Calendar.getInstance();
@@ -95,24 +93,17 @@ public class ChatClient extends Client {
 	 * @return String containing chat history
 	 */
 	public String getChatHistory(){
-		String history = "";
-		for (int i = 0; i < chatHistory.size(); i++) {
-			ChatMessage message = chatHistory.get(i);
-			history = history + message + "\n";
-
-		}
-
-		return history;
+		return chatHistory;
 	}
 
 	/**
 	 * Gets the chat history that has been sent to this client
 	 * @return String containing chat history
 	 */
-	public synchronized void appendWarningMessage(String warning){
+	public synchronized void appendMessage(String message){
 
 		// Save the message
-		chatHistory.add(new ChatMessage("WARNING",warning,true));
+		chatHistory = chatHistory + message + "\n";
 	}
 
 	/**

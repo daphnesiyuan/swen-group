@@ -140,8 +140,8 @@ public abstract class Client implements Runnable{
 				}
 
 				// Check for a ping
-				if( ((String)data.getData()).equals("/ping all") ){
-					sendData(IPAddress, "/ping all");
+				if( (data.getData().toString()).equals("/ping all") ){
+					sendData(new ChatMessage("/ping all"));
 					continue;
 				}
 
@@ -167,7 +167,7 @@ public abstract class Client implements Runnable{
 					e.printStackTrace();
 				}
 			}
-			retrieveObject(new NetworkObject(IPAddress, "", "You have been Disconnected"));
+			retrieveObject(new NetworkObject(IPAddress, new ChatMessage("You have been Disconnected")));
 		}
 	}
 
@@ -175,7 +175,7 @@ public abstract class Client implements Runnable{
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
 	 */
-	protected boolean sendData(String name, Object data) throws IOException{
+	protected boolean sendData(NetworkData data) throws IOException{
 
 		// Check if we have a connection
 		if( socket == null || socket.isClosed() ){
@@ -189,7 +189,7 @@ public abstract class Client implements Runnable{
 			return false;
 		}
 
-		outputStream.writeObject(new NetworkObject(IPAddress, name, data));
+		outputStream.writeObject(new NetworkObject(IPAddress, data));
 		outputStream.flush();
 
 		// Data sent successfully

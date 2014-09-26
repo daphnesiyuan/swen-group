@@ -14,10 +14,8 @@ public class NetworkObject implements Serializable{
 	 *
 	 */
 	private static final long serialVersionUID = 3965982154655961725L;
-	private final Object data; // What's being sent through the network
-	private final String name; // Name of who sent the packet
+	private final NetworkData data; // What's being sent through the network
 	private final String IPAddress; // IP of who sent the data
-	private final Calendar calendar; // When the file was sent
 
 	/**
 	 * Creates a new NetworkObject and attaches the IPAddress of the client that sends the data
@@ -25,11 +23,9 @@ public class NetworkObject implements Serializable{
 	 * @param name Name of the client sending the data
 	 * @param data The data wanting to be sent through the network
 	 */
-	public NetworkObject(String IPAddress, String name, Object data){
+	public NetworkObject(String IPAddress, NetworkData data){
 		this.data = data;
 		this.IPAddress = IPAddress;
-		this.name = name;
-		this.calendar = Calendar.getInstance();
 	}
 
 	/**
@@ -39,18 +35,21 @@ public class NetworkObject implements Serializable{
 	 * @param data The data wanting to be sent through the network
 	 * @param calendar Date on the calendar for when the object was sent through the network
 	 */
-	public NetworkObject(String IPAddress, String name, Object data, Calendar calendar){
+	public NetworkObject(String IPAddress, NetworkData data, Calendar calendar){
 		this.data = data;
-		this.name = name;
 		this.IPAddress = IPAddress;
-		this.calendar = calendar;
+		data.dataSent = calendar;
+	}
+
+	public String toString(){
+		return getTime() + " " + data.toString();
 	}
 
 	/**
 	 * Gets the data that was sent through the network
 	 * @return data the data sent from a server to the given client
 	 */
-	public Object getData() {
+	public NetworkData getData() {
 		return data;
 	}
 
@@ -59,14 +58,7 @@ public class NetworkObject implements Serializable{
 	 * @return Calendar containing the information of when the data was sent
 	 */
 	public Calendar getCalendar() {
-		return calendar;
-	}
-
-	/**
-	 * Displays whatever is stored inside data
-	 */
-	public String toString(){
-		return getTime() + " " + name + ": " + data.toString();
+		return data.dataSent;
 	}
 
 	/**
@@ -74,15 +66,7 @@ public class NetworkObject implements Serializable{
 	 * @return
 	 */
 	public String getTime(){
-		return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
-	}
-
-	/**
-	 * Gets the name of the person that sent the packet
-	 * @return Name String of the name
-	 */
-	public String getName(){
-		return name;
+		return data.getTime();
 	}
 
 	/**

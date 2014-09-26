@@ -1,6 +1,7 @@
 package networking;
 
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -26,7 +27,7 @@ public abstract class Server implements Runnable{
 	// Pings from IP to time sent
 	private HashMap<String, Calendar> pings = new HashMap<String, Calendar>();
 
-	private String IPAddress;
+	protected String IPAddress;
 	private int port = 32768;
 	private ServerSocket serverSocket;
 
@@ -162,35 +163,9 @@ public abstract class Server implements Runnable{
 
 		// Check if this client has disconnected
 		if ( !reconnecting ) {
-			sendToAllClients(c.getName() + " has Disconnected.", client);
+			sendToAllClients(new ChatMessage("~Admin",c.getName() + " has Disconnected.", true), client);
 			System.out.println(c.getName() + " has Disconnected.");
 		}
-	}
-
-	/**
-	 * Creates a new object of data to be sent through the network
-	 *
-	 * @param data
-	 *            Object to send to all clients
-	 * @return new Network Object containing the current date/time and servers
-	 *         IP
-	 */
-	protected NetworkObject createNetworkObject(Object data) {
-		return new NetworkObject(IPAddress, "~Admin",((String) data));
-	}
-
-	/**
-	 * Creates a new object of data to be sent through the network
-	 *
-	 * @param name
-	 *            Name of whome is sending this packet
-	 * @param data
-	 *            Object to send to all clients
-	 * @return new Network Object containing the current date/time and servers
-	 *         IP
-	 */
-	protected NetworkObject createNetworkObject(String name, Object data) {
-		return new NetworkObject(IPAddress,name,((String) data));
 	}
 
 	/**
@@ -220,7 +195,7 @@ public abstract class Server implements Runnable{
 		}
 
 		// Valid Client
-		client.sendData(createNetworkObject("~Admin", "Ping: " + delay + "ms"));
+		client.sendData(new NetworkObject(IPAddress, new ChatMessage("~Admin", "Ping: " + delay + "ms", true)));
 
 		return delay;
 	}
@@ -237,7 +212,7 @@ public abstract class Server implements Runnable{
 
 		// Send a ping to every client
 		for (int i = 0; i < clients.size(); i++) {
-			clients.get(i).sendData("/ping all");
+			clients.get(i).sendData(new ChatMessage("/ping all", true));
 
 			sentPings.put(clients.get(i).IPAddress, Calendar.getInstance());
 		}
@@ -274,7 +249,7 @@ public abstract class Server implements Runnable{
 	 * @param data Data to send to all the clients on the server
 	 * @param exceptions Clients to not send the data to
 	 */
-	public void sendToAllClients(Object data, ClientThread... exceptions) {
+	public void sendToAllClients(NetworkData data, ClientThread... exceptions) {
 
 		for (int i = 0; i < clients.size(); i++) {
 
@@ -321,12 +296,12 @@ public abstract class Server implements Runnable{
 
 	}
 
-	protected void sendToClient(String clientIP, String chatHistory2) {
+	protected void sendToClient(String clientIP, NetworkData data) {
 
 		// TODO HACK. Make FASTER!
 		for (int i = 0; i < clients.size(); i++) {
 			if (clients.get(i).IPAddress.equals(clientIP)) {
-				clients.get(i).sendData(chatHistory2);
+				clients.get(i).sendData(data);
 				break;
 			}
 		}
@@ -389,10 +364,17 @@ public abstract class Server implements Runnable{
 					}
 
 					// Get the data from what was sent through the network
-					NetworkObject data = (NetworkObject) input.readObject();
+					NetworkObject data = null;
+					try{
+						data = (NetworkObject)input.readObject();
+						data.getData().acknowledged = true; // We received the data
+					}catch(InvalidClassException e){
+						System.out.println("Class must be NetworkObject: " + e.classname);
+						e.printStackTrace();
+					}
 
 					// Check if the data sent back to us was a ping all
-					if( ((String)data.getData()).equals("/ping all") ){
+					if( ((ChatMessage)data.getData()).message.equals("/ping all") ){
 						if( pings.containsKey(data.getIPAddress()) ){
 							pings.put(data.getIPAddress(), data.getCalendar());
 						}
@@ -412,9 +394,6 @@ public abstract class Server implements Runnable{
 			}
 		}
 
-		public void sendData(Object object) {
-			sendData(new NetworkObject(IPAddress, "Note", object));
-		}
 
 		public void stopClient(){
 			if( socket != null && !socket.isClosed()){
@@ -446,6 +425,10 @@ public abstract class Server implements Runnable{
 					removeClient(this,false);
 				}
 			}
+		}
+
+		public void sendData(NetworkData data) {
+			sendData(new NetworkObject(IPAddress, data));
 		}
 
 		/*
@@ -525,6 +508,10 @@ public abstract class Server implements Runnable{
 		return admins.contains(IP);
 	}
 
+	/**
+	 * Returns a list of the admins IP's in the server
+	 * @return ArrayList containing a list of IP's
+	 */
 	public ArrayList<String> getAdmins(){
 		ArrayList<String> adminList = new ArrayList<String>();
 		adminList.addAll(admins);
@@ -532,10 +519,8 @@ public abstract class Server implements Runnable{
 		return adminList;
 	}
 
+
 	public abstract void retrieveObject(NetworkObject data);
-
-
-
 	public abstract void newClientConnection(ClientThread cl);
 	public abstract void clientRejoins(ClientThread cl);
 }
