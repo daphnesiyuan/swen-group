@@ -1,5 +1,7 @@
 package networking;
 
+import gameLogic.gameState.Game;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,10 +15,17 @@ import java.util.Scanner;
  */
 public class GameServer extends Server {
 
+	// Complete chat history sent through the network
 	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
+
+	// Game that all players are playing off
+	private Game gameServer;
 
 	public GameServer() {
 		super();
+
+		// Create a new game
+		gameServer = new Game();
 
 		// Server listens for input directly to servers terminal Thread
 		//Thread serverTextBox = new Thread(new ServerTextListener());
@@ -26,9 +35,29 @@ public class GameServer extends Server {
 	@Override
 	public void retrieveObject(NetworkObject data) {
 
-		ChatMessage cm = (ChatMessage)data.getData();
+		// Determine what to do with each of the different types of objects sent from clients
+		if( data.getData() instanceof ChatMessage ){
+
+			// ChatMessage sent from a client
+			processChatMessage((ChatMessage)data.getData(), data);
+		}
+		else if( data.getData() instanceof Move ){
+
+			// A move performed by a client
+			processMove((Move)data.getData(), data);
+		}
+
+	}
+
+	/**
+	 *
+	 * @param chatMessage the message sent FROM a client
+	 * @param data original NetworkObject sent through the network
+	 */
+	public void processChatMessage(ChatMessage chatMessage, NetworkObject data){
+
 		// Process a command if we wrote one and display the message
-		if( !processCommand(cm.message, data) ){
+		if( !processCommand(chatMessage.message, data) ){
 
 			// Send the data back to the client
 			ClientThread sender = getClientFromIP(data.getIPAddress());
@@ -41,13 +70,22 @@ public class GameServer extends Server {
 		}
 
 		// Save the message
-		chatHistory.add(cm);
+		chatHistory.add(chatMessage);
 
 		// Display for the server in console
 		System.out.println(data);
 
 		// Send it to all our clients
 		sendToAllClients(data);
+	}
+
+	/**
+	 *
+	 * @param move Move wanting to be performed by a client
+	 * @param data NetworkObject sent through the network
+	 */
+	public void processMove(Move move, NetworkObject data){
+
 	}
 
 	/**
@@ -72,14 +110,26 @@ public class GameServer extends Server {
 	 * @param clientIP
 	 *            IP of who wants the history sent to them
 	 */
-	private synchronized void sendHistoryToClient(String clientIP) {
-		String history = "";
-		for (int i = 0; i < chatHistory.size(); i++) {
-			ChatMessage message = chatHistory.get(i);
-			history = history + message + "\n";
 
+	/**
+	 * Sends the chat history to the client that send the network object
+	 * Size indicates how many of the most recent messages to claim
+	 * @param clientIP Who we should send the history to
+	 * @param size how many messages we should get from our history from the furthest back to the last message
+	 */
+	private synchronized void sendHistoryToClient(String clientIP, int size) {
+
+		// Make sure we don't get a size greater than the list
+		size = Math.min(chatHistory.size(),size);
+
+		// TODO Synchronize chatHistory with a lock
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = (chatHistory.size()-1) - size; i < chatHistory.size(); i++) {
+			history.add(chatHistory.get(i));
 		}
-		sendToClient(clientIP, new ChatMessage(history,true));
+
+		// Send a new ArrayList of the chat messages to the client
+		sendToClient(clientIP, new ChatHistory(history,true));
 	}
 
 	/**
@@ -210,8 +260,15 @@ public class GameServer extends Server {
 			// Check for failed client check
 			if (token.equals("history")) {
 
+				int size = chatHistory.size();
+
+				// size of history if we were supplied one
+				if( scan.hasNextInt() ){
+					size = scan.nextInt();
+				}
+
 				// Send history back to the client
-				sendHistoryToClient(data.getIPAddress());
+				sendHistoryToClient(data.getIPAddress(), size);
 
 				return false;
 			}
@@ -248,6 +305,7 @@ public class GameServer extends Server {
 			String commandList = "\nList of Possible Commands:\n"
 					+ "/ping -> Checks how fast your connection currently is\n"
 					+ "/get history -> Sends back the entire chat history\n"
+					+ "/get history 'number' -> Sends back the chat history up the the number of chats\n"
 					+ "/admins -> lists the IP's of the admins\n"
 					+ "/clear -> clears all messages off the screen\n"
 					+ "/name 'string' -> changes your name\n\n"
