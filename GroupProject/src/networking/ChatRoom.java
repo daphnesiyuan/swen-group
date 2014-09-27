@@ -6,12 +6,15 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Calendar;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultCaret;
 
 
 /**
@@ -19,13 +22,13 @@ import javax.swing.JTextField;
  * @author veugeljame
  *
  */
-public class ChatRoom implements ActionListener, ClientListener{
+public class ChatRoom implements ActionListener{
 
 	// The client of this run that is talking to the server
-	private Client client;
+	private ChatClient client;
 
 	// Server if this chat client wants to start their own public server for everyone to connect to
-	private Server server;
+	private ChatServer server;
 
 	private int port = 32768;
 
@@ -34,22 +37,41 @@ public class ChatRoom implements ActionListener, ClientListener{
 	private JTextField message;
 	private JButton send;
 
+	private String publicIP = "173.255.249.21";
 
 	private JTextField IPConnection;
 	private JLabel connectLabel;
 	private JButton connect;
 	private JButton startServer;
-	private JTextField name;
 
 
 	public ChatRoom(){
 
 		// Set up a basic client for this ChatRoom
 		// Tell this chat room to wait for input from the server that sends data to this client
-		client = new Client(this);
+		client = new ChatClient();
 
 		// Set up interface
 		setUpGui();
+
+		// Loop forever
+		while( true ){
+
+			// Update our text if anything has changed
+			if( client.isModified() ){
+				client.setModified(false);
+
+				chatHistory.setText(client.getChatHistory());
+				DefaultCaret caret = (DefaultCaret) chatHistory.getCaret();
+				caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+			}
+
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void setUpGui(){
@@ -59,15 +81,11 @@ public class ChatRoom implements ActionListener, ClientListener{
 		frame.setLayout(new FlowLayout());
 
 		JLabel yourIP = new JLabel("Your IP: " + client.getClientIPAddress() );
-		IPConnection = new JTextField(client.getClientIPAddress());
+		IPConnection = new JTextField(publicIP);
 		IPConnection.setPreferredSize(new Dimension(110,25));
 		IPConnection.addActionListener(this);
-		name = new JTextField( "" );
-		name.addActionListener(this);
 		try {
-			name.setText( InetAddress.getLocalHost().getHostName() );
-			client.setName(name.getText() );
-
+			client.setName( InetAddress.getLocalHost().getHostName() );
 		} catch (UnknownHostException e) {e.printStackTrace();}
 
 
@@ -88,8 +106,6 @@ public class ChatRoom implements ActionListener, ClientListener{
 		send.addActionListener(this);
 
 		frame.getContentPane().add(yourIP);
-		frame.getContentPane().add(new JLabel("Name: "));
-		frame.getContentPane().add(name);
 		frame.getContentPane().add(connectLabel);
 		frame.getContentPane().add(IPConnection);
 		frame.getContentPane().add(connect);
@@ -114,7 +130,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 		} catch (IOException e) {
 
 			// Could not send message to the server
-			chatHistory.append("Could not send message!\n");
+			client.appendWarningMessage("Could not send message!\n");
 			e.printStackTrace();
 			return false;
 		}
@@ -131,7 +147,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 		if( ae.getSource() == message || ae.getSource() == send ){
 
 			// Attempt to send a message to the server
-			if( sendMessageToServer(message.getText()) ){
+			if( !message.getText().equals("") && sendMessageToServer(message.getText()) ){
 				message.setText("");
 			}
 		}
@@ -145,7 +161,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 
 
 					// Start a new server
-					server = new Server();
+					server = new ChatServer();
 
 					// Attempt to connect to the server
 					if( connectToServer(server.getIPAddress(), port) ){
@@ -161,7 +177,7 @@ public class ChatRoom implements ActionListener, ClientListener{
 			else{
 
 				// Stop the server
-				server.stop();
+				server.stopServer();
 				server = null;
 
 				// Change button
@@ -178,11 +194,6 @@ public class ChatRoom implements ActionListener, ClientListener{
 			// Attempt to connect to the server
 			connectToServer(IPConnection.getText(), port);
 		}
-		else if( ae.getSource () == name ){
-
-			// Change the name of the client
-			client.setName(name.getText());
-		}
 	}
 
 	/**
@@ -193,40 +204,28 @@ public class ChatRoom implements ActionListener, ClientListener{
 	public boolean connectToServer(String ip, int port){
 
 		try {
-			if( client.connect(ip, port) ){
-				chatHistory.append("Connected to " + IPConnection.getText() + ":" + port + "\n");
+			if( client.connect(ip, client.getName(), port) ){
+				client.appendWarningMessage("Connected to " + IPConnection.getText() + ":" + port);
+
 				return true;
+			}
+			else{
+				client.appendWarningMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			}
 
 
 		} catch (UnknownHostException e) {
-			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
+			client.appendWarningMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			e.printStackTrace();
 
 		} catch (IOException e) {
-			chatHistory.append("Could not connect to " + IPConnection.getText() + ":" + port + "\n");
+			client.appendWarningMessage("Could not connect to " + IPConnection.getText() + ":" + port);
 			e.printStackTrace();
 		}
 
+
 		// Could not connect
 		return false;
-	}
-
-
-
-
-	@Override
-	public synchronized void retrieveObject(NetworkObject data) {
-
-		// We have received new data from the server
-		// Since data has a toString() method that draws the message as we want it on all monitors
-		// Just draw data
-		// If we want to get the chatMessage directly, we can use (String)data.getData()
-		chatHistory.append(data + "\n");
-
-		// Scroll to the bottom of the page
-		scroll.getVerticalScrollBar().setValue(scroll.getMaximumSize().height);
-
 	}
 
 	public static void main(String[] args){

@@ -8,3 +8,15 @@
 /Server$ServerTextListener.class
 /Server.class
 /Server$CommandParser.class
+/ChatClient.class
+/ChatServer$CommandParser.class
+/ChatServer$ServerTextListener.class
+/ChatServer.class
+/Server$2.class
+/ChatMessage.class
+/GameClient.class
+/GameServer.class
+/Move.class
+/NetworkData.class
+/GameServer$CommandParser.class
+/GameServer$ServerTextListener.class
