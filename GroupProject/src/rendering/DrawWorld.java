@@ -57,8 +57,8 @@ public class DrawWorld {
 	public void redraw(Graphics g, Room room, GameCharacter character, String direction){
 
 		//set offset based on character position.
-		//This doesn't really work very well because the tiles x 
-		//and y will not change with my rotate. Will fix later. 
+		//This doesn't really work very well because the tiles x
+		//and y will not change with my rotate. Will fix later.
 		if (character != null){
 			Point temp = twoDToIso(new Point(character.getCurrentTile().getXPos()*height, character.getCurrentTile().getYPos()*width));
 			offset.x = (panel.getWidth()/2)+ temp.x;  //will get rid of magic numbers
@@ -106,8 +106,8 @@ public class DrawWorld {
 			for (int j = 0; j < tiles[i].length; j++) {
 				int x = i * width;
 				int y = j * height;
-				String tileName = tiles[i][j].getClass().getName();
-				placeTile(twoDToIso(new Point(x,y)),tileName,g);
+				//String tileName = tiles[i][j].getClass().getName();
+				placeTile(twoDToIso(new Point(x,y)),tiles[i][j],g);
 			}
 		}
 	}
@@ -122,7 +122,6 @@ public class DrawWorld {
 	            newTiles[i][j] = tiles[width - j - 1][i];
 	        }
 	    }
-	    //rotated90 = !rotated90;
 	    return newTiles;
 	}
 
@@ -133,11 +132,11 @@ public class DrawWorld {
 	 * @param String tileName
 	 * @param Graphics g
 	 */
-	private void placeTile(Point pt, String tileName, Graphics g) {
+	private void placeTile(Point pt, Tile2D tile, Graphics g) {
+		String tileName = tile.getClass().getName();
 		java.net.URL imageURL = Rendering.class.getResource(tileName+".png");
 
 		BufferedImage img = null;
-		//Image img = null;
 		try {
 			img = ImageIO.read(imageURL);
 		} catch (IOException e) {
@@ -153,7 +152,16 @@ public class DrawWorld {
 		int imgHeight = ((int) img.getHeight(null)/20);
 
 		g.drawImage(img, offset.x+pt.x - width, offset.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
+		
+		drawItems(g, pt, tile);
 	}
+
+	private void drawItems(Graphics g, Point pt, Tile2D tile) {
+		Item tempItem = tile.getItem() 
+		while (tile.getItem() !=
+		
+	}
+
 
 	/**
 	 * converts the coordinates of a 2d array to isometric
@@ -187,16 +195,6 @@ public class DrawWorld {
 	}
 
 
-	/**
-	 * Only called from rotate2DArray(). Uses an algorithm to rotate the given
-	 * 2D array the given number of times.
-	 * @param Tile2D[][] tiles
-	 * @param String direction
-	 * @return Tile2d[][] tiles
-	 */
-	private Tile2D[][] rotateHelper(Tile2D[][] tiles, int numRotations) {
-		return null;
-	}
 
 
 }
