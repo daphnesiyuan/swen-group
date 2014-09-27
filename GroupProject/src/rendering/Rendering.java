@@ -34,9 +34,11 @@ public class Rendering extends JPanel implements KeyListener{
 	int height =width;
 	Point corner = new Point(350,100);
 
-	
+
+
 	public Rendering(Room room){
 		this.room = room;
+		//this.
 	}
 
 	protected void paintComponent(Graphics g) {

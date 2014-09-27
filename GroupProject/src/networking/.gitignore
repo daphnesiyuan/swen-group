@@ -18,3 +18,5 @@
 /GameServer.class
 /Move.class
 /NetworkData.class
+/GameServer$CommandParser.class
+/GameServer$ServerTextListener.class

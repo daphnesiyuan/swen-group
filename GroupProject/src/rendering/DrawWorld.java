@@ -9,10 +9,17 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+
 import gameLogic.entity.GameCharacter;
 import gameLogic.location.Room;
 import gameLogic.location.Tile2D;
 
+/**
+ * This class will draw the location and everything in it.
+ * It will also draw the inventory and compas.
+ * @author northleon
+ *
+ */
 public class DrawWorld {
 
 	GameCharacter character;
@@ -30,6 +37,13 @@ public class DrawWorld {
 	}
 
 
+	/**
+	 * This method will be call externally from the UI to draw everything gameplay related
+	 * @param Graphics g
+	 * @param Room room
+	 * @param GameCharacter character
+	 * @param String direction
+	 */
 	public void redraw(Graphics g, Room room, GameCharacter character, String direction){
 
 		g.setColor(Color.BLACK);
@@ -37,12 +51,17 @@ public class DrawWorld {
 		drawLocation(g, room, direction);
 //		drawInventory(g);
 //		drawCompas(g);
-
-
-
 	}
 
-	private void drawLocation(Graphics g, Room room, String direction2) {
+	/**
+	 * Gets tiles from the room provided. Rotates them to the direction
+	 * provided. Draws the tiles to the Graphics provided using the placeTile()
+	 * method.
+	 * @param Graphics g
+	 * @param Room room
+	 * @param String direction
+	 */
+	private void drawLocation(Graphics g, Room room, String direction) {
 		// TODO Auto-generated method stub
 		Tile2D[][] tiles = rotate2DArray(room.getTiles(), direction);
 
@@ -56,7 +75,13 @@ public class DrawWorld {
 		}
 	}
 
-
+	/**
+	 * Takes the name of the class and draws that image that is stored to the
+	 * graphics at the point provided
+	 * @param Point pt
+	 * @param String tileName
+	 * @param Graphics g
+	 */
 	private void placeTile(Point pt, String tileName, Graphics g) {
 		java.net.URL imageURL = Rendering.class.getResource(tileName+".png");
 
@@ -73,6 +98,11 @@ public class DrawWorld {
 	}
 
 
+	/**
+	 * converts the coordinates of a 2d array to isometric
+	 * @param Point point
+	 * @return Point tempPt
+	 */
 	private Point twoDToIso(Point point) {
 		  Point tempPt = new Point(0,0);
 		  tempPt.x = point.x - point.y;
@@ -81,8 +111,57 @@ public class DrawWorld {
 	}
 
 
+	/**
+	 * Takes a 2d array and will rotate it by 90 degree segments as dictated by the string direction.
+	 * The actual rotation is handled by rotateHelper(...).
+	 * North - tiles should not be rotated.
+	 * West - tiles will be rotated 90 degrees
+	 * South - tiles will be rotated 180 degrees
+	 * East - tiles will be rotated 270 degrees
+	 * @param Tile2D[][] tiles
+	 * @param String direction
+	 * @return Tile2d[][] tiles
+	 */
 	private Tile2D[][] rotate2DArray(Tile2D[][] tiles, String direction) {
+		Tile2D[][] newTiles = tiles.clone();
+
+		if (direction == null || direction.equalsIgnoreCase("north")){
+			return tiles;
+		}
+		else{
+			if (direction.equalsIgnoreCase("west")){
+				newTiles = rotateHelper(tiles, 1);
+			}
+			if (direction.equalsIgnoreCase("south")){
+				newTiles = rotateHelper(tiles, 2);
+			}
+			if (direction.equalsIgnoreCase("east")){
+				newTiles = rotateHelper(tiles, 3);
+			}
+		}
 		return tiles;
+	}
+
+
+	/**
+	 * Only called from rotate2DArray(). Uses an algorithm to rotate the given
+	 * 2D array the given number of times.
+	 * @param Tile2D[][] tiles
+	 * @param String direction
+	 * @return Tile2d[][] tiles
+	 */
+	private Tile2D[][] rotateHelper(Tile2D[][] tiles, int numRotations) {
+	    int w = tiles.length;
+	    int h = tiles[0].length;
+	    Tile2D[][] newTiles = new Tile2D[h][w]; // new array to return
+		for (int k = 0; k < numRotations; k++) { // for the number of rotations
+			for (int i = 0; i < h; ++i) { // iterate over the array
+				for (int j = 0; j < w; ++j) { // iterate over the array
+					newTiles[i][j] = tiles[w - j - 1][i]; //Formulea for the rotation.
+				}
+			}
+	    }
+	    return newTiles;
 	}
 
 
