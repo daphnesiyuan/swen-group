@@ -4,11 +4,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
 
 import gameLogic.entity.GameCharacter;
 import gameLogic.location.Room;
@@ -22,18 +26,23 @@ import gameLogic.location.Tile2D;
  */
 public class DrawWorld {
 
-	GameCharacter character;
-	String direction;
-	Tile2D[][] rotatedArray;
+	GameCharacter character; // the main player
+
 	int scale = 40;
 	int width = 1 * scale;
 	int height = width;
 	Point offset = new Point(350,100);
 	JPanel panel;
+	boolean rotated90; // used as a cheap way to show room rotation by flipping the images horizontally.
+	Map<Integer, String> directionMap = new HashMap<Integer, String>();
 
 	public DrawWorld(GameCharacter character, Rendering rendering){
 		this.character = character;
 		this.panel = rendering;
+		directionMap.put(0, "north");
+		directionMap.put(1, "west");
+		directionMap.put(2, "south");
+		directionMap.put(3, "east");
 	}
 
 
@@ -45,7 +54,8 @@ public class DrawWorld {
 	 * @param String direction
 	 */
 	public void redraw(Graphics g, Room room, GameCharacter character, String direction){
-
+		System.out.println("redraw");
+		System.out.println(direction);
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
 		drawLocation(g, room, direction);
@@ -91,12 +101,17 @@ public class DrawWorld {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		if (rotated90){
+			// Flip the image horizontally
+			AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+			tx.translate(-img.getWidth(null), 0);
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+			img = op.filter((BufferedImage) img, null);
+		}
 		int imgHeight = ((int) img.getHeight(null)/20);
 
 		g.drawImage(img, offset.x+pt.x - width, offset.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
-
 	}
-
 
 	/**
 	 * converts the coordinates of a 2d array to isometric
@@ -126,20 +141,26 @@ public class DrawWorld {
 		Tile2D[][] newTiles = tiles.clone();
 
 		if (direction == null || direction.equalsIgnoreCase("north")){
-			return tiles;
+			return newTiles;
 		}
-		else{
-			if (direction.equalsIgnoreCase("west")){
-				newTiles = rotateHelper(tiles, 1);
-			}
-			if (direction.equalsIgnoreCase("south")){
-				newTiles = rotateHelper(tiles, 2);
-			}
-			if (direction.equalsIgnoreCase("east")){
-				newTiles = rotateHelper(tiles, 3);
-			}
-		}
-		return tiles;
+//		else{
+//			if (direction.equalsIgnoreCase("west")){
+//				newTiles = rotateHelper(tiles, 1);
+//				System.out.println("west");
+//			}
+//			if (direction.equalsIgnoreCase("south")){
+//				newTiles = rotateHelper(tiles, 2);
+//				System.out.println("south");
+//			}
+//			if (direction.equalsIgnoreCase("east")){
+//				newTiles = rotateHelper(tiles, 3);
+//				System.out.println("east");
+//			}
+//		}
+		
+		
+		
+		return newTiles;
 	}
 
 
@@ -158,8 +179,10 @@ public class DrawWorld {
 			for (int i = 0; i < h; ++i) { // iterate over the array
 				for (int j = 0; j < w; ++j) { // iterate over the array
 					newTiles[i][j] = tiles[w - j - 1][i]; //Formulea for the rotation.
+					System.out.println(i+" "+j+" "+(w - j - 1)+" "+i);
 				}
 			}
+			rotated90 = !rotated90; //
 	    }
 	    return newTiles;
 	}

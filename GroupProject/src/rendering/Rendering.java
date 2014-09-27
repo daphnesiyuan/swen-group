@@ -1,11 +1,10 @@
 package rendering;
 
 import gameLogic.gameState.NewGame;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
 import gameLogic.location.*;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -17,6 +16,8 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -33,12 +34,20 @@ public class Rendering extends JPanel implements KeyListener{
 	int width = 1 * scale;
 	int height =width;
 	Point corner = new Point(350,100);
-
+	Map<Integer, String> directionMap = new HashMap<Integer, String>();
+	int direction;
+	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
+	DrawWorld draw;
 
 
 	public Rendering(Room room){
 		this.room = room;
-		//this.
+		direction = 0;
+		draw = new DrawWorld(null, this);
+		directionMap.put(0, "north");
+		directionMap.put(1, "west");
+		directionMap.put(2, "south");
+		directionMap.put(3, "east");
 	}
 
 	protected void paintComponent(Graphics g) {
@@ -47,8 +56,8 @@ public class Rendering extends JPanel implements KeyListener{
 //		drawLocation(g);
 //		drawInventory(g);
 //		drawCompas(g);
-		DrawWorld draw = new DrawWorld(null, this);
-		draw.redraw(g, room, null, null);
+
+		draw.redraw(g, room, null, directionMap.get(direction));
 	}
 
 	private void drawLocation(Graphics g) {
@@ -107,7 +116,21 @@ public class Rendering extends JPanel implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+
+		if (!keysDown.contains(e.getKeyCode()))
+			keysDown.add(new Integer(e.getKeyCode()));
+		actionKeys();
+		//System.out.println("bla");
+	}
+
+	private void actionKeys() {
+		if (keysDown.contains(KeyEvent.VK_SPACE)){
+			direction = (direction + 1) % 4;
+
+		}
+		keysDown.clear();
+		System.out.println(direction);
+		repaint();
 	}
 
 	@Override
