@@ -40,7 +40,21 @@ public class StartMenu {
 	}
 
 	public void drawButton(Graphics g, int i, Image b){
-		g.drawImage(b, panel.getWidth()/2 - (buttonWidth/2), panel.getHeight()/3 + i*(panel.getHeight()/3) , null);
+
+		i--;
+
+		if(i==-1){ //add a spacer vertically if it is the first button
+			g.drawImage(b, panel.getWidth()/2 - (buttonWidth/2),
+					panel.getHeight()/3 - buttonHeight/2 + (i*(panel.getHeight()/3)/2) , null);
+			System.out.println("button 1");
+		}
+
+		else{
+			//g.drawImage(b, panel.getWidth()/2 - (buttonWidth/2), panel.getHeight()/3 + i*(panel.getHeight()/3) , null);
+			g.drawImage(b, panel.getWidth()/2 - (buttonWidth/2),
+					panel.getHeight()/3 - buttonHeight/2 + (i*(panel.getHeight()/3)/2) , null);
+			System.out.println("button 2/3");
+		}
 	}
 
 
@@ -57,20 +71,25 @@ public class StartMenu {
 		System.out.println("images being loaded from StartMenu");
 
 		java.net.URL startURL = WindowFrame.class.getResource("startMenuImages/start.png");
+		java.net.URL joinURL = WindowFrame.class.getResource("startMenuImages/join.png");
 		java.net.URL loadURL = WindowFrame.class.getResource("startMenuImages/load.png");
 		java.net.URL helpURL = WindowFrame.class.getResource("startMenuImages/help.png");
 
+
 		Image start = null;
+		Image join = null;
 		Image load = null;
 		Image help = null;
 
 		try {
 			start = ImageIO.read(startURL);
+			join = ImageIO.read(joinURL);
 			load = ImageIO.read(loadURL);
 			help = ImageIO.read(helpURL);
 			} catch (IOException e) { e.printStackTrace(); }
 
 		buttons.add(start);
+		buttons.add(join);
 		buttons.add(load);
 		buttons.add(help);
 
