@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ConnectException;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -31,7 +32,7 @@ public abstract class Client implements Runnable{
 	public Client(){
 
 		try {
-			IPAddress = InetAddress.getLocalHost().getHostAddress();
+			IPAddress = Inet6Address.getLocalHost().getHostAddress();
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

@@ -14,8 +14,7 @@ public class Move extends NetworkData {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return interaction;
 	}
 
 }
