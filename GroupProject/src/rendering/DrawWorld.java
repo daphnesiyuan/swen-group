@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import GUI.DrawingPanel;
 import gameLogic.entity.GameCharacter;
 import gameLogic.location.Room;
 import gameLogic.location.Tile2D;
@@ -36,7 +37,7 @@ public class DrawWorld {
 	boolean rotated90; // used as a cheap way to show room rotation by flipping the images horizontally.
 	Map<Integer, String> directionMap = new HashMap<Integer, String>();
 
-	public DrawWorld(GameCharacter character, Rendering rendering){
+	public DrawWorld(GameCharacter character, DrawingPanel rendering){
 		this.character = character;
 		this.panel = rendering;
 		directionMap.put(0, "north");
@@ -157,9 +158,9 @@ public class DrawWorld {
 //				System.out.println("east");
 //			}
 //		}
-		
-		
-		
+
+
+
 		return newTiles;
 	}
 

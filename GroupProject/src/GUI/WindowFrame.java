@@ -2,14 +2,10 @@ package GUI;
 
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
-
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,9 +14,12 @@ import javax.swing.JPanel;
 
 public class WindowFrame extends JFrame {
 
-	private Canvas leonsThing;
+	private JPanel mainPanel;
 	private TopMenu topMenu;
 	private JPanel startPanel;
+	private Graphics2D graphics; //for leon later?
+	//private Rendering render=new Rendering(); //Leon's object
+	//private Direction: n s e w
 
 	//buttons
 	JButton startButton;
@@ -32,9 +31,11 @@ public class WindowFrame extends JFrame {
 
 	public WindowFrame() {
 		super("Game title");
-
 		JFrameSetUp();
 		JPanelStuff();
+
+		mainPanel = new JPanel();
+		//add the graphics to the panel
 		buttons();
 	}
 
@@ -48,6 +49,10 @@ public class WindowFrame extends JFrame {
 		setResizable(true); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
 
+	}
+
+	public void refreshGraphics(){
+		//render.redraw(graphics, room, character, direction); //TO BE FILLED LATER: we get room and char from client: jimmy
 	}
 
 	public void JPanelStuff() {
@@ -66,11 +71,9 @@ public class WindowFrame extends JFrame {
 		loadButton = new JButton(load);
 		helpButton = new JButton(help);
 
-		//setButton(startButton);
-		setButton(loadButton);
+		setButton(startButton);
 
-		//startButton.setRolloverEnabled(true);
-		//startButton.setRolloverIcon(new RolloverIcon(start));
+
 	}
 
 	public void setButton(JButton button){
@@ -101,6 +104,8 @@ public class WindowFrame extends JFrame {
 
 				System.out.println("Pressed start button");
 			}
+
+
 
 		}
 	}
