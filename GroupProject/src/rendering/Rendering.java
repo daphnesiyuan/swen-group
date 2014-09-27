@@ -1,5 +1,7 @@
 package rendering;
 
+import gameLogic.entity.GameCharacter;
+import gameLogic.gameState.Game;
 import gameLogic.gameState.NewGame;
 import gameLogic.location.*;
 
@@ -30,14 +32,16 @@ public class Rendering extends JPanel implements KeyListener{
 
 	//testing code with game logic
 	Room room;
-	int scale = 40;
+	int scale = 50;
 	int width = 1 * scale;
 	int height =width;
-	Point corner = new Point(350,100);
+	Point corner = new Point(600,300);
 	Map<Integer, String> directionMap = new HashMap<Integer, String>();
 	int direction;
 	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
 	DrawWorld draw;
+	Tile2D tile = new Floor(1,1,"f", false);
+
 
 
 	public Rendering(Room room){
@@ -48,6 +52,7 @@ public class Rendering extends JPanel implements KeyListener{
 		directionMap.put(1, "west");
 		directionMap.put(2, "south");
 		directionMap.put(3, "east");
+
 	}
 
 	protected void paintComponent(Graphics g) {
@@ -57,7 +62,12 @@ public class Rendering extends JPanel implements KeyListener{
 //		drawInventory(g);
 //		drawCompas(g);
 
-		draw.redraw(g, room, null, directionMap.get(direction));
+
+
+		GameCharacter charac = new GameCharacter("willy", tile, null);
+		draw.redraw(g, room, charac, directionMap.get(direction));
+
+
 	}
 
 	private void drawLocation(Graphics g) {
@@ -121,16 +131,16 @@ public class Rendering extends JPanel implements KeyListener{
 			keysDown.add(new Integer(e.getKeyCode()));
 		actionKeys();
 		//System.out.println("bla");
+		repaint();
 	}
 
 	private void actionKeys() {
 		if (keysDown.contains(KeyEvent.VK_SPACE)){
 			direction = (direction + 1) % 4;
-
 		}
 		keysDown.clear();
-		System.out.println(direction);
-		repaint();
+		//System.out.println(direction);
+
 	}
 
 	@Override

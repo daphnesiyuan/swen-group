@@ -85,11 +85,6 @@ public class WindowFrame extends JFrame {
 
 	}
 
-
-
-
-
-
 	/*
 	 * Private inner class to handle action listeners - dealing with buttons
 	 */

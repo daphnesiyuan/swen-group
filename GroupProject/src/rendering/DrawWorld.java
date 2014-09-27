@@ -1,6 +1,7 @@
 package rendering;
 
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -28,21 +29,21 @@ public class DrawWorld {
 
 	GameCharacter character; // the main player
 
-	int scale = 40;
-	int width = 1 * scale;
-	int height = width;
-	Point offset = new Point(350,100);
+	double scale;
+	int width;
+	int height;
+	Point offset = new Point(600,150);
 	JPanel panel;
-	boolean rotated90; // used as a cheap way to show room rotation by flipping the images horizontally.
-	Map<Integer, String> directionMap = new HashMap<Integer, String>();
+	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
+	Map<String, Integer> directionMap = new HashMap<String, Integer>();
 
 	public DrawWorld(GameCharacter character, Rendering rendering){
 		this.character = character;
 		this.panel = rendering;
-		directionMap.put(0, "north");
-		directionMap.put(1, "west");
-		directionMap.put(2, "south");
-		directionMap.put(3, "east");
+		directionMap.put("north", 0);
+		directionMap.put("west", 1);
+		directionMap.put("south", 2);
+		directionMap.put("east", 3);
 	}
 
 
@@ -54,8 +55,21 @@ public class DrawWorld {
 	 * @param String direction
 	 */
 	public void redraw(Graphics g, Room room, GameCharacter character, String direction){
-		System.out.println("redraw");
-		System.out.println(direction);
+
+		//set offset based on character position.
+		//This doesn't really work very well because the tiles x 
+		//and y will not change with my rotate. Will fix later. 
+		if (character != null){
+			Point temp = twoDToIso(new Point(character.getCurrentTile().getXPos()*height, character.getCurrentTile().getYPos()*width));
+			offset.x = (panel.getWidth()/2)+ temp.x;  //will get rid of magic numbers
+			offset.y = (panel.getHeight()/4) + temp.y;
+		}
+
+		//set scaling based on frame size
+		scale = 50 * (panel.getWidth()/1280.0);
+		width =(int) (1 * scale);
+		height = width;
+
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
 		drawLocation(g, room, direction);
@@ -73,7 +87,20 @@ public class DrawWorld {
 	 */
 	private void drawLocation(Graphics g, Room room, String direction) {
 		// TODO Auto-generated method stub
-		Tile2D[][] tiles = rotate2DArray(room.getTiles(), direction);
+		Tile2D[][] tiles = room.getTiles().clone();
+
+		//rotate the game the correct number of tiles
+		for (int i = 0; i < directionMap.get(direction); i++){
+			tiles = rotate90(tiles);
+		}
+
+		//Temporary code here, this sets the rotated90 boolean which is used to flip images
+		if(directionMap.get(direction) == 1 ||directionMap.get(direction) == 3){
+			rotated90 = true;
+		}
+		else{
+			rotated90 = false;
+		}
 
 		for(int i = 0; i < tiles.length; i++){
 			for (int j = 0; j < tiles[i].length; j++) {
@@ -83,6 +110,20 @@ public class DrawWorld {
 				placeTile(twoDToIso(new Point(x,y)),tileName,g);
 			}
 		}
+	}
+
+	private Tile2D[][] rotate90(Tile2D[][] tiles) {
+		// TODO Auto-generated method stub
+	    int width = tiles.length;
+	    int height = tiles[0].length;
+	    Tile2D[][] newTiles = new Tile2D[height][width];
+	    for (int i = 0; i < height; ++i) {
+	        for (int j = 0; j < width; ++j) {
+	            newTiles[i][j] = tiles[width - j - 1][i];
+	        }
+	    }
+	    //rotated90 = !rotated90;
+	    return newTiles;
 	}
 
 	/**
@@ -95,7 +136,8 @@ public class DrawWorld {
 	private void placeTile(Point pt, String tileName, Graphics g) {
 		java.net.URL imageURL = Rendering.class.getResource(tileName+".png");
 
-		Image img = null;
+		BufferedImage img = null;
+		//Image img = null;
 		try {
 			img = ImageIO.read(imageURL);
 		} catch (IOException e) {
@@ -138,28 +180,9 @@ public class DrawWorld {
 	 * @return Tile2d[][] tiles
 	 */
 	private Tile2D[][] rotate2DArray(Tile2D[][] tiles, String direction) {
+		int rotations = directionMap.get(direction);
 		Tile2D[][] newTiles = tiles.clone();
-
-		if (direction == null || direction.equalsIgnoreCase("north")){
-			return newTiles;
-		}
-//		else{
-//			if (direction.equalsIgnoreCase("west")){
-//				newTiles = rotateHelper(tiles, 1);
-//				System.out.println("west");
-//			}
-//			if (direction.equalsIgnoreCase("south")){
-//				newTiles = rotateHelper(tiles, 2);
-//				System.out.println("south");
-//			}
-//			if (direction.equalsIgnoreCase("east")){
-//				newTiles = rotateHelper(tiles, 3);
-//				System.out.println("east");
-//			}
-//		}
-		
-		
-		
+		rotated90 = !rotated90;
 		return newTiles;
 	}
 
@@ -172,19 +195,7 @@ public class DrawWorld {
 	 * @return Tile2d[][] tiles
 	 */
 	private Tile2D[][] rotateHelper(Tile2D[][] tiles, int numRotations) {
-	    int w = tiles.length;
-	    int h = tiles[0].length;
-	    Tile2D[][] newTiles = new Tile2D[h][w]; // new array to return
-		for (int k = 0; k < numRotations; k++) { // for the number of rotations
-			for (int i = 0; i < h; ++i) { // iterate over the array
-				for (int j = 0; j < w; ++j) { // iterate over the array
-					newTiles[i][j] = tiles[w - j - 1][i]; //Formulea for the rotation.
-					System.out.println(i+" "+j+" "+(w - j - 1)+" "+i);
-				}
-			}
-			rotated90 = !rotated90; //
-	    }
-	    return newTiles;
+		return null;
 	}
 
 
