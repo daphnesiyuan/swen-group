@@ -1,6 +1,7 @@
 package networking;
 
 import gameLogic.gameState.Game;
+import gameLogic.location.Room;
 
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -38,9 +39,6 @@ public class GameServer extends Server {
 		Thread refreshThread = new Thread(){
 			@Override
 			public void run(){
-
-
-
 				try {
 					Thread.sleep(30);
 				} catch (InterruptedException e) {
@@ -49,6 +47,22 @@ public class GameServer extends Server {
 			}
 		};
 		refreshThread.start();
+	}
+
+	/**
+	 * Updates all clients with a new room according to the state of the game logic
+	 */
+	private void updateAllClients(){
+
+		for (int i = 0; i < clients.size(); i++) {
+
+			// Get each of our clients, and the room they are in
+			ClientThread client = clients.get(i);
+			Room room = gameServer.getRoom(client.player.getName());
+
+			// Send the new room to the player
+			client.sendData(new RoomUpdate(room));
+		}
 	}
 
 	@Override

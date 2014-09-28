@@ -21,7 +21,7 @@ import java.util.HashMap;
  */
 public abstract class Server implements Runnable{
 
-	private ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
+	protected ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 	private ArrayList<String> admins = new ArrayList<String>(); // List of admin
 																// IP Addresses
 
@@ -533,7 +533,6 @@ public abstract class Server implements Runnable{
 
 		return adminList;
 	}
-
 
 	public abstract void retrieveObject(NetworkObject data);
 	public abstract void newClientConnection(ClientThread cl);

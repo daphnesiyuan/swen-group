@@ -70,18 +70,23 @@ public class ChatServer extends Server {
 
 	/**
 	 * Sends the chat history to the client that send the network object
-	 *
-	 * @param clientIP
-	 *            IP of who wants the history sent to them
+	 * Size indicates how many of the most recent messages to claim
+	 * @param clientIP Who we should send the history to
+	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
-	private synchronized void sendHistoryToClient(String clientIP) {
-		String history = "";
-		for (int i = 0; i < chatHistory.size(); i++) {
-			ChatMessage message = chatHistory.get(i);
-			history = history + message + "\n";
+	private synchronized void sendHistoryToClient(String clientIP, int size) {
 
+		// Make sure we don't get a size greater than the list
+		size = Math.min(chatHistory.size(),size);
+
+		// TODO Synchronise chatHistory with a lock
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = (chatHistory.size()-1) - size; i < chatHistory.size(); i++) {
+			history.add(chatHistory.get(i));
 		}
-		sendToClient(clientIP, new ChatMessage(history,chatMessageColor, true));
+
+		// Send a new ArrayList of the chat messages to the client
+		sendToClient(clientIP, new ChatHistory(history,true));
 	}
 
 	/**
@@ -212,13 +217,28 @@ public class ChatServer extends Server {
 			// Check for failed client check
 			if (token.equals("history")) {
 
-				// Send history back to the client
-				sendHistoryToClient(data.getIPAddress());
-
-				return false;
+				return parseHistory(scan,data);
 			}
 
 			return true;
+		}
+
+		private boolean parseHistory(Scanner scan, NetworkObject data){
+			int size = chatHistory.size();
+
+			// size of history if we were supplied one
+			if( scan.hasNextInt() ){
+				size = scan.nextInt();
+			}
+
+			// Never go out of bounds
+			size = Math.min(chatHistory.size(),size);
+
+
+			// Send history back to the client
+			sendHistoryToClient(data.getIPAddress(), size);
+
+			return false;
 		}
 
 		private boolean parsePing(Scanner scan, NetworkObject data) {

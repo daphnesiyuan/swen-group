@@ -148,6 +148,31 @@ public class GameClient extends Client {
 					sendChatMessageToServer("/ping all");
 				} catch (IOException e) {}
 			}
+			else if( scan.hasNext("/chatcolor") ){
+				scan.next();
+
+				int r,g,b;
+
+				if( !scan.hasNextInt() ){
+					return;
+				}
+
+				r = scan.nextInt();
+
+				if( !scan.hasNextInt() ){
+					return;
+				}
+
+				g = scan.nextInt();
+
+				if( !scan.hasNextInt() ){
+					return;
+				}
+
+				b = scan.nextInt();
+
+				chatMessageColor = new Color(r,g,b);
+			}
 		}
 
 		// Check if we have just gotten an acknowledgement

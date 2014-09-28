@@ -3,6 +3,7 @@ package networking;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -18,7 +19,7 @@ public class ChatClient extends Client {
 
 	private Object modifiedLock = new Object();
 	private boolean modified = false;
-	private final Color chatMessageColor = Color.black;
+	private Color chatMessageColor = new Color(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255));
 
 
 	/**
@@ -83,6 +84,31 @@ public class ChatClient extends Client {
 					this.clientName = scan.next();
 				}
 			}
+			else if( scan.hasNext("/chatcolor") ){
+				scan.next();
+
+				int r,g,b;
+
+				if( !scan.hasNextInt() ){
+					return;
+				}
+
+				r = scan.nextInt();
+
+				if( !scan.hasNextInt() ){
+					return;
+				}
+
+				g = scan.nextInt();
+
+				if( !scan.hasNextInt() ){
+					return;
+				}
+
+				b = scan.nextInt();
+
+				chatMessageColor = new Color(r,g,b);
+			}
 		}
 
 		// Check if we have just gotten an acknowledgement
@@ -104,17 +130,38 @@ public class ChatClient extends Client {
 	}
 
 	/**
-	 * Gets the chat history that has been sent to this client
-	 * @return String containing chat history
+	 * Returns a new arrayList containing all the chatMessages up to "size" back
+	 * Size indicates how many of the most recent messages to claim
+	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
-	public String getChatHistory(){
-		String history = "";
-		for (int i = 0; i < chatHistory.size(); i++) {
-			ChatMessage message = chatHistory.get(i);
-			history = history + message + "\n";
+	public ArrayList<ChatMessage> getChatHistory(int size) {
 
+		// Make sure we don't get a size greater than the list
+		size = Math.min(chatHistory.size(),size);
+
+		// TODO Synchronise chatHistory with a lock
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = (chatHistory.size()-1) - size; i < chatHistory.size(); i++) {
+			history.add(chatHistory.get(i));
 		}
 
+		// Send a new ArrayList of the chat messages to the client
+		return history;
+	}
+
+	/**
+	 * Returns a new arrayList containing all the chatMessages up to "size" back
+	 * @param size how many messages we should get from our history from the furthest back to the last message
+	 */
+	public ArrayList<ChatMessage> getChatHistory() {
+
+		// TODO Synchronise chatHistory with a lock
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = 0; i < chatHistory.size(); i++) {
+			history.add(chatHistory.get(i));
+		}
+
+		// Send a new ArrayList of the chat messages to the client
 		return history;
 	}
 
