@@ -178,11 +178,10 @@ public class GameClient extends Client {
 		//TODO Perform an action on the current room
 		synchronized(roomLock){
 			clientRoom = room.updatedRoom;
-		}
-		//room.
 
-		// Record when we last updated
-		//setModified(true);
+			// Record when we last updated
+			setModified(true);
+		}
 	}
 
 	/**

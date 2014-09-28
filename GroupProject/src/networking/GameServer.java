@@ -32,8 +32,23 @@ public class GameServer extends Server {
 		gameServer = new Game();
 
 		// Server listens for input directly to servers terminal Thread
-		//Thread serverTextBox = new Thread(new ServerTextListener());
-		//serverTextBox.start();
+		Thread serverTextBox = new Thread(new ServerTextListener());
+		serverTextBox.start();
+
+		Thread refreshThread = new Thread(){
+			@Override
+			public void run(){
+
+
+
+				try {
+					Thread.sleep(30);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		refreshThread.start();
 	}
 
 	@Override
@@ -91,7 +106,7 @@ public class GameServer extends Server {
 	public void processMove(Move move, NetworkObject data){
 
 		synchronized(serverLock){
-			gameServer.moveCharacterTo(move);
+			gameServer.moveCharacter(move);
 		}
 	}
 
@@ -129,7 +144,7 @@ public class GameServer extends Server {
 		// Make sure we don't get a size greater than the list
 		size = Math.min(chatHistory.size(),size);
 
-		// TODO Synchronize chatHistory with a lock
+		// TODO Synchronise chatHistory with a lock
 		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
 		for (int i = (chatHistory.size()-1) - size; i < chatHistory.size(); i++) {
 			history.add(chatHistory.get(i));
