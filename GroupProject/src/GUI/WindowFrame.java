@@ -2,14 +2,16 @@ package GUI;
 
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-
-
-
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,29 +20,20 @@ import javax.swing.JPanel;
 
 public class WindowFrame extends JFrame {
 
-	private Canvas leonsThing;
 	private TopMenu topMenu;
-	private JPanel startPanel;
-
-	//buttons
-	JButton startButton;
-	JButton loadButton;
-	JButton helpButton;
-
-	//action handler
-	private Handler handler;
+	private DrawingPanel panel;
+	private Graphics2D graphics; //for leon later?
+	//private Rendering render=new Rendering(); //Leon's object
+	//private Direction: n s e w
 
 	public WindowFrame() {
 		super("Game title");
-
 		JFrameSetUp();
 		JPanelStuff();
-		buttons();
 	}
 
 	public void JFrameSetUp() {
 		topMenu = new TopMenu(this);
-		handler = new Handler();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setSize(1000, 700);
@@ -50,21 +43,19 @@ public class WindowFrame extends JFrame {
 
 	}
 
+/*	public void refreshGraphics(){
+		//render.redraw(graphics, room, character, direction); //TO BE FILLED LATER: we get room and char from client: jimmy
+	}*/
+
 	public void JPanelStuff() {
-		startPanel = new JPanel( new BorderLayout() );
-		startPanel.setBackground(Color.WHITE);
+		System.out.println("In JPanel setups");
 
-		this.getContentPane().add(startPanel);
-	}
+		panel = new DrawingPanel(this);
 
-	public void buttons(){
-		ImageIcon start = new ImageIcon(WindowFrame.class.getResource("startMenuImages/start.png"));
-		ImageIcon load = new ImageIcon(WindowFrame.class.getResource("startMenuImages/load.png"));
-		ImageIcon help = new ImageIcon(WindowFrame.class.getResource("startMenuImages/help.png"));
+		add(panel, BorderLayout.CENTER); // add canvas
 
-		startButton = new JButton(start);
-		loadButton = new JButton(load);
-		helpButton = new JButton(help);
+		setVisible(true); // make sure we are visible!
+
 
 		setButton(startButton);
 		setButton(loadButton);
@@ -98,6 +89,7 @@ public class WindowFrame extends JFrame {
 			}
 
 		}
+		//panel.repaint(); //repaint susses the graphics object
 	}
 
 

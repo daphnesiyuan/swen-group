@@ -40,6 +40,7 @@ public class Rendering extends JPanel implements KeyListener{
 	int direction;
 	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
 	DrawWorld draw;
+
 	Tile2D tile = new Floor(1,1,"f", false);
 
 

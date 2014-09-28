@@ -15,9 +15,11 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import GUI.DrawingPanel;
 import gameLogic.entity.GameCharacter;
 import gameLogic.location.Room;
 import gameLogic.location.Tile2D;
+import gameLogic.physical.Item;
 
 /**
  * This class will draw the location and everything in it.
@@ -38,6 +40,16 @@ public class DrawWorld {
 	Map<String, Integer> directionMap = new HashMap<String, Integer>();
 
 	public DrawWorld(GameCharacter character, Rendering rendering){
+		this.character = character;
+		this.panel = rendering;
+		directionMap.put("north", 0);
+		directionMap.put("west", 1);
+		directionMap.put("south", 2);
+		directionMap.put("east", 3);
+	}
+
+	//This constructor is only for testing
+	public DrawWorld(GameCharacter character, DrawingPanel rendering){
 		this.character = character;
 		this.panel = rendering;
 		directionMap.put("north", 0);
@@ -152,14 +164,14 @@ public class DrawWorld {
 		int imgHeight = ((int) img.getHeight(null)/20);
 
 		g.drawImage(img, offset.x+pt.x - width, offset.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
-		
+
 		drawItems(g, pt, tile);
 	}
 
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
-		Item tempItem = tile.getItem() 
-		while (tile.getItem() !=
-		
+		//Item tempItem = tile.getItem() ;
+		//while (tile.getItem() !=
+
 	}
 
 
@@ -190,7 +202,27 @@ public class DrawWorld {
 	private Tile2D[][] rotate2DArray(Tile2D[][] tiles, String direction) {
 		int rotations = directionMap.get(direction);
 		Tile2D[][] newTiles = tiles.clone();
-		rotated90 = !rotated90;
+
+
+		if (direction == null || direction.equalsIgnoreCase("north")){
+			return newTiles;
+		}
+//		else{
+//			if (direction.equalsIgnoreCase("west")){
+//				newTiles = rotateHelper(tiles, 1);
+//				System.out.println("west");
+//			}
+//			if (direction.equalsIgnoreCase("south")){
+//				newTiles = rotateHelper(tiles, 2);
+//				System.out.println("south");
+//			}
+//			if (direction.equalsIgnoreCase("east")){
+//				newTiles = rotateHelper(tiles, 3);
+//				System.out.println("east");
+//			}
+//		}
+
+
 		return newTiles;
 	}
 

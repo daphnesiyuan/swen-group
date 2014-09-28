@@ -47,7 +47,7 @@ public class GameClient extends Client {
 		// Tell the server to update this clients name as well!
 		try {
 			// Try and change it on the servers
-			sendChatMessage("/name " + name);
+			sendChatMessageToServer(new ChatMessage(this.clientName, "/name " + name));
 			this.clientName = name;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,23 +66,20 @@ public class GameClient extends Client {
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
 	 */
-	public boolean sendPerformedAction(String action) throws IOException{
-
-		// Create a new chatMessage
-		Move chat = new Move(action);
+	public boolean sendMoveToServer(Move move) throws IOException{
 
 		// Send data to the server
-		return super.sendData(chat);
+		return super.sendData(move);
 	}
 
 	/**
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
 	 */
-	public boolean sendChatMessage(String message) throws IOException{
+	public boolean sendChatMessageToServer(ChatMessage chat) throws IOException{
 
 		// Create a new chatMessage
-		ChatMessage chat = new ChatMessage(clientName, message);
+		//ChatMessage chat = new ChatMessage(clientName, message);
 
 		// Client side commands
 		if( chat.message.equals("/clear") ){
