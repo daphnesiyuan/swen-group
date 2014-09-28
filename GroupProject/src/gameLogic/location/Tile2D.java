@@ -40,6 +40,38 @@ public class Tile2D {
 		});
 	}
 
+
+	public Tile2D getTileLeft(){
+		Tile2D newTile = null;
+		newTile = room.tiles[xPos-1][yPos];
+		if(newTile==null) return this;
+		else return newTile;
+	}
+
+	public Tile2D getTileRight(){
+		Tile2D newTile = null;
+		newTile = room.tiles[xPos+1][yPos];
+		if(newTile==null) return this;
+		else return newTile;
+	}
+
+	public Tile2D getTileUp(){
+		Tile2D newTile = null;
+		newTile = room.tiles[xPos][yPos-1];
+		if(newTile==null) return this;
+		else return newTile;
+	}
+
+	public Tile2D getTileDown(){
+		Tile2D newTile = null;
+		newTile = room.tiles[xPos][yPos+1];
+		if(newTile==null) return this;
+		else return newTile;
+	}
+
+
+
+
 	public Item getItem(){
 		return itemsOnTile.get(0);
 	}
@@ -71,7 +103,5 @@ public class Tile2D {
 
 	}
 
-
-	//TODO HASHCODE AND EQUALS
 
 }

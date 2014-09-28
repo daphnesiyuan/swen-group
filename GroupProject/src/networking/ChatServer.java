@@ -1,5 +1,6 @@
 package networking;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +14,7 @@ import java.util.Scanner;
  */
 public class ChatServer extends Server {
 
+	private Color chatMessageColor = Color.black;
 	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
 	public ChatServer() {
@@ -68,18 +70,23 @@ public class ChatServer extends Server {
 
 	/**
 	 * Sends the chat history to the client that send the network object
-	 *
-	 * @param clientIP
-	 *            IP of who wants the history sent to them
+	 * Size indicates how many of the most recent messages to claim
+	 * @param clientIP Who we should send the history to
+	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
-	private synchronized void sendHistoryToClient(String clientIP) {
-		String history = "";
-		for (int i = 0; i < chatHistory.size(); i++) {
-			ChatMessage message = chatHistory.get(i);
-			history = history + message + "\n";
+	private synchronized void sendHistoryToClient(String clientIP, int size) {
 
+		// Make sure we don't get a size greater than the list
+		size = Math.min(chatHistory.size(),size);
+
+		// TODO Synchronise chatHistory with a lock
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = (chatHistory.size()-1) - size; i < chatHistory.size(); i++) {
+			history.add(chatHistory.get(i));
 		}
-		sendToClient(clientIP, new ChatMessage(history,true));
+
+		// Send a new ArrayList of the chat messages to the client
+		sendToClient(clientIP, new ChatHistory(history,true));
 	}
 
 	/**
@@ -90,7 +97,7 @@ public class ChatServer extends Server {
 	private synchronized void processServerMessage(String message) {
 
 		// Process to everyone
-		retrieveObject(new NetworkObject(IPAddress, new ChatMessage("~Admin", message, true)));
+		retrieveObject(new NetworkObject(IPAddress, new ChatMessage("~Admin", message, chatMessageColor, true)));
 	}
 
 	/**
@@ -189,10 +196,10 @@ public class ChatServer extends Server {
 			String newName = scan.nextLine();
 
 			// set "name" name worked
-			retrieveObject(new NetworkObject(IPAddress, new ChatMessage(client.getName()
-					+ " has changed their name to " + newName,true)));
+			retrieveObject(new NetworkObject(IPAddress, new ChatMessage(client.getPlayerName()
+					+ " has changed their name to " + newName,chatMessageColor, true)));
 
-			client.setName(newName);
+			client.setPlayerName(newName);
 
 			return true;
 		}
@@ -210,13 +217,28 @@ public class ChatServer extends Server {
 			// Check for failed client check
 			if (token.equals("history")) {
 
-				// Send history back to the client
-				sendHistoryToClient(data.getIPAddress());
-
-				return false;
+				return parseHistory(scan,data);
 			}
 
 			return true;
+		}
+
+		private boolean parseHistory(Scanner scan, NetworkObject data){
+			int size = chatHistory.size();
+
+			// size of history if we were supplied one
+			if( scan.hasNextInt() ){
+				size = scan.nextInt();
+			}
+
+			// Never go out of bounds
+			size = Math.min(chatHistory.size(),size);
+
+
+			// Send history back to the client
+			sendHistoryToClient(data.getIPAddress(), size);
+
+			return false;
 		}
 
 		private boolean parsePing(Scanner scan, NetworkObject data) {
@@ -237,7 +259,7 @@ public class ChatServer extends Server {
 				adminList = adminList + admin + "\n";
 			}
 
-			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",adminList, true));
+			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",adminList, chatMessageColor, true));
 
 			return false;
 		}
@@ -255,7 +277,7 @@ public class ChatServer extends Server {
 					+ "/close -> closes the server";
 
 
-			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",commandList, true));
+			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",commandList, chatMessageColor, true));
 
 			return true;
 		}
@@ -269,22 +291,22 @@ public class ChatServer extends Server {
 	public void newClientConnection(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(new ChatMessage("~Admin",cl.getName() + " has Connected.", true),cl);
+		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Connected.", chatMessageColor, true),cl);
 
 		// Display welcome message for the new client
-		cl.sendData(new ChatMessage("","Welcome Message::" + "\nType /help for commands", true));
+		cl.sendData(new ChatMessage("","Welcome Message::" + "\nType /help for commands", chatMessageColor, true));
 
 		// Tell console this client connected
-		System.out.println(cl.getName() + " has Connected.");
+		System.out.println(cl.getPlayerName() + " has Connected.");
 	}
 
 	@Override
 	public void clientRejoins(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(new ChatMessage("~Admin",cl.getName() + " has Reconnected.", true),cl);
+		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Reconnected.", chatMessageColor, true),cl);
 
 		// Tell console this client connected
-		System.out.println(cl.getName() + " has Reconnected.");
+		System.out.println(cl.getPlayerName() + " has Reconnected.");
 	}
 }

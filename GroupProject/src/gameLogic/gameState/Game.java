@@ -9,12 +9,25 @@ import gameLogic.physical.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+import networking.Move;
+
+
+// JAMES
+// I need a method that will return a room that a given player is currently in
+// public Room getRoom(String playerName)
 
 public class  Game {
 
 	private List<Room> roomsInGame;
 	private List<GameCharacter> activeCharacters;
 	private List<Floor> spawnTiles;
+
+
+	public enum Facing {
+		North, South, East, West;
+
+	}
+
 
 
 	public Game(){
@@ -31,12 +44,12 @@ public class  Game {
 		NewGame newgame = new NewGame(this);
 	}
 
-	public boolean moveCharacterTo(String charName, Tile2D move){
-		//TODO plausible to have gameCharacter id as int?
+	public boolean moveCharacter(Move move){
+
 		GameCharacter mover = null;
 
 		for(GameCharacter character : activeCharacters){
-			if(character.getName().equals(charName)){
+			if(character.getName().equals(null/*move.getPlayer().getName()*/)){
 				mover = character;
 			}
 		}
