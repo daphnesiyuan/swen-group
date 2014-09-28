@@ -2,6 +2,7 @@ package networking;
 
 import gameLogic.gameState.Game;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,7 +19,10 @@ public class GameServer extends Server {
 	// Complete chat history sent through the network
 	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
+	private Color chatMessageColor = Color.black;
+
 	// Game that all players are playing off
+	private Object serverLock;
 	private Game gameServer;
 
 	public GameServer() {
@@ -86,6 +90,9 @@ public class GameServer extends Server {
 	 */
 	public void processMove(Move move, NetworkObject data){
 
+		synchronized(serverLock){
+			gameServer.moveCharacterTo(move);
+		}
 	}
 
 	/**
@@ -140,7 +147,7 @@ public class GameServer extends Server {
 	private synchronized void processServerMessage(String message) {
 
 		// Process to everyone
-		retrieveObject(new NetworkObject(IPAddress, new ChatMessage("~Admin", message, true)));
+		retrieveObject(new NetworkObject(IPAddress, new ChatMessage("~Admin", message, chatMessageColor, true)));
 	}
 
 	/**
@@ -239,10 +246,10 @@ public class GameServer extends Server {
 			String newName = scan.nextLine();
 
 			// set "name" name worked
-			retrieveObject(new NetworkObject(IPAddress, new ChatMessage(client.getName()
-					+ " has changed their name to " + newName,true)));
+			retrieveObject(new NetworkObject(IPAddress, new ChatMessage(client.getPlayerName()
+					+ " has changed their name to " + newName,chatMessageColor, true)));
 
-			client.setName(newName);
+			client.setPlayerName(newName);
 
 			return true;
 		}
@@ -260,20 +267,28 @@ public class GameServer extends Server {
 			// Check for failed client check
 			if (token.equals("history")) {
 
-				int size = chatHistory.size();
-
-				// size of history if we were supplied one
-				if( scan.hasNextInt() ){
-					size = scan.nextInt();
-				}
-
-				// Send history back to the client
-				sendHistoryToClient(data.getIPAddress(), size);
-
-				return false;
+				return parseHistory(scan,data);
 			}
 
 			return true;
+		}
+
+		private boolean parseHistory(Scanner scan, NetworkObject data){
+			int size = chatHistory.size();
+
+			// size of history if we were supplied one
+			if( scan.hasNextInt() ){
+				size = scan.nextInt();
+			}
+
+			// Never go out of bounds
+			size = Math.min(chatHistory.size(),size);
+
+
+			// Send history back to the client
+			sendHistoryToClient(data.getIPAddress(), size);
+
+			return false;
 		}
 
 		private boolean parsePing(Scanner scan, NetworkObject data) {
@@ -294,7 +309,7 @@ public class GameServer extends Server {
 				adminList = adminList + admin + "\n";
 			}
 
-			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",adminList, true));
+			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",adminList, chatMessageColor, true));
 
 			return false;
 		}
@@ -313,7 +328,7 @@ public class GameServer extends Server {
 					+ "/close -> closes the server";
 
 
-			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",commandList, true));
+			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",commandList, chatMessageColor, true));
 
 			return true;
 		}
@@ -327,22 +342,22 @@ public class GameServer extends Server {
 	public void newClientConnection(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(new ChatMessage("~Admin",cl.getName() + " has Connected.", true),cl);
+		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Connected.", chatMessageColor, true),cl);
 
 		// Display welcome message for the new client
-		cl.sendData(new ChatMessage("","Welcome Message::" + "\nType /help for commands", true));
+		cl.sendData(new ChatMessage("","Welcome Message::" + "\nType /help for commands", chatMessageColor, true));
 
 		// Tell console this client connected
-		System.out.println(cl.getName() + " has Connected.");
+		System.out.println(cl.getPlayerName() + " has Connected.");
 	}
 
 	@Override
 	public void clientRejoins(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(new ChatMessage("~Admin",cl.getName() + " has Reconnected.", true),cl);
+		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Reconnected.", chatMessageColor, true),cl);
 
 		// Tell console this client connected
-		System.out.println(cl.getName() + " has Reconnected.");
+		System.out.println(cl.getPlayerName() + " has Reconnected.");
 	}
 }

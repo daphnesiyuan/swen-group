@@ -1,8 +1,8 @@
 package networking;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Scanner;
 
 /**
@@ -18,6 +18,7 @@ public class ChatClient extends Client {
 
 	private Object modifiedLock = new Object();
 	private boolean modified = false;
+	private final Color chatMessageColor = Color.black;
 
 
 	/**
@@ -29,7 +30,7 @@ public class ChatClient extends Client {
 		// Tell the server to update this clients name as well!
 		try {
 			// Try and change it on the servers
-			sendData(new ChatMessage("/name " + name));
+			sendData(new ChatMessage("/name " + name, chatMessageColor));
 			this.clientName = name;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -50,7 +51,7 @@ public class ChatClient extends Client {
 	 */
 	public boolean sendData(String message) throws IOException{
 
-		ChatMessage chat = new ChatMessage(clientName, message);
+		ChatMessage chat = new ChatMessage(clientName, message,chatMessageColor);
 
 		// Client side commands
 		if( chat.message.equals("/clear") ){
@@ -124,7 +125,7 @@ public class ChatClient extends Client {
 	public synchronized void appendWarningMessage(String warning){
 
 		// Save the message
-		chatHistory.add(new ChatMessage("WARNING",warning,true));
+		chatHistory.add(new ChatMessage("WARNING",warning, Color.black, true));
 		setModified(true);
 	}
 
@@ -146,6 +147,12 @@ public class ChatClient extends Client {
 		synchronized (modifiedLock){
 			this.modified = modified;
 		}
+	}
+
+	@Override
+	public void successfullyConnected(String playerName) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

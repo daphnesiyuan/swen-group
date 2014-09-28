@@ -1,5 +1,6 @@
 package networking;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
@@ -113,7 +114,7 @@ public abstract class Server implements Runnable{
 				String name = (String) input.readObject();
 
 				// Create a thread for each client
-				ClientThread cl = new ClientThread(clientSocket, clientSocket.getInetAddress().getHostAddress(), name);
+				ClientThread cl = new ClientThread(clientSocket, new Player(clientSocket.getInetAddress().getHostAddress(), name));
 
 				// See if this is a new client
 				if (!clients.contains(cl)) {
@@ -163,8 +164,8 @@ public abstract class Server implements Runnable{
 
 		// Check if this client has disconnected
 		if ( !reconnecting ) {
-			sendToAllClients(new ChatMessage("~Admin",c.getName() + " has Disconnected.", true), client);
-			System.out.println(c.getName() + " has Disconnected.");
+			sendToAllClients(new ChatMessage("~Admin",c.getPlayerName() + " has Disconnected.", Color.black, true), client);
+			System.out.println(c.getPlayerName() + " has Disconnected.");
 		}
 	}
 
@@ -183,7 +184,7 @@ public abstract class Server implements Runnable{
 		// TODO Make faster
 		ClientThread client = null;
 		for (int i = 0; i < clients.size(); i++) {
-			if (clients.get(i).IPAddress.equals(data.getIPAddress())) {
+			if (clients.get(i).getIPAddress().equals(data.getIPAddress())) {
 				client = clients.get(i);
 				break;
 			}
@@ -195,7 +196,7 @@ public abstract class Server implements Runnable{
 		}
 
 		// Valid Client
-		client.sendData(new NetworkObject(IPAddress, new ChatMessage("~Admin", "Ping: " + delay + "ms", true)));
+		client.sendData(new NetworkObject(IPAddress, new ChatMessage("~Admin", "Ping: " + delay + "ms", Color.black, true)));
 
 		return delay;
 	}
@@ -212,9 +213,9 @@ public abstract class Server implements Runnable{
 
 		// Send a ping to every client
 		for (int i = 0; i < clients.size(); i++) {
-			clients.get(i).sendData(new ChatMessage("/ping all", true));
+			clients.get(i).sendData(new ChatMessage("/ping all", Color.black, true));
 
-			sentPings.put(clients.get(i).IPAddress, Calendar.getInstance());
+			sentPings.put(clients.get(i).getIPAddress(), Calendar.getInstance());
 		}
 
 		final long time = System.nanoTime();
@@ -300,7 +301,7 @@ public abstract class Server implements Runnable{
 
 		// TODO HACK. Make FASTER!
 		for (int i = 0; i < clients.size(); i++) {
-			if (clients.get(i).IPAddress.equals(clientIP)) {
+			if (clients.get(i).getIPAddress().equals(clientIP)) {
 				clients.get(i).sendData(data);
 				break;
 			}
@@ -309,7 +310,7 @@ public abstract class Server implements Runnable{
 
 	protected ClientThread getClientFromName(String name) {
 		for (int i = 0; i < clients.size(); i++) {
-			if (clients.get(i).getName().equals(name)) {
+			if (clients.get(i).getPlayerName().equals(name)) {
 				return clients.get(i);
 			}
 		}
@@ -319,7 +320,7 @@ public abstract class Server implements Runnable{
 
 	protected ClientThread getClientFromIP(String IP) {
 		for (int i = 0; i < clients.size(); i++) {
-			if (clients.get(i).IPAddress.equals(IP)) {
+			if (clients.get(i).getIPAddress().equals(IP)) {
 				return clients.get(i);
 			}
 		}
@@ -336,13 +337,16 @@ public abstract class Server implements Runnable{
 	 */
 	class ClientThread extends Thread {
 
-		final String IPAddress;
+		final Player player;
 		final Socket socket;
 
-		public ClientThread(Socket socket, String IPAddress, String name) {
+		public ClientThread(Socket socket, Player player) {
 			this.socket = socket;
-			this.IPAddress = IPAddress;
-			this.setName(name);
+			this.player = player;
+		}
+
+		public String getIPAddress() {
+			return player.getIPAddress();
 		}
 
 		/**
@@ -462,16 +466,24 @@ public abstract class Server implements Runnable{
 			ClientThread other = (ClientThread) obj;
 			if (!getOuterType().equals(other.getOuterType()))
 				return false;
-			if (IPAddress == null) {
-				if (other.IPAddress != null)
+			if (player == null) {
+				if (other.player != null)
 					return false;
-			} else if (!IPAddress.equals(other.IPAddress))
+			} else if (!player.equals(other.player))
 				return false;
 			return true;
 		}
 
 		private Server getOuterType() {
 			return Server.this;
+		}
+
+		public String getPlayerName(){
+			return player.getName();
+		}
+
+		public void setPlayerName(String name){
+			player.setName(name);
 		}
 	}
 
