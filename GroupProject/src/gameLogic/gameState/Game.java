@@ -31,8 +31,10 @@ public class  Game {
 		NewGame newgame = new NewGame(this);
 	}
 
-	public boolean moveCharacterTo(String charName, Tile2D move){
-		//TODO plausible to have gameCharacter id as int?
+	public boolean moveCharacterTo(Move move){
+
+
+
 		GameCharacter mover = null;
 
 		for(GameCharacter character : activeCharacters){
