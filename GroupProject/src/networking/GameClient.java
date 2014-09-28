@@ -2,9 +2,10 @@ package networking;
 
 import gameLogic.location.Room;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -16,7 +17,7 @@ public class GameClient extends Client {
 
 	// Client side of the game
 	private Object roomLock = new Object();
-	private Room room = null;
+	private Room clientRoom = null;
 
 	private boolean modified = false;
 	private Object modifiedLock = new Object();
@@ -24,9 +25,13 @@ public class GameClient extends Client {
 	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
 
-	// Individual Client Fields
-	private String clientName;
+	// Which player the gameclient is controlling
+	private Player player;
+	private Color chatMessageColor = new Color(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255));
 
+	public GameClient(String playerName){
+		player = new Player(playerName);
+	}
 
 	/**
 	 * Returns the client side version of the room that the player is currently in
@@ -34,7 +39,7 @@ public class GameClient extends Client {
 	 */
 	public synchronized Room getRoom(){
 		synchronized(roomLock){
-			return room;
+			return clientRoom;
 		}
 	}
 
@@ -47,8 +52,8 @@ public class GameClient extends Client {
 		// Tell the server to update this clients name as well!
 		try {
 			// Try and change it on the servers
-			sendChatMessageToServer(new ChatMessage(this.clientName, "/name " + name));
-			this.clientName = name;
+			sendChatMessageToServer("/name " + name);
+			player.setName(name);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -59,17 +64,28 @@ public class GameClient extends Client {
 	 * @return
 	 */
 	public String getName() {
-		return clientName;
+		return player.getName();
 	}
 
 	/**
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
 	 */
-	public boolean sendMoveToServer(Move move) throws IOException{
+	public boolean sendMoveToServer(String interaction) throws IOException{
 
 		// Send data to the server
-		return super.sendData(move);
+		return super.sendData(new Move(player, interaction));
+	}
+
+	/**
+	 * Sends the given object to the server that the client is connected to
+	 * @param data Object to sent to the server for processing
+	 */
+	public boolean sendChatMessageToServer(String message) throws IOException{
+
+		// Create a new chatMessage
+		ChatMessage chat = new ChatMessage(player.getName(), message, chatMessageColor);
+		return sendChatMessageToServer(chat);
 	}
 
 	/**
@@ -77,9 +93,6 @@ public class GameClient extends Client {
 	 * @param data Object to sent to the server for processing
 	 */
 	public boolean sendChatMessageToServer(ChatMessage chat) throws IOException{
-
-		// Create a new chatMessage
-		//ChatMessage chat = new ChatMessage(clientName, message);
 
 		// Client side commands
 		if( chat.message.equals("/clear") ){
@@ -104,9 +117,9 @@ public class GameClient extends Client {
 			// Sent a chat Message
 			retrievedChatMessage(data.getIPAddress(), (ChatMessage)data.getData());
 		}
-		else if( data.getData() instanceof Move ){
+		else if( data.getData() instanceof RoomUpdate ){
 			// We were sent a move
-			retrievedMove(data.getIPAddress(), (Move)data.getData());
+			retrievedUpdatedRoom((RoomUpdate)data.getData());
 		}
 	}
 
@@ -125,8 +138,15 @@ public class GameClient extends Client {
 
 				// Check if we REALLY are assigning our name
 				if( scan.hasNext() ){
-					this.clientName = scan.next();
+					player.setName(scan.next());
 				}
+			}
+			// Check for a ping
+			else if( scan.hasNext("/ping all") ){
+				try {
+
+					sendChatMessageToServer("/ping all");
+				} catch (IOException e) {}
 			}
 		}
 
@@ -153,10 +173,13 @@ public class GameClient extends Client {
 	 * @param sendersIPAddress IP of the senders IP Address
 	 * @param chatMessage Message that was sent from the given IP
 	 */
-	public synchronized void retrievedMove(String sendersIPAddress, Move move){
+	public synchronized void retrievedUpdatedRoom(RoomUpdate room){
 
 		//TODO Perform an action on the current room
-
+		synchronized(roomLock){
+			clientRoom = room.updatedRoom;
+		}
+		//room.
 
 		// Record when we last updated
 		//setModified(true);
@@ -166,14 +189,9 @@ public class GameClient extends Client {
 	 * Gets the chat history that has been sent to this client
 	 * @return String containing chat history
 	 */
-	public String getChatHistory(){
-		String history = "";
-		for (int i = 0; i < chatHistory.size(); i++) {
-			ChatMessage message = chatHistory.get(i);
-			history = history + message + "\n";
-
-		}
-
+	public ArrayList<ChatMessage> getChatHistory(){
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		history.addAll(chatHistory);
 		return history;
 	}
 
@@ -184,8 +202,15 @@ public class GameClient extends Client {
 	public synchronized void appendWarningMessage(String warning){
 
 		// Save the message
-		chatHistory.add(new ChatMessage("WARNING",warning,true));
+		chatHistory.add(new ChatMessage("WARNING", warning, chatMessageColor, true));
 		setModified(true);
+	}
+
+	@Override
+	public void successfullyConnected(String playerName) {
+
+		// Change the name of the player
+		player.setName(playerName);
 	}
 
 	/**
@@ -207,5 +232,21 @@ public class GameClient extends Client {
 			this.modified = modified;
 		}
 	}
+
+	/**
+	 * @return the chatMessageColor
+	 */
+	public Color getChatMessageColor() {
+		return chatMessageColor;
+	}
+
+	/**
+	 * @param chatMessageColor the chatMessageColor to set
+	 */
+	public void setChatMessageColor(Color chatMessageColor) {
+		this.chatMessageColor = chatMessageColor;
+	}
+
+
 
 }

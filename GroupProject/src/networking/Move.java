@@ -7,8 +7,8 @@ public class Move extends NetworkData {
 	 */
 	private static final long serialVersionUID = 5277768659149235735L;
 
-	public final GameClient client;
 	public final String interaction;
+	public final Player player;
 
 
 
@@ -24,20 +24,22 @@ public class Move extends NetworkData {
 
 	// NB: would be easier / more helpful for game logic to recieve the identifier for the move to happen in, stored in this class.
 	//
-	public Move(GameClient client, String interaction){
+	public Move(Player player, String interaction){
 		this.interaction = interaction;
-		this.client = client;
+		this.player = player;
 	}
 
-	@Override
-	public String toString() {
+	public String getInteraction() {
 		return interaction;
 	}
 
-	public GameClient getCLient(){
-		return client;
+	public Player getPlayer(){
+		return player;
 	}
 
-
+	@Override
+	public String toString(){
+		return player.getName() + " performs " + interaction;
+	}
 
 }
