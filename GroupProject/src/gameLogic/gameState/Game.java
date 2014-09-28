@@ -40,7 +40,7 @@ public class  Game {
 		NewGame newgame = new NewGame(this);
 	}
 
-	public boolean moveCharacterTo(Move move){
+	public boolean moveCharacter(Move move){
 
 		GameCharacter mover = null;
 
