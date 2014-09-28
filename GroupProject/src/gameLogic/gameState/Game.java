@@ -9,12 +9,21 @@ import gameLogic.physical.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+import networking.Move;
+
 
 public class  Game {
 
 	private List<Room> roomsInGame;
 	private List<GameCharacter> activeCharacters;
 	private List<Floor> spawnTiles;
+
+
+	public enum Facing {
+		North, South, East, West;
+
+	}
+
 
 
 	public Game(){
@@ -33,12 +42,10 @@ public class  Game {
 
 	public boolean moveCharacterTo(Move move){
 
-
-
 		GameCharacter mover = null;
 
 		for(GameCharacter character : activeCharacters){
-			if(character.getName().equals(charName)){
+			if(character.getName().equals(null/*move.getPlayer().getName()*/)){
 				mover = character;
 			}
 		}
