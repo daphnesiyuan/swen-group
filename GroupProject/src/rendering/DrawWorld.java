@@ -216,10 +216,10 @@ public class DrawWorld {
 	 * @param Graphics g
 	 */
 	private void drawCharacter(Graphics g, Point pt, Tile2D tile) {
-		if(tile.getAvatarOnTile() == null) {
+		if(tile.getAvatar() == null) {
 			return;
 		}
-		String characterName = tile.getAvatarOnTile().getClass().getName();
+		String characterName = tile.getAvatar().getClass().getName();
 		java.net.URL imageURL = Rendering.class.getResource(characterName+".png");
 		drawObject(g, pt, imageURL);
 	}
@@ -231,7 +231,7 @@ public class DrawWorld {
 	 * @param Graphics g
 	 */
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
-		List<Item> items = tile.getItemsOnTile();
+		List<Item> items = tile.getItems();
 		for(int i = 0; i < items.size(); i++){
 			String itemName = items.get(i).getClass().getName();
 			java.net.URL imageURL = Rendering.class.getResource(itemName+".png");

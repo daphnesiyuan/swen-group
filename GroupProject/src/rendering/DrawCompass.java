@@ -19,7 +19,6 @@ public class DrawCompass {
 
 
 		java.net.URL imageURL = Rendering.class.getResource("Compass"+direction+".png");
-		System.out.println(direction);
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(imageURL);
