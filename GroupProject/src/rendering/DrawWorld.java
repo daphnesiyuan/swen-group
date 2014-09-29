@@ -124,6 +124,11 @@ public class DrawWorld {
 		}
 	}
 
+	/**
+	 * Rotates the given 2d array 90 degrees
+	 * @param Tile2D[][] tiles
+	 * @return Tile2D[][] newTiles
+	 */
 	private Tile2D[][] rotate90(Tile2D[][] tiles) {
 		// TODO Auto-generated method stub
 	    int width = tiles.length;
@@ -138,8 +143,7 @@ public class DrawWorld {
 	}
 
 	/**
-	 * Takes the name of the class and draws that image that is stored to the
-	 * graphics at the point provided
+	 * Takes the name of the class and gets drawObject(...) to draw it.
 	 * @param Point pt
 	 * @param String tileName
 	 * @param Graphics g
@@ -147,7 +151,19 @@ public class DrawWorld {
 	private void placeTile(Point pt, Tile2D tile, Graphics g) {
 		String tileName = tile.getClass().getName();
 		java.net.URL imageURL = Rendering.class.getResource(tileName+".png");
+		drawObject(g, pt, imageURL);
 
+		drawItems(g, pt, tile);
+		drawCharacter(g, pt, tile);
+	}
+
+	/**
+	 * Generic drawing method that gets called to draw Tile2D, GameCharacter, Item
+	 * @param Graphics g
+	 * @param Point pt
+	 * @param java.net.URL imageURL
+	 */
+	private void drawObject(Graphics g, Point pt, java.net.URL imageURL){
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(imageURL);
@@ -164,13 +180,41 @@ public class DrawWorld {
 		int imgHeight = ((int) img.getHeight(null)/20);
 
 		g.drawImage(img, offset.x+pt.x - width, offset.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
-
-		drawItems(g, pt, tile);
 	}
 
+	/**
+	 * Takes the name of the class and gets drawObject(...) to draw it.
+	 * @param Point pt
+	 * @param Tile2D tile
+	 * @param Graphics g
+	 */
+	private void drawCharacter(Graphics g, Point pt, Tile2D tile) {
+		// this if statement is only used until ryan finished the getCharacter() method on Tile2D class
+		String characterName = null;
+		if (character.getCurrentTile().getXPos() == tile.getXPos() &&
+				character.getCurrentTile().getYPos() == tile.getYPos()){
+			characterName = character.getClass().getName();
+		} else{
+			return;
+		}
+
+		//if (tile.getCharacter == null){return;}
+		//String characterName = tile.getCharacter.getClass().getName();
+		java.net.URL imageURL = Rendering.class.getResource(characterName+".png");
+		drawObject(g, pt, imageURL);
+	}
+
+	/**
+	 * Takes the name of the class and gets drawObject(...) to draw it.
+	 * @param Point pt
+	 * @param Tile2D tile
+	 * @param Graphics g
+	 */
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
-		//Item tempItem = tile.getItem() ;
-		//while (tile.getItem() !=
+		Item tempItem = tile.getItem() ;
+		while (tempItem != null){
+
+		}
 
 	}
 
@@ -186,47 +230,4 @@ public class DrawWorld {
 		  tempPt.y = (point.x + point.y) / 2;
 		  return(tempPt);
 	}
-
-
-	/**
-	 * Takes a 2d array and will rotate it by 90 degree segments as dictated by the string direction.
-	 * The actual rotation is handled by rotateHelper(...).
-	 * North - tiles should not be rotated.
-	 * West - tiles will be rotated 90 degrees
-	 * South - tiles will be rotated 180 degrees
-	 * East - tiles will be rotated 270 degrees
-	 * @param Tile2D[][] tiles
-	 * @param String direction
-	 * @return Tile2d[][] tiles
-	 */
-	private Tile2D[][] rotate2DArray(Tile2D[][] tiles, String direction) {
-		int rotations = directionMap.get(direction);
-		Tile2D[][] newTiles = tiles.clone();
-
-
-		if (direction == null || direction.equalsIgnoreCase("north")){
-			return newTiles;
-		}
-//		else{
-//			if (direction.equalsIgnoreCase("west")){
-//				newTiles = rotateHelper(tiles, 1);
-//				System.out.println("west");
-//			}
-//			if (direction.equalsIgnoreCase("south")){
-//				newTiles = rotateHelper(tiles, 2);
-//				System.out.println("south");
-//			}
-//			if (direction.equalsIgnoreCase("east")){
-//				newTiles = rotateHelper(tiles, 3);
-//				System.out.println("east");
-//			}
-//		}
-
-
-		return newTiles;
-	}
-
-
-
-
 }

@@ -36,13 +36,13 @@ public class testRendering extends javax.swing.JFrame {
 		int roomNumber = 1;
 
 		Tile2D[][] tiles = new Tile2D[][]{
-				{new Wall(3,0,"w"), new Wall(3,0,"w"), new Wall(3,0,"w"), new Wall(3,0,"w"), new Wall(3,0,"w"), new Wall(3,0,"w"), new Wall(3,0,"w")},
-				{new Door(1,0,"w"), new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Wall(3,0,"w") },
-				{new Wall(3,0,"w"), new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Floor(0,1,"f", false),new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Wall(3,0,"w") },
-				{new Wall(3,0,"w"), new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Floor(0,1,"f", false),new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Wall(3,0,"w") },
-				{new Wall(3,0,"w"), new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Floor(0,1,"f", false),new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Wall(3,0,"w") },
-				{new Wall(3,0,"w"), new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Floor(0,1,"f", false),new Floor(0,1,"f", false), new Floor(0,1,"f", false), new Wall(3,0,"w") },
-				{new Wall(3,0,"w"), new Wall(3,0,"w"), new Wall(3,0,"w"), new Wall(3,0,"w"), new Wall(3,0,"w"), new Door(1,0,"w"), new Wall(3,0,"w"), }
+				{new Wall(0,0,"w"),  new Wall(1,0,"w"),         new Wall(2,0,"w"),         new Wall(3,0,"w"),        new Wall(4,0,"w"),         new Wall(5,0,"w"),        new Wall(6,0,"w")},
+				{new Door(0,1,"w"), new Floor(1,1,"f", false), new Floor(2,1,"f", false), new Floor(3,1,"f", false),new Floor(4,1,"f", false), new Floor(5,1,"f", false), new Wall(6,1,"w") },
+				{new Wall(0,2,"w"), new Floor(1,2,"f", false), new Floor(2,2,"f", false), new Floor(3,2,"f", false),new Floor(4,2,"f", false), new Floor(5,2,"f", false), new Wall(6,2,"w") },
+				{new Wall(0,3,"w"), new Floor(1,3,"f", false), new Floor(2,3,"f", false), new Floor(3,3,"f", false),new Floor(4,3,"f", false), new Floor(5,3,"f", false), new Wall(6,3,"w") },
+				{new Wall(0,4,"w"), new Floor(1,4,"f", false), new Floor(2,4,"f", false), new Floor(3,4,"f", false),new Floor(4,4,"f", false), new Floor(5,4,"f", false), new Wall(6,4,"w") },
+				{new Wall(0,5,"w"), new Floor(1,5,"f", false), new Floor(2,5,"f", false), new Floor(3,5,"f", false),new Floor(4,5,"f", false), new Floor(5,5,"f", false), new Wall(6,5,"w") },
+				{new Wall(0,6,"w"),  new Wall(1,6,"w"),         new Wall(2,6,"w"),         new Wall(3,6,"w"),        new Wall(4,6,"w"),         new Door(5,6,"w"),        new Wall(6,6,"w"), }
 		};
 
 		Room room = new Room(roomNumber,tiles,null);
