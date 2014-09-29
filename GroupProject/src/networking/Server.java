@@ -205,35 +205,19 @@ public abstract class Server implements Runnable{
 		System.out.println("whoToPing");
 
 		// Get who pinged the server
-		ClientThread to = getClientFromIP(whoToPing);
+		ClientThread to = getClientFromName(whoToPing);
 
 		// Check if we can find the client via name instead
 		if( to == null ){
-			System.out.println("Couldnt find client from IP");
-			to = getClientFromName(whoToPing);
-		}
-
-		// Can we find the client TO ping?
-		if (to == null) {
-			System.out.println("	couldn't find client from Name");
-			ClientThread from = getClientFromIP(data.getIPAddress());
-
-			// Server pinging the server?
-			if( data.getIPAddress().equals(IPAddress) ){
-				System.out.println("		Equap IP's");
-				from.sendData(new ChatMessage("~Admin", "Unable to ping client " + whoToPing,Color.red,true));
-			}
-			else{
-				System.out.println("Unable to ping client " + data.getIPAddress() + " ? " + whoToPing);
-				for (ClientThread c : clients) {
-					System.out.println(c.getIPAddress());
-				}
+			System.out.println("Couldnt find client from Name");
+			to = getClientFromIP(whoToPing);
+			if( to == null ){
+				System.out.println("Unable to find client with whoToPing: " + whoToPing);
+				return;
 			}
 		}
-		else{
-			// Send the ping to that client
-			to.sendData(data.getData());
-		}
+
+		to.sendData(data);
 	}
 
 	protected synchronized long pingServer(String whoPingedMe, Calendar dateSentFromClient){
