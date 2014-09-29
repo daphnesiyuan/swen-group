@@ -56,7 +56,7 @@ public class Rendering extends JPanel implements KeyListener{
 	DrawChat chat;
 	String currentMessage;
 
-	Tile2D tile = new Floor(2,2,"f", false);
+	Tile2D tile = new Floor(1,4,"f", false);
 
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 	boolean chatMode;
@@ -119,11 +119,12 @@ public class Rendering extends JPanel implements KeyListener{
 		if (keysDown.contains(KeyEvent.VK_ALT)){
 			chatMode = !chatMode;
 		}
-		if (keysDown.contains(KeyEvent.VK_DOWN)){
-			Tile2D newTile = room.getTiles()[charac.getCurrentTile().getXPos()][charac.getCurrentTile().getYPos()+1];
-			charac.getCurrentTile().removePlayer(charac);
-			newTile.addPlayer(charac);
-		}
+//		if (keysDown.contains(KeyEvent.VK_DOWN)){
+//			Tile2D newTile = room.getTiles()[charac.getCurrentTile().getXPos()][charac.getCurrentTile().getYPos()+1];
+//			charac.getCurrentTile().removePlayer(charac);
+//			newTile.addPlayer(charac);
+//			charac.currentTile = null;
+//		}
 		if (chatMode){
 			if (keysDown.contains(KeyEvent.VK_ENTER)){
 				chatMessages.add(new ChatMessage("Ryan", currentMessage, Color.RED));
@@ -132,7 +133,6 @@ public class Rendering extends JPanel implements KeyListener{
 
 			}
 		}
-
 		keysDown.clear();
 	}
 

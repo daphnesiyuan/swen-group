@@ -38,7 +38,7 @@ public class DrawWorld {
 	double scale;
 	int width;
 	int height;
-	Point offset = new Point(600,150);
+	Point offset = new Point(600,600);
 	JPanel panel;
 	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
 	Map<String, Integer> directionMap = new HashMap<String, Integer>();
@@ -72,19 +72,33 @@ public class DrawWorld {
 	 */
 	public void redraw(Graphics g, Room room, String direction){
 
-		//set offset based on character position.
-		//This doesn't really work very well because the tiles x
-		//and y will not change with my rotate. Will fix later.
-		if (character != null){
-			Point temp = twoDToIso(new Point(character.getCurrentTile().getXPos()*height, character.getCurrentTile().getYPos()*width));
-			offset.x = (panel.getWidth()/2)+ temp.x;  //will get rid of magic numbers
-			offset.y = (panel.getHeight()/4) + temp.y;
-		}
-
 		//set scaling based on frame size
 		scale = 50 * (panel.getWidth()/1280.0);
 		width =(int) (1 * scale);
 		height = width;
+
+
+
+		//set offset based on character position.
+		//This doesn't really work very well because the tiles x
+		//and y will not change with my rotate. Will fix later.
+
+		System.out.println(offset.toString());
+
+		Point temp = twoDToIso(new Point(character.getCurrentTile().getXPos()
+				* height, character.getCurrentTile().getYPos() * width));
+		System.out.println("temp: "+temp.toString());
+		System.out.println(character.getCurrentTile().getXPos());
+		System.out.println(height);
+		System.out.println(character.getCurrentTile().getYPos());
+		System.out.println(width);
+		offset.x = (panel.getWidth() / 2) + temp.x; // need to get rid of magic
+													// numbers
+		offset.y = (panel.getHeight()/2) - temp.y;
+
+		System.out.println(offset.toString());
+
+
 
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
