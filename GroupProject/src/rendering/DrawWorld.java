@@ -66,7 +66,7 @@ public class DrawWorld {
 	 * @param GameCharacter character
 	 * @param String direction
 	 */
-	public void redraw(Graphics g, Room room, GameCharacter character, String direction){
+	public void redraw(Graphics g, Room room, String direction){
 
 		//set offset based on character position.
 		//This doesn't really work very well because the tiles x
@@ -211,13 +211,20 @@ public class DrawWorld {
 	 * @param Graphics g
 	 */
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
-		Item tempItem = tile.getItem() ;
-		while (tempItem != null){
+//		Currently this method does not work because tile.getItem()
+//		throws an out of bounds exception
 
-		}
+//		Item tempItem = tile.getItem() ;
+//		while (tempItem != null){
+//			System.out.println(tempItem.toString());
+//			tempItem = tile.getItem();
+//		}
 
 	}
 
+	public void setCharacter(GameCharacter character){
+		this.character = character;
+	}
 
 	/**
 	 * converts the coordinates of a 2d array to isometric
