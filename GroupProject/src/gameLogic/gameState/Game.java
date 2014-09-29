@@ -23,7 +23,10 @@ public class  Game {
 		North, South, East, West;
 
 	}
-
+	//TODO ryan
+	// rafactor GameCharacter class name
+	// unpackage gameLogic packages
+	// method placements inside classes - untidy
 
 
 	public Game(){
