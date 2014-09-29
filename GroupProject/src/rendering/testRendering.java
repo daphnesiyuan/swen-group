@@ -1,11 +1,11 @@
 package rendering;
 
-import gameLogic.location.Door;
-import gameLogic.location.Floor;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.location.Wall;
-import gameLogic.physical.Item;
+import gameLogic.Door;
+import gameLogic.Floor;
+import gameLogic.Item;
+import gameLogic.Room;
+import gameLogic.Tile2D;
+import gameLogic.Wall;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;

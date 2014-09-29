@@ -1,9 +1,12 @@
 package rendering;
 
-import gameLogic.entity.GameCharacter;
-import gameLogic.gameState.Game;
-import gameLogic.gameState.NewGame;
-import gameLogic.location.*;
+import gameLogic.Floor;
+import gameLogic.Game;
+import gameLogic.Avatar;
+import gameLogic.NewGame;
+import gameLogic.Room;
+import gameLogic.Tile2D;
+
 
 import java.awt.Color;
 import java.awt.Component;
@@ -53,9 +56,11 @@ public class Rendering extends JPanel implements KeyListener{
 	String currentMessage;
 
 	Tile2D tile = new Floor(2,2,"f", false);
-	GameCharacter charac = new GameCharacter("willy", tile, null);
+
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 	boolean chatMode;
+	Avatar charac = new Avatar("willy", tile, null);
+
 
 
 	public Rendering(Room room){

@@ -1,4 +1,4 @@
-package gameLogic.location;
+package gameLogic;
 
 public class Floor extends Tile2D{
 

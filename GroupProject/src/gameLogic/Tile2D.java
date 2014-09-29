@@ -1,6 +1,4 @@
-package gameLogic.location;
-
-import gameLogic.physical.Item;
+package gameLogic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +15,8 @@ public class Tile2D {
 
 	List <Item> itemsOnTile;
 
+	List <Avatar> charactersOnTile;
+
 
 	public Tile2D(int x, int y, String t) {
 		xPos = x;
@@ -24,7 +24,19 @@ public class Tile2D {
 		type = t;
 
 		itemsOnTile = new ArrayList<Item>();
+
+		charactersOnTile = new ArrayList<Avatar>();
 	}
+
+	public Avatar getCharacter(){
+		//TODO -> hard coded
+		// There are no characters on this tile
+		if(charactersOnTile.size()==0) return null;
+		return charactersOnTile.get(0);
+
+	}
+
+
 
 
 	// items on tile will be returned with the lowest weights first
@@ -69,13 +81,20 @@ public class Tile2D {
 		else return newTile;
 	}
 
+	/**
+	 * @return a list of all items on a tile, Items with lower weights are closer to the start of the list
+	 */
 
-
-
-	public Item getItem(){
+	public List<Item> getItems(){
+		return itemsOnTile;
+	}
+	/**
+	 * @return the Item with the lowest weight (on top) of the tile.
+	 */
+	public Item getTopItem(){
+		if(itemsOnTile.size()==0) return null;
 		return itemsOnTile.get(0);
-		//Leon says: I'd like this to be called getItems() and return a
-		//list of items in the correct order please!
+
 	}
 
 
@@ -102,6 +121,23 @@ public class Tile2D {
 	// Can a Character move on top of this tile
 	public boolean canMoveTo(){
 		return true;
+
+	}
+
+	public void removePlayer(Avatar player) {
+		boolean removed = false;
+
+		for(Avatar gc : charactersOnTile){
+			if(gc.equals(player)){
+				charactersOnTile.remove(gc);
+				removed = true;
+			}
+		}
+		if(removed==false) System.out.println("Tile2D: removePlayer(); Error removing character from tile");
+	}
+
+	public void addPlayer(Avatar player) {
+		charactersOnTile.add(player);
 
 	}
 
