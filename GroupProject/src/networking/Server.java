@@ -182,20 +182,14 @@ public abstract class Server implements Runnable{
 		// See if the ping has a destination
 		if( scan.hasNext() && !scan.hasNext(IPAddress) ){
 
-			System.out.println("	Has Next");
-
 			// Ping all clients?
 			if( scan.hasNext("all") ){
-
-				System.out.println("		All");
-
 				for (int i = 0; i < clients.size(); i++) {
 					ClientThread client = clients.get(i);
-					pingClient(client.getIPAddress(), data);
+					pingClient(client.getPlayerName(), data);
 				}
 			}
 			else{
-				System.out.println("		Client");
 
 				// Where is the message going to?
 				pingClient(scan.next(),data);
@@ -223,13 +217,15 @@ public abstract class Server implements Runnable{
 			ClientThread from = getClientFromIP(data.getIPAddress());
 
 			// Server pinging the server?
-			if( !data.getIPAddress().equals(IPAddress) ){
+			if( from != null && !data.getIPAddress().equals(IPAddress) ){
 				System.out.println("		~Admin");
 				from.sendData(new ChatMessage("~Admin", "Unable to ping client " + whoToPing,Color.red,true));
 			}
+			else{
+				System.out.println("Unable to return ping to " + data.getIPAddress());
+			}
 		}
 		else{
-			System.out.println("	to");
 			// Send the ping to that client
 			to.sendData(data.getData());
 		}
@@ -246,7 +242,7 @@ public abstract class Server implements Runnable{
 		// Check client
 		if (client == null) {
 			if( !whoPingedMe.equals(IPAddress) ){
-				throw new RuntimeException("Pinged by unknown client " + whoPingedMe);
+				System.out.println("Pinged by unknown client " + whoPingedMe);
 			}
 
 		}
