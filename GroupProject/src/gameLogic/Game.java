@@ -1,10 +1,4 @@
-package gameLogic.gameState;
-
-import gameLogic.entity.GameCharacter;
-import gameLogic.location.Floor;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.physical.Item;
+package gameLogic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +6,10 @@ import java.util.List;
 import networking.Move;
 
 
-// JAMES
-// I need a method that will return a room that a given player is currently in
-// public Room getRoom(String playerName)
-
 public class  Game {
 
 	private List<Room> roomsInGame;
-	private List<GameCharacter> activeCharacters;
+	private List<Avatar> activeCharacters;
 	private List<Floor> spawnTiles;
 
 
@@ -28,11 +18,9 @@ public class  Game {
 
 	}
 
-
-
 	public Game(){
 		roomsInGame = new ArrayList<Room>();
-		activeCharacters = new ArrayList<GameCharacter>();
+		activeCharacters = new ArrayList<Avatar>();
 		spawnTiles = new ArrayList<Floor>();
 
 		createNewGame();
@@ -41,15 +29,21 @@ public class  Game {
 	private void createNewGame(){
 
 		// newgame will set up the game, and populate this game object
-		NewGame newgame = new NewGame(this);
+		new NewGame(this);
 	}
+
+	public boolean setPlayerName(String fromName, String toName){
+		// TODO
+		return true;
+	}
+
 
 	public boolean moveCharacter(Move move){
 
-		GameCharacter mover = null;
+		Avatar mover = null;
 
-		for(GameCharacter character : activeCharacters){
-			if(character.getName().equals(null/*move.getPlayer().getName()*/)){
+		for(Avatar character : activeCharacters){
+			if(character.getPlayerName().equals(move.getPlayer().getName())){
 				mover = character;
 			}
 		}
@@ -58,8 +52,8 @@ public class  Game {
 	}
 
 	public boolean characterInteractWithItem(String charName, Item item){
-		for(GameCharacter character : activeCharacters){
-			if(character.getName().equals(charName)){
+		for(Avatar character : activeCharacters){
+			if(character.getPlayerName().equals(charName)){
 				return character.interact(item);
 			}
 		}
@@ -67,10 +61,21 @@ public class  Game {
 	}
 
 
+	public Room getRoom(String playerName){
+		for(Room room : roomsInGame){
+			for(Avatar player : room.getCharacters()){
+				if(player.getPlayerName().equals(playerName)){
+					return player.getCurrentRoom();
+				}
+			}
+
+		}
+		return null;
+	}
 
 
 
-	public void setActiveCharacters(List<GameCharacter> activeCharacters) {
+	public void setActiveCharacters(List<Avatar> activeCharacters) {
 		this.activeCharacters = activeCharacters;
 	}
 
@@ -84,7 +89,7 @@ public class  Game {
 	}
 
 
-	public List<GameCharacter> getActiveCharacters() {
+	public List<Avatar> getActiveCharacters() {
 		return activeCharacters;
 	}
 

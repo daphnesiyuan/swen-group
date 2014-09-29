@@ -1,7 +1,4 @@
-package gameLogic.physical;
-
-import gameLogic.entity.GameCharacter;
-import gameLogic.location.Tile2D;
+package gameLogic;
 
 import java.util.List;
 
@@ -13,7 +10,7 @@ public abstract String getDescription();
 public abstract Tile2D getTile();
 public abstract boolean moveItemTo(Tile2D toTile);
 public abstract int getWeight();
-public abstract String interactWith(GameCharacter gc);
+public abstract String interactWith(Avatar avatar);
 
 
 

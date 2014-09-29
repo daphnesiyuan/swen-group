@@ -1,13 +1,7 @@
-package gameLogic.entity;
+package gameLogic;
 
 
-import gameLogic.gameState.Game;
-import gameLogic.gameState.Game.Facing;
-import gameLogic.gameState.NewGame;
-import gameLogic.location.Door;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.physical.Item;
+import gameLogic.Game.Facing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,61 +9,38 @@ import java.util.List;
 import networking.Move;
 
 
-public class GameCharacter {
-	String Description;
-
-	Game.Facing facing;
-
-
-	List <Item> Inventory;
-
-	public List<Item> getInventory() {
-		return Inventory;
-	}
-
-	public void setInventory(List<Item> inventory) {
-		Inventory = inventory;
-	}
-
-
-	Room currentRoom;
-
-	Tile2D currentTile;
+public class Avatar {
 
 	Game game;
 
-	String name;
+	Game.Facing facing;
+	List <Item> Inventory;
+	Room currentRoom;
+
+	Tile2D currentTile; // current Tile the character is standing on
+	Tile2D oldTile;		// Field used for when player moves off of tile, oldTile then removes the player from its charactersOnTile
+
+	String playerName;
 
 
-	public GameCharacter(String n, Tile2D start, Game g){
-		name = n;
-		currentTile = start;
-		currentRoom = start.getRoom();
-		game = g;
+	public Avatar(String name, Tile2D start, Game game){
+		this.playerName = name;
+		this.currentTile = start;
+		this.currentRoom = start.getRoom();
+		this.game = game;
 
 		Inventory = new ArrayList<Item>();
-
-
-
-
 		facing = Facing.North;
-	}
 
-	public String getName(){
-		return name;
-
-	}
-
-	public Game.Facing getDirectionFacing(){
-		return facing;
-
-	}
-
-	public void setDirectionFacing(Game.Facing f){
-		facing = f;
+		updateTile();
 	}
 
 
+
+	public boolean interact(Item item){
+		//TODO check item range from character
+		return item.interactWith(this) != null;
+	}
 
 
 	public boolean moveTo(Move move){
@@ -79,7 +50,6 @@ public class GameCharacter {
 		else if(move.getInteraction().equals("A")) newPosition = currentTile.getTileLeft();
 		else if(move.getInteraction().equals("S")) newPosition = currentTile.getTileRight();
 		else if(move.getInteraction().equals("D")) newPosition = currentTile.getTileDown();
-
 
 
 
@@ -103,10 +73,22 @@ public class GameCharacter {
 
 		}
 
+
+
+		oldTile = currentTile;	// remove player from old tile
+
 		currentTile = newPosition;
+		updateTile();
 		return updateFacing(move);
 
 	}
+
+	public void updateTile(){
+		oldTile.removePlayer(this);
+		currentTile.addPlayer(this);
+
+	}
+
 
 	public boolean updateFacing(Move move){
 		// needs thought - rotatable room + factor of current facing direction
@@ -132,18 +114,39 @@ public class GameCharacter {
 
 
 
-	public boolean interact(Item item){
-		//TODO check item range from character
-		return item.interactWith(this) != null;
+	public void setPlayerName(String name) {
+		this.playerName = name;
 	}
 
+	public String getPlayerName(){
+		return playerName;
+	}
 
 	public Tile2D getCurrentTile() {
 		return currentTile;
 	}
 
-
 	public Room getCurrentRoom() {
 		return currentRoom;
+	}
+
+	public List<Item> getInventory() {
+		return Inventory;
+	}
+
+	public void setInventory(List<Item> inventory) {
+		Inventory = inventory;
+	}
+
+	public void setCurrentRoom(Room currentRoom) {
+		this.currentRoom = currentRoom;
+	}
+
+	public Game.Facing getDirectionFacing(){
+		return facing;
+	}
+
+	public void setDirectionFacing(Game.Facing f){
+		facing = f;
 	}
 }
