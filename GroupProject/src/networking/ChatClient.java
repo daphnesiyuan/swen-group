@@ -3,6 +3,7 @@ package networking;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -74,8 +75,8 @@ public class ChatClient extends Client {
 		ChatMessage chatMessage = (ChatMessage) data.getData();
 
 		// Check for commands
+		Scanner scan = new Scanner(chatMessage.message);
 		if( data.getIPAddress().equals(IPAddress) ){
-			Scanner scan = new Scanner(chatMessage.message);
 			if( scan.hasNext("/name") ){
 				scan.next();
 
@@ -87,27 +88,58 @@ public class ChatClient extends Client {
 			else if( scan.hasNext("/chatcolor") ){
 				scan.next();
 
-				int r,g,b;
+				if( scan.hasNextInt() ){
+					int r,g,b;
 
-				if( !scan.hasNextInt() ){
-					return;
+					if( !scan.hasNextInt() ){
+						return;
+					}
+
+					r = scan.nextInt();
+
+					if( !scan.hasNextInt() ){
+						return;
+					}
+
+					g = scan.nextInt();
+
+					if( !scan.hasNextInt() ){
+						return;
+					}
+
+					b = scan.nextInt();
+
+					chatMessageColor = new Color(r,g,b);
 				}
+				else if( scan.hasNext() ){
 
-				r = scan.nextInt();
-
-				if( !scan.hasNextInt() ){
-					return;
+					// Using a color name
+					Color color = Color.getColor(scan.next());
+					if( color != null ){
+						chatMessageColor = color;
+					}
 				}
+			}
+		}
+		else if( !data.getIPAddress().equals(IPAddress) ){
 
-				g = scan.nextInt();
+			if( scan.hasNext("/ping") ){ scan.next();
 
-				if( !scan.hasNextInt() ){
-					return;
+
+				if( scan.hasNext(clientName) ){
+
+					// I was pinged?
+					long delay = Calendar.getInstance().getTimeInMillis()
+							- data.getCalendar().getTimeInMillis();
+
+					// Tell who ever pinged me about the time delay
+					try {
+						sendData("Pinged " + clientName + " in " + delay + "ms");
+					} catch (IOException e) {}
+
+					// Tell ME that I was pinged
+					chatMessage = (new ChatMessage(chatMessage.sendersName + " pinged you in " + delay + "ms",chatMessage.color));
 				}
-
-				b = scan.nextInt();
-
-				chatMessageColor = new Color(r,g,b);
 			}
 		}
 

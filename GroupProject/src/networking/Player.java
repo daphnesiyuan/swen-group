@@ -33,6 +33,4 @@ public class Player {
 	public void setIPAddress(String iPAddress) {
 		IPAddress = iPAddress;
 	}
-
-
 }

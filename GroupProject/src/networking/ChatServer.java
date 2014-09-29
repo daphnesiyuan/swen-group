@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 /**
@@ -21,8 +22,8 @@ public class ChatServer extends Server {
 		super();
 
 		// Server listens for input directly to servers terminal Thread
-		//Thread serverTextBox = new Thread(new ServerTextListener());
-		//serverTextBox.start();
+		Thread serverTextBox = new Thread(new ServerTextListener());
+		serverTextBox.start();
 	}
 
 	@Override
@@ -143,10 +144,8 @@ public class ChatServer extends Server {
 
 				return parseName(scan, data);
 			} else if (command.equals("/get")) {
-
 				return parseGet(scan, data);
 			} else if (command.equals("/ping")) {
-
 				return parsePing(scan, data);
 			} else if (command.equals("/close")){
 				return parseClose(scan,data);
@@ -243,12 +242,17 @@ public class ChatServer extends Server {
 
 		private boolean parsePing(Scanner scan, NetworkObject data) {
 
+			System.out.println("Parsed");
+
 			// Send history back to the client
-			long delay = pinged(data);
+			long delay = ping(scan, data);
 
-			System.out.println(((ChatMessage)data.getData()).sendersName + " pinged the server at " + delay + "ms");
+			// Display the ping if it's a valid ping
+			if( delay != -1 ){
+				System.out.println(((ChatMessage)data.getData()).sendersName + " pinged the server at " + delay + "ms");
+			}
 
-			return false;
+			return true;
 		}
 
 		private boolean parseAdmins(Scanner scan, NetworkObject data) {
@@ -271,6 +275,7 @@ public class ChatServer extends Server {
 					+ "/ping -> Checks how fast your connection currently is\n"
 					+ "/get history -> Sends back the entire chat history\n"
 					+ "/admins -> lists the IP's of the admins\n"
+					+ "/chatcolor r g b -> changes the color of yoru chat messages\n"
 					+ "/clear -> clears all messages off the screen\n"
 					+ "/name 'string' -> changes your name\n\n"
 					+ "- ADMIN COMMANDS -\n"

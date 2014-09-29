@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  *Basic abstract server class that contains the required features of a server alogn with features of admins, pinging and more.
@@ -171,32 +172,88 @@ public abstract class Server implements Runnable{
 
 	/**
 	 * Server was pinged by a client
+	 * @param scan2
 	 *
 	 * @param clientIP
 	 *            IP of who wants the history sent to them
 	 */
-	protected synchronized long pinged(NetworkObject data) {
+	protected synchronized long ping(Scanner scan, NetworkObject data) {
 
-		Calendar currentTime = Calendar.getInstance();
-		long delay = currentTime.getTimeInMillis()
-				- data.getCalendar().getTimeInMillis();
+		// See if the ping has a destination
+		if( scan.hasNext() && !scan.hasNext(IPAddress) ){
 
-		// TODO Make faster
-		ClientThread client = null;
-		for (int i = 0; i < clients.size(); i++) {
-			if (clients.get(i).getIPAddress().equals(data.getIPAddress())) {
-				client = clients.get(i);
-				break;
+			System.out.println("	Has Next");
+
+			// Ping all clients?
+			if( scan.hasNext("all") ){
+
+				System.out.println("		All");
+
+				for (int i = 0; i < clients.size(); i++) {
+					ClientThread client = clients.get(i);
+					pingClient(client.getIPAddress(), data);
+				}
+			}
+			else{
+				System.out.println("		Client");
+
+				// Where is the message going to?
+				pingClient(scan.next(),data);
+			}
+			return -1;
+		}
+		return pingServer(data.getIPAddress(), data.getCalendar());
+	}
+
+	protected synchronized void pingClient(String whoToPing, NetworkObject data){
+
+		System.out.println("whoToPing");
+
+		// Get who pinged the server
+		ClientThread to = getClientFromIP(whoToPing);
+
+		// Check if we can find the client via name instead
+		if( to == null ){
+			to = getClientFromName(whoToPing);
+		}
+
+		// Can we find the client TO ping?
+		if (to == null) {
+			System.out.println("	!to");
+			ClientThread from = getClientFromIP(data.getIPAddress());
+
+			// Server pinging the server?
+			if( !data.getIPAddress().equals(IPAddress) ){
+				System.out.println("		~Admin");
+				from.sendData(new ChatMessage("~Admin", "Unable to ping client " + whoToPing,Color.red,true));
 			}
 		}
+		else{
+			System.out.println("	to");
+			// Send the ping to that client
+			to.sendData(data.getData());
+		}
+	}
+
+	protected synchronized long pingServer(String whoPingedMe, Calendar dateSentFromClient){
+		Calendar currentTime = Calendar.getInstance();
+		long delay = currentTime.getTimeInMillis()
+				- dateSentFromClient.getTimeInMillis();
+
+		// Get who pinged the server
+		ClientThread client = getClientFromIP(whoPingedMe);
 
 		// Check client
 		if (client == null) {
-			throw new RuntimeException("Pinged by unknown client " + data.getIPAddress());
-		}
+			if( !whoPingedMe.equals(IPAddress) ){
+				throw new RuntimeException("Pinged by unknown client " + whoPingedMe);
+			}
 
-		// Valid Client
-		client.sendData(new NetworkObject(IPAddress, new ChatMessage("~Admin", "Ping: " + delay + "ms", Color.black, true)));
+		}
+		else{
+			// Send the ping back to the client
+			client.sendData(new NetworkObject(IPAddress, new ChatMessage("~Admin", "Ping: " + delay + "ms", Color.black, true)));
+		}
 
 		return delay;
 	}

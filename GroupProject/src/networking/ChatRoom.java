@@ -2,6 +2,7 @@ package networking;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -72,27 +73,32 @@ public class ChatRoom implements ActionListener{
 		}
 	}
 
+	/**
+	 * Refreshes the panel to display all the chat messages accordingly
+	 */
 	private void refreshChatHistoryPanel(){
 
-		System.out.println("CALLED");
-
+		// Remove all the panels
 		chatHistory.removeAll();
 
 		// Get the chat history
 		ArrayList<ChatMessage> history = client.getChatHistory();
-		System.out.println("Size: " + history.size());
 
 		for(ChatMessage cm : history ){
 			JLabel label = new JLabel(cm.toString());
-			System.out.println("Label: " + label.getText());
 			label.setForeground(cm.color);
 			chatHistory.add(label);
 		}
 
+
 		chatHistory.revalidate();
 
+		// Scroll to bottom of the page
 		int height = (int)chatHistory.getPreferredSize().getHeight();
         scroll.getVerticalScrollBar().setValue(height);
+
+        // Reset the panel
+        chatHistory.repaint();
 	}
 
 	private void setUpGui(){
