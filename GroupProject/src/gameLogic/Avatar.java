@@ -216,4 +216,46 @@ public class Avatar {
 			return false;
 		return true;
 	}
+
+
+
+	public Game getGame() {
+		return game;
+	}
+
+
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+
+
+	public Game.Facing getFacing() {
+		return facing;
+	}
+
+
+
+	public void setFacing(Game.Facing facing) {
+		this.facing = facing;
+	}
+
+
+
+	public Tile2D getOldTile() {
+		return oldTile;
+	}
+
+
+
+	public void setOldTile(Tile2D oldTile) {
+		this.oldTile = oldTile;
+	}
+
+
+
+	public void setCurrentTile(Tile2D currentTile) {
+		this.currentTile = currentTile;
+	}
 }

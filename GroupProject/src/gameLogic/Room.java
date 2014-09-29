@@ -83,5 +83,37 @@ public class Room {
 		return roomNumber;
 	}
 
+	public List<? extends Item> getItems() {
+		return items;
+	}
+
+	public void setItems(List<? extends Item> items) {
+		this.items = items;
+	}
+
+	public List<Door> getDoors() {
+		return doors;
+	}
+
+	public List<Floor> getFloors() {
+		return floors;
+	}
+
+	public List<Floor> getSpawns() {
+		return spawns;
+	}
+
+	public List<Wall> getWalls() {
+		return walls;
+	}
+
+	public void setTiles(Tile2D[][] tiles) {
+		this.tiles = tiles;
+	}
+
+	public void setRoomNumber(int roomNumber) {
+		this.roomNumber = roomNumber;
+	}
+
 
 }

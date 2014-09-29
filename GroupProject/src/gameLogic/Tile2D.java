@@ -143,5 +143,41 @@ public class Tile2D {
 
 	}
 
+	public int getxPos() {
+		return xPos;
+	}
+
+	public void setxPos(int xPos) {
+		this.xPos = xPos;
+	}
+
+	public int getyPos() {
+		return yPos;
+	}
+
+	public void setyPos(int yPos) {
+		this.yPos = yPos;
+	}
+
+	public List<Item> getItemsOnTile() {
+		return itemsOnTile;
+	}
+
+	public void setItemsOnTile(List<Item> itemsOnTile) {
+		this.itemsOnTile = itemsOnTile;
+	}
+
+	public List<Avatar> getCharactersOnTile() {
+		return charactersOnTile;
+	}
+
+	public void setCharactersOnTile(List<Avatar> charactersOnTile) {
+		this.charactersOnTile = charactersOnTile;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 
 }
