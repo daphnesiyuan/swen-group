@@ -57,7 +57,7 @@ public class XMLSaver {
 	      System.err.println(e);
 	    }
 
-		return false;
+		return true;
 	}
 
 }
