@@ -15,7 +15,7 @@ public class Door extends Tile2D {
 
 	private boolean locked;
 
-	private List<Key> unlockKeys;
+	//private List<Key> unlockKeys;
 
 	public Door(int x, int y, String t) {
 		super(x, y, t);
@@ -33,13 +33,13 @@ public class Door extends Tile2D {
 		locked = !locked;
 	}
 
-	public List<Key> getKeys(){
-		return unlockKeys;
-	}
-
-	public void setKeys(List<Key> keys){
-		unlockKeys = keys;
-	}
+//	public List<Key> getKeys(){
+//		return unlockKeys;
+//	}
+//
+//	public void setKeys(List<Key> keys){
+//		unlockKeys = keys;
+//	}
 
 
 

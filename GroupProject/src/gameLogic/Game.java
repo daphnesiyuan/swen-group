@@ -17,11 +17,6 @@ public class  Game {
 		North, South, East, West;
 
 	}
-	//TODO ryan
-	// rafactor GameCharacter class name
-	// unpackage gameLogic packages
-	// method placements inside classes - untidy
-
 
 	public Game(){
 		roomsInGame = new ArrayList<Room>();
@@ -34,7 +29,7 @@ public class  Game {
 	private void createNewGame(){
 
 		// newgame will set up the game, and populate this game object
-		NewGame newgame = new NewGame(this);
+		new NewGame(this);
 	}
 
 	public boolean setPlayerName(String fromName, String toName){
@@ -48,7 +43,7 @@ public class  Game {
 		Avatar mover = null;
 
 		for(Avatar character : activeCharacters){
-			if(character.getPlayerName().equals(null/*move.getPlayer().getName()*/)){
+			if(character.getPlayerName().equals(move.getPlayer().getName())){
 				mover = character;
 			}
 		}
