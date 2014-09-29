@@ -28,15 +28,7 @@ public class  Game {
 		new NewGame(this);
 	}
 
-	public boolean setPlayerName(String fromName, String toName){
-		for(Avatar avatar : activeAvatars){
-			if(avatar.getPlayerName().equals(fromName)){
-				avatar.setPlayerName(toName);
-				return true;
-			}
-		}
-		return false;
-	}
+
 
 
 	public boolean moveCharacter(Move move){
@@ -61,7 +53,11 @@ public class  Game {
 		return false;
 	}
 
-
+	/**
+	 *
+	 * @param playerName - player identidied with their name string
+	 * @return the Room the given player is in
+	 */
 	public Room getRoom(String playerName){
 		for(Room room : roomsInGame){
 			for(Avatar player : room.getCharacters()){
@@ -69,13 +65,37 @@ public class  Game {
 					return player.getCurrentRoom();
 				}
 			}
-
 		}
 		return null;
 	}
 
+	public boolean setPlayerName(String fromName, String toName){
+		for(Avatar avatar : activeAvatars){
+			if(avatar.getPlayerName().equals(fromName)){
+				avatar.setPlayerName(toName);
+				return true;
+			}
+		}
+		return false;
+	}
 
+	/**
+	 *
+	 * @param roomIndex attached to the sought room
+	 * @return the Room with the associated RoomIndex - useful for finding the room that a door is attached to.
+	 */
+	public Room getRoom(int roomIndex) {
+		for(Room room : roomsInGame){
+			if(room.getRoomNumber() == roomIndex){
+				return room;
+			}
+		}
+		return null;
+	}
 
+	/*
+	 * Auxillary getters and setters
+	 */
 	public void setActiveCharacters(List<Avatar> activeCharacters) {
 		this.activeAvatars = activeCharacters;
 	}
@@ -104,21 +124,6 @@ public class  Game {
 		return spawnTiles;
 	}
 
-
-
-	public Room getRoom(int newRoomIndex) {
-		for(Room room : roomsInGame){
-			if(room.getRoomNumber() == newRoomIndex){
-				return room;
-			}
-		}
-		return null;
-	}
-
-
-	public static void main(String[] args){
-		new Game();
-	}
 
 
 

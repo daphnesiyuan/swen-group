@@ -126,14 +126,16 @@ public class Tile2D {
 
 	public void removePlayer(Avatar player) {
 		boolean removed = false;
+		Avatar avatar = null;
 
 		for(Avatar gc : charactersOnTile){
 			if(gc.equals(player)){
-				charactersOnTile.remove(gc);
+				avatar = gc;
 				removed = true;
 			}
 		}
 		if(removed==false) System.out.println("Tile2D: removePlayer(); Error removing character from tile");
+		else charactersOnTile.remove(avatar);
 	}
 
 	public void addPlayer(Avatar player) {
