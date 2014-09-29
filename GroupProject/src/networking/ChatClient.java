@@ -126,19 +126,19 @@ public class ChatClient extends Client {
 			if( scan.hasNext("/ping") ){ scan.next();
 
 
-				if( scan.hasNext(clientName) ){
+				if( scan.hasNext(clientName)){
 
 					// I was pinged?
-					long delay = Calendar.getInstance().getTimeInMillis()
-							- data.getCalendar().getTimeInMillis();
+					long delay = data.getCalendar().getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
 
 					// Tell who ever pinged me about the time delay
 					try {
-						sendData("Pinged " + clientName + " in " + delay + "ms");
+						sendData(new ChatMessage(chatMessage.sendersName,"Pinged " + clientName + " in " + delay + "ms", chatMessageColor, true));
 					} catch (IOException e) {}
 
+					return;
 					// Tell ME that I was pinged
-					chatMessage = (new ChatMessage(chatMessage.sendersName + " pinged you in " + delay + "ms",chatMessage.color));
+					//chatMessage = (new ChatMessage(chatMessage.sendersName + " pinged you in " + delay + "ms",chatMessage.color));
 				}
 			}
 		}
