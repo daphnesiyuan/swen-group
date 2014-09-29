@@ -74,6 +74,8 @@ public class Tile2D {
 
 	public Item getItem(){
 		return itemsOnTile.get(0);
+		//Leon says: I'd like this to be called getItems() and return a
+		//list of items in the correct order please!
 	}
 
 

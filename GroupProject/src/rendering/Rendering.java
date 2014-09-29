@@ -58,7 +58,7 @@ public class Rendering extends JPanel implements KeyListener{
 	}
 
 	protected void paintComponent(Graphics g) {
-		draw.redraw(g, room, directionMap.get(direction));
+		draw.redraw(g, room, directionMap.get(direction), null);
 	}
 
 	@Override

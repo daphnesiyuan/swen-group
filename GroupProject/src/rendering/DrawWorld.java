@@ -1,8 +1,10 @@
 package rendering;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
@@ -10,11 +12,13 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import networking.ChatMessage;
 import GUI.DrawingPanel;
 import gameLogic.entity.GameCharacter;
 import gameLogic.location.Room;
@@ -66,7 +70,7 @@ public class DrawWorld {
 	 * @param GameCharacter character
 	 * @param String direction
 	 */
-	public void redraw(Graphics g, Room room, String direction){
+	public void redraw(Graphics g, Room room, String direction, List<ChatMessage> chatMessages){
 
 		//set offset based on character position.
 		//This doesn't really work very well because the tiles x
@@ -87,6 +91,25 @@ public class DrawWorld {
 		drawLocation(g, room, direction);
 //		drawInventory(g);
 //		drawCompas(g);
+		if(chatMessages != null){
+		drawChat(g, chatMessages);
+	}
+	}
+
+	private void drawChat(Graphics g, List<ChatMessage> chatMessages) {
+		Graphics2D g2d = (Graphics2D) g;
+		int fontSize = (int)((panel.WIDTH / 128)*1.2);
+		g2d.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
+		//g2d.drawRect(0, 0, panel.getWidth(), panel.getHeight());
+		for (int i = 0; i < chatMessages.size(); i++){
+			g2d.setColor(chatMessages.get(i).color);
+			String nameAndMessage = chatMessages.get(i).sendersName;
+			nameAndMessage += ": ";
+			nameAndMessage += chatMessages.get(i).message;
+			int y = fontSize * i;
+			//int x =
+
+		}
 	}
 
 	/**
@@ -214,11 +237,11 @@ public class DrawWorld {
 //		Currently this method does not work because tile.getItem()
 //		throws an out of bounds exception
 
-//		Item tempItem = tile.getItem() ;
-//		while (tempItem != null){
-//			System.out.println(tempItem.toString());
-//			tempItem = tile.getItem();
-//		}
+		Item tempItem = tile.getItem() ;
+		while (tempItem != null){
+			System.out.println(tempItem.toString());
+			tempItem = tile.getItem();
+		}
 
 	}
 
