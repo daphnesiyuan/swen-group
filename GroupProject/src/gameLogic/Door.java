@@ -20,8 +20,6 @@ public class Door extends Tile2D {
 	public Door(int x, int y, String t) {
 		super(x, y, t);
 		toRoomIndex = -1;
-
-
 	}
 
 	public boolean getLocked(){

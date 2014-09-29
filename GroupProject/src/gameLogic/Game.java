@@ -9,32 +9,33 @@ import networking.Move;
 public class  Game {
 
 	private List<Room> roomsInGame;
-	private List<Avatar> activeCharacters;
+	private List<Avatar> activeAvatars;
 	private List<Floor> spawnTiles;
 
 
-	public enum Facing {
-		North, South, East, West;
+	public enum Facing { North, South, East, West; }
 
-	}
 
 	public Game(){
 		roomsInGame = new ArrayList<Room>();
-		activeCharacters = new ArrayList<Avatar>();
+		activeAvatars = new ArrayList<Avatar>();
 		spawnTiles = new ArrayList<Floor>();
 
 		createNewGame();
 	}
 
 	private void createNewGame(){
-
-		// newgame will set up the game, and populate this game object
 		new NewGame(this);
 	}
 
 	public boolean setPlayerName(String fromName, String toName){
-		// TODO
-		return true;
+		for(Avatar avatar : activeAvatars){
+			if(avatar.getPlayerName().equals(fromName)){
+				avatar.setPlayerName(toName);
+				return true;
+			}
+		}
+		return false;
 	}
 
 
@@ -42,7 +43,7 @@ public class  Game {
 
 		Avatar mover = null;
 
-		for(Avatar character : activeCharacters){
+		for(Avatar character : activeAvatars){
 			if(character.getPlayerName().equals(move.getPlayer().getName())){
 				mover = character;
 			}
@@ -52,7 +53,7 @@ public class  Game {
 	}
 
 	public boolean characterInteractWithItem(String charName, Item item){
-		for(Avatar character : activeCharacters){
+		for(Avatar character : activeAvatars){
 			if(character.getPlayerName().equals(charName)){
 				return character.interact(item);
 			}
@@ -76,7 +77,7 @@ public class  Game {
 
 
 	public void setActiveCharacters(List<Avatar> activeCharacters) {
-		this.activeCharacters = activeCharacters;
+		this.activeAvatars = activeCharacters;
 	}
 
 	public List<Room> getRoomsInGame() {
@@ -90,7 +91,7 @@ public class  Game {
 
 
 	public List<Avatar> getActiveCharacters() {
-		return activeCharacters;
+		return activeAvatars;
 	}
 
 
