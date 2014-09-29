@@ -15,29 +15,21 @@ public class Tile2D {
 
 	List <Item> itemsOnTile;
 
-	List <Avatar> charactersOnTile;
+	// One character per Tile at any given time
+	Avatar characterOnTile;
 
 
-	public Tile2D(int x, int y, String t) {
-		xPos = x;
-		yPos = y;
-		type = t;
+	public Tile2D(int xPos, int yPos) {
+		this.xPos = xPos;
+		this.yPos = yPos;
 
 		itemsOnTile = new ArrayList<Item>();
-
-		charactersOnTile = new ArrayList<Avatar>();
+		characterOnTile = null;
 	}
 
 	public Avatar getCharacter(){
-		//TODO -> hard coded
-		// There are no characters on this tile
-		if(charactersOnTile.size()==0) return null;
-		return charactersOnTile.get(0);
-
+		return characterOnTile;
 	}
-
-
-
 
 	// items on tile will be returned with the lowest weights first
 	public void addItem(Item item){
@@ -125,21 +117,14 @@ public class Tile2D {
 	}
 
 	public void removePlayer(Avatar player) {
-		boolean removed = false;
-		Avatar avatar = null;
-
-		for(Avatar gc : charactersOnTile){
-			if(gc.equals(player)){
-				avatar = gc;
-				removed = true;
-			}
+		if(characterOnTile.equals(player)){
+			characterOnTile = null;
 		}
-		if(removed==false) System.out.println("Tile2D: removePlayer(); Error removing character from tile");
-		else charactersOnTile.remove(avatar);
+		else System.out.println("Tile2D: removePlayer(); Error removing character from tile");
 	}
 
 	public void addPlayer(Avatar player) {
-		charactersOnTile.add(player);
+		characterOnTile = player;
 
 	}
 
@@ -167,12 +152,12 @@ public class Tile2D {
 		this.itemsOnTile = itemsOnTile;
 	}
 
-	public List<Avatar> getCharactersOnTile() {
-		return charactersOnTile;
+	public Avatar getCharacterOnTile() {
+		return characterOnTile;
 	}
 
-	public void setCharactersOnTile(List<Avatar> charactersOnTile) {
-		this.charactersOnTile = charactersOnTile;
+	public void setCharacterOnTile(Avatar characterOnTile) {
+		this.characterOnTile = characterOnTile;
 	}
 
 	public void setType(String type) {

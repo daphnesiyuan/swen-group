@@ -4,8 +4,8 @@ public class Floor extends Tile2D{
 
 	public boolean isSpawn;
 
-	public Floor(int x, int y, String t, boolean spawn) {
-		super(x, y, t);
+	public Floor(int xPos, int yPos, boolean spawn) {
+		super(xPos, yPos);
 		isSpawn = spawn;
 
 	}

@@ -17,8 +17,8 @@ public class Door extends Tile2D {
 
 	//private List<Key> unlockKeys;
 
-	public Door(int x, int y, String t) {
-		super(x, y, t);
+	public Door(int xPos, int yPos) {
+		super(xPos, yPos);
 		toRoomIndex = -1;
 	}
 
