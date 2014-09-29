@@ -11,10 +11,11 @@ import rendering.DrawWorld;
 
 public class DrawingPanel extends JPanel{
 
-	DrawWorld dw; //this draws all the game-stuff: locations chars items etc
-	StartMenu sm;
-	WindowFrame wf;
+	private DrawWorld dw; //this draws all the game-stuff: locations chars items etc
+	private StartMenu sm;
+	private WindowFrame wf;
 	public static boolean startMenu; //play or menu mode flag
+
 
 	public DrawingPanel(WindowFrame win){
 		wf = win;

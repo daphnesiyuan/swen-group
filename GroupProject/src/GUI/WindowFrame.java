@@ -22,7 +22,6 @@ public class WindowFrame extends JFrame {
 
 	private TopMenu topMenu;
 	private DrawingPanel panel;
-	private Graphics2D graphics; //for leon later?
 	//private Rendering render=new Rendering(); //Leon's object
 	//private Direction: n s e w
 
@@ -49,13 +48,9 @@ public class WindowFrame extends JFrame {
 
 	public void JPanelStuff() {
 		System.out.println("In JPanel setups");
-
 		panel = new DrawingPanel(this);
-
-		add(panel, BorderLayout.CENTER); // add canvas
-
+		add(panel, BorderLayout.CENTER); // add the panel
 		setVisible(true); // make sure we are visible!
-
 		panel.repaint(); //repaint susses the graphics object
 	}
 
