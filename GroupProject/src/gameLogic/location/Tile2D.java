@@ -30,14 +30,16 @@ public class Tile2D {
 
 		charactersOnTile = new ArrayList<GameCharacter>();
 	}
-	
-	public getCharacter(){
+
+	public GameCharacter getCharacter(){
+		//TODO -> hard coded
 		// There are no characters on this tile
 		if(charactersOnTile.size()==0) return null;
-		
+		return charactersOnTile.get(0);
+
 	}
-	
-	
+
+
 
 
 	// items on tile will be returned with the lowest weights first
@@ -122,6 +124,23 @@ public class Tile2D {
 	// Can a Character move on top of this tile
 	public boolean canMoveTo(){
 		return true;
+
+	}
+
+	public void removePlayer(GameCharacter player) {
+		boolean removed = false;
+
+		for(GameCharacter gc : charactersOnTile){
+			if(gc.equals(player)){
+				charactersOnTile.remove(gc);
+				removed = true;
+			}
+		}
+		if(removed==false) System.out.println("Tile2D: removePlayer(); Error removing character from tile");
+	}
+
+	public void addPlayer(GameCharacter player) {
+		charactersOnTile.add(player);
 
 	}
 

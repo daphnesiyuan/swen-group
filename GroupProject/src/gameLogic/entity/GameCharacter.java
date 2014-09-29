@@ -44,7 +44,9 @@ public class GameCharacter {
 
 
 
-	Tile2D currentTile;
+	Tile2D currentTile; // current Tile the character is standing on
+	
+	Tile2D oldTile;		// Field used for when player moves off of tile, oldTile then removes the player from its charactersOnTile
 
 	Game game;
 
@@ -63,6 +65,7 @@ public class GameCharacter {
 
 
 		facing = Facing.North;
+		updateTile();
 	}
 
 	public String getPlayerName(){
@@ -113,10 +116,22 @@ public class GameCharacter {
 
 		}
 
-		// Character updates the tile its standing on, but also lets the tile know thats
+		// Character updates the tile its standing on, but also lets the tile know that it is now standing on it
+		// (tiles keep track of characters on them too )
+		
+		
+		oldTile = currentTile;	// remove player from old tile
+		
 		currentTile = newPosition;
+		updateTile();
 		return updateFacing(move);
 
+	}
+	
+	public void updateTile(){
+		oldTile.removePlayer(this);
+		currentTile.addPlayer(this);
+		
 	}
 
 	public void setPlayerName(String name) {
