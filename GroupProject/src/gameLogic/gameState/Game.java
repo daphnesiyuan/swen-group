@@ -12,10 +12,6 @@ import java.util.List;
 import networking.Move;
 
 
-// JAMES
-// I need a method that will return a room that a given player is currently in
-// public Room getRoom(String playerName)
-
 public class  Game {
 
 	private List<Room> roomsInGame;
@@ -67,6 +63,17 @@ public class  Game {
 	}
 
 
+	public Room getRoom(String playerName){
+		for(Room room : roomsInGame){
+			for(GameCharacter player : room.getCharacters()){
+				if(player.getName().equals(playerName)){
+					return player.getCurrentRoom();
+				}
+			}
+
+		}
+		return null;
+	}
 
 
 

@@ -10,7 +10,15 @@ public class Room {
 
 	Tile2D[][] tiles;
 	List <? extends Item> items;
-	List<Character> characters;
+	List<GameCharacter> characters;
+
+	public List<GameCharacter> getCharacters() {
+		return characters;
+	}
+
+	public void setCharacters(List<GameCharacter> characters) {
+		this.characters = characters;
+	}
 
 	List<Door> doors;
 	List<Floor> floors;
@@ -28,7 +36,7 @@ public class Room {
 	}
 
 	public Item getItemAt(int x, int y){
-		return tiles[x][y].getItem();
+		return tiles[x][y].getTopItem();
 	}
 
 	public Tile2D[][] getTiles(){

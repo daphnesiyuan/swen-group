@@ -16,6 +16,9 @@ import networking.Move;
 
 
 public class GameCharacter {
+
+
+
 	String Description;
 
 	Game.Facing facing;
@@ -31,8 +34,15 @@ public class GameCharacter {
 		Inventory = inventory;
 	}
 
+	public void setCurrentRoom(Room currentRoom) {
+		this.currentRoom = currentRoom;
+	}
+
 
 	Room currentRoom;
+
+
+
 
 	Tile2D currentTile;
 
@@ -55,7 +65,7 @@ public class GameCharacter {
 		facing = Facing.North;
 	}
 
-	public String getName(){
+	public String getPlayerName(){
 		return name;
 
 	}
@@ -106,6 +116,10 @@ public class GameCharacter {
 		currentTile = newPosition;
 		return updateFacing(move);
 
+	}
+
+	public void setPlayerName(String name) {
+		this.name = name;
 	}
 
 	public boolean updateFacing(Move move){

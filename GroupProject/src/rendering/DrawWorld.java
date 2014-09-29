@@ -237,10 +237,10 @@ public class DrawWorld {
 //		Currently this method does not work because tile.getItem()
 //		throws an out of bounds exception
 
-		Item tempItem = tile.getItem() ;
+		Item tempItem = tile.getTopItem() ;
 		while (tempItem != null){
 			System.out.println(tempItem.toString());
-			tempItem = tile.getItem();
+			tempItem = tile.getTopItem();
 		}
 
 	}

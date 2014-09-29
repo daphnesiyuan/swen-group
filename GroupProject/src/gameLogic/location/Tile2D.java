@@ -69,13 +69,20 @@ public class Tile2D {
 		else return newTile;
 	}
 
+	/**
+	 * @return a list of all items on a tile, Items with lower weights are closer to the start of the list
+	 */
 
-
-
-	public Item getItem(){
+	public List<Item> getItems(){
+		return itemsOnTile;
+	}
+	/**
+	 * @return the Item with the lowest weight (on top) of the tile.
+	 */
+	public Item getTopItem(){
+		if(itemsOnTile.size()==0) return null;
 		return itemsOnTile.get(0);
-		//Leon says: I'd like this to be called getItems() and return a
-		//list of items in the correct order please!
+
 	}
 
 
