@@ -84,9 +84,10 @@ public class Avatar {
 	}
 
 	public void updateTile(){
-		oldTile.removePlayer(this);
+		if(oldTile != null){
+			oldTile.removePlayer(this);
+		}
 		currentTile.addPlayer(this);
-
 	}
 
 
