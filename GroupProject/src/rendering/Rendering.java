@@ -7,7 +7,6 @@ import gameLogic.NewGame;
 import gameLogic.Room;
 import gameLogic.Tile2D;
 
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -29,6 +28,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import networking.ChatMessage;
+import networking.Move;
+import networking.Player;
 
 
 
@@ -74,6 +75,7 @@ public class Rendering extends JPanel implements KeyListener{
 
 		chat = new DrawChat(this);
 		currentMessage = "";
+		room.getTiles()[2][3].addPlayer(charac);
 
 		chatMessages.add(new ChatMessage("Leon","This is a test message.", Color.BLUE));
 		chatMessages.add(new ChatMessage("Ryan","This is another test message.", Color.RED));
@@ -116,6 +118,11 @@ public class Rendering extends JPanel implements KeyListener{
 		}
 		if (keysDown.contains(KeyEvent.VK_ALT)){
 			chatMode = !chatMode;
+		}
+		if (keysDown.contains(KeyEvent.VK_DOWN)){
+			Tile2D newTile = room.getTiles()[charac.getCurrentTile().getXPos()][charac.getCurrentTile().getYPos()+1];
+			charac.getCurrentTile().removePlayer(charac);
+			newTile.addPlayer(charac);
 		}
 		if (chatMode){
 			if (keysDown.contains(KeyEvent.VK_ENTER)){

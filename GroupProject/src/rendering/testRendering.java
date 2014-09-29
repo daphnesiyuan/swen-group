@@ -50,6 +50,11 @@ public class testRendering extends javax.swing.JFrame {
 		};
 
 		Room room = new Room(roomNumber,tiles,null);
+		for(int i = 0; i < tiles.length; i++){
+			for(int j = 0; j < tiles[i].length; j++){
+				tiles[i][j].setRoom(room);
+			}
+		}
 		return room;
 	}
 
