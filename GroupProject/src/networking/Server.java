@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Scanner;
 
 /**
@@ -192,7 +193,7 @@ public abstract class Server implements Runnable{
 			else{
 
 				// Where is the message going to?
-				pingClient(scan.next(),data);
+				pingClient(scan.nextLine().trim(),data);
 			}
 			return -1;
 		}
@@ -208,21 +209,25 @@ public abstract class Server implements Runnable{
 
 		// Check if we can find the client via name instead
 		if( to == null ){
+			System.out.println("Couldnt find client from IP");
 			to = getClientFromName(whoToPing);
 		}
 
 		// Can we find the client TO ping?
 		if (to == null) {
-			System.out.println("	!to");
+			System.out.println("	couldn't find client from Name");
 			ClientThread from = getClientFromIP(data.getIPAddress());
 
 			// Server pinging the server?
-			if( from != null && !data.getIPAddress().equals(IPAddress) ){
-				System.out.println("		~Admin");
+			if( data.getIPAddress().equals(IPAddress) ){
+				System.out.println("		Equap IP's");
 				from.sendData(new ChatMessage("~Admin", "Unable to ping client " + whoToPing,Color.red,true));
 			}
 			else{
-				System.out.println("Unable to return ping to " + data.getIPAddress());
+				System.out.println("Unable to ping client " + data.getIPAddress() + " ? " + whoToPing);
+				for (ClientThread c : clients) {
+					System.out.println(c.getIPAddress());
+				}
 			}
 		}
 		else{
@@ -363,6 +368,7 @@ public abstract class Server implements Runnable{
 
 	protected ClientThread getClientFromName(String name) {
 		for (int i = 0; i < clients.size(); i++) {
+			System.out.println("Name: " + clients.get(i).getPlayerName());
 			if (clients.get(i).getPlayerName().equals(name)) {
 				return clients.get(i);
 			}
@@ -431,11 +437,8 @@ public abstract class Server implements Runnable{
 					}
 
 					// Check if the data sent back to us was a ping all
-					if( ((ChatMessage)data.getData()).message.equals("/ping all") ){
-						if( pings.containsKey(data.getIPAddress()) ){
-							pings.put(data.getIPAddress(), data.getCalendar());
-						}
-						continue;
+					if( ((ChatMessage)data.getData()).message.startsWith("/ping") ){
+						data = new NetworkObject(getIPAddress(), data.getData(), data.getCalendar());
 					}
 
 					// Sent data to our subclass for processing

@@ -28,6 +28,7 @@ public class ChatClient extends Client {
 	 * @param name
 	 */
 	public void setName(String name){
+		name.trim(); // Remove spaces
 
 		// Tell the server to update this clients name as well!
 		try {

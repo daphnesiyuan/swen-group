@@ -192,7 +192,7 @@ public class ChatServer extends Server {
 			}
 
 			// Get the name they want to assign their name to
-			String newName = scan.nextLine();
+			String newName = scan.nextLine().trim();
 
 			// set "name" name worked
 			retrieveObject(new NetworkObject(IPAddress, new ChatMessage(client.getPlayerName()
@@ -250,10 +250,10 @@ public class ChatServer extends Server {
 			// Display the ping if it's a valid ping
 			if( delay != -1 ){
 				System.out.println(((ChatMessage)data.getData()).sendersName + " pinged the server at " + delay + "ms");
-				return false;
+				return true;
 			}
 
-			return true;
+			return false;
 		}
 
 		private boolean parseAdmins(Scanner scan, NetworkObject data) {
