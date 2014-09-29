@@ -44,9 +44,9 @@ public class  Game {
 		return mover.moveTo(move);
 	}
 
-	public boolean avatarInteractWithItem(String charName, Item item){
+	public boolean avatarInteractWithItem(String playerName, Item item){
 		for(Avatar avatar : activeAvatars){
-			if(avatar.getPlayerName().equals(charName)){
+			if(avatar.getPlayerName().equals(playerName)){
 				return avatar.interact(item);
 			}
 		}
@@ -93,9 +93,26 @@ public class  Game {
 		return null;
 	}
 
-	/*
-	 * Auxillary getters and setters
-	 */
+	public boolean removePlayerFromGame(String playerName){
+		Avatar leaving = null;
+		for(Avatar avatar : activeAvatars){
+			if(avatar.getPlayerName().equals(playerName)){
+				leaving = avatar;
+			}
+		}
+		if(leaving == null){
+			System.out.println("No player in game with name: "+playerName);
+			return false;
+		}
+		for(Item item : leaving.getInventory()){
+			item.returnToStartPos();
+		}
+		return activeAvatars.remove(leaving);
+	}
+
+
+
+
 	public void setActiveAvatars(List<Avatar> activeAvatars) {
 		this.activeAvatars = activeAvatars;
 	}
