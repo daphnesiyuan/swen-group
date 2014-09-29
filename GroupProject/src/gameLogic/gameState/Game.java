@@ -43,6 +43,12 @@ public class  Game {
 		NewGame newgame = new NewGame(this);
 	}
 
+	public boolean setPlayerName(String fromName, String toName){
+		// TODO
+		return true;
+	}
+
+
 	public boolean moveCharacter(Move move){
 
 		GameCharacter mover = null;
