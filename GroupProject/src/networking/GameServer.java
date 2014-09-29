@@ -19,7 +19,6 @@ public class GameServer extends Server {
 
 	// Complete chat history sent through the network
 	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
-
 	private Color chatMessageColor = Color.black;
 
 	// Game that all players are playing off
@@ -40,6 +39,9 @@ public class GameServer extends Server {
 			@Override
 			public void run(){
 				try {
+
+					updateAllClients();
+
 					Thread.sleep(30);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -219,20 +221,18 @@ public class GameServer extends Server {
 
 			// Set something
 			if (command.equals("/name")) {
-
 				return parseName(scan, data);
 			} else if (command.equals("/get")) {
-
 				return parseGet(scan, data);
 			} else if (command.equals("/ping")) {
-
 				return parsePing(scan, data);
 			} else if (command.equals("/close")){
 				return parseClose(scan,data);
 			} else if (command.equals("/admins")){
 				return parseAdmins(scan,data);
-			}
-			else if( command.equals("/help")){
+			}else if( command.equals("/chatcolor")){
+				return parseChatColor(scan,data);
+			}else if( command.equals("/help")){
 				return parseHelp(scan,data);
 			}
 
@@ -278,6 +278,12 @@ public class GameServer extends Server {
 			retrieveObject(new NetworkObject(IPAddress, new ChatMessage(client.getPlayerName()
 					+ " has changed their name to " + newName,chatMessageColor, true)));
 
+			// Update in game logic
+			if( !gameServer.setPlayerName(client.getPlayerName(), newName) ){
+				client.sendData(new ChatMessage("~Admin", "Failed to change your name in GameLogic from " + client.getPlayerName() + " to " + newName, chatMessageColor));
+			}
+
+			// Update servers name
 			client.setPlayerName(newName);
 
 			return true;
@@ -323,9 +329,12 @@ public class GameServer extends Server {
 		private boolean parsePing(Scanner scan, NetworkObject data) {
 
 			// Send history back to the client
-			long delay = pinged(data);
+			long delay = ping(scan, data);
 
-			System.out.println(((ChatMessage)data.getData()).sendersName + " pinged the server at " + delay + "ms");
+			// Display the ping if it's a valid ping
+			if( delay != -1 ){
+				System.out.println(((ChatMessage)data.getData()).sendersName + " pinged the server at " + delay + "ms");
+			}
 
 			return false;
 		}
@@ -352,6 +361,7 @@ public class GameServer extends Server {
 					+ "/get history 'number' -> Sends back the chat history up the the number of chats\n"
 					+ "/admins -> lists the IP's of the admins\n"
 					+ "/clear -> clears all messages off the screen\n"
+					+ "/chatcolor\n"
 					+ "/name 'string' -> changes your name\n\n"
 					+ "- ADMIN COMMANDS -\n"
 					+ "/close -> closes the server";
@@ -360,6 +370,55 @@ public class GameServer extends Server {
 			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",commandList, chatMessageColor, true));
 
 			return true;
+		}
+
+		private Color parseColor(Scanner scan, NetworkObject data){
+			if( scan.hasNext("/chatcolor") ){
+				scan.next();
+
+				if( scan.hasNextInt() ){
+					int r,g,b;
+
+					// Red
+					if( !scan.hasNextInt() ){
+						return null;
+					}
+
+					r = scan.nextInt();
+
+					// Green
+					if( !scan.hasNextInt() ){
+						return null;
+					}
+
+					g = scan.nextInt();
+
+					// Blue
+					if( !scan.hasNextInt() ){
+						return null;
+					}
+
+					b = scan.nextInt();
+
+					return new Color(r,g,b);
+				}
+				else if( scan.hasNext() ){
+
+					// Using a color name
+					return Color.getColor(scan.next());
+				}
+			}
+			return null;
+		}
+
+		private boolean parseChatColor(Scanner scan, NetworkObject data) {
+			Color newColor = parseColor(scan,data);
+			if( newColor != null ){
+				sendToAllClients(new ChatMessage("~Admin", getClientFromIP(data.getIPAddress()) + " has changed the color of their chat messages", chatMessageColor, true));
+				return true;
+			}
+
+			return false;
 		}
 	}
 

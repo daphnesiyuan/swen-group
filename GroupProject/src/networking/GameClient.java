@@ -199,8 +199,6 @@ public class GameClient extends Client {
 	 * @param chatMessage Message that was sent from the given IP
 	 */
 	public synchronized void retrievedUpdatedRoom(RoomUpdate room){
-
-		//TODO Perform an action on the current room
 		synchronized(roomLock){
 			clientRoom = room.updatedRoom;
 
