@@ -13,7 +13,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Scanner;
 
 /**
@@ -28,7 +27,7 @@ public abstract class Server implements Runnable{
 																// IP Addresses
 
 	// Pings from IP to time sent
-	private HashMap<String, Calendar> pings = new HashMap<String, Calendar>();
+	private HashMap<String, Calendar> lastPinged = new HashMap<String, Calendar>();
 
 	protected String IPAddress;
 	private int port = 32768;
@@ -51,7 +50,7 @@ public abstract class Server implements Runnable{
 		myThread.start();
 
 		// Check for dead clients
-		/*Thread checkClients = new Thread(){
+		Thread checkClients = new Thread(){
 
 			final long MAX_DISCONNECT_TIME = 5000;
 
@@ -60,20 +59,7 @@ public abstract class Server implements Runnable{
 
 				while( true ){
 
-					ArrayList<String> dead = new ArrayList<String>();
-					long currentMillis = Calendar.getInstance().getTimeInMillis();
-
-					// Check for last pings
-					for( String IP : pings.keySet() ){
-						Calendar date = pings.get(IP);
-						if( ( date.getTimeInMillis() + MAX_DISCONNECT_TIME ) > currentMillis ){
-							dead.add(IP);
-						}
-					}
-
-					while( !dead.isEmpty() ){
-						removeClient(getClientFromIP(dead.remove(0)));
-					}
+					pingClients();
 
 					try {
 						sleep(5000);
@@ -84,13 +70,12 @@ public abstract class Server implements Runnable{
 				}
 			}
 		};
-		checkClients.start();*/
+		checkClients.start();
 
 		// What happens when shut down
 		Runtime.getRuntime().addShutdownHook(new Thread(){
 			@Override
 			public void run(){
-				System.out.println("SHUT DOWN BITCH");
 				stopServer();
 			}
 		});
@@ -148,7 +133,7 @@ public abstract class Server implements Runnable{
 				removeClient(clients.get(0),false);
 			}
 		}
-		System.out.print("WARNING: The Server has been closed\n");
+		System.out.print("WARNING: The Server has closed\n");
 	}
 
 	/**
@@ -202,8 +187,6 @@ public abstract class Server implements Runnable{
 
 	protected synchronized void pingClient(String whoToPing, NetworkObject data){
 
-		System.out.println("whoToPing");
-
 		// Get who pinged the server
 		ClientThread to = getClientFromName(whoToPing);
 
@@ -212,6 +195,8 @@ public abstract class Server implements Runnable{
 			System.out.println("Couldnt find client from Name");
 			to = getClientFromIP(whoToPing);
 			if( to == null ){
+
+				// Couldn't send TO a person
 				System.out.println("Unable to find client with whoToPing: " + whoToPing);
 				return;
 			}
@@ -251,40 +236,16 @@ public abstract class Server implements Runnable{
 	 */
 	protected synchronized void pingClients() {
 
-		final HashMap<String, Calendar> sentPings = new HashMap<String, Calendar>();
-
-		// Send a ping to every client
 		for (int i = 0; i < clients.size(); i++) {
-			clients.get(i).sendData(new ChatMessage("/ping all", Color.black, true));
 
-			sentPings.put(clients.get(i).getIPAddress(), Calendar.getInstance());
-		}
+			ClientThread client = clients.get(i);
 
-		final long time = System.nanoTime();
-		final long runTime = 10000;
-		Thread pingThread = new Thread(){
-			@Override
-			public void run(){
+			pingClient(client.getPlayerName(), new NetworkObject(IPAddress, new ChatMessage("~Admin","/ping everyone",Color.black,true)));
 
-				long lapse = System.nanoTime();
-				if( sentPings.isEmpty() || (time + runTime) > lapse){
-					//stop();
-				}
-
-				// Check for pings
-				/*if( !pings.isEmpty() ){
-
-					for( String sentIP : sentPings.keySet() ){
-
-						// Has this IP been sent back to us yet?
-						if( pings.containsKey(sentIP)){
-							// Remove from everywhere
-						}
-					}
-
-				}*/
+			if( !clients.contains(client) ){
+				i--;
 			}
-		};
+		}
 	}
 
 	/**
@@ -351,8 +312,9 @@ public abstract class Server implements Runnable{
 	}
 
 	protected ClientThread getClientFromName(String name) {
+
+		// TODO HACK. Make FASTER!
 		for (int i = 0; i < clients.size(); i++) {
-			System.out.println("Name: " + clients.get(i).getPlayerName());
 			if (clients.get(i).getPlayerName().equals(name)) {
 				return clients.get(i);
 			}
@@ -362,6 +324,8 @@ public abstract class Server implements Runnable{
 	}
 
 	protected ClientThread getClientFromIP(String IP) {
+
+		// TODO HACK. Make FASTER!
 		for (int i = 0; i < clients.size(); i++) {
 			if (clients.get(i).getIPAddress().equals(IP)) {
 				return clients.get(i);
@@ -422,7 +386,15 @@ public abstract class Server implements Runnable{
 
 					// Check if the data sent back to us was a ping all
 					if( ((ChatMessage)data.getData()).message.startsWith("/ping") ){
-						data = new NetworkObject(getIPAddress(), data.getData(), data.getCalendar());
+
+						// Ping Everyone
+						if( ((ChatMessage)data.getData()).message.startsWith("/ping everyone") ){
+							lastPinged.put(getPlayerName(), Calendar.getInstance());
+							return;
+						}
+						else{
+							data = new NetworkObject(getIPAddress(), data.getData(), data.getCalendar());
+						}
 					}
 
 					// Sent data to our subclass for processing

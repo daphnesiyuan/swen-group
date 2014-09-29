@@ -241,8 +241,6 @@ public class ChatServer extends Server {
 
 		private boolean parsePing(Scanner scan, NetworkObject data) {
 
-			System.out.println("Parsed");
-
 			// Send history back to the client
 			long delay = ping(scan, data);
 

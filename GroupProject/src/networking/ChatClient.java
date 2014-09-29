@@ -127,9 +127,6 @@ public class ChatClient extends Client {
 
 			// Ping command is received
 			if( scan.hasNext("/ping") ){ scan.next();
-
-				chatHistory.add(new ChatMessage("THIIIIIIIISSSSSSS","Someone pinged me",chatMessage.color));
-
 				if( scan.hasNext(clientName) ){
 
 					// Someone Pinged me
@@ -137,10 +134,13 @@ public class ChatClient extends Client {
 
 					try {
 						sendData(new ChatMessage(chatMessage.sendersName + " pinged " + clientName + " at " + delay + "ms",chatMessage.color,true));
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					} catch (IOException e) {}
+				}
+				else if( scan.hasNext("everyone") ){
+					try {
+						sendData(chatMessage);
+					} catch (IOException e) {}
+					return;
 				}
 			}
 		}
