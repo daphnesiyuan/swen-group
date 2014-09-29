@@ -52,11 +52,13 @@ public class Rendering extends JPanel implements KeyListener{
 	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
 
 	DrawWorld draw;
-
+	DrawInventory inventory;
+	DrawCompass compass;
 	DrawChat chat;
+
 	String currentMessage;
 
-	Tile2D tile = new Floor(1,4,"f", false);
+	Tile2D tile = new Floor(1,4, false);
 
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 	boolean chatMode;
@@ -68,6 +70,9 @@ public class Rendering extends JPanel implements KeyListener{
 		this.room = room;
 		direction = 0;
 		draw = new DrawWorld(charac, this);
+		inventory = new DrawInventory(this);
+		compass = new DrawCompass(this);
+
 		directionMap.put(0, "north");
 		directionMap.put(1, "west");
 		directionMap.put(2, "south");
@@ -85,6 +90,8 @@ public class Rendering extends JPanel implements KeyListener{
 	protected void paintComponent(Graphics g) {
 
 		draw.redraw(g, room, directionMap.get(direction));
+		inventory.redraw(g, charac.getInventory(), Direction.get(direction));
+		compass.redraw(g, Direction.get(direction));
 		if(chatMode)chat.redraw(g, chatMessages, currentMessage);
 	}
 

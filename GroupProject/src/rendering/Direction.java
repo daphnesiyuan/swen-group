@@ -51,7 +51,7 @@ public class Direction {
 		if (direction == 2){
 			return "South";
 		}
-		if (direction == 2){
+		if (direction == 3){
 			return "West";
 		}
 		//should never get here

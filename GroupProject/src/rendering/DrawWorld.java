@@ -27,7 +27,7 @@ import gameLogic.Tile2D;
 
 /**
  * This class will draw the location and everything in it.
- * It will also draw the inventory and compas.
+ * It will also draw the DrawInventory and compas.
  * @author northleon
  *
  */
@@ -42,10 +42,12 @@ public class DrawWorld {
 	JPanel panel;
 	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
 	Map<String, Integer> directionMap = new HashMap<String, Integer>();
+	Point relativeOffset;
 
 	public DrawWorld(Avatar character, Rendering rendering){
 		this.character = character;
 		this.panel = rendering;
+		relativeOffset = new Point(character.getCurrentTile().getxPos(), character.getCurrentTile().getxPos());
 		directionMap.put("north", 0);
 		directionMap.put("west", 1);
 		directionMap.put("south", 2);
@@ -56,6 +58,7 @@ public class DrawWorld {
 	public DrawWorld(Avatar character, DrawingPanel rendering){
 		this.character = character;
 		this.panel = rendering;
+		relativeOffset = new Point(character.getCurrentTile().getxPos(), character.getCurrentTile().getxPos());
 		directionMap.put("north", 0);
 		directionMap.put("west", 1);
 		directionMap.put("south", 2);
@@ -77,27 +80,8 @@ public class DrawWorld {
 		width =(int) (1 * scale);
 		height = width;
 
-
-
 		//set offset based on character position.
-		//This doesn't really work very well because the tiles x
-		//and y will not change with my rotate. Will fix later.
-
-		System.out.println(offset.toString());
-
-		Point temp = twoDToIso(new Point(character.getCurrentTile().getXPos()
-				* height, character.getCurrentTile().getYPos() * width));
-		System.out.println("temp: "+temp.toString());
-		System.out.println(character.getCurrentTile().getXPos());
-		System.out.println(height);
-		System.out.println(character.getCurrentTile().getYPos());
-		System.out.println(width);
-		offset.x = (panel.getWidth() / 2) + temp.x; // need to get rid of magic
-													// numbers
-		offset.y = (panel.getHeight()/2) - temp.y;
-
-		System.out.println(offset.toString());
-
+		calibrateOffset(direction, room);
 
 
 		g.setColor(Color.BLACK);
@@ -105,10 +89,31 @@ public class DrawWorld {
 		drawLocation(g, room, direction);
 //		drawInventory(g);
 //		drawCompas(g);
-
 	}
 
 
+
+	private void calibrateOffset(String direction, Room room) {
+		//This doesn't really work very well because the tiles x
+		//and y will not change with my rotate. Will fix later.
+
+		Point temp = twoDToIso(new Point(character.getCurrentTile().getxPos()
+				* height, character.getCurrentTile().getyPos() * width));
+		offset.x = (panel.getWidth() / 2) + temp.x; // need to get rid of magic numbers
+		offset.y = (panel.getHeight()/2) - temp.y;
+
+//		int width = room.getTiles().length;
+//		for (int i = 0; i < Direction.get(direction); i++){
+//			relativeOffset.setLocation(width - relativeOffset.getX() - 1, relativeOffset.getY());
+//
+//		}
+//
+//		Point temp = twoDToIso(new Point(relativeOffset.x
+//				* height, relativeOffset.y * width));
+//		offset.x = (panel.getWidth() / 2) + temp.x; // need to get rid of magic numbers
+//		offset.y = (panel.getHeight()/2) - temp.y;
+
+	}
 
 	/**
 	 * Gets tiles from the room provided. Rotates them to the direction
@@ -139,7 +144,10 @@ public class DrawWorld {
 			for (int j = 0; j < tiles[i].length; j++) {
 				int x = i * width;
 				int y = j * height;
-				placeTile(twoDToIso(new Point(x,y)),tiles[i][j],g);
+				Point point = twoDToIso(new Point(x,y));
+				drawTile(point,tiles[i][j],g);
+				drawItems(g, point, tiles[i][j]);
+				drawCharacter(g, point, tiles[i][j]);
 			}
 		}
 	}
@@ -168,13 +176,12 @@ public class DrawWorld {
 	 * @param String tileName
 	 * @param Graphics g
 	 */
-	private void placeTile(Point pt, Tile2D tile, Graphics g) {
+	private void drawTile(Point pt, Tile2D tile, Graphics g) {
 		String tileName = tile.getClass().getName();
 		java.net.URL imageURL = Rendering.class.getResource(tileName+".png");
 		drawObject(g, pt, imageURL);
 
-		drawItems(g, pt, tile);
-		drawCharacter(g, pt, tile);
+
 	}
 
 	/**
@@ -209,17 +216,10 @@ public class DrawWorld {
 	 * @param Graphics g
 	 */
 	private void drawCharacter(Graphics g, Point pt, Tile2D tile) {
-		// this if statement is only used until ryan finished the getCharacter() method on Tile2D class
-		String characterName = null;
-		if (character.getCurrentTile().getXPos() == tile.getXPos() &&
-				character.getCurrentTile().getYPos() == tile.getYPos()){
-			characterName = character.getClass().getName();
-		} else{
+		if(tile.getAvatarOnTile() == null) {
 			return;
 		}
-
-		//if (tile.getCharacter == null){return;}
-		//String characterName = tile.getCharacter.getClass().getName();
+		String characterName = tile.getAvatarOnTile().getClass().getName();
 		java.net.URL imageURL = Rendering.class.getResource(characterName+".png");
 		drawObject(g, pt, imageURL);
 	}
@@ -231,23 +231,12 @@ public class DrawWorld {
 	 * @param Graphics g
 	 */
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
-//		Currently this method does not work because tile.getItem()
-//		throws an out of bounds exception
-
-//
-//		Item tempItem = tile.getItem() ;
-//		while (tempItem != null){
-//			System.out.println(tempItem.toString());
-//			tempItem = tile.getItem();
-//		}
-
-
-		Item tempItem = tile.getTopItem() ;
-		while (tempItem != null){
-			System.out.println(tempItem.toString());
-			tempItem = tile.getTopItem();
+		List<Item> items = tile.getItemsOnTile();
+		for(int i = 0; i < items.size(); i++){
+			String itemName = items.get(i).getClass().getName();
+			java.net.URL imageURL = Rendering.class.getResource(itemName+".png");
+			drawObject(g, pt, imageURL);
 		}
-
 
 	}
 

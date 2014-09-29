@@ -13,3 +13,6 @@
 /DrawWorld.class
 /DrawChat.class
 /Direction.class
+/inventory.class
+/DrawInventory.class
+/DrawCompass.class
