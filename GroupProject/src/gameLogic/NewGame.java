@@ -40,7 +40,7 @@ public class NewGame {
 		activeCharacters = createCharacters();
 
 		game.setRoomsInGame(roomsInGame);
-		game.setActiveCharacters(activeCharacters);
+		game.setActiveAvatars(activeCharacters);
 
 
 	}

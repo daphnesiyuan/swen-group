@@ -7,7 +7,7 @@ public class Room {
 
 	Tile2D[][] tiles;
 	List <Item> items;
-	List<Avatar> characters;
+	List<Avatar> avatars;
 	List<Door> doors;
 	List<Floor> floors;
 	List<Floor> spawns;
@@ -48,12 +48,12 @@ public class Room {
 		return tiles;
 	}
 
-	public List<Avatar> getCharacters() {
-		return characters;
+	public List<Avatar> getAvatars() {
+		return avatars;
 	}
 
-	public void setCharacters(List<Avatar> characters) {
-		this.characters = characters;
+	public void setAvatars(List<Avatar> avatars) {
+		this.avatars = avatars;
 	}
 
 	public void setDoors(List<Door> roomDoors) {

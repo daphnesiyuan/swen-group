@@ -8,15 +8,15 @@ import java.util.List;
 
 public class Tile2D {
 
-	int xPos;
-	int yPos;
-	String type;
-	Room room;
+	private int xPos;
+	private int yPos;
+	private String type;
+	private Room room;
 
-	List <Item> itemsOnTile;
+	private List <Item> itemsOnTile;
 
 	// One character per Tile at any given time
-	Avatar characterOnTile;
+	private Avatar avatarOnTile;
 
 
 	public Tile2D(int xPos, int yPos) {
@@ -24,11 +24,7 @@ public class Tile2D {
 		this.yPos = yPos;
 
 		itemsOnTile = new ArrayList<Item>();
-		characterOnTile = null;
-	}
-
-	public Avatar getCharacter(){
-		return characterOnTile;
+		avatarOnTile = null;
 	}
 
 	// items on tile will be returned with the lowest weights first
@@ -73,59 +69,25 @@ public class Tile2D {
 		else return newTile;
 	}
 
-	/**
-	 * @return a list of all items on a tile, Items with lower weights are closer to the start of the list
-	 */
-
-	public List<Item> getItems(){
-		return itemsOnTile;
-	}
-	/**
-	 * @return the Item with the lowest weight (on top) of the tile.
-	 */
 	public Item getTopItem(){
 		if(itemsOnTile.size()==0) return null;
 		return itemsOnTile.get(0);
-
 	}
 
-
-	public int getXPos(){
-		return xPos;
-	}
-	public int getYPos(){
-		return yPos;
-	}
-
-	public String getType(){
-		return type;
-	}
-
-	public void setRoom(Room r) {
-		room = r;
-
-	}
-
-	public Room getRoom(){
-		return room;
-	}
-
-	// Can a Character move on top of this tile
 	public boolean canMoveTo(){
 		return true;
-
+		//TODO
 	}
 
 	public void removePlayer(Avatar player) {
-		if(characterOnTile.equals(player)){
-			characterOnTile = null;
+		if(avatarOnTile.equals(player)){
+			avatarOnTile = null;
 		}
 		else System.out.println("Tile2D: removePlayer(); Error removing character from tile");
 	}
 
 	public void addPlayer(Avatar player) {
-		characterOnTile = player;
-
+		avatarOnTile = player;
 	}
 
 	public int getxPos() {
@@ -144,6 +106,22 @@ public class Tile2D {
 		this.yPos = yPos;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Room getRoom() {
+		return room;
+	}
+
+	public void setRoom(Room room) {
+		this.room = room;
+	}
+
 	public List<Item> getItemsOnTile() {
 		return itemsOnTile;
 	}
@@ -152,17 +130,11 @@ public class Tile2D {
 		this.itemsOnTile = itemsOnTile;
 	}
 
-	public Avatar getCharacterOnTile() {
-		return characterOnTile;
+	public Avatar getAvatarOnTile() {
+		return avatarOnTile;
 	}
 
-	public void setCharacterOnTile(Avatar characterOnTile) {
-		this.characterOnTile = characterOnTile;
+	public void setAvatarOnTile(Avatar avatarOnTile) {
+		this.avatarOnTile = avatarOnTile;
 	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-
 }

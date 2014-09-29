@@ -70,12 +70,12 @@ public class Avatar {
 			int newX = door.getToRoomXPos();
 			int newY = door.getToRoomYPos();
 
-			return changeRoom(newRoomIndex,newX,newY);
+			if (changeRoom(newRoomIndex,newX,newY) == false) return false;
 
 
 		}
+		updateFacing(newPosition);
 		updateTile(newPosition);
-		updateFacing(move);
 		return true;
 
 	}
@@ -89,13 +89,11 @@ public class Avatar {
 	}
 
 
-	public void updateFacing(Move move){
-		// needs thought - rotatable room + factor of current facing direction
-
-		if(move.getInteraction().equals("W")) facing = Facing.North;
-		else if(move.getInteraction().equals("A")) facing = Facing.West;
-		else if(move.getInteraction().equals("S")) facing = Facing.South;
-		else if(move.getInteraction().equals("D")) facing = Facing.East;
+	public void updateFacing(Tile2D newPosition){
+		if(newPosition.equals(currentTile.getTileUp())) facing = Facing.North;
+		else if(newPosition.equals(currentTile.getTileRight())) facing = Facing.East;
+		else if(newPosition.equals(currentTile.getTileDown())) facing = Facing.South;
+		else if(newPosition.equals(currentTile.getTileLeft())) facing = Facing.West;
 	}
 
 	private boolean changeRoom(int newRoomIndex, int newX, int newY){

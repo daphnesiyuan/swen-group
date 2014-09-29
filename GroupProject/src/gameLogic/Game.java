@@ -31,23 +31,23 @@ public class  Game {
 
 
 
-	public boolean moveCharacter(Move move){
+	public boolean moveAvatar(Move move){
 
 		Avatar mover = null;
 
-		for(Avatar character : activeAvatars){
-			if(character.getPlayerName().equals(move.getPlayer().getName())){
-				mover = character;
+		for(Avatar avatar : activeAvatars){
+			if(avatar.getPlayerName().equals(move.getPlayer().getName())){
+				mover = avatar;
 			}
 		}
 		if(mover==null) return false;
 		return mover.moveTo(move);
 	}
 
-	public boolean characterInteractWithItem(String charName, Item item){
-		for(Avatar character : activeAvatars){
-			if(character.getPlayerName().equals(charName)){
-				return character.interact(item);
+	public boolean avatarInteractWithItem(String charName, Item item){
+		for(Avatar avatar : activeAvatars){
+			if(avatar.getPlayerName().equals(charName)){
+				return avatar.interact(item);
 			}
 		}
 		return false;
@@ -60,7 +60,7 @@ public class  Game {
 	 */
 	public Room getRoom(String playerName){
 		for(Room room : roomsInGame){
-			for(Avatar player : room.getCharacters()){
+			for(Avatar player : room.getAvatars()){
 				if(player.getPlayerName().equals(playerName)){
 					return player.getCurrentRoom();
 				}
@@ -96,8 +96,8 @@ public class  Game {
 	/*
 	 * Auxillary getters and setters
 	 */
-	public void setActiveCharacters(List<Avatar> activeCharacters) {
-		this.activeAvatars = activeCharacters;
+	public void setActiveAvatars(List<Avatar> activeAvatars) {
+		this.activeAvatars = activeAvatars;
 	}
 
 	public List<Room> getRoomsInGame() {
@@ -110,7 +110,7 @@ public class  Game {
 	}
 
 
-	public List<Avatar> getActiveCharacters() {
+	public List<Avatar> getActiveAvatars() {
 		return activeAvatars;
 	}
 

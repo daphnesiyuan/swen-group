@@ -122,7 +122,7 @@ public class GameServer extends Server {
 	public void processMove(Move move, NetworkObject data){
 
 		synchronized(serverLock){
-			gameServer.moveCharacter(move);
+			gameServer.moveAvatar(move);
 		}
 	}
 
