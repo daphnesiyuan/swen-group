@@ -71,10 +71,10 @@ public class GameClient extends Client {
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
 	 */
-	public boolean sendMoveToServer(String interaction) throws IOException{
+	public boolean sendMoveToServer(Move interaction) throws IOException{
 
 		// Send data to the server
-		return super.sendData(new Move(player, interaction));
+		return super.sendData(interaction);
 	}
 
 	/**

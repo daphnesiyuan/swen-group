@@ -123,10 +123,15 @@ public class ChatClient extends Client {
 		}
 		else if( !data.getIPAddress().equals(IPAddress) ){
 
+
+			// Someone else pinged me
 			if( scan.hasNext("/ping") ){ scan.next();
 
+				chatHistory.add(new ChatMessage("THIIIIIIIISSSSSSS","Someone pinged me",chatMessage.color));
 
-				if( scan.hasNext(clientName)){
+				if( scan.hasNext(clientName) ){
+
+					chatHistory.add(new ChatMessage("THIIIIIIIISSSSSSS","Has My name in it",chatMessage.color));
 
 					// I was pinged?
 					long delay = Math.abs(data.getCalendar().getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
@@ -136,8 +141,12 @@ public class ChatClient extends Client {
 						sendData(new ChatMessage(chatMessage.sendersName,"Pinged " + clientName + " in " + delay + "ms", chatMessageColor, true));
 					} catch (IOException e) {}
 
-					// Tell ME that I was pinged
-					chatMessage = (new ChatMessage(chatMessage.sendersName + " pinged you in " + delay + "ms",chatMessage.color,true));
+					// I don't want to do anything
+					return;
+				}
+				else{
+					chatHistory.add(new ChatMessage("THIIIIIIIISSSSSSS","Does NOT have my name in it",chatMessage.color));
+					System.out.println(scan.hasNext());
 				}
 			}
 		}

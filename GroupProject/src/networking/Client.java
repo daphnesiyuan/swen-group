@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.net.ConnectException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -128,7 +129,6 @@ public abstract class Client implements Runnable{
 	public void run() {
 		try{
 
-
 			while( socket != null && !socket.isClosed() ){
 
 				// Wait for text
@@ -151,6 +151,9 @@ public abstract class Client implements Runnable{
 
 		}
 		catch(SocketException e){
+			e.printStackTrace();
+		}
+		catch(StreamCorruptedException e){
 			e.printStackTrace();
 		}
 		catch(IOException e){

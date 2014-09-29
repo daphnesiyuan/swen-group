@@ -250,6 +250,7 @@ public class ChatServer extends Server {
 			// Display the ping if it's a valid ping
 			if( delay != -1 ){
 				System.out.println(((ChatMessage)data.getData()).sendersName + " pinged the server at " + delay + "ms");
+				return false;
 			}
 
 			return true;
