@@ -1,7 +1,4 @@
-package gameLogic.location;
-
-import gameLogic.entity.GameCharacter;
-import gameLogic.physical.Item;
+package gameLogic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +15,7 @@ public class Tile2D {
 
 	List <Item> itemsOnTile;
 
-	List <GameCharacter> charactersOnTile;
+	List <Avatar> charactersOnTile;
 
 
 	public Tile2D(int x, int y, String t) {
@@ -28,16 +25,18 @@ public class Tile2D {
 
 		itemsOnTile = new ArrayList<Item>();
 
-		charactersOnTile = new ArrayList<GameCharacter>();
+		charactersOnTile = new ArrayList<Avatar>();
 	}
-	
-	public getCharacter(){
+
+	public Avatar getCharacter(){
+		//TODO -> hard coded
 		// There are no characters on this tile
 		if(charactersOnTile.size()==0) return null;
-		
+		return charactersOnTile.get(0);
+
 	}
-	
-	
+
+
 
 
 	// items on tile will be returned with the lowest weights first
@@ -123,6 +122,61 @@ public class Tile2D {
 	public boolean canMoveTo(){
 		return true;
 
+	}
+
+	public void removePlayer(Avatar player) {
+		boolean removed = false;
+		Avatar avatar = null;
+
+		for(Avatar gc : charactersOnTile){
+			if(gc.equals(player)){
+				avatar = gc;
+				removed = true;
+			}
+		}
+		if(removed==false) System.out.println("Tile2D: removePlayer(); Error removing character from tile");
+		else charactersOnTile.remove(avatar);
+	}
+
+	public void addPlayer(Avatar player) {
+		charactersOnTile.add(player);
+
+	}
+
+	public int getxPos() {
+		return xPos;
+	}
+
+	public void setxPos(int xPos) {
+		this.xPos = xPos;
+	}
+
+	public int getyPos() {
+		return yPos;
+	}
+
+	public void setyPos(int yPos) {
+		this.yPos = yPos;
+	}
+
+	public List<Item> getItemsOnTile() {
+		return itemsOnTile;
+	}
+
+	public void setItemsOnTile(List<Item> itemsOnTile) {
+		this.itemsOnTile = itemsOnTile;
+	}
+
+	public List<Avatar> getCharactersOnTile() {
+		return charactersOnTile;
+	}
+
+	public void setCharactersOnTile(List<Avatar> charactersOnTile) {
+		this.charactersOnTile = charactersOnTile;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 

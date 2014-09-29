@@ -20,10 +20,10 @@ import javax.swing.JPanel;
 
 import networking.ChatMessage;
 import GUI.DrawingPanel;
-import gameLogic.entity.GameCharacter;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.physical.Item;
+import gameLogic.Avatar;
+import gameLogic.Item;
+import gameLogic.Room;
+import gameLogic.Tile2D;
 
 /**
  * This class will draw the location and everything in it.
@@ -33,7 +33,7 @@ import gameLogic.physical.Item;
  */
 public class DrawWorld {
 
-	GameCharacter character; // the main player
+	Avatar character; // the main player
 
 	double scale;
 	int width;
@@ -43,7 +43,7 @@ public class DrawWorld {
 	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
 	Map<String, Integer> directionMap = new HashMap<String, Integer>();
 
-	public DrawWorld(GameCharacter character, Rendering rendering){
+	public DrawWorld(Avatar character, Rendering rendering){
 		this.character = character;
 		this.panel = rendering;
 		directionMap.put("north", 0);
@@ -53,7 +53,7 @@ public class DrawWorld {
 	}
 
 	//This constructor is only for testing
-	public DrawWorld(GameCharacter character, DrawingPanel rendering){
+	public DrawWorld(Avatar character, DrawingPanel rendering){
 		this.character = character;
 		this.panel = rendering;
 		directionMap.put("north", 0);
@@ -67,10 +67,10 @@ public class DrawWorld {
 	 * This method will be call externally from the UI to draw everything gameplay related
 	 * @param Graphics g
 	 * @param Room room
-	 * @param GameCharacter character
+	 * @param Avatar character
 	 * @param String direction
 	 */
-	public void redraw(Graphics g, Room room, String direction, List<ChatMessage> chatMessages){
+	public void redraw(Graphics g, Room room, String direction){
 
 		//set offset based on character position.
 		//This doesn't really work very well because the tiles x
@@ -91,26 +91,10 @@ public class DrawWorld {
 		drawLocation(g, room, direction);
 //		drawInventory(g);
 //		drawCompas(g);
-		if(chatMessages != null){
-		drawChat(g, chatMessages);
-	}
+
 	}
 
-	private void drawChat(Graphics g, List<ChatMessage> chatMessages) {
-		Graphics2D g2d = (Graphics2D) g;
-		int fontSize = (int)((panel.WIDTH / 128)*1.2);
-		g2d.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
-		//g2d.drawRect(0, 0, panel.getWidth(), panel.getHeight());
-		for (int i = 0; i < chatMessages.size(); i++){
-			g2d.setColor(chatMessages.get(i).color);
-			String nameAndMessage = chatMessages.get(i).sendersName;
-			nameAndMessage += ": ";
-			nameAndMessage += chatMessages.get(i).message;
-			int y = fontSize * i;
-			//int x =
 
-		}
-	}
 
 	/**
 	 * Gets tiles from the room provided. Rotates them to the direction
@@ -141,7 +125,6 @@ public class DrawWorld {
 			for (int j = 0; j < tiles[i].length; j++) {
 				int x = i * width;
 				int y = j * height;
-				//String tileName = tiles[i][j].getClass().getName();
 				placeTile(twoDToIso(new Point(x,y)),tiles[i][j],g);
 			}
 		}
@@ -237,15 +220,24 @@ public class DrawWorld {
 //		Currently this method does not work because tile.getItem()
 //		throws an out of bounds exception
 
+//
+//		Item tempItem = tile.getItem() ;
+//		while (tempItem != null){
+//			System.out.println(tempItem.toString());
+//			tempItem = tile.getItem();
+//		}
+
+
 		Item tempItem = tile.getTopItem() ;
 		while (tempItem != null){
 			System.out.println(tempItem.toString());
 			tempItem = tile.getTopItem();
 		}
 
+
 	}
 
-	public void setCharacter(GameCharacter character){
+	public void setCharacter(Avatar character){
 		this.character = character;
 	}
 

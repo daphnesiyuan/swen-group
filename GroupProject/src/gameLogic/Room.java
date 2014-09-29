@@ -1,7 +1,4 @@
-package gameLogic.location;
-
-import gameLogic.entity.GameCharacter;
-import gameLogic.physical.Item;
+package gameLogic;
 
 import java.util.List;
 
@@ -10,13 +7,13 @@ public class Room {
 
 	Tile2D[][] tiles;
 	List <? extends Item> items;
-	List<GameCharacter> characters;
+	List<Avatar> characters;
 
-	public List<GameCharacter> getCharacters() {
+	public List<Avatar> getCharacters() {
 		return characters;
 	}
 
-	public void setCharacters(List<GameCharacter> characters) {
+	public void setCharacters(List<Avatar> characters) {
 		this.characters = characters;
 	}
 
@@ -44,7 +41,7 @@ public class Room {
 	}
 
 
-	public boolean checkValidCharacterMove(GameCharacter mover, Tile2D move) {
+	public boolean checkValidCharacterMove(Avatar mover, Tile2D move) {
 
 		// if the move is the characters current square - return false
 		if(mover.getCurrentTile().equals(move)) return false;
@@ -84,6 +81,38 @@ public class Room {
 
 	public int getRoomNumber(){
 		return roomNumber;
+	}
+
+	public List<? extends Item> getItems() {
+		return items;
+	}
+
+	public void setItems(List<? extends Item> items) {
+		this.items = items;
+	}
+
+	public List<Door> getDoors() {
+		return doors;
+	}
+
+	public List<Floor> getFloors() {
+		return floors;
+	}
+
+	public List<Floor> getSpawns() {
+		return spawns;
+	}
+
+	public List<Wall> getWalls() {
+		return walls;
+	}
+
+	public void setTiles(Tile2D[][] tiles) {
+		this.tiles = tiles;
+	}
+
+	public void setRoomNumber(int roomNumber) {
+		this.roomNumber = roomNumber;
 	}
 
 

@@ -1,6 +1,6 @@
 package networking;
 
-import gameLogic.location.Room;
+import gameLogic.Room;
 
 import java.awt.Color;
 import java.io.IOException;

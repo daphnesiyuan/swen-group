@@ -1,11 +1,11 @@
 package rendering;
 
-import gameLogic.location.Door;
-import gameLogic.location.Floor;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.location.Wall;
-import gameLogic.physical.Item;
+import gameLogic.Door;
+import gameLogic.Floor;
+import gameLogic.Item;
+import gameLogic.Room;
+import gameLogic.Tile2D;
+import gameLogic.Wall;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -14,7 +14,11 @@ import java.util.List;
 import javax.swing.JFrame;
 
 
-
+/**
+ *
+ * @author northleon
+ *
+ */
 public class testRendering extends javax.swing.JFrame {
 
 	public static Rendering canvas;
@@ -46,6 +50,11 @@ public class testRendering extends javax.swing.JFrame {
 		};
 
 		Room room = new Room(roomNumber,tiles,null);
+		for(int i = 0; i < tiles.length; i++){
+			for(int j = 0; j < tiles[i].length; j++){
+				tiles[i][j].setRoom(room);
+			}
+		}
 		return room;
 	}
 

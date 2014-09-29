@@ -1,7 +1,7 @@
 package networking;
 
-import gameLogic.gameState.Game;
-import gameLogic.location.Room;
+import gameLogic.Game;
+import gameLogic.Room;
 
 import java.awt.Color;
 import java.io.BufferedReader;
