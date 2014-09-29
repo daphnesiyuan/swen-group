@@ -14,7 +14,11 @@ import java.util.List;
 import javax.swing.JFrame;
 
 
-
+/**
+ *
+ * @author northleon
+ *
+ */
 public class testRendering extends javax.swing.JFrame {
 
 	public static Rendering canvas;

@@ -70,7 +70,7 @@ public class DrawWorld {
 	 * @param GameCharacter character
 	 * @param String direction
 	 */
-	public void redraw(Graphics g, Room room, String direction, List<ChatMessage> chatMessages){
+	public void redraw(Graphics g, Room room, String direction){
 
 		//set offset based on character position.
 		//This doesn't really work very well because the tiles x
@@ -91,26 +91,10 @@ public class DrawWorld {
 		drawLocation(g, room, direction);
 //		drawInventory(g);
 //		drawCompas(g);
-		if(chatMessages != null){
-		drawChat(g, chatMessages);
-	}
+
 	}
 
-	private void drawChat(Graphics g, List<ChatMessage> chatMessages) {
-		Graphics2D g2d = (Graphics2D) g;
-		int fontSize = (int)((panel.WIDTH / 128)*1.2);
-		g2d.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
-		//g2d.drawRect(0, 0, panel.getWidth(), panel.getHeight());
-		for (int i = 0; i < chatMessages.size(); i++){
-			g2d.setColor(chatMessages.get(i).color);
-			String nameAndMessage = chatMessages.get(i).sendersName;
-			nameAndMessage += ": ";
-			nameAndMessage += chatMessages.get(i).message;
-			int y = fontSize * i;
-			//int x =
 
-		}
-	}
 
 	/**
 	 * Gets tiles from the room provided. Rotates them to the direction
@@ -141,7 +125,6 @@ public class DrawWorld {
 			for (int j = 0; j < tiles[i].length; j++) {
 				int x = i * width;
 				int y = j * height;
-				//String tileName = tiles[i][j].getClass().getName();
 				placeTile(twoDToIso(new Point(x,y)),tiles[i][j],g);
 			}
 		}
@@ -236,12 +219,12 @@ public class DrawWorld {
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
 //		Currently this method does not work because tile.getItem()
 //		throws an out of bounds exception
-
-		Item tempItem = tile.getItem() ;
-		while (tempItem != null){
-			System.out.println(tempItem.toString());
-			tempItem = tile.getItem();
-		}
+//
+//		Item tempItem = tile.getItem() ;
+//		while (tempItem != null){
+//			System.out.println(tempItem.toString());
+//			tempItem = tile.getItem();
+//		}
 
 	}
 
