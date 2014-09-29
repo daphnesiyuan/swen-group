@@ -45,7 +45,7 @@ public class  Game {
 		GameCharacter mover = null;
 
 		for(GameCharacter character : activeCharacters){
-			if(character.getName().equals(null/*move.getPlayer().getName()*/)){
+			if(character.getPlayerName().equals(null/*move.getPlayer().getName()*/)){
 				mover = character;
 			}
 		}
@@ -55,7 +55,7 @@ public class  Game {
 
 	public boolean characterInteractWithItem(String charName, Item item){
 		for(GameCharacter character : activeCharacters){
-			if(character.getName().equals(charName)){
+			if(character.getPlayerName().equals(charName)){
 				return character.interact(item);
 			}
 		}
@@ -66,7 +66,7 @@ public class  Game {
 	public Room getRoom(String playerName){
 		for(Room room : roomsInGame){
 			for(GameCharacter player : room.getCharacters()){
-				if(player.getName().equals(playerName)){
+				if(player.getPlayerName().equals(playerName)){
 					return player.getCurrentRoom();
 				}
 			}
