@@ -42,6 +42,15 @@ public class Avatar {
 
 
 	public boolean moveTo(Move move){
+		if(move.getRenderDirection() == null){
+			System.out.println("Avatar: moveTo() - RenderDirection in provided move object is null");
+			return false;
+		}
+		if(move.getInteraction() == null){
+			System.out.println("Avatar: moveTo() - Interaction in provided move object is null");
+			return false;
+		}
+
 		Tile2D newPosition = null;
 
 		int dir = Direction.get(move.getRenderDirection());
@@ -54,17 +63,32 @@ public class Avatar {
 		else if(change == 2) newPosition = currentTile.getTileDown();
 		else if(change == 3) newPosition = currentTile.getTileLeft();
 
-		// Ask the room the character is in if it can move to this tile
-		if(currentRoom.checkValidMove(this,newPosition)==false) return false;
+		if(newPosition == null) System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
+
+
+		// if the move is the characters current square - return false
+		if(this.currentTile.equals(newPosition)) return false;
+
+		// if the move is in a different room to the characters current room - return false NB: moving through door moves onto tile, which IS in same room.
+		if(newPosition.getRoom()!= this.currentRoom) return false;
+
+		// if move position is a wall - return false
+		if(newPosition instanceof Wall) return false;
+
+		// if there is an Item in the move position - return false;
+		if(newPosition.itemOnTile()==true) return false;
+
+		// Check the desired move position is not more than one tile away from current Tile
+		if(this.currentTile.getxPos() - newPosition.getxPos() > 1) return false;
+		if(this.currentTile.getyPos() - newPosition.getyPos() > 1) return false;
+
+
 
 		// If Player is trying to pass through a door
 		if(newPosition instanceof Door){
 			Door door = (Door) newPosition;
-			if(door.getRoom()!=currentRoom) return false;
 
-			if(door.getLocked()){
-				//TODO storing information about keys
-			}
+			if(door.getLocked()){/*For when Doors and keys are implemented*/}
 
 			int newRoomIndex = door.getToRoomIndex();
 			int newX = door.getToRoomXPos();
