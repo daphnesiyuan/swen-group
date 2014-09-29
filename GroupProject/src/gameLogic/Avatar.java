@@ -30,8 +30,6 @@ public class Avatar {
 
 		Inventory = new ArrayList<Item>();
 		facing = Facing.North;
-
-		updateTile(currentTile);
 	}
 
 
@@ -45,10 +43,10 @@ public class Avatar {
 	public boolean moveTo(Move move){
 		Tile2D newPosition = null;
 
-		if(move.getInteraction().equals("NORTH")) newPosition = currentTile.getTileUp();
-		else if(move.getInteraction().equals("EAST")) newPosition = currentTile.getTileRight();
-		else if(move.getInteraction().equals("SOUTH")) newPosition = currentTile.getTileDown();
-		else if(move.getInteraction().equals("WEST")) newPosition = currentTile.getTileLeft();
+		if(move.getInteraction().toUpperCase().equals("NORTH")) newPosition = currentTile.getTileUp();
+		else if(move.getInteraction().toUpperCase().equals("EAST")) newPosition = currentTile.getTileRight();
+		else if(move.getInteraction().toUpperCase().equals("SOUTH")) newPosition = currentTile.getTileDown();
+		else if(move.getInteraction().toUpperCase().equals("WEST")) newPosition = currentTile.getTileLeft();
 
 
 
@@ -78,12 +76,10 @@ public class Avatar {
 	}
 
 	public void updateTile(Tile2D newPosition){
-		oldTile = currentTile;
+		Tile2D oldTile = currentTile;
 		currentTile = newPosition;
 
-		if(oldTile != null){
-			oldTile.removePlayer(this);
-		}
+		oldTile.removePlayer(this);
 		currentTile.addPlayer(this);
 	}
 
@@ -147,6 +143,26 @@ public class Avatar {
 		facing = f;
 	}
 
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	public Game.Facing getFacing() {
+		return facing;
+	}
+
+	public void setFacing(Game.Facing facing) {
+		this.facing = facing;
+	}
+
+	public void setCurrentTile(Tile2D currentTile) {
+		this.currentTile = currentTile;
+	}
+
 
 
 	@Override
@@ -161,7 +177,6 @@ public class Avatar {
 				+ ((currentTile == null) ? 0 : currentTile.hashCode());
 		result = prime * result + ((facing == null) ? 0 : facing.hashCode());
 		result = prime * result + ((game == null) ? 0 : game.hashCode());
-		result = prime * result + ((oldTile == null) ? 0 : oldTile.hashCode());
 		result = prime * result
 				+ ((playerName == null) ? 0 : playerName.hashCode());
 		return result;
@@ -200,58 +215,11 @@ public class Avatar {
 				return false;
 		} else if (!game.equals(other.game))
 			return false;
-		if (oldTile == null) {
-			if (other.oldTile != null)
-				return false;
-		} else if (!oldTile.equals(other.oldTile))
-			return false;
 		if (playerName == null) {
 			if (other.playerName != null)
 				return false;
 		} else if (!playerName.equals(other.playerName))
 			return false;
 		return true;
-	}
-
-
-
-	public Game getGame() {
-		return game;
-	}
-
-
-
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
-
-
-	public Game.Facing getFacing() {
-		return facing;
-	}
-
-
-
-	public void setFacing(Game.Facing facing) {
-		this.facing = facing;
-	}
-
-
-
-	public Tile2D getOldTile() {
-		return oldTile;
-	}
-
-
-
-	public void setOldTile(Tile2D oldTile) {
-		this.oldTile = oldTile;
-	}
-
-
-
-	public void setCurrentTile(Tile2D currentTile) {
-		this.currentTile = currentTile;
 	}
 }
