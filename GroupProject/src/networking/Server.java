@@ -223,9 +223,12 @@ public abstract class Server implements Runnable{
 			ClientThread from = getClientFromIP(data.getIPAddress());
 
 			// Server pinging the server?
-			if( !data.getIPAddress().equals(IPAddress) ){
+			if( from != null && !data.getIPAddress().equals(IPAddress) ){
 				System.out.println("		~Admin");
 				from.sendData(new ChatMessage("~Admin", "Unable to ping client " + whoToPing,Color.red,true));
+			}
+			else{
+				System.out.println("		Unable to return ping to " + data.getIPAddress());
 			}
 		}
 		else{

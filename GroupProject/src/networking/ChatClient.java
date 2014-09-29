@@ -137,7 +137,7 @@ public class ChatClient extends Client {
 					} catch (IOException e) {}
 
 					// Tell ME that I was pinged
-					chatMessage = (new ChatMessage(chatMessage.sendersName + " pinged you in " + delay + "ms",chatMessage.color));
+					chatMessage = (new ChatMessage(chatMessage.sendersName + " pinged you in " + delay + "ms",chatMessage.color,true));
 				}
 			}
 		}
