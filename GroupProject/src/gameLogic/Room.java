@@ -23,7 +23,7 @@ public class Room {
 		this.items = items;
 	}
 
-	public boolean checkValidCharacterMove(Avatar mover, Tile2D move) {
+	public boolean checkValidMove(Avatar mover, Tile2D move) {
 
 		// if the move is the characters current square - return false
 		if(mover.getCurrentTile().equals(move)) return false;

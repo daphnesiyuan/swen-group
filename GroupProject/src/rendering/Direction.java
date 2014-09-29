@@ -24,6 +24,23 @@ public class Direction {
 		return -1;
 	}
 
+	public static int getKeyDirection(String direction){
+		if(direction.toLowerCase().equals("w")){
+			return 0;
+		}
+		if(direction.toLowerCase().equals("d")){
+			return 1;
+		}
+		if(direction.toLowerCase().equals("s")){
+			return 2;
+		}
+		else if(direction.toLowerCase().equals("a")){
+			return 3;
+		}
+		//should never get here
+		return -1;
+	}
+
 	public static String get(int direction){
 		if (direction == 0){
 			return "North";

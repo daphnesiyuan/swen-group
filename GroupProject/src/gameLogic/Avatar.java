@@ -6,6 +6,7 @@ import gameLogic.Game.Facing;
 import java.util.ArrayList;
 import java.util.List;
 
+import rendering.Direction;
 import networking.Move;
 
 
@@ -43,14 +44,18 @@ public class Avatar {
 	public boolean moveTo(Move move){
 		Tile2D newPosition = null;
 
-		if(move.getInteraction().toUpperCase().equals("NORTH")) newPosition = currentTile.getTileUp();
-		else if(move.getInteraction().toUpperCase().equals("EAST")) newPosition = currentTile.getTileRight();
-		else if(move.getInteraction().toUpperCase().equals("SOUTH")) newPosition = currentTile.getTileDown();
-		else if(move.getInteraction().toUpperCase().equals("WEST")) newPosition = currentTile.getTileLeft();
+		int dir = Direction.get(move.getRenderDirection());
+		int key = Direction.getKeyDirection(move.getInteraction());
+		int change = dir + key;
+		change = change % 4;
 
+		if(change == 0) newPosition = currentTile.getTileUp();
+		else if(change == 1) newPosition = currentTile.getTileRight();
+		else if(change == 2) newPosition = currentTile.getTileDown();
+		else if(change == 3) newPosition = currentTile.getTileLeft();
 
-
-		if(currentRoom.checkValidCharacterMove(this,newPosition)==false) return false;
+		// Ask the room the character is in if it can move to this tile
+		if(currentRoom.checkValidMove(this,newPosition)==false) return false;
 
 		// If Player is trying to pass through a door
 		if(newPosition instanceof Door){
