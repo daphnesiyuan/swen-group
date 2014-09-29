@@ -107,6 +107,10 @@ public class  Game {
 		for(Item item : leaving.getInventory()){
 			item.returnToStartPos();
 		}
+
+		leaving.getCurrentTile().setAvatarOnTile(null);
+		leaving.getCurrentRoom().getAvatars().remove(leaving);
+
 		return activeAvatars.remove(leaving);
 	}
 
