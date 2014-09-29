@@ -1,5 +1,6 @@
 package gameLogic.location;
 
+import gameLogic.entity.GameCharacter;
 import gameLogic.physical.Item;
 
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class Tile2D {
 
 	List <Item> itemsOnTile;
 
+	List <GameCharacter> charactersOnTile;
+
 
 	public Tile2D(int x, int y, String t) {
 		xPos = x;
@@ -24,7 +27,17 @@ public class Tile2D {
 		type = t;
 
 		itemsOnTile = new ArrayList<Item>();
+
+		charactersOnTile = new ArrayList<GameCharacter>();
 	}
+	
+	public getCharacter(){
+		// There are no characters on this tile
+		if(charactersOnTile.size()==0) return null;
+		
+	}
+	
+	
 
 
 	// items on tile will be returned with the lowest weights first

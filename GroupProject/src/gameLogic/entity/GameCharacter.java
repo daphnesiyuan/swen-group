@@ -113,6 +113,7 @@ public class GameCharacter {
 
 		}
 
+		// Character updates the tile its standing on, but also lets the tile know thats
 		currentTile = newPosition;
 		return updateFacing(move);
 
