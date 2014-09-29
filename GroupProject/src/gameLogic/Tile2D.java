@@ -74,9 +74,13 @@ public class Tile2D {
 		return itemsOnTile.get(0);
 	}
 
-	public boolean canMoveTo(){
+	public boolean itemOnTile(){
+		if(avatarOnTile != null) return false;
 		return true;
-		//TODO
+	}
+
+	public List<Item> getItems() {
+		return itemsOnTile;
 	}
 
 	public void removePlayer(Avatar player) {
@@ -122,15 +126,11 @@ public class Tile2D {
 		this.room = room;
 	}
 
-	public List<Item> getItemsOnTile() {
-		return itemsOnTile;
-	}
-
-	public void setItemsOnTile(List<Item> itemsOnTile) {
+	public void setItems(List<Item> itemsOnTile) {
 		this.itemsOnTile = itemsOnTile;
 	}
 
-	public Avatar getAvatarOnTile() {
+	public Avatar getAvatar() {
 		return avatarOnTile;
 	}
 

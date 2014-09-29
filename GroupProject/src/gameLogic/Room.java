@@ -23,22 +23,6 @@ public class Room {
 		this.items = items;
 	}
 
-	public boolean checkValidMove(Avatar mover, Tile2D move) {
-
-		// if the move is the characters current square - return false
-		if(mover.getCurrentTile().equals(move)) return false;
-
-		// if the move is in a different room to the characters current room - return false
-		if(move.getRoom()!= mover.getCurrentRoom()) return false;
-
-		// if move position is a wall - return false
-		if(move instanceof Wall) return false;
-
-		// if there is an Item in the move position - return false;
-		if(move.canMoveTo()==false) return false;
-
-		return true;
-	}
 
 	public Item getItemAt(int x, int y){
 		return tiles[x][y].getTopItem();
