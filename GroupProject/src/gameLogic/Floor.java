@@ -8,7 +8,14 @@ public class Floor extends Tile2D{
 		super(x, y, t);
 		isSpawn = spawn;
 
+	}
 
+	public boolean isSpawn() {
+		return isSpawn;
+	}
+
+	public void setSpawn(boolean isSpawn) {
+		this.isSpawn = isSpawn;
 	}
 
 }

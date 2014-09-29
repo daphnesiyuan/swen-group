@@ -18,7 +18,6 @@ public class Avatar {
 	Room currentRoom;
 
 	Tile2D currentTile; // current Tile the character is standing on
-	Tile2D oldTile;		// Field used for when player moves off of tile, oldTile then removes the player from its charactersOnTile
 
 	String playerName;
 
@@ -32,7 +31,7 @@ public class Avatar {
 		Inventory = new ArrayList<Item>();
 		facing = Facing.North;
 
-		updateTile();
+		updateTile(currentTile);
 	}
 
 
@@ -46,10 +45,10 @@ public class Avatar {
 	public boolean moveTo(Move move){
 		Tile2D newPosition = null;
 
-		if(move.getInteraction().equals("W")) newPosition = currentTile.getTileUp();
-		else if(move.getInteraction().equals("A")) newPosition = currentTile.getTileLeft();
-		else if(move.getInteraction().equals("S")) newPosition = currentTile.getTileRight();
-		else if(move.getInteraction().equals("D")) newPosition = currentTile.getTileDown();
+		if(move.getInteraction().equals("NORTH")) newPosition = currentTile.getTileUp();
+		else if(move.getInteraction().equals("EAST")) newPosition = currentTile.getTileRight();
+		else if(move.getInteraction().equals("SOUTH")) newPosition = currentTile.getTileDown();
+		else if(move.getInteraction().equals("WEST")) newPosition = currentTile.getTileLeft();
 
 
 
@@ -61,7 +60,7 @@ public class Avatar {
 			if(door.getRoom()!=currentRoom) return false;
 
 			if(door.getLocked()){
-				//TODO storing information about keys etc - Antonia
+				//TODO storing information about keys
 			}
 
 			int newRoomIndex = door.getToRoomIndex();
@@ -72,18 +71,16 @@ public class Avatar {
 
 
 		}
-
-
-
-		oldTile = currentTile;	// remove player from old tile
-
-		currentTile = newPosition;
-		updateTile();
-		return updateFacing(move);
+		updateTile(newPosition);
+		updateFacing(move);
+		return true;
 
 	}
 
-	public void updateTile(){
+	public void updateTile(Tile2D newPosition){
+		oldTile = currentTile;
+		currentTile = newPosition;
+
 		if(oldTile != null){
 			oldTile.removePlayer(this);
 		}
@@ -91,14 +88,13 @@ public class Avatar {
 	}
 
 
-	public boolean updateFacing(Move move){
+	public void updateFacing(Move move){
 		// needs thought - rotatable room + factor of current facing direction
 
 		if(move.getInteraction().equals("W")) facing = Facing.North;
 		else if(move.getInteraction().equals("A")) facing = Facing.West;
 		else if(move.getInteraction().equals("S")) facing = Facing.South;
 		else if(move.getInteraction().equals("D")) facing = Facing.East;
-		return true;
 	}
 
 	private boolean changeRoom(int newRoomIndex, int newX, int newY){
