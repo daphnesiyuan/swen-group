@@ -1,6 +1,4 @@
-package gameLogic.location;
-
-import gameLogic.physical.Key;
+package gameLogic;
 
 import java.util.List;
 

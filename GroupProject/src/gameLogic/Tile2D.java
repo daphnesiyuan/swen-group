@@ -1,7 +1,4 @@
-package gameLogic.location;
-
-import gameLogic.entity.GameCharacter;
-import gameLogic.physical.Item;
+package gameLogic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +15,7 @@ public class Tile2D {
 
 	List <Item> itemsOnTile;
 
-	List <GameCharacter> charactersOnTile;
+	List <Avatar> charactersOnTile;
 
 
 	public Tile2D(int x, int y, String t) {
@@ -28,10 +25,10 @@ public class Tile2D {
 
 		itemsOnTile = new ArrayList<Item>();
 
-		charactersOnTile = new ArrayList<GameCharacter>();
+		charactersOnTile = new ArrayList<Avatar>();
 	}
 
-	public GameCharacter getCharacter(){
+	public Avatar getCharacter(){
 		//TODO -> hard coded
 		// There are no characters on this tile
 		if(charactersOnTile.size()==0) return null;
@@ -127,10 +124,10 @@ public class Tile2D {
 
 	}
 
-	public void removePlayer(GameCharacter player) {
+	public void removePlayer(Avatar player) {
 		boolean removed = false;
 
-		for(GameCharacter gc : charactersOnTile){
+		for(Avatar gc : charactersOnTile){
 			if(gc.equals(player)){
 				charactersOnTile.remove(gc);
 				removed = true;
@@ -139,7 +136,7 @@ public class Tile2D {
 		if(removed==false) System.out.println("Tile2D: removePlayer(); Error removing character from tile");
 	}
 
-	public void addPlayer(GameCharacter player) {
+	public void addPlayer(Avatar player) {
 		charactersOnTile.add(player);
 
 	}

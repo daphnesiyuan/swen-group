@@ -1,10 +1,8 @@
-package gameLogic.physical;
+package gameLogic;
 
-import gameLogic.entity.GameCharacter;
-import gameLogic.location.Floor;
-import gameLogic.location.Tile2D;
 
-public class Furniture extends Item{
+
+public class Container extends Item{
 
 	private int xPos;
 	private int yPos;
@@ -18,32 +16,29 @@ public class Furniture extends Item{
 
 	private boolean inInventory;
 
-	private String furnitureType;
+	private String containerType;
 
-	public Furniture(String type, Tile2D l, int w,String m) {
-		furnitureType = type;
+	public Container(String type, Tile2D l, int w,String m) {
+
+		containerType = type;
 		location = l;
 		weight = w;
 
 		if(m.equals("T")) movable = true;
 		else movable = false;
 
-
 	}
-
 
 	@Override
 	public String getDescription() {
-		return new String("Furniture; "+furnitureType+", xPos :"+xPos+", yPos: "+yPos+", weight: "+weight+", movable: "+movable);
-	}
+		return new String("Conainer; "+containerType+", xPos :"+xPos+", yPos: "+yPos+", weight: "+weight+", movable: "+movable);
 
+	}
 
 	@Override
 	public Tile2D getTile() {
-
 		return location;
 	}
-
 
 	@Override
 	public boolean moveItemTo(Tile2D toTile) {
@@ -64,18 +59,24 @@ public class Furniture extends Item{
 
 	}
 
-
 	@Override
 	public int getWeight() {
 		return weight;
 	}
 
-
 	@Override
-	public String interactWith(GameCharacter gc) {
-			return furnitureType;
+	public String interactWith(Avatar gc) {
+		if(!inInventory){
+			gc.getInventory().add(this);
+			inInventory = true;
+			return new String("You Picked up the Container: "+ containerType);
+		}
+		else{
+			return containerType;
+		}
 
 	}
+
 
 
 }

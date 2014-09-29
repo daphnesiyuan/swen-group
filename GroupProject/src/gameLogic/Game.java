@@ -1,10 +1,4 @@
-package gameLogic.gameState;
-
-import gameLogic.entity.GameCharacter;
-import gameLogic.location.Floor;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.physical.Item;
+package gameLogic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +9,7 @@ import networking.Move;
 public class  Game {
 
 	private List<Room> roomsInGame;
-	private List<GameCharacter> activeCharacters;
+	private List<Avatar> activeCharacters;
 	private List<Floor> spawnTiles;
 
 
@@ -31,7 +25,7 @@ public class  Game {
 
 	public Game(){
 		roomsInGame = new ArrayList<Room>();
-		activeCharacters = new ArrayList<GameCharacter>();
+		activeCharacters = new ArrayList<Avatar>();
 		spawnTiles = new ArrayList<Floor>();
 
 		createNewGame();
@@ -51,9 +45,9 @@ public class  Game {
 
 	public boolean moveCharacter(Move move){
 
-		GameCharacter mover = null;
+		Avatar mover = null;
 
-		for(GameCharacter character : activeCharacters){
+		for(Avatar character : activeCharacters){
 			if(character.getPlayerName().equals(null/*move.getPlayer().getName()*/)){
 				mover = character;
 			}
@@ -63,7 +57,7 @@ public class  Game {
 	}
 
 	public boolean characterInteractWithItem(String charName, Item item){
-		for(GameCharacter character : activeCharacters){
+		for(Avatar character : activeCharacters){
 			if(character.getPlayerName().equals(charName)){
 				return character.interact(item);
 			}
@@ -74,7 +68,7 @@ public class  Game {
 
 	public Room getRoom(String playerName){
 		for(Room room : roomsInGame){
-			for(GameCharacter player : room.getCharacters()){
+			for(Avatar player : room.getCharacters()){
 				if(player.getPlayerName().equals(playerName)){
 					return player.getCurrentRoom();
 				}
@@ -86,7 +80,7 @@ public class  Game {
 
 
 
-	public void setActiveCharacters(List<GameCharacter> activeCharacters) {
+	public void setActiveCharacters(List<Avatar> activeCharacters) {
 		this.activeCharacters = activeCharacters;
 	}
 
@@ -100,7 +94,7 @@ public class  Game {
 	}
 
 
-	public List<GameCharacter> getActiveCharacters() {
+	public List<Avatar> getActiveCharacters() {
 		return activeCharacters;
 	}
 

@@ -1,8 +1,11 @@
 package rendering;
 
-import gameLogic.entity.GameCharacter;
-import gameLogic.gameState.Game;
-import gameLogic.gameState.NewGame;
+import gameLogic.Floor;
+import gameLogic.Game;
+import gameLogic.Avatar;
+import gameLogic.NewGame;
+import gameLogic.Room;
+import gameLogic.Tile2D;
 import gameLogic.location.*;
 
 import java.awt.Color;
@@ -42,7 +45,7 @@ public class Rendering extends JPanel implements KeyListener{
 	DrawWorld draw;
 
 	Tile2D tile = new Floor(2,2,"f", false);
-	GameCharacter charac = new GameCharacter("willy", tile, null);
+	Avatar charac = new Avatar("willy", tile, null);
 
 
 

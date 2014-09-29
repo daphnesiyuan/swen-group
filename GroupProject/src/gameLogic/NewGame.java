@@ -1,15 +1,4 @@
-package gameLogic.gameState;
-
-import gameLogic.entity.GameCharacter;
-import gameLogic.location.Door;
-import gameLogic.location.Floor;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.location.Wall;
-import gameLogic.physical.Container;
-import gameLogic.physical.Furniture;
-import gameLogic.physical.Item;
-import gameLogic.physical.Key;
+package gameLogic;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,7 +21,7 @@ import java.util.Scanner;
 
 public class NewGame {
 	private List<Room> roomsInGame;
-	private List<GameCharacter> activeCharacters;
+	private List<Avatar> activeCharacters;
 	private List<Floor> spawnTiles;
 
 	private Room startRoom;
@@ -63,16 +52,16 @@ public class NewGame {
 	}
 
 
-	private List<GameCharacter> createCharacters() {
+	private List<Avatar> createCharacters() {
 
 		List<String> clientStrings = new ArrayList<String>();
 		clientStrings.add("Ryan Griffin");
 
-		List<GameCharacter> characters = new ArrayList<GameCharacter>();
+		List<Avatar> characters = new ArrayList<Avatar>();
 
 		for(String s : clientStrings){
 			Floor spawnXY = spawnXY();
-			GameCharacter player = new GameCharacter(s,spawnXY,game);
+			Avatar player = new Avatar(s,spawnXY,game);
 			characters.add(player);
 		}
 

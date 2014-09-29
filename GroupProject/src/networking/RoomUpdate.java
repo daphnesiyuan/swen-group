@@ -1,6 +1,6 @@
 package networking;
 
-import gameLogic.location.Room;
+import gameLogic.Room;
 
 public class RoomUpdate extends NetworkData {
 

@@ -1,13 +1,7 @@
-package gameLogic.entity;
+package gameLogic;
 
 
-import gameLogic.gameState.Game;
-import gameLogic.gameState.Game.Facing;
-import gameLogic.gameState.NewGame;
-import gameLogic.location.Door;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.physical.Item;
+import gameLogic.Game.Facing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +9,7 @@ import java.util.List;
 import networking.Move;
 
 
-public class GameCharacter {
+public class Avatar {
 
 
 
@@ -53,7 +47,7 @@ public class GameCharacter {
 	String name;
 
 
-	public GameCharacter(String n, Tile2D start, Game g){
+	public Avatar(String n, Tile2D start, Game g){
 		name = n;
 		currentTile = start;
 		currentRoom = start.getRoom();

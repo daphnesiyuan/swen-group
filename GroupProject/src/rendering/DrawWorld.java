@@ -20,10 +20,10 @@ import javax.swing.JPanel;
 
 import networking.ChatMessage;
 import GUI.DrawingPanel;
-import gameLogic.entity.GameCharacter;
-import gameLogic.location.Room;
-import gameLogic.location.Tile2D;
-import gameLogic.physical.Item;
+import gameLogic.Avatar;
+import gameLogic.Item;
+import gameLogic.Room;
+import gameLogic.Tile2D;
 
 /**
  * This class will draw the location and everything in it.
@@ -33,7 +33,7 @@ import gameLogic.physical.Item;
  */
 public class DrawWorld {
 
-	GameCharacter character; // the main player
+	Avatar character; // the main player
 
 	double scale;
 	int width;
@@ -43,7 +43,7 @@ public class DrawWorld {
 	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
 	Map<String, Integer> directionMap = new HashMap<String, Integer>();
 
-	public DrawWorld(GameCharacter character, Rendering rendering){
+	public DrawWorld(Avatar character, Rendering rendering){
 		this.character = character;
 		this.panel = rendering;
 		directionMap.put("north", 0);
@@ -53,7 +53,7 @@ public class DrawWorld {
 	}
 
 	//This constructor is only for testing
-	public DrawWorld(GameCharacter character, DrawingPanel rendering){
+	public DrawWorld(Avatar character, DrawingPanel rendering){
 		this.character = character;
 		this.panel = rendering;
 		directionMap.put("north", 0);
@@ -67,7 +67,7 @@ public class DrawWorld {
 	 * This method will be call externally from the UI to draw everything gameplay related
 	 * @param Graphics g
 	 * @param Room room
-	 * @param GameCharacter character
+	 * @param Avatar character
 	 * @param String direction
 	 */
 	public void redraw(Graphics g, Room room, String direction, List<ChatMessage> chatMessages){
@@ -245,7 +245,7 @@ public class DrawWorld {
 
 	}
 
-	public void setCharacter(GameCharacter character){
+	public void setCharacter(Avatar character){
 		this.character = character;
 	}
 
