@@ -55,6 +55,7 @@ public class Rendering extends JPanel implements KeyListener{
 	DrawInventory inventory;
 	DrawCompass compass;
 	DrawChat chat;
+	DrawMiniMap miniMap;
 
 	String currentMessage;
 
@@ -69,9 +70,11 @@ public class Rendering extends JPanel implements KeyListener{
 	public Rendering(Room room){
 		this.room = room;
 		direction = 0;
+
 		draw = new DrawWorld(charac, this);
 		inventory = new DrawInventory(this);
 		compass = new DrawCompass(this);
+		miniMap = new DrawMiniMap(this, charac);
 
 		directionMap.put(0, "north");
 		directionMap.put(1, "west");
@@ -92,6 +95,7 @@ public class Rendering extends JPanel implements KeyListener{
 		draw.redraw(g, room, directionMap.get(direction));
 		inventory.redraw(g, charac.getInventory(), Direction.get(direction));
 		compass.redraw(g, Direction.get(direction));
+		miniMap.redraw(g, room, Direction.get(direction));
 		if(chatMode)chat.redraw(g, chatMessages, currentMessage);
 	}
 

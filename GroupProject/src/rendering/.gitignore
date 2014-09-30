@@ -16,3 +16,5 @@
 /inventory.class
 /DrawInventory.class
 /DrawCompass.class
+/miniMap.class
+/DrawMiniMap.class
