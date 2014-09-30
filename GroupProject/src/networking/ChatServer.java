@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Scanner;
 
 /**
@@ -241,8 +240,6 @@ public class ChatServer extends Server {
 		}
 
 		private boolean parsePing(Scanner scan, NetworkObject data) {
-
-			System.out.println("Parsed");
 
 			// Send history back to the client
 			long delay = ping(scan, data);
