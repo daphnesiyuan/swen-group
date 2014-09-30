@@ -1,55 +1,69 @@
 package networking;
 
 import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- *
- * @author veugeljame
- *
- */
+import networking.Server.ClientThread;
+
 public class ChatServer extends Server {
 
-	private Color chatMessageColor = Color.black;
-	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
-	public ChatServer() {
-		super();
-
-		// Server listens for input directly to servers terminal Thread
-		Thread serverTextBox = new Thread(new ServerTextListener());
-		serverTextBox.start();
-	}
+	protected Color chatMessageColor = Color.black;
+	protected ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
 	@Override
 	public void retrieveObject(NetworkObject data) {
 
-		ChatMessage cm = (ChatMessage)data.getData();
-		// Process a command if we wrote one and display the message
-		if( !processCommand(cm.message, data) ){
+		// Can we process a chat message?
+		if( data.getData() instanceof ChatMessage ){
+			ChatMessage cm = (ChatMessage)data.getData();
 
-			// Send the data back to the client
-			ClientThread sender = getClientFromIP(data.getIPAddress());
-			if( sender != null ){
-				sender.sendData(data);
+			// Process a command if we wrote one and display the message
+			if( !processCommand(cm.message, data) ){
+
+				// Send the data back to the client
+				ClientThread sender = getClientFromIP(data.getIPAddress());
+				if( sender != null ){
+					sender.sendData(data);
+				}
+
+				// Don't do anything else
+				return;
 			}
 
-			// Don't do anything else
-			return;
+			// Save the message
+			chatHistory.add(cm);
+
+			// Display for the server in console
+			System.out.println(data);
+
+			// Send it to all our clients
+			sendToAllClients(data);
 		}
 
-		// Save the message
-		chatHistory.add(cm);
 
-		// Display for the server in console
-		System.out.println(data);
+	}
 
-		// Send it to all our clients
-		sendToAllClients(data);
+	/**
+	 * Sends the chat history to the client that send the network object
+	 * Size indicates how many of the most recent messages to claim
+	 * @param clientIP Who we should send the history to
+	 * @param size how many messages we should get from our history from the furthest back to the last message
+	 */
+	private synchronized void sendHistoryToClient(String clientIP, int size) {
+
+		// Make sure we don't get a size greater than the list
+		size = Math.min(chatHistory.size(),size);
+
+		// TODO Synchronise chatHistory with a lock
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = (chatHistory.size()) - size; i < chatHistory.size(); i++) {
+			history.add(chatHistory.get(i));
+		}
+
+		// Send a new ArrayList of the chat messages to the client
+		sendToClient(clientIP, new ChatHistory(history,true));
 	}
 
 	/**
@@ -66,66 +80,6 @@ public class ChatServer extends Server {
 
 		Scanner scan = new Scanner(command);
 		return new CommandParser().parseCommand(scan, data);
-	}
-
-	/**
-	 * Sends the chat history to the client that send the network object
-	 * Size indicates how many of the most recent messages to claim
-	 * @param clientIP Who we should send the history to
-	 * @param size how many messages we should get from our history from the furthest back to the last message
-	 */
-	private synchronized void sendHistoryToClient(String clientIP, int size) {
-
-		// Make sure we don't get a size greater than the list
-		size = Math.min(chatHistory.size(),size);
-
-		// TODO Synchronise chatHistory with a lock
-		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
-		for (int i = (chatHistory.size()-1) - size; i < chatHistory.size(); i++) {
-			history.add(chatHistory.get(i));
-		}
-
-		// Send a new ArrayList of the chat messages to the client
-		sendToClient(clientIP, new ChatHistory(history,true));
-	}
-
-	/**
-	 * The method that is run once the server enters a message in console
-	 *
-	 * @param message
-	 */
-	private synchronized void processServerMessage(String message) {
-
-		// Process to everyone
-		retrieveObject(new NetworkObject(IPAddress, new ChatMessage("~Admin", message, chatMessageColor, true)));
-	}
-
-	/**
-	 * A class that listens for input from the console and sends the input to
-	 * processServerMessage
-	 *
-	 * @author veugeljame
-	 *
-	 */
-	private class ServerTextListener implements Runnable {
-		@Override
-		public void run() {
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			String text;
-
-			while (true) {
-				try {
-					text = (String) br.readLine();
-
-					if (text != null) {
-
-						processServerMessage(text);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
 	}
 
 	private class CommandParser {
@@ -150,8 +104,7 @@ public class ChatServer extends Server {
 				return parseClose(scan,data);
 			} else if (command.equals("/admins")){
 				return parseAdmins(scan,data);
-			}
-			else if( command.equals("/help")){
+			} else if( command.equals("/help")){
 				return parseHelp(scan,data);
 			}
 
@@ -272,9 +225,12 @@ public class ChatServer extends Server {
 			String commandList = "\nList of Possible Commands:\n"
 					+ "/ping -> Checks how fast your connection currently is\n"
 					+ "/get history -> Sends back the entire chat history\n"
+					+ "/get history 'number' -> Sends back the chat history up to 'number' of most recent messages\n"
 					+ "/admins -> lists the IP's of the admins\n"
 					+ "/chatcolor r g b -> changes the color of your chat messages\n"
 					+ "/clear -> clears all messages off the screen\n"
+					+ "/disconnect -> disconnects from the server\n"
+					+ "/reconnect -> reconnects to the previous server was was successfully connected\n"
 					+ "/name 'string' -> changes your name\n\n"
 					+ "- ADMIN COMMANDS -\n"
 					+ "/close -> closes the server";
@@ -284,10 +240,6 @@ public class ChatServer extends Server {
 
 			return true;
 		}
-	}
-
-	public static void main(String[] args) {
-		new ChatServer();
 	}
 
 	@Override

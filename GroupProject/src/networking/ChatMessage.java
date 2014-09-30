@@ -62,6 +62,7 @@ public class ChatMessage extends NetworkData{
 				message;
 	}
 
+	@Override
 	public boolean equals(Object object){
 		if( object == null ) return false;
 		if( !(object instanceof ChatMessage) ) return false;

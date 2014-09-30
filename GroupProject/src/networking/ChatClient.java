@@ -7,21 +7,64 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.Scanner;
 
-/**
- *Chat Client that deals with the main aspects of the Chat program when it comes to the client
- * @author veugeljame
- *
- */
 public class ChatClient extends Client {
 
+	// Name of the client to display their messages as
 	private String clientName;
 
+	// Clients sides version of the current chat history
 	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
-	private Object modifiedLock = new Object();
-	private boolean modified = false;
+	// Color of the clients messages
 	private Color chatMessageColor = new Color(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255));
 
+	@Override
+	public void retrieveObject(NetworkObject data) {
+
+		if( data.getData() instanceof ChatHistory ){
+			chatHistory.addAll(((ChatHistory)data.getData()).history);
+			return;
+		}
+		else if( data.getData() instanceof ChatMessage ){
+			ChatMessage chatMessage = (ChatMessage) data.getData();
+
+			// Check for commands
+			Scanner scan = new Scanner(chatMessage.message);
+			//if( !data.getIPAddress().equals(IPAddress) ){
+
+				// Ping command is received
+				if( scan.hasNext("/ping") ){ scan.next();
+					if( scan.hasNext(clientName) ){
+
+						// Someone Pinged me
+						long delay = Math.abs(Calendar.getInstance().getTimeInMillis() - data.getCalendar().getTimeInMillis());
+
+						try {
+							sendData(new ChatMessage(chatMessage.sendersName + " pinged " + clientName + " at " + delay + "ms",chatMessage.color,true));
+						} catch (IOException e) {}
+					}
+					else if( scan.hasNext("everyone") ){
+						try {
+							sendData(chatMessage);
+						} catch (IOException e) {}
+						return;
+					}
+				}
+			//}
+
+			// Check if we have just gotten an acknowledgement
+			if( chatHistory.contains(chatMessage) ){
+
+				// Acknowledge the message
+				chatHistory.get(chatHistory.indexOf(chatMessage)).acknowledged = true;
+			}
+			else{
+
+				// Save the message
+				chatHistory.add(chatMessage);
+			}
+		}
+	}
 
 	/**
 	 * Changes the name of the client to be displayed through-out the game
@@ -51,116 +94,111 @@ public class ChatClient extends Client {
 	/**
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
+	 * @return
 	 */
 	public boolean sendData(String message) throws IOException{
 
 		ChatMessage chat = new ChatMessage(clientName, message,chatMessageColor);
 
-		// Client side commands
-		if( chat.message.equals("/clear") ){
-			chatHistory.clear();
-			setModified(true);
+		// Check client commands
+		if( checkClientCommands(chat) ){
 			return true;
 		}
-
-		// Record client sided message
-		chatHistory.add(chat);
-		setModified(true);
 
 		return super.sendData(chat);
 	}
 
-	@Override
-	public synchronized void retrieveObject(NetworkObject data) {
+	/**
+	 * Checks the given chat for a possible client command sent from the client.
+	 * @return True if a command was detected and processed successfully
+	 */
+	public boolean checkClientCommands(ChatMessage chat){
+		Scanner scan = new Scanner(chat.message);
 
-		ChatMessage chatMessage = (ChatMessage) data.getData();
+		// Client side commands
+		if( scan.hasNext("/clear") ){
+			chatHistory.clear();
+			return true;
+		}
+		else if( scan.hasNext("/disconnect") ){
+			chat.acknowledged = true; // Chat worked
+			chatHistory.add(chat);	// Record message
+			disconnect(); // Disconnect from server
+			return true;
+		}
+		else if( scan.hasNext("/reconnect") ){
+			chat.acknowledged = true; // Chat worked
+			chatHistory.add(chat);	// Record message
 
-		// Check for commands
-		Scanner scan = new Scanner(chatMessage.message);
-		if( data.getIPAddress().equals(IPAddress) ){
-			if( scan.hasNext("/name") ){
-				scan.next();
-
-				// Check if we REALLY are assigning our name
-				if( scan.hasNext() ){
-					this.clientName = scan.next();
-				}
-			}
-			else if( scan.hasNext("/chatcolor") ){
-				scan.next();
-
-				if( scan.hasNextInt() ){
-					int r,g,b;
-
-					if( !scan.hasNextInt() ){
-						return;
-					}
-
-					r = scan.nextInt();
-
-					if( !scan.hasNextInt() ){
-						return;
-					}
-
-					g = scan.nextInt();
-
-					if( !scan.hasNextInt() ){
-						return;
-					}
-
-					b = scan.nextInt();
-
-					chatMessageColor = new Color(r,g,b);
-				}
-				else if( scan.hasNext() ){
-
-					// Using a color name
-					Color color = Color.getColor(scan.next());
-					if( color != null ){
-						chatMessageColor = color;
-					}
-				}
+			// Attempt to reconnect
+			if(	reconnect(clientName) ){
+				appendWarningMessage("Connected successfully to " + connectedIP + " : " + connectedPort);
+				return true;
 			}
 		}
-		else if( !data.getIPAddress().equals(IPAddress) ){
+		else if( scan.hasNext("/name") ){
+			scan.next();
+
+			// Check if we REALLY are assigning our name
+			if( scan.hasNext() ){
+				this.clientName = scan.next();
+			}
+			return true;
+		}
+		else if( scan.hasNext("/ping") ){
+			System.out.println("PING");
+			scan.next();
 
 
-			// Ping command is received
-			if( scan.hasNext("/ping") ){ scan.next();
-				if( scan.hasNext(clientName) ){
+			if( scan.hasNext("everyone") ){
+				return false;
+			}
+			else if( scan.hasNext() ){
+				System.out.println(scan.next());
+			}
+		}
+		else if( scan.hasNext("/chatcolor") ){
+			scan.next();
 
-					// Someone Pinged me
-					long delay = Math.abs(Calendar.getInstance().getTimeInMillis() - data.getCalendar().getTimeInMillis());
+			if( scan.hasNextInt() ){
+				int r,g,b;
 
-					try {
-						sendData(new ChatMessage(chatMessage.sendersName + " pinged " + clientName + " at " + delay + "ms",chatMessage.color,true));
-					} catch (IOException e) {}
+				if( !scan.hasNextInt() ){
+					appendWarningMessage("Missing Red EG: /chatColor 0 64 128");
+					return false;
 				}
-				else if( scan.hasNext("everyone") ){
-					try {
-						sendData(chatMessage);
-					} catch (IOException e) {}
-					return;
+
+				r = scan.nextInt();
+
+				if( !scan.hasNextInt() ){
+					appendWarningMessage("Missing Green EG: /chatColor 0 64 128");
+					return false;
+				}
+
+				g = scan.nextInt();
+
+				if( !scan.hasNextInt() ){
+					appendWarningMessage("Missing Blue EG: /chatColor 0 64 128");
+					return false;
+				}
+
+				b = scan.nextInt();
+
+				chatMessageColor = new Color(r,g,b);
+				return true;
+			}
+			else if( scan.hasNext() ){
+
+				// Using a color name
+				Color color = Color.getColor(scan.next());
+				if( color != null ){
+					chatMessageColor = color;
+					return true;
 				}
 			}
 		}
 
-		// Check if we have just gotten an acknowledgement
-		if( chatHistory.contains(chatMessage) ){
-
-			// Acknowledge the message
-			chatHistory.get(chatHistory.indexOf(chatMessage)).acknowledged = true;
-		}
-		else{
-
-			// Save the message
-			chatHistory.add(chatMessage);
-			setModified(true);
-		}
-
-
-		// Record when we last updated
-		setModified(true);
+		return false;
 	}
 
 	/**
@@ -170,17 +208,8 @@ public class ChatClient extends Client {
 	 */
 	public ArrayList<ChatMessage> getChatHistory(int size) {
 
-		// Make sure we don't get a size greater than the list
-		size = Math.min(chatHistory.size(),size);
-
-		// TODO Synchronise chatHistory with a lock
-		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
-		for (int i = (chatHistory.size()-1) - size; i < chatHistory.size(); i++) {
-			history.add(chatHistory.get(i));
-		}
-
-		// Send a new ArrayList of the chat messages to the client
-		return history;
+		// Send a get ArrayList of the chat messages to the client
+		return getChatHistory(chatHistory.size());
 	}
 
 	/**
@@ -200,6 +229,21 @@ public class ChatClient extends Client {
 	}
 
 	/**
+	 * Clears all messages from the chat history
+	 */
+	protected void clearChatHistory() {
+		chatHistory.clear();
+	}
+
+	/**
+	 * Adds the given message to our current history
+	 * @param chat Chat Message to add to our history
+	 */
+	protected void addChatMessage(ChatMessage chat) {
+		chatHistory.add(chat);
+	}
+
+	/**
 	 * Gets the chat history that has been sent to this client
 	 * @return String containing chat history
 	 */
@@ -207,27 +251,20 @@ public class ChatClient extends Client {
 
 		// Save the message
 		chatHistory.add(new ChatMessage("WARNING",warning, Color.black, true));
-		setModified(true);
 	}
 
 	/**
-	 * Checks if the current client has had anything modified since the last refresh. Determines if the listener of this client needs to update or not.
-	 * @return True if something has changed in the chat
+	 * @return the chatMessageColor
 	 */
-	public boolean isModified() {
-		synchronized (modifiedLock){
-			return modified;
-		}
+	public Color getChatMessageColor() {
+		return chatMessageColor;
 	}
 
 	/**
-	 * Sets the current state of the clients modifications status to what's given.
-	 * @param modified
+	 * @param chatMessageColor the chatMessageColor to set
 	 */
-	public void setModified(boolean modified) {
-		synchronized (modifiedLock){
-			this.modified = modified;
-		}
+	public void setChatMessageColor(Color chatMessageColor) {
+		this.chatMessageColor = chatMessageColor;
 	}
 
 	@Override
@@ -235,5 +272,4 @@ public class ChatClient extends Client {
 		// TODO Auto-generated method stub
 
 	}
-
 }

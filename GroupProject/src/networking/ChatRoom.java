@@ -30,7 +30,7 @@ public class ChatRoom implements ActionListener{
 	private ChatClient client;
 
 	// Server if this chat client wants to start their own public server for everyone to connect to
-	private ChatServer server;
+	private ChatRoomServer server;
 
 	private int port = 32768;
 
@@ -60,10 +60,7 @@ public class ChatRoom implements ActionListener{
 		while( true ){
 
 			// Update our text if anything has changed
-			if( client.isModified() ){
-				refreshChatHistoryPanel();
-				client.setModified(false);
-			}
+			refreshChatHistoryPanel();
 
 			try {
 				Thread.sleep(10);
@@ -189,7 +186,7 @@ public class ChatRoom implements ActionListener{
 
 
 					// Start a new server
-					server = new ChatServer();
+					server = new ChatRoomServer();
 
 					// Attempt to connect to the server
 					if( connectToServer(server.getIPAddress(), port) ){
@@ -233,6 +230,7 @@ public class ChatRoom implements ActionListener{
 
 		try {
 			if( client.connect(ip, client.getName(), port) ){
+				chatHistory.removeAll();
 				client.appendWarningMessage("Connected to " + IPConnection.getText() + ":" + port);
 
 				return true;
