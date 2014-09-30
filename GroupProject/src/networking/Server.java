@@ -52,8 +52,6 @@ public abstract class Server implements Runnable{
 		// Check for dead clients
 		Thread checkClients = new Thread(){
 
-			final long MAX_DISCONNECT_TIME = 5000;
-
 			@Override
 			public void run(){
 
@@ -62,9 +60,8 @@ public abstract class Server implements Runnable{
 					pingClients();
 
 					try {
-						sleep(5000);
+						sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -383,6 +380,9 @@ public abstract class Server implements Runnable{
 						System.out.println("Class must be NetworkObject: " + e.classname);
 						e.printStackTrace();
 					}
+					catch(SocketException e){
+						continue;
+					}
 
 					// Check if the data sent back to us was a ping all
 					if( ((ChatMessage)data.getData()).message.startsWith("/ping") ){
@@ -390,7 +390,7 @@ public abstract class Server implements Runnable{
 						// Ping Everyone
 						if( ((ChatMessage)data.getData()).message.startsWith("/ping everyone") ){
 							lastPinged.put(getPlayerName(), Calendar.getInstance());
-							return;
+							continue;
 						}
 						else{
 							data = new NetworkObject(getIPAddress(), data.getData(), data.getCalendar());
