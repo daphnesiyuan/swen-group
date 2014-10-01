@@ -138,7 +138,7 @@ public class GameClient extends ChatClient {
 	 * Checks if the current client has had anything modified since the last refresh. Determines if the listener of this client needs to update or not.
 	 * @return True if something has changed in the chat
 	 */
-	public boolean isModified() {
+	public synchronized boolean isModified() {
 		synchronized (modifiedLock){
 			return modified;
 		}
@@ -148,7 +148,7 @@ public class GameClient extends ChatClient {
 	 * Sets the current state of the clients modifications status to what's given.
 	 * @param modified
 	 */
-	public void setModified(boolean modified) {
+	public synchronized void setModified(boolean modified) {
 		synchronized (modifiedLock){
 			this.modified = modified;
 		}

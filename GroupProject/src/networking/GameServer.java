@@ -46,6 +46,7 @@ public class GameServer extends ChatServer {
 			}
 		};
 		refreshThread.start();
+
 	}
 
 	/**
@@ -164,6 +165,15 @@ public class GameServer extends ChatServer {
 
 		// Tell console this client connected
 		System.out.println(cl.getPlayerName() + " has Reconnected.");
+
+		Room currentRoom = gameServer.addPlayer(cl.getPlayerName());
+		System.out.println("currentRoom: " + currentRoom);
+
+		// Send the soom back to the client
+		if( currentRoom != null ){
+			cl.sendData(new RoomUpdate(currentRoom));
+			System.out.println("SEND NEW ROOM!");
+		}
 	}
 
 	public static void main(String[] args) {
