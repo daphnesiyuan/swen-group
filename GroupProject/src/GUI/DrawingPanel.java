@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import networking.GameClient;
+import networking.GameServer;
 import rendering.DrawCompass;
 import rendering.DrawInventory;
 import rendering.DrawMiniMap;
@@ -34,10 +35,14 @@ public class DrawingPanel extends JPanel{
 
 
 	private String direction;
+	private int directionI;
 	private DrawCompass compass;
 	private DrawInventory invo;
 	private DrawMiniMap map;
 
+
+	private boolean chatMode; //from rendering
+	private KeyBoard keyboard;
 
 	public DrawingPanel(WindowFrame win){
 		wf = win;
@@ -48,8 +53,25 @@ public class DrawingPanel extends JPanel{
 		direction = "North"; //hard coded now...NEED TO CHANGE
 		mouse = new MyMouseListener(this);
 		this.addMouseListener( mouse );
-
 		new ClientTest();
+		keyboard = new KeyBoard(this);
+	}
+
+	//from rendering
+	public boolean isChatMode(){
+		return chatMode;
+	}
+
+	public void setChatMode(boolean b){
+		chatMode = b;
+	}
+
+	public int getDirection(){
+		return directionI;
+	}
+
+	public void setDirection(int d){
+		directionI = d;
 	}
 
 	@Override
@@ -137,13 +159,14 @@ public class DrawingPanel extends JPanel{
 	}
 
 	private static class ClientTest {
-
+		static GameServer gs = new GameServer();
 		static GameClient gc = new GameClient("Daphne");
 
 		public ClientTest(){
 
 			try {
-				gc.connect("130.195.7.84",32768);
+				//gc.connect("130.195.7.84",32768);
+				gc.connect(gs, gc.getName());
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
