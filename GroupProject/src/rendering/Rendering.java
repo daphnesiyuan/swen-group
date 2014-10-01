@@ -179,9 +179,9 @@ public class Rendering extends JPanel implements KeyListener{
 			}
 		}
 		else{
-//			if (keysDown.contains(KeyEvent.VK_CONTROL)) {
-//				direction = (direction + 1) % 4;
-//			}
+			if (keysDown.contains(KeyEvent.VK_CONTROL)) {
+				direction = (direction + 1) % 4;
+			}
 			if(keysDown.contains(KeyEvent.VK_W)){
 				moveForward();
 			}
