@@ -293,12 +293,6 @@ public class Avatar implements Serializable {
 				return false;
 		} else if (!Inventory.equals(other.Inventory))
 			return false;
-
-		if (currentTile == null) {
-			if (other.currentTile != null)
-				return false;
-		} else if (!currentTile.equals(other.currentTile))
-			return false;
 		if (facing != other.facing)
 			return false;
 		if (playerName == null) {
