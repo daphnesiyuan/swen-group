@@ -1,12 +1,17 @@
 package GUI;
 
+import gameLogic.Room;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import javax.swing.JPanel;
 
+import networking.GameClient;
 import rendering.DrawWorld;
 
 public class DrawingPanel extends JPanel{
@@ -32,6 +37,8 @@ public class DrawingPanel extends JPanel{
 
 		mouse = new MyMouseListener(this);
 		this.addMouseListener( mouse );
+
+		new ClientTest();
 	}
 
 	@Override
@@ -44,12 +51,16 @@ public class DrawingPanel extends JPanel{
 
 		else{ //else it is in game
 
-			dw.redraw(g, null, null); //param: graphics, room, char, direction
+			dw.redraw(g, ClientTest.gc.getRoom(), "North"); //param: graphics, room, char, direction
 			//potential changes later: flag for menu mode or play mode, and to have logic
 
 			System.out.println("in game");
 		}
 	}
+
+
+
+
 
 	@Override
 	public Dimension getPreferredSize() {
@@ -63,6 +74,14 @@ public class DrawingPanel extends JPanel{
 		handler.mouseListener();
 	}
 
+
+	/**
+	 * A helper class which takes cordinates and finds the button that match those
+	 * If no matching button is found on the mouse click then it will return an empty string
+	 * @param x: the x coordinate of the click
+	 * @param y: the y coordinate of the click
+	 * @return: the string name associated with the appropriate button
+	 */
 	public String findButton(int x, int y){
 
 		//panel.getWidth()/2 - (buttonWidth/2), panel.getHeight()/3 - buttonHeight/2 + (i*(panel.getHeight()/3)/2)
@@ -91,12 +110,49 @@ public class DrawingPanel extends JPanel{
 			if ( findButton( mouseX, mouseY ).equals("start") ){
 				System.out.println("clicked start button");
 				startMenu = false; //no longer in the start menu mode
-				dw = new DrawWorld( null, DrawingPanel.this ); //param: the character, and then a panel
+				dw = new DrawWorld( ClientTest.gc.getAvatar() ,DrawingPanel.this ); //param: the character, and then a panel
+				repaint();
 			}
 
 			else{
 				System.out.println("no active button");
 			}
+		}
+
+	}
+
+	private static class ClientTest {
+
+		static GameClient gc = new GameClient("Daphne");
+
+		public ClientTest(){
+
+			try {
+				gc.connect("130.195.7.84",32768);
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			Room room = gc.getRoom();
+			while(room == null){
+				room = gc.getRoom();
+				System.out.println(room);
+				System.out.println(gc.isConnected());
+			}
+
+			//gc.setName(name);
+
 		}
 
 	}
