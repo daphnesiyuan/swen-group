@@ -33,10 +33,12 @@ public class GameServer extends ChatServer {
 			@Override
 			public void run(){
 				try {
+					while(true){
+						//System.out.println("Running");
+						updateAllClients();
 
-					updateAllClients();
-
-					Thread.sleep(30);
+						Thread.sleep(30);
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -49,12 +51,15 @@ public class GameServer extends ChatServer {
 	 * Updates all clients with a new room according to the state of the game logic
 	 */
 	private void updateAllClients(){
+		//System.out.println("Updating.......");
 
 		for (int i = 0; i < clients.size(); i++) {
+			//System.out.println(clients.get(i).getPlayerName() + " getting Room");
 
 			// Get each of our clients, and the room they are in
 			ClientThread client = clients.get(i);
 			Room room = gameServer.getRoom(client.player.getName());
+			//System.out.println("Room: " + room);
 
 			// Send the new room to the player
 			client.sendData(new RoomUpdate(room));

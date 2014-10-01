@@ -31,6 +31,8 @@ public class Avatar {
 
 		Inventory = new ArrayList<Item>();
 		facing = Facing.North;
+
+		game.addRoom(currentRoom);
 	}
 
 

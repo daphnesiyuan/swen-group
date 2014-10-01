@@ -57,7 +57,7 @@ public class NewGame {
 
 		for(String s : clientStrings){
 			Floor spawnXY = spawnXY();
-			Avatar player = new Avatar(s,startRoom.getTiles()[0][0],game);
+			Avatar player = new Avatar(s,startRoom.getTiles()[1][1],game);
 			characters.add(player);
 		}
 
@@ -76,7 +76,7 @@ public class NewGame {
 
 	}
 
-	private Room makeRoom() {
+	public static Room makeRoom() {
 
 		int roomNumber = 1;
 

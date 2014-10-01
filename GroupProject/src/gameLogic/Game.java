@@ -24,8 +24,17 @@ public class  Game {
 		activeAvatars = new ArrayList<Avatar>();
 		spawnTiles = new ArrayList<Floor>();
 
+		roomsInGame.add(NewGame.makeRoom());
+
 		createNewGame();
 	}
+
+
+	public void addRoom(Room room){
+		roomsInGame.add(room);
+	}
+
+
 
 	private void createNewGame(){
 		new NewGame(this);
