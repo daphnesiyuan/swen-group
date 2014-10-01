@@ -8,6 +8,9 @@ import networking.Move;
 
 public class  Game {
 
+	//TODO ryan
+	// any class in gamelogic updates something, make sure all other classes are updated respectivley
+
 	private List<Room> roomsInGame;
 	private List<Avatar> activeAvatars;
 	private List<Floor> spawnTiles;
@@ -59,9 +62,13 @@ public class  Game {
 	 * @return the Room the given player is in
 	 */
 	public Room getRoom(String playerName){
+		System.out.println("\n Game : getRoom()");
 		for(Room room : roomsInGame){
+			System.out.println("\n  Room: "+room);
 			for(Avatar player : room.getAvatars()){
+				System.out.println("\n   Avatar: " + player);
 				if(player.getPlayerName().equals(playerName)){
+					System.out.println("\n    player.getCurrentRoom()" +  player.getCurrentRoom());
 					return player.getCurrentRoom();
 				}
 			}
