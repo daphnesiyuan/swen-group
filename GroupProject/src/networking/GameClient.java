@@ -56,13 +56,7 @@ public class GameClient extends ChatClient {
 		}
 
 		synchronized(roomLock){
-			for( int i = 0; i < clientRoom.getAvatars().size(); i++ ){
-				Avatar a = clientRoom.getAvatars().get(i);
-				if( a.getPlayerName().equals(player.getName()) ){
-					return a;
-				}
-			}
-			return null;
+			return clientRoom.getAvatar(getName());
 		}
 	}
 
