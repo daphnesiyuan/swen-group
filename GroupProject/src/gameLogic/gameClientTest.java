@@ -32,8 +32,12 @@ public class gameClientTest {
 		}
 
 		Room room = gc.getRoom();
-		System.out.println(room);
-		System.out.println(gc.isConnected());
+		while(room == null){
+			room = gc.getRoom();
+			System.out.println(room);
+			System.out.println(gc.isConnected());
+		}
+
 		//gc.setName(name);
 
 	}
