@@ -30,17 +30,17 @@ public class NewGame {
 
 	private Game game;
 
-	public NewGame(Game g){
+	public NewGame(Game g, Room room){
 		game = g;
 
-		startRoom = makeRoom();
+		startRoom = room;
 
-		roomsInGame = new ArrayList<Room>();
+		//roomsInGame = new ArrayList<Room>();
 		spawnTiles = new ArrayList<Floor>();
 
 		activeCharacters = createCharacters();
 
-		game.setRoomsInGame(roomsInGame);
+		//game.setRoomsInGame(roomsInGame);
 		game.setActiveAvatars(activeCharacters);
 
 

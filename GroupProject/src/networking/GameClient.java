@@ -1,12 +1,9 @@
 package networking;
 
+import gameLogic.Avatar;
 import gameLogic.Room;
 
-import java.awt.Color;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
 
 /**
  *Chat Client that deals with the main aspects of the Chat program when it comes to the client
@@ -33,6 +30,19 @@ public class GameClient extends ChatClient {
 	public synchronized Room getRoom(){
 		synchronized(roomLock){
 			return clientRoom;
+		}
+	}
+
+	public Avatar getAvatar(){
+
+		synchronized(roomLock){
+			for( int i = 0; i < clientRoom.getAvatars().size(); i++ ){
+				Avatar a = clientRoom.getAvatars().get(i);
+				if( a.getPlayerName().equals(player.getName()) ){
+					return a;
+				}
+			}
+			return null;
 		}
 	}
 

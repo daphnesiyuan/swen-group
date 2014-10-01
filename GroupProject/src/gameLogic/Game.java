@@ -24,9 +24,17 @@ public class  Game {
 		activeAvatars = new ArrayList<Avatar>();
 		spawnTiles = new ArrayList<Floor>();
 
-		roomsInGame.add(NewGame.makeRoom());
+		Room room = NewGame.makeRoom();
 
-		createNewGame();
+		roomsInGame.add(room);
+		System.out.println("Game : Game() here");
+		System.out.println(roomsInGame.get(0));
+
+		createNewGame(room);
+
+
+		System.out.println("Game : Game() here");
+		System.out.println(roomsInGame.get(0));
 	}
 
 
@@ -36,8 +44,8 @@ public class  Game {
 
 
 
-	private void createNewGame(){
-		new NewGame(this);
+	private void createNewGame(Room r){
+		new NewGame(this,r);
 	}
 
 
@@ -71,7 +79,6 @@ public class  Game {
 	 * @return the Room the given player is in
 	 */
 	public Room getRoom(String playerName){
-		System.out.println("RoomsinGame : " + roomsInGame);
 		for(Room room : roomsInGame){
 			System.out.println("\n  Room: "+room);
 			for(Avatar player : room.getAvatars()){
