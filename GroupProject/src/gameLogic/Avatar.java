@@ -90,12 +90,16 @@ public class Avatar implements Serializable {
 			return false;
 		}
 
+
+
 		Tile2D newPosition = null;
 
 		int dir = Direction.get(move.getRenderDirection());
 		int key = Direction.getKeyDirection(move.getInteraction());
 		int change = dir + key;
 		change = change % 4;
+
+		System.out.println("\nchange: "+change);
 
 		if(change == 0) newPosition = currentTile.getTileUp();
 		else if(change == 1) newPosition = currentTile.getTileRight();
@@ -121,7 +125,7 @@ public class Avatar implements Serializable {
 		if(this.currentTile.getxPos() - newPosition.getxPos() > 1) return false;
 		if(this.currentTile.getyPos() - newPosition.getyPos() > 1) return false;
 
-
+		System.out.println("\npassed tests");
 
 		// If Player is trying to pass through a door
 		if(newPosition instanceof Door){
@@ -139,8 +143,11 @@ public class Avatar implements Serializable {
 		}
 		updateFacing(newPosition);
 
+		System.out.println("\nnewPos: " + newPosition);
 
 		updateLocations(newPosition,currentRoom);
+
+		System.out.println("currentRoom: " + currentRoom);
 
 
 
