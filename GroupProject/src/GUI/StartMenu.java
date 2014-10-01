@@ -21,7 +21,9 @@ public class StartMenu {
 		panel = dp;
 
 		try {
+
 			loadButtonImages();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -37,6 +39,14 @@ public class StartMenu {
 			drawButton(g, i, buttons.get(i));
 		}
 
+	}
+
+	public int getButtonWidth(){
+		return buttonWidth;
+	}
+
+	public int getButtonHeight(){
+		return buttonHeight;
 	}
 
 	public void drawButton(Graphics g, int i, Image b){
@@ -59,14 +69,6 @@ public class StartMenu {
 
 
 	public void loadButtonImages() throws IOException {
-		/*
-		 * Image start = new
-		 * Image(WindowFrame.class.getResource("startMenuImages/start.png"));
-		 * Image load = new
-		 * ImageIcon(WindowFrame.class.getResource("startMenuImages/load.png"));
-		 * Image help = new
-		 * ImageIcon(WindowFrame.class.getResource("startMenuImages/help.png"));
-		 */
 
 		System.out.println("images being loaded from StartMenu");
 
@@ -92,14 +94,6 @@ public class StartMenu {
 		buttons.add(join);
 		buttons.add(load);
 		buttons.add(help);
-
-		/*
-		 * java.net.URL imageURL = Rendering.class.getResource(tileName+".png");
-		 *
-		 * Image img = null; try { img = ImageIO.read(imageURL); } catch
-		 * (IOException e) { e.printStackTrace(); }
-		 */
-
 	}
 
 }
