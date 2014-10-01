@@ -1,12 +1,16 @@
 package gameLogic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 
-public class Tile2D {
+public class Tile2D implements Serializable{
+
+
+	private static final long serialVersionUID = 111202619281809955L;
 
 	private int xPos;
 	private int yPos;

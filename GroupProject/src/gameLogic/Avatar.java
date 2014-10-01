@@ -3,6 +3,7 @@ package gameLogic;
 
 import gameLogic.Game.Facing;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,9 @@ import rendering.Direction;
 import networking.Move;
 
 
-public class Avatar {
+public class Avatar implements Serializable {
+
+	private static final long serialVersionUID = 4723069455200795911L;
 
 	Game game;
 
@@ -32,8 +35,8 @@ public class Avatar {
 
 		Inventory = new ArrayList<Item>();
 		facing = Facing.North;
-		
-		
+
+
 	}
 
 

@@ -1,5 +1,7 @@
 package gameLogic;
 
+import java.io.Serializable;
+
 public class Floor extends Tile2D{
 
 	public boolean isSpawn;

@@ -1,10 +1,14 @@
 package gameLogic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Room {
+public class Room implements Serializable {
+
+
+	private static final long serialVersionUID = -6429120453292131025L;
 
 	Tile2D[][] tiles;
 	List <Item> items;
