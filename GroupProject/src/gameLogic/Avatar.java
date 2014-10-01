@@ -293,11 +293,7 @@ public class Avatar implements Serializable {
 				return false;
 		} else if (!Inventory.equals(other.Inventory))
 			return false;
-		if (currentRoom == null) {
-			if (other.currentRoom != null)
-				return false;
-		} else if (!currentRoom.equals(other.currentRoom))
-			return false;
+
 		if (currentTile == null) {
 			if (other.currentTile != null)
 				return false;
