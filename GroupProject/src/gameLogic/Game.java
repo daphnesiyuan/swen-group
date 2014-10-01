@@ -35,6 +35,14 @@ public class  Game {
 
 
 	public boolean addPlayer(String playerName){
+		Room room = roomsInGame.get(0);
+		Tile2D tile = room.getTiles()[3][3];
+
+
+		Avatar avatar = new Avatar(playerName,tile,this);
+		tile.addPlayer(avatar);
+		room.addAvatar(avatar);
+
 		return true;
 	}
 
@@ -71,7 +79,7 @@ public class  Game {
 		for(Room room : roomsInGame){
 			for(Avatar player : room.getAvatars()){
 				if(player.getPlayerName().equals(playerName)){
-					return player.getCurrentRoom();
+					return room;
 				}
 			}
 		}

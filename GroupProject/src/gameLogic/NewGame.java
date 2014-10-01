@@ -49,7 +49,7 @@ public class NewGame {
 
 		Tile2D start = roomsInGame.get(0).getTiles()[3][3];
 
-		Avatar avatar = new Avatar("Ryan Griffin",start,game);
+		Avatar avatar = new Avatar("Ryan",start,game);
 		avatars.add(avatar);
 
 		start.addPlayer(avatar);

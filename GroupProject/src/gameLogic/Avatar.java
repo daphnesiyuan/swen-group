@@ -32,6 +32,8 @@ public class Avatar {
 
 		Inventory = new ArrayList<Item>();
 		facing = Facing.North;
+		
+		
 	}
 
 
