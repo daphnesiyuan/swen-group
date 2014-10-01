@@ -106,6 +106,14 @@ public class ChatClient extends Client {
 	}
 
 	/**
+	 * Returns the player accociated with this client
+	 * @return Player object containing name and IP
+	 */
+	public Player getPlayer(){
+		return player;
+	}
+
+	/**
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
 	 * @return
