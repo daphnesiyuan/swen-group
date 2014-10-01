@@ -1,17 +1,21 @@
+
 package dataStorage;
 
 import java.io.File;
 
+import gameLogic.Game;
+
 public class XMLLoader {
 
-	File file;
-	public XMLLoader(File f){
-		file = f;
-	}
+	XMLLoadParser xmlLoad;
 
-	public boolean loadGame(){
+	public XMLLoader(){}
 
-		return false;
+	public Game loadGame(File file){
+		Game g = new Game();
+		xmlLoad = new XMLLoadParser(file);
+
+		return g;
 	}
 
 }

@@ -100,14 +100,14 @@ public class XMLSaveParser {
 		}
 		else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. floor
 
-		//SPAWNS
-		if(! room.getSpawns().isEmpty()){
-			for(Floor s: room.getSpawns()){
-				this.parseTiles(s);
-			}
-			e.addContent(spawns);
-		}
-		else{spawns.addContent(new Element("NULL"));}//add a NULL string
+//		//SPAWNS
+//		if(! room.getSpawns().isEmpty()){
+//			for(Floor s: room.getSpawns()){
+//				this.parseTiles(s);
+//			}
+//			e.addContent(spawns);
+//		}
+//		else{spawns.addContent(new Element("NULL"));}//add a NULL string
 
 		//WALLS
 		if(! room.getWalls().isEmpty()){
