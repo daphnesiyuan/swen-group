@@ -13,7 +13,6 @@ public class  Game {
 
 	private List<Room> roomsInGame;
 	private List<Avatar> activeAvatars;
-	private List<Floor> spawnTiles;
 
 
 	public enum Facing { North, South, East, West; }
@@ -22,19 +21,7 @@ public class  Game {
 	public Game(){
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
-		spawnTiles = new ArrayList<Floor>();
-
-		Room room = NewGame.makeRoom();
-
-		roomsInGame.add(room);
-		System.out.println("Game : Game() here");
-		System.out.println(roomsInGame.get(0));
-
-		createNewGame(room);
-
-
-		System.out.println("Game : Game() here");
-		System.out.println(roomsInGame.get(0));
+		createNewGame();
 	}
 
 
@@ -42,12 +29,14 @@ public class  Game {
 		roomsInGame.add(room);
 	}
 
-
-
-	private void createNewGame(Room r){
-		new NewGame(this,r);
+	private void createNewGame(){
+		new NewGame(this);
 	}
 
+
+	public boolean addPlayer(String playerName){
+		return true;
+	}
 
 
 
@@ -80,11 +69,8 @@ public class  Game {
 	 */
 	public Room getRoom(String playerName){
 		for(Room room : roomsInGame){
-			System.out.println("\n  Room: "+room);
 			for(Avatar player : room.getAvatars()){
-				System.out.println("\n   Avatar: " + player);
 				if(player.getPlayerName().equals(playerName)){
-					System.out.println("\n    player.getCurrentRoom()" +  player.getCurrentRoom());
 					return player.getCurrentRoom();
 				}
 			}
@@ -158,15 +144,6 @@ public class  Game {
 		return activeAvatars;
 	}
 
-
-	public void setSpawnTiles(List<Floor> spawnTiles) {
-		this.spawnTiles = spawnTiles;
-	}
-
-
-	public List<Floor> getSpawnTiles() {
-		return spawnTiles;
-	}
 
 
 

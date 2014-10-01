@@ -21,60 +21,44 @@ import java.util.Scanner;
 
 public class NewGame {
 	private List<Room> roomsInGame;
-	private List<Avatar> activeCharacters;
-	private List<Floor> spawnTiles;
-
-	private Room startRoom;
-
-	private boolean testing;
+	private List<Avatar> activeAvatars;
 
 	private Game game;
 
-	public NewGame(Game g, Room room){
+	public NewGame(Game g){
 		game = g;
 
-		startRoom = room;
+		roomsInGame = createRooms();
+		activeAvatars = createCharacters();
 
-		//roomsInGame = new ArrayList<Room>();
-		spawnTiles = new ArrayList<Floor>();
+		game.setRoomsInGame(roomsInGame);
+		game.setActiveAvatars(activeAvatars);
 
-		activeCharacters = createCharacters();
+	}
 
-		//game.setRoomsInGame(roomsInGame);
-		game.setActiveAvatars(activeCharacters);
-
-
-
+	private List<Room> createRooms(){
+		List<Room> rooms = new ArrayList<Room>();
+		Room room = makeRoom();
+		rooms.add(room);
+		return rooms;
 	}
 
 
 	private List<Avatar> createCharacters() {
+		List<Avatar> avatars = new ArrayList<Avatar>();
 
-		List<String> clientStrings = new ArrayList<String>();
-		clientStrings.add("Ryan Griffin");
+		Tile2D start = roomsInGame.get(0).getTiles()[3][3];
 
-		List<Avatar> characters = new ArrayList<Avatar>();
+		Avatar avatar = new Avatar("Ryan Griffin",start,game);
+		avatars.add(avatar);
 
-		for(String s : clientStrings){
-			Floor spawnXY = spawnXY();
-			Avatar player = new Avatar(s,startRoom.getTiles()[1][1],game);
-			characters.add(player);
-		}
+		start.addPlayer(avatar);
+		roomsInGame.get(0).addAvatar(avatar);
 
-		return characters;
+		return avatars;
 
 	}
 
-
-	private Floor spawnXY(){
-		if(spawnTiles.size()<=0)return null;
-
-		Floor spawnTile =  spawnTiles.get(0);
-		spawnTiles.remove(0);
-		Collections.shuffle(spawnTiles);
-		return spawnTile;
-
-	}
 
 	public static Room makeRoom() {
 

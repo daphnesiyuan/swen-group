@@ -16,9 +16,10 @@ public class Avatar {
 
 	Game.Facing facing;
 	List <Item> Inventory;
-	Room currentRoom;
 
-	Tile2D currentTile; // current Tile the character is standing on
+
+	Tile2D currentTile;
+	Room currentRoom;
 
 	String playerName;
 
@@ -31,8 +32,6 @@ public class Avatar {
 
 		Inventory = new ArrayList<Item>();
 		facing = Facing.North;
-
-		game.addRoom(currentRoom);
 	}
 
 

@@ -24,6 +24,11 @@ public class Room {
 	}
 
 
+	public void addAvatar(Avatar avatar){
+		avatars.add(avatar);
+	}
+
+
 	public Item getItemAt(int x, int y){
 		return tiles[x][y].getTopItem();
 	}
