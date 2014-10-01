@@ -134,11 +134,13 @@ public class Game{
 			item.returnToStartPos();
 		}
 
-		leaving.getCurrentTile().setAvatarOnTile(null);
-		leaving.getCurrentRoom().getAvatars().remove(leaving);
+		//TODO update method for when player leaves - null case in updateLocations.
+		//leaving.updateLocations(null, null);
 
 		return activeAvatars.remove(leaving);
 	}
+
+
 
 
 

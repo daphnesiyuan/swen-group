@@ -45,14 +45,14 @@ public class Tile2D implements Serializable{
 	}
 
 
-	public Tile2D getTileLeft(){
+	public Tile2D getTileRight(){
 		Tile2D newTile = null;
 		newTile = room.tiles[yPos][xPos-1];
 		if(newTile==null) return this;
 		else return newTile;
 	}
 
-	public Tile2D getTileRight(){
+	public Tile2D getTileLeft(){
 		Tile2D newTile = null;
 		newTile = room.tiles[yPos][xPos+1];
 		if(newTile==null) return this;
