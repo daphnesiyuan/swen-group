@@ -2,6 +2,7 @@ package gameLogic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -111,5 +112,60 @@ public class Room implements Serializable {
 
 	public void setRoomNumber(int roomNumber) {
 		this.roomNumber = roomNumber;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((avatars == null) ? 0 : avatars.hashCode());
+		result = prime * result + ((doors == null) ? 0 : doors.hashCode());
+		result = prime * result + ((floors == null) ? 0 : floors.hashCode());
+		result = prime * result + ((items == null) ? 0 : items.hashCode());
+		result = prime * result + roomNumber;
+		result = prime * result + Arrays.hashCode(tiles);
+		result = prime * result + ((walls == null) ? 0 : walls.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Room other = (Room) obj;
+		if (avatars == null) {
+			if (other.avatars != null)
+				return false;
+		} else if (!avatars.equals(other.avatars))
+			return false;
+		if (doors == null) {
+			if (other.doors != null)
+				return false;
+		} else if (!doors.equals(other.doors))
+			return false;
+		if (floors == null) {
+			if (other.floors != null)
+				return false;
+		} else if (!floors.equals(other.floors))
+			return false;
+		if (items == null) {
+			if (other.items != null)
+				return false;
+		} else if (!items.equals(other.items))
+			return false;
+		if (roomNumber != other.roomNumber)
+			return false;
+		if (!Arrays.deepEquals(tiles, other.tiles))
+			return false;
+		if (walls == null) {
+			if (other.walls != null)
+				return false;
+		} else if (!walls.equals(other.walls))
+			return false;
+		return true;
 	}
 }

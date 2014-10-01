@@ -141,4 +141,55 @@ public class Tile2D implements Serializable{
 	public void setAvatarOnTile(Avatar avatarOnTile) {
 		this.avatarOnTile = avatarOnTile;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((avatarOnTile == null) ? 0 : avatarOnTile.hashCode());
+		result = prime * result
+				+ ((itemsOnTile == null) ? 0 : itemsOnTile.hashCode());
+		result = prime * result + ((room == null) ? 0 : room.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + xPos;
+		result = prime * result + yPos;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tile2D other = (Tile2D) obj;
+		if (avatarOnTile == null) {
+			if (other.avatarOnTile != null)
+				return false;
+		} else if (!avatarOnTile.equals(other.avatarOnTile))
+			return false;
+		if (itemsOnTile == null) {
+			if (other.itemsOnTile != null)
+				return false;
+		} else if (!itemsOnTile.equals(other.itemsOnTile))
+			return false;
+		if (room == null) {
+			if (other.room != null)
+				return false;
+		} else if (!room.equals(other.room))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		if (xPos != other.xPos)
+			return false;
+		if (yPos != other.yPos)
+			return false;
+		return true;
+	}
 }

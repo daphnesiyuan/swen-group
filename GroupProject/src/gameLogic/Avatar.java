@@ -41,6 +41,7 @@ public class Avatar implements Serializable {
 	}
 
 	public void updateTile(Tile2D newTile){
+		if(newTile.equals(currentTile)) return;
 		if(currentTile != null){
 			currentTile.removeAvatar(this);
 		}
@@ -49,6 +50,7 @@ public class Avatar implements Serializable {
 	}
 
 	public void updateRoom(Room newRoom){
+		if(newRoom.equals(currentRoom)) return;
 		if(currentRoom != null){
 			currentRoom.removeAvatar(this);
 		}
@@ -127,7 +129,7 @@ public class Avatar implements Serializable {
 		updateFacing(newPosition);
 
 
-		//updateLocations(newPosition,newRoom);
+		updateLocations(newPosition,currentRoom);
 
 		return true;
 
