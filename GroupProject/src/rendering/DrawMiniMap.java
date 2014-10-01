@@ -53,9 +53,8 @@ public class DrawMiniMap {
 						} else {
 							g.setColor(new Color(0.5f, 0.1f, 0.1f, 0.5f));
 						}
-						// g.drawRect(x, y, (int)width, (int)height);
-
-					} else {
+					} 
+					else {
 						g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
 					}
 				}

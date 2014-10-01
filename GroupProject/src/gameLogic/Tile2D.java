@@ -1,12 +1,16 @@
 package gameLogic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 
-public class Tile2D {
+public class Tile2D implements Serializable{
+
+
+	private static final long serialVersionUID = 111202619281809955L;
 
 	private int xPos;
 	private int yPos;
@@ -83,14 +87,14 @@ public class Tile2D {
 		return itemsOnTile;
 	}
 
-	public void removePlayer(Avatar player) {
+	public void removeAvatar(Avatar player) {
 		if(avatarOnTile.equals(player)){
 			avatarOnTile = null;
 		}
 		else System.out.println("Tile2D: removePlayer(); Error removing character from tile");
 	}
 
-	public void addPlayer(Avatar player) {
+	public void addAvatar(Avatar player) {
 		avatarOnTile = player;
 	}
 

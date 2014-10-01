@@ -87,7 +87,8 @@ public class Rendering extends JPanel implements KeyListener{
 		chat = new DrawChat(this);
 		currentMessage = "";
 
-		room.getTiles()[2][3].addPlayer(charac);
+
+		//room.getTiles()[2][3].addPlayer(charac);
 
 		chatMessages.add(new ChatMessage("Leon","This is a test message.", Color.BLUE));
 		chatMessages.add(new ChatMessage("Ryan","This is another test message.", Color.RED));
@@ -113,6 +114,9 @@ public class Rendering extends JPanel implements KeyListener{
 		currentMessage = "";
 
 		//room.getTiles()[2][3].addPlayer(charac);
+
+		room.getTiles()[2][3].addAvatar(charac);
+
 
 		chatMessages.add(new ChatMessage("Leon","This is a test message.", Color.BLUE));
 		chatMessages.add(new ChatMessage("Ryan","This is another test message.", Color.RED));

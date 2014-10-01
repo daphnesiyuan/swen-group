@@ -28,6 +28,7 @@ public abstract class Client{
 	protected String IPAddress = "null";
 
 	// Everyone to be sent to the server
+	private Object outGoingPacketLock = new Object();
 	private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>();
 
 	private ObjectInputStream inputStream;
@@ -54,15 +55,26 @@ public abstract class Client{
 			@Override
 			public void run(){
 
+				final int SENDRATE = 10;
+				final int PINGRATE = 50;
+
 				while( true ){
 
 
 					if( socket != null && !socket.isClosed() ){
 						try {
 
+							NetworkObject popped;
+
 							// Try pinging the server if we have a server
-							if( outgoingPackets.isEmpty() ){
-								sendData(new ChatMessage(getName(), "/ping everyone", Color.black, true));
+							synchronized(outGoingPacketLock){
+								if( outgoingPackets.isEmpty() ){
+									sendData(new ChatMessage(getName(), "/ping everyone", Color.black, true));
+									try { sleep(PINGRATE); } catch (InterruptedException e) {}
+								}
+
+								// Get the next packet to send
+								popped = outgoingPackets.pop();
 							}
 
 
@@ -70,7 +82,6 @@ public abstract class Client{
 							outputStream = new ObjectOutputStream(socket.getOutputStream());
 
 							// Get packet to send
-							NetworkObject popped = outgoingPackets.pop();
 							outputStream.writeObject(popped);
 							outputStream.flush();
 
@@ -84,10 +95,10 @@ public abstract class Client{
 							e.printStackTrace();
 						}
 
-						try { sleep(30); } catch (InterruptedException e) {e.printStackTrace();}
+						try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
 					}
 					else{
-						try { sleep(1000); } catch (InterruptedException e) {retrieveObject(new NetworkObject(IPAddress, new ChatMessage("WARNING", "Waiting for socket to reconnect....",Color.black,true)));}
+						try { sleep(PINGRATE); } catch (InterruptedException e) {retrieveObject(new NetworkObject(IPAddress, new ChatMessage("WARNING", "Waiting for socket to reconnect....",Color.black,true)));}
 					}
 				}
 			}
@@ -152,7 +163,9 @@ public abstract class Client{
 		myThread.start();
 
 		// Clear all packets that were pending
-		outgoingPackets.clear();
+		synchronized(outGoingPacketLock){
+			outgoingPackets.clear();
+		}
 
 		// Record server
 		connectedIP = IPAddress;
@@ -228,7 +241,9 @@ public abstract class Client{
 		}
 
 		// Add to our packets to send
-		outgoingPackets.add(new NetworkObject(IPAddress, data));
+		synchronized(outGoingPacketLock){
+			outgoingPackets.add(new NetworkObject(IPAddress, data));
+		}
 
 		// Data stored successfully
 		return true;
@@ -289,7 +304,7 @@ public abstract class Client{
 	 * Checks if the client is connected to a server
 	 * @return True if socket is valid
 	 */
-	public boolean isConnect(){
+	public boolean isConnected(){
 		return socket != null && !socket.isClosed();
 	}
 

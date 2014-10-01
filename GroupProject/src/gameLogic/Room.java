@@ -1,16 +1,20 @@
 package gameLogic;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class Room {
+public class Room implements Serializable {
+
+
+	private static final long serialVersionUID = -6429120453292131025L;
 
 	Tile2D[][] tiles;
 	List <Item> items;
 	List<Avatar> avatars;
 	List<Door> doors;
 	List<Floor> floors;
-	List<Floor> spawns;
 	List<Wall> walls;
 
 	int roomNumber;
@@ -21,6 +25,19 @@ public class Room {
 		this.roomNumber = roomNumber;
 		this.tiles = tiles;
 		this.items = items;
+
+		avatars = new ArrayList<Avatar>();
+
+
+
+	}
+
+	public void removeAvatar(Avatar avatar){
+		avatars.remove(avatar);
+	}
+	
+	public void addAvatar(Avatar avatar){
+		avatars.add(avatar);
 	}
 
 
@@ -48,9 +65,6 @@ public class Room {
 		floors = roomFloors;
 	}
 
-	public void setSpawns(List<Floor> roomSpawns) {
-		spawns = roomSpawns;
-	}
 
 	public void setWalls(List<Wall> roomWalls) {
 		walls = roomWalls;
@@ -76,9 +90,6 @@ public class Room {
 		return floors;
 	}
 
-	public List<Floor> getSpawns() {
-		return spawns;
-	}
 
 	public List<Wall> getWalls() {
 		return walls;

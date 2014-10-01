@@ -19,8 +19,12 @@ public class GameClient extends ChatClient {
 	private boolean modified = false;
 	private Object modifiedLock = new Object();
 
+	/**
+	 * Creates a new GameClient to connect to a server
+	 * @param playerName Name of the client
+	 */
 	public GameClient(String playerName){
-		player = new Player(playerName);
+		super(playerName);
 	}
 
 	/**
@@ -28,12 +32,28 @@ public class GameClient extends ChatClient {
 	 * @return Room containing the player and al lthe rooms contents
 	 */
 	public synchronized Room getRoom(){
+		// Check if we are connected first
+		if( !isConnected() ){
+			System.out.println("Not currently Connected to a server");
+			return null;
+		}
+
 		synchronized(roomLock){
 			return clientRoom;
 		}
 	}
 
+	/**
+	 * Returns the Avatar accociated with the current player
+	 * @return
+	 */
 	public Avatar getAvatar(){
+
+		// Check if we are connected first
+		if( !isConnected() ){
+			System.out.println("Not currently Connected to a server");
+			return null;
+		}
 
 		synchronized(roomLock){
 			for( int i = 0; i < clientRoom.getAvatars().size(); i++ ){
@@ -117,8 +137,7 @@ public class GameClient extends ChatClient {
 	@Override
 	public void successfullyConnected(String playerName) {
 
-		// Change the name of the player
-		player.setName(playerName);
+
 	}
 
 	/**

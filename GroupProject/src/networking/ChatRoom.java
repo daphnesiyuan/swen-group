@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 
 
 /**
- * Basic chat room used to demonstrate the networking comparison between a client and server for those wanting to send something over the nwtwork.
+ * Basic chat room used to demonstrate the networking comparison between a client and server for those wanting to send something over the network.
  * @author veugeljame
  *
  */
@@ -30,16 +30,15 @@ public class ChatRoom implements ActionListener{
 	private ChatClient client;
 
 	// Server if this chat client wants to start their own public server for everyone to connect to
-	private ChatRoomServer server;
-
 	private int port = 32768;
+	private ChatRoomServer server;
+	private String publicIP = "173.255.249.21";
 
 	private JPanel chatHistory;
 	private JScrollPane scroll;
 	private JTextField message;
 	private JButton send;
 
-	private String publicIP = "173.255.249.21";
 
 	private JTextField IPConnection;
 	private JLabel connectLabel;
@@ -47,11 +46,12 @@ public class ChatRoom implements ActionListener{
 	private JButton startServer;
 
 
+
 	public ChatRoom(){
 
 		// Set up a basic client for this ChatRoom
 		// Tell this chat room to wait for input from the server that sends data to this client
-		client = new ChatClient();
+		client = new ChatClient("BOB - Undefined");
 
 		// Set up interface
 		setUpGui();
@@ -87,7 +87,7 @@ public class ChatRoom implements ActionListener{
 			chatHistory.add(label);
 		}
 
-
+		// Reorganize it's components
 		chatHistory.revalidate();
 
 		// Scroll to bottom of the page

@@ -27,7 +27,6 @@ import gameLogic.Tile2D;
 
 /**
  * This class will draw the location and everything in it.
- * It will also draw the DrawInventory and compas.
  * @author northleon
  *
  */
@@ -38,20 +37,16 @@ public class DrawWorld {
 	double scale;
 	int width;
 	int height;
-	Point offset = new Point(600,600);
+	Point offset = new Point(600,320);
 	JPanel panel;
 	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
-	Map<String, Integer> directionMap = new HashMap<String, Integer>();
 	Point relativeOffset;
 
 	public DrawWorld(Avatar character, Rendering rendering){
 		this.character = character;
 		this.panel = rendering;
 		relativeOffset = new Point(character.getCurrentTile().getxPos(), character.getCurrentTile().getxPos());
-		directionMap.put("north", 0);
-		directionMap.put("west", 1);
-		directionMap.put("south", 2);
-		directionMap.put("east", 3);
+
 	}
 
 	//This constructor is only for testing
@@ -59,12 +54,13 @@ public class DrawWorld {
 		this.character = character;
 		this.panel = rendering;
 		relativeOffset = new Point(character.getCurrentTile().getxPos(), character.getCurrentTile().getxPos());
-		directionMap.put("north", 0);
-		directionMap.put("west", 1);
-		directionMap.put("south", 2);
-		directionMap.put("east", 3);
+
 	}
 
+	//Another constructor for testing
+	public DrawWorld(Rendering rendering) {
+		this.panel = rendering;
+	}
 
 	/**
 	 * This method will be call externally from the UI to draw everything gameplay related
@@ -81,14 +77,12 @@ public class DrawWorld {
 		height = width;
 
 		//set offset based on character position.
-		calibrateOffset(direction, room);
+		//calibrateOffset(direction, room);
 
 
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
 		drawLocation(g, room, direction);
-//		drawInventory(g);
-//		drawCompas(g);
 	}
 
 
@@ -128,12 +122,12 @@ public class DrawWorld {
 		Tile2D[][] tiles = room.getTiles().clone();
 
 		//rotate the game the correct number of tiles
-		for (int i = 0; i < directionMap.get(direction); i++){
+		for (int i = 0; i < Direction.get(direction); i++){
 			tiles = rotate90(tiles);
 		}
 
 		//Temporary code here, this sets the rotated90 boolean which is used to flip images
-		if(directionMap.get(direction) == 1 ||directionMap.get(direction) == 3){
+		if(Direction.get(direction) == 1 ||Direction.get(direction) == 3){
 			rotated90 = true;
 		}
 		else{

@@ -1,8 +1,9 @@
 package gameLogic;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Door extends Tile2D {
+public class Door extends Tile2D{
 
 
 	private Room room;

@@ -1,5 +1,6 @@
 package rendering;
 
+import gameLogic.Avatar;
 import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Item;
@@ -8,10 +9,14 @@ import gameLogic.Tile2D;
 import gameLogic.Wall;
 
 import java.awt.BorderLayout;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+
+import networking.GameClient;
 
 
 /**
@@ -22,8 +27,51 @@ import javax.swing.JFrame;
 public class testRendering extends javax.swing.JFrame {
 
 	public static Rendering canvas;
+	GameClient gameClient;
 
 	public testRendering () {
+
+		/*
+		gameClient = new GameClient("Ryan Griffin");
+		try {
+			gameClient.connect("130.195.7.84", "Ryan Griffin", 32768);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println(gameClient.getChatHistory().get(0));
+		System.out.println(gameClient.getName());
+
+
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		Room room = gameClient.getRoom();
+		if (room == null){
+			System.out.println("room == null 1 ");
+		}
+		Avatar avatar = gameClient.getAvatar();
+
+
+		canvas = new Rendering(room, avatar);
+		setLayout(new BorderLayout()); // use border layout
+		add(canvas, BorderLayout.CENTER); // add canvas
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		pack(); // pack components tightly together
+		setVisible(true); // make sure we are visible!
+		this.addKeyListener(canvas);
+		*/
+
+
+
 		Room room = makeRoom();
 		canvas = new Rendering(room);
 		setLayout(new BorderLayout()); // use border layour
@@ -32,6 +80,7 @@ public class testRendering extends javax.swing.JFrame {
 		pack(); // pack components tightly together
 		setVisible(true); // make sure we are visible!
 		this.addKeyListener(canvas);
+
 	}
 
 	//Makes a fake room for testing purposes
@@ -59,6 +108,7 @@ public class testRendering extends javax.swing.JFrame {
 	}
 
 	public void repaint(){
+		System.out.println("in repaint");
 		canvas.repaint();
 	}
 
