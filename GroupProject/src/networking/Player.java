@@ -1,11 +1,14 @@
 package networking;
 
+import java.io.Serializable;
+
 /**
  * A Player object that contains the name of the player and IP in order to determine who is performing a move on which server
  * @author veugeljame
  *
  */
-public class Player {
+public class Player implements Serializable {
+	private static final long serialVersionUID = 1045665174986227643L;
 	private String name; // Name of the Player
 	private String IPAddress; // IP Address of who is controlling this playher
 

@@ -2,6 +2,7 @@ package networking;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 import networking.Server.ClientThread;
@@ -39,6 +40,18 @@ public class ChatServer extends Server {
 			sendToAllClients(data);
 		}
 
+		// Check if the data sent back to us was a ping all
+//		if( ((ChatMessage)data.getData()).message.startsWith("/ping") ){
+//
+//			// Ping Everyone
+//			if( ((ChatMessage)data.getData()).message.startsWith("/ping everyone") ){
+//				lastPinged.put(getPlayerName(), Calendar.getInstance());
+//				continue;
+//			}
+//			else{
+//				data = new NetworkObject(getIPAddress(), data.getData(), data.getHours(), data.getMinutes(), data.getSeconds(), data.getTimeInMillis() );
+//			}
+//		}
 
 	}
 

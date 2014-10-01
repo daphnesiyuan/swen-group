@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class GameServer extends ChatServer {
 
 	// Game that all players are playing off
-	private Object serverLock;
+	private Object serverLock = new Object();
 	private Game gameServer;
 
 	public GameServer() {
@@ -72,11 +72,19 @@ public class GameServer extends ChatServer {
 	public synchronized void retrieveObject(NetworkObject data) {
 		super.retrieveObject(data);
 
+
+		System.out.println(data.getData());
+
 		// Determine what to do with each of the different types of objects sent from clients
 		if( data.getData() instanceof Move ){
 
+			System.out.println(data.getData());
+
+			Move move = (Move)data.getData();
+			System.out.println(move);
+
 			// A move performed by a client
-			processMove((Move)data.getData(), data);
+			processMove(move, data);
 		}
 
 	}
@@ -88,7 +96,10 @@ public class GameServer extends ChatServer {
 	 */
 	private synchronized void processMove(Move move, NetworkObject data){
 
+		System.out.println(move);
+
 		synchronized(serverLock){
+
 			gameServer.moveAvatar(move);
 		}
 	}
