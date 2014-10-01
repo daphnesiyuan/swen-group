@@ -1,5 +1,6 @@
 package gameLogic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -10,7 +11,6 @@ public class Room {
 	List<Avatar> avatars;
 	List<Door> doors;
 	List<Floor> floors;
-	List<Floor> spawns;
 	List<Wall> walls;
 
 	int roomNumber;
@@ -21,6 +21,11 @@ public class Room {
 		this.roomNumber = roomNumber;
 		this.tiles = tiles;
 		this.items = items;
+
+		avatars = new ArrayList<Avatar>();
+
+
+
 	}
 
 
@@ -53,9 +58,6 @@ public class Room {
 		floors = roomFloors;
 	}
 
-	public void setSpawns(List<Floor> roomSpawns) {
-		spawns = roomSpawns;
-	}
 
 	public void setWalls(List<Wall> roomWalls) {
 		walls = roomWalls;
@@ -81,9 +83,6 @@ public class Room {
 		return floors;
 	}
 
-	public List<Floor> getSpawns() {
-		return spawns;
-	}
 
 	public List<Wall> getWalls() {
 		return walls;
