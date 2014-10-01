@@ -40,12 +40,14 @@ public class DrawWorld {
 	Point offset = new Point(690,220);
 	JPanel panel;
 	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
+	boolean back = true;
 	Point relativeOffset;
 
 	public DrawWorld(Avatar character, Rendering rendering){
 		this.character = character;
 		this.panel = rendering;
 		relativeOffset = new Point(character.getCurrentTile().getxPos(), character.getCurrentTile().getxPos());
+
 
 	}
 
@@ -78,9 +80,11 @@ public class DrawWorld {
 
 		//set offset based on character position.
 		//calibrateOffset(direction, room);
+		offset = new Point((int)(panel.getWidth()/2.0), (int)(panel.getHeight()/3.0));
 
 
-		g.setColor(Color.BLACK);
+
+		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
 		drawLocation(g, room, direction);
 	}
@@ -99,7 +103,7 @@ public class DrawWorld {
 //		int width = room.getTiles().length;
 //		for (int i = 0; i < Direction.get(direction); i++){
 //			relativeOffset.setLocation(width - relativeOffset.getX() - 1, relativeOffset.getY());
-//
+
 //		}
 //
 //		Point temp = twoDToIso(new Point(relativeOffset.x
@@ -121,18 +125,24 @@ public class DrawWorld {
 		// TODO Auto-generated method stub
 		Tile2D[][] tiles = room.getTiles().clone();
 
-		//rotate the game the correct number of tiles
-//		for (int i = 0; i < Direction.get(direction); i++){
-//			tiles = rotate90(tiles);
-//		}
+//		rotate the game the correct number of tiles
+		for (int i = 0; i < Direction.get(direction)+3; i++){
+			tiles = rotate90(tiles);
+		}
 
-		//Temporary code here, this sets the rotated90 boolean which is used to flip images
-//		if(Direction.get(direction) == 1 ||Direction.get(direction) == 3){
-//			rotated90 = true;
-//		}
-//		else{
-//			rotated90 = false;
-//		}
+		//Temporary code here, this sets the rotated90 and back boolean which is used to flip images
+		if(Direction.get(direction) == 1 ||Direction.get(direction) == 3){
+			rotated90 = true;
+		}
+		else{
+			rotated90 = false;
+		}
+		if (Direction.get(direction) == 0 || Direction.get(direction) == 1){
+			back = true;
+		}
+		else{
+			back = false;
+		}
 
 		for(int i = 0; i < tiles.length; i++){
 			for (int j = 0; j < tiles[i].length; j++) {
@@ -214,6 +224,7 @@ public class DrawWorld {
 			return;
 		}
 		String characterName = tile.getAvatar().getClass().getName();
+		if (back){characterName+="Back";}
 		java.net.URL imageURL = Rendering.class.getResource(characterName+".png");
 		drawObject(g, pt, imageURL);
 	}

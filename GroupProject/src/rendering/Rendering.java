@@ -138,7 +138,7 @@ public class Rendering extends JPanel implements KeyListener{
 		draw.redraw(g, gameClient.getRoom(), Direction.get(direction));
 		inventory.redraw(g, charac.getInventory(), Direction.get(direction));
 		compass.redraw(g, Direction.get(direction));
-		miniMap.redraw(g, room, Direction.get(direction));
+		miniMap.redraw(g, gameClient.getRoom(), Direction.get(direction));
 		if(chatMode)chat.redraw(g, chatMessages, currentMessage);
 	}
 

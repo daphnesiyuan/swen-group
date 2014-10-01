@@ -40,10 +40,13 @@ public class DrawMiniMap {
 		int x = (int) width*5;
 		int y = (int)(panel.getHeight() - height - (buffer * 5));
 		g.setColor(new Color(0.5f,0.5f,0.5f,0.5f));
-		g.fillRect(x, y, (int)width, (int)height);
+		//g.fillRect(x, y, (int)width, (int)height);
 		cellHeight = (height / room.getTiles()[0].length);
 		cellWidth = (width / room.getTiles().length);
 		Tile2D[][] tiles = room.getTiles().clone();
+		for (int i = 0; i < Direction.get(direction)+3; i++){
+			tiles = rotate90(tiles);
+		}
 		for (int i = 0; i < tiles.length; i++ ){
 			for(int j = 0; j < tiles[i].length; j++){
 				if (tiles[j][i] instanceof Floor) {
@@ -53,20 +56,32 @@ public class DrawMiniMap {
 						} else {
 							g.setColor(new Color(0.5f, 0.1f, 0.1f, 0.5f));
 						}
-					} 
+					}
 					else {
 						g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
 					}
 				}
 				else if (tiles[j][i] instanceof Wall){
-					g.setColor(new Color(0.0f, 0.0f, 1.0f, 0.5f));
+					g.setColor(new Color(0.1f, 0.2f, 0.1f, 0.5f));
 				}
 				else if (tiles[j][i] instanceof Door){
-					g.setColor(new Color(0.0f, 1.0f, 0.0f, 0.5f));
+					g.setColor(new Color(0.0f, 0.0f, 1.0f, 0.5f));
 				}
-				g.fillRect((int)(x+j*cellWidth), (int)(y+i*cellHeight), (int)(cellWidth), (int)(cellHeight));
+				g.fillRect((int)(x+(j*cellWidth)), (int)(y+(i*cellHeight)), (int)(cellWidth-buffer), (int)(cellHeight-buffer));
 			}
 		}
+	}
+	private Tile2D[][] rotate90(Tile2D[][] tiles) {
+		// TODO Auto-generated method stub
+	    int width = tiles.length;
+	    int height = tiles[0].length;
+	    Tile2D[][] newTiles = new Tile2D[height][width];
+	    for (int i = 0; i < height; ++i) {
+	        for (int j = 0; j < width; ++j) {
+	            newTiles[i][j] = tiles[width - j - 1][i];
+	        }
+	    }
+	    return newTiles;
 	}
 
 }

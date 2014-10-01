@@ -37,12 +37,17 @@ public class testRendering extends javax.swing.JFrame {
 		GameServer gameServer = new GameServer();
 
 
-
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		gameClient = new GameClient("Ryan");
 		try {
-			//gameClient.connect(InetAddress.getLocalHost().getHostAddress(), "Ryan", 32768);
-			gameClient.connect("130.195.7.84", "Ryan", 32768);
+			gameClient.connect(InetAddress.getLocalHost().getHostAddress(), "Ryan", 32768);
+			//gameClient.connect("130.195.7.84", "Ryan", 32768);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
