@@ -17,6 +17,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import networking.GameClient;
+import networking.Player;
 
 
 /**
@@ -27,14 +28,15 @@ import networking.GameClient;
 public class testRendering extends javax.swing.JFrame {
 
 	public static Rendering canvas;
-	GameClient gameClient;
+	public static GameClient gameClient;
+	public static Player player;
 
 	public testRendering () {
 
-		/*
-		gameClient = new GameClient("Ryan Griffin");
+
+		gameClient = new GameClient("Ryan");
 		try {
-			gameClient.connect("130.195.7.84", "Ryan Griffin", 32768);
+			gameClient.connect("130.195.7.84", "Ryan", 32768);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,44 +44,50 @@ public class testRendering extends javax.swing.JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.gameClient = gameClient;
+
 		//System.out.println(gameClient.getChatHistory().get(0));
 		System.out.println(gameClient.getName());
 
 
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
 		Room room = gameClient.getRoom();
-		if (room == null){
-			System.out.println("room == null 1 ");
+		while (room == null){
+			room = gameClient.getRoom();
+			System.out.println("room check");
 		}
+
 		Avatar avatar = gameClient.getAvatar();
+		while (avatar == null){
+			avatar = gameClient.getAvatar();
+			System.out.println("avatar check");
+		}
+
+		Player player = gameClient.getPlayer();
+		while (player == null){
+			this.player = gameClient.getPlayer();
+		}
+		System.out.println(player);
 
 
-		canvas = new Rendering(room, avatar);
+		canvas = new Rendering(room, avatar, this, player, gameClient);
 		setLayout(new BorderLayout()); // use border layout
 		add(canvas, BorderLayout.CENTER); // add canvas
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack(); // pack components tightly together
 		setVisible(true); // make sure we are visible!
 		this.addKeyListener(canvas);
-		*/
 
 
 
-		Room room = makeRoom();
-		canvas = new Rendering(room);
-		setLayout(new BorderLayout()); // use border layour
-		add(canvas, BorderLayout.CENTER); // add canvas
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		pack(); // pack components tightly together
-		setVisible(true); // make sure we are visible!
-		this.addKeyListener(canvas);
+
+//		Room room = makeRoom();
+//		canvas = new Rendering(room);
+//		setLayout(new BorderLayout()); // use border layour
+//		add(canvas, BorderLayout.CENTER); // add canvas
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		pack(); // pack components tightly together
+//		setVisible(true); // make sure we are visible!
+//		this.addKeyListener(canvas);
 
 	}
 
