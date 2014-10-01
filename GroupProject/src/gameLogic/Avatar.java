@@ -112,14 +112,22 @@ public class Avatar implements Serializable {
 		// if the move is the characters current square - return false
 		if(this.currentTile.equals(newPosition)) return false;
 
+		System.out.println("1");
+
 		// if the move is in a different room to the characters current room - return false NB: moving through door moves onto tile, which IS in same room.
 		if(newPosition.getRoom()!= this.currentRoom) return false;
+
+		System.out.println("2");
 
 		// if move position is a wall - return false
 		if(newPosition instanceof Wall) return false;
 
+		System.out.println("3");
+
 		// if there is an Item in the move position - return false;
 		if(newPosition.itemOnTile()==true) return false;
+
+		System.out.println("4");
 
 		// Check the desired move position is not more than one tile away from current Tile
 		if(this.currentTile.getxPos() - newPosition.getxPos() > 1) return false;
