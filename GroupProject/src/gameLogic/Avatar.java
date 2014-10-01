@@ -27,17 +27,40 @@ public class Avatar implements Serializable {
 	String playerName;
 
 
-	public Avatar(String name, Tile2D start, Game game){
+	public Avatar(String name, Game game, Tile2D tile, Room room){
 		this.playerName = name;
-		this.currentTile = start;
-		this.currentRoom = start.getRoom();
 		this.game = game;
+
+		updateLocations(tile, room);
 
 		Inventory = new ArrayList<Item>();
 		facing = Facing.North;
 
-
 	}
+
+	public void updateLocations(Tile2D tile, Room room) {
+		updateTile(tile);
+		updateRoom(room);
+	}
+
+	public void updateTile(Tile2D newTile){
+		if(currentTile != null){
+			currentTile.removeAvatar(this);
+		}
+		newTile.addAvatar(this);
+		currentTile = newTile;
+	}
+
+	public void updateRoom(Room newRoom){
+		if(currentRoom != null){
+			currentRoom.removeAvatar(this);
+		}
+		newRoom.addAvatar(this);
+		currentRoom = newRoom;
+	}
+
+
+
 
 
 
@@ -105,18 +128,16 @@ public class Avatar implements Serializable {
 
 		}
 		updateFacing(newPosition);
-		updateTile(newPosition);
+
+
+		//updateLocations(newPosition,newRoom);
+
 		return true;
 
 	}
 
-	public void updateTile(Tile2D newPosition){
-		Tile2D oldTile = currentTile;
-		currentTile = newPosition;
 
-		oldTile.removePlayer(this);
-		currentTile.addPlayer(this);
-	}
+
 
 
 	public void updateFacing(Tile2D newPosition){
@@ -255,4 +276,6 @@ public class Avatar implements Serializable {
 			return false;
 		return true;
 	}
+
+
 }

@@ -32,7 +32,10 @@ public class Room implements Serializable {
 
 	}
 
-
+	public void removeAvatar(Avatar avatar){
+		avatars.remove(avatar);
+	}
+	
 	public void addAvatar(Avatar avatar){
 		avatars.add(avatar);
 	}

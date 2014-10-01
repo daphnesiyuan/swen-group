@@ -38,12 +38,8 @@ public class Game implements Serializable {
 	public boolean addPlayer(String playerName){
 		Room room = roomsInGame.get(0);
 		Tile2D tile = room.getTiles()[3][3];
-
-
-		Avatar avatar = new Avatar(playerName,tile,this);
-		tile.addPlayer(avatar);
-		room.addAvatar(avatar);
-
+		Avatar avatar = new Avatar(playerName,this,tile,room);
+		activeAvatars.add(avatar);
 		return true;
 	}
 

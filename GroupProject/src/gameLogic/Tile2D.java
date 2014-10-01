@@ -87,14 +87,14 @@ public class Tile2D implements Serializable{
 		return itemsOnTile;
 	}
 
-	public void removePlayer(Avatar player) {
+	public void removeAvatar(Avatar player) {
 		if(avatarOnTile.equals(player)){
 			avatarOnTile = null;
 		}
 		else System.out.println("Tile2D: removePlayer(); Error removing character from tile");
 	}
 
-	public void addPlayer(Avatar player) {
+	public void addAvatar(Avatar player) {
 		avatarOnTile = player;
 	}
 

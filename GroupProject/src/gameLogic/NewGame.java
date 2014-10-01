@@ -47,13 +47,12 @@ public class NewGame {
 	private List<Avatar> createCharacters() {
 		List<Avatar> avatars = new ArrayList<Avatar>();
 
-		Tile2D start = roomsInGame.get(0).getTiles()[3][3];
 
-		Avatar avatar = new Avatar("Ryan",start,game);
+		Room room = roomsInGame.get(0);
+		Tile2D tile = room.getTiles()[3][3];
+
+		Avatar avatar = new Avatar("Ryan",game,tile,room);
 		avatars.add(avatar);
-
-		start.addPlayer(avatar);
-		roomsInGame.get(0).addAvatar(avatar);
 
 		return avatars;
 
