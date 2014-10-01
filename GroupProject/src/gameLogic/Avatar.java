@@ -41,16 +41,11 @@ public class Avatar implements Serializable {
 	}
 
 	public void updateTile(Tile2D newTile){
-		System.out.println("11");
 		if(newTile.equals(currentTile)) return;
-		System.out.println("2");
 		if(currentTile != null){
-			System.out.println("3");
 			currentTile.removeAvatar(this);
 		}
-		System.out.println("4");
 		newTile.addAvatar(this);
-		System.out.println("5");
 		currentTile = newTile;
 	}
 
@@ -109,25 +104,42 @@ public class Avatar implements Serializable {
 
 		System.out.println("Key recieved with modulus: "+change);
 
-		if(change == 0) newPosition = currentTile.getTileUp();
-		else if(change == 1) newPosition = currentTile.getTileRight();
-		else if(change == 2) newPosition = currentTile.getTileDown();
-		else if(change == 3) newPosition = currentTile.getTileLeft();
+		if(change == 0){
+			newPosition = currentTile.getTileUp();
+		}
+		else if(change == 1){
+			newPosition = currentTile.getTileRight();
+		}
+		else if(change == 2){
+			newPosition = currentTile.getTileDown();
+		}
+		else if(change == 3){
+			newPosition = currentTile.getTileLeft();
+		}
 
-		if(newPosition == null) System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
+		if(newPosition == null){
+			System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
+		}
+
 		System.out.println("currentTile x: "+ currentTile.getxPos() + ",currentTile y: "+ currentTile.getyPos());
 		System.out.println("newPosition x: "+ newPosition.getxPos() + ",newPosition y: "+ newPosition.getyPos());
 
 		// if the move is the characters current square - return false
-		if(this.currentTile.equals(newPosition)) return false;
+		if(this.currentTile.equals(newPosition)){
+			return false;
+		}
 
 
 		// if the move is in a different room to the characters current room - return false NB: moving through door moves onto tile, which IS in same room.
-		if(newPosition.getRoom()!= this.currentRoom) return false;
+		if(newPosition.getRoom()!= this.currentRoom){
+			return false;
+		}
 
 
 		// if move position is a wall - return false
-		if(newPosition instanceof Wall) return false;
+		if(newPosition instanceof Wall){
+			return false;
+		}
 
 
 		// if there is an Item in the move position - return false;
@@ -156,7 +168,10 @@ public class Avatar implements Serializable {
 		}
 		updateFacing(newPosition);
 
+
+		System.out.println("here");
 		System.out.println("\nnewPos: " + newPosition);
+		System.out.println("\ncurrentPos: " + currentTile);
 
 		updateLocations(newPosition,currentRoom);
 
