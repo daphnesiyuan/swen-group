@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -23,14 +24,14 @@ import java.util.Scanner;
 public abstract class Server implements Runnable{
 
 	protected ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
-	private ArrayList<String> admins = new ArrayList<String>(); // List of admin
+	protected ArrayList<String> admins = new ArrayList<String>(); // List of admin
 																// IP Addresses
 
 	// Pings from IP to time sent
 	private HashMap<String, Calendar> lastPinged = new HashMap<String, Calendar>();
 
 	protected String IPAddress;
-	private int port = 32768;
+	protected int port = 32768;
 	private ServerSocket serverSocket;
 
 	protected Server() {
@@ -50,24 +51,34 @@ public abstract class Server implements Runnable{
 		myThread.start();
 
 		// Check for dead clients
-		Thread checkClients = new Thread(){
+		/*Thread checkClients = new Thread(){
+
+			private long timeLastPing;
+			private int clientPingDelay = 1000;
 
 			@Override
 			public void run(){
 
 				while( true ){
 
-					pingClients();
+					// Ping clients to check for outgoing packets
+					if( System.currentTimeMillis() > (timeLastPing + clientPingDelay) ){
+						pingClients();
+						timeLastPing = System.currentTimeMillis();
+					}
+
+
+
 
 					try {
-						sleep(1000);
+						sleep(30);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		};
-		checkClients.start();
+		checkClients.start();*/
 
 		// What happens when shut down
 		Runtime.getRuntime().addShutdownHook(new Thread(){
@@ -341,12 +352,81 @@ public abstract class Server implements Runnable{
 	 */
 	class ClientThread extends Thread {
 
+		// Determines if we are still running the server
+		// If False, then outgoing packets are stopped
+		boolean running = true;
+
+		// Player object to use according to the client
 		final Player player;
-		final Socket socket;
+
+		// Socket to send backs to and receive from the client
+		Socket socket;
+
+		private Object outGoingPacketLock = new Object();
+		private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>();
 
 		public ClientThread(Socket socket, Player player) {
 			this.socket = socket;
 			this.player = player;
+
+			Thread outgoingThread = new Thread(){
+				@Override
+				public void run(){
+
+					ObjectOutputStream outputStream = null;
+					while( running ){
+
+						// Check if we are connected
+						if( isConnected() ){
+							try {
+
+								NetworkObject popped;
+
+								// Try pinging the server if we have a server
+								synchronized(outGoingPacketLock){
+									if( outgoingPackets.isEmpty() ){
+										sendData(new ChatMessage(getName(), "/ping everyone", Color.black, true));
+										try { sleep(1000); } catch (InterruptedException e) {}
+									}
+								}
+
+
+								// Get packet to send
+								popped = outgoingPackets.pop();
+
+								// Send to server
+								outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
+
+								outputStream.writeObject(popped);
+								outputStream.flush();
+
+								// Send to client for client sided review
+								retrieveObject(popped);
+
+							} catch(SocketException e){
+								ClientThread.this.socket = null;
+								continue;
+							}catch (IOException e) {
+								e.printStackTrace();
+							}
+
+							try { sleep(30); } catch (InterruptedException e) {e.printStackTrace();}
+						}
+						else{
+							try { sleep(1000); } catch (InterruptedException e) {retrieveObject(new NetworkObject(IPAddress, new ChatMessage("WARNING", "Waiting for socket to reconnect....",Color.black,true)));}
+						}
+					}
+				}
+			};
+			outgoingThread.start();
+		}
+
+		/**
+		 * Checks if the client is connected to a server
+		 * @return True if socket is valid
+		 */
+		public boolean isConnected(){
+			return socket != null && !socket.isClosed();
 		}
 
 		public String getIPAddress() {
@@ -377,7 +457,7 @@ public abstract class Server implements Runnable{
 						data = (NetworkObject)input.readObject();
 						data.getData().acknowledged = true; // We received the data
 					}catch(InvalidClassException e){
-						System.out.println("Class must be NetworkObject: " + e.classname);
+						System.out.println("Incoming object must be NetworkObject: " + e.classname);
 						e.printStackTrace();
 					}
 					catch(SocketException e){
@@ -410,8 +490,11 @@ public abstract class Server implements Runnable{
 			}
 		}
 
-
+		/**
+		 * Stops the client and thread.
+		 */
 		public void stopClient(){
+			running = false;
 			if( socket != null && !socket.isClosed()){
 				try {
 					socket.close();
@@ -421,29 +504,26 @@ public abstract class Server implements Runnable{
 			}
 		}
 
-		public void sendData(NetworkObject data) {
-			try {
+		/**
+		 * Queues data to be stored for sending to this client
+		 * @param data To be sent to the client
+		 */
+		public synchronized void sendData(NetworkObject data) {
+			// Check if we have a connection
+			if( socket != null && !socket.isClosed() ){
 
-				// Valid connection
-				// Send text to this client
-				ObjectOutputStream out = new ObjectOutputStream(
-						socket.getOutputStream());
-
-				// System.out.print("Sending '" + message + "' to " +
-				// clients.get(i).name + "\n");
-				out.flush();
-				out.writeObject(data);
-				out.flush();
-			} catch (IOException e) {
-
-				// More broken clients
-				if (e.getMessage().equals("Broken pipe")) {
-					removeClient(this,false);
+				// Add to our packets to send
+				synchronized(outGoingPacketLock){
+					outgoingPackets.add(data);
 				}
 			}
 		}
 
-		public void sendData(NetworkData data) {
+		/**
+		 * Queues data to be stored for sending to this client
+		 * @param data To be sent to the client
+		 */
+		public synchronized void sendData(NetworkData data) {
 			sendData(new NetworkObject(IPAddress, data));
 		}
 

@@ -2,10 +2,16 @@ package networking;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.Scanner;
+
+import networking.Client.InputWaiter;
 
 public class ChatClient extends Client {
 
@@ -17,6 +23,14 @@ public class ChatClient extends Client {
 
 	// Color of the clients messages
 	private Color chatMessageColor = new Color(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255));
+
+	/**
+	 * Creates a new GameClient to connect to a server
+	 * @param playerName Name of the client
+	 */
+	public ChatClient(String playerName){
+		player = new Player(playerName);
+	}
 
 	@Override
 	public void retrieveObject(NetworkObject data) {
@@ -77,7 +91,7 @@ public class ChatClient extends Client {
 		try {
 			// Try and change it on the servers
 			sendData(new ChatMessage("/name " + name, chatMessageColor));
-			setName(name);
+			player.setName(name);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -106,6 +120,18 @@ public class ChatClient extends Client {
 		}
 
 		return super.sendData(chat);
+	}
+
+	/**
+	 * Attempts to connect to the given IPAddress and port number of the server using the Clients name
+	 * @param IPAddress IPAddress of the connection to connect as
+	 * @param port Default: 32768
+	 * @return True if connection worked, otherwise a exception gets thrown
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
+	public boolean connect(String IPAddress, int port) throws UnknownHostException, IOException{
+		return connect(IPAddress, player.getName(), port);
 	}
 
 	/**
@@ -269,7 +295,8 @@ public class ChatClient extends Client {
 
 	@Override
 	public void successfullyConnected(String playerName) {
-		// TODO Auto-generated method stub
 
+		// Change the name of the player
+		player.setName(playerName);
 	}
 }
