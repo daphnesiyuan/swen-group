@@ -1,15 +1,16 @@
 package gameLogic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import networking.Move;
 
 
-public class  Game {
+public class Game implements Serializable {
 
-	//TODO ryan
-	// any class in gamelogic updates something, make sure all other classes are updated respectivley
+
+	private static final long serialVersionUID = 2936338356693550591L;
 
 	private List<Room> roomsInGame;
 	private List<Avatar> activeAvatars;
