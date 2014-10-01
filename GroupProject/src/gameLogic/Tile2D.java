@@ -47,14 +47,14 @@ public class Tile2D implements Serializable{
 
 	public Tile2D getTileLeft(){
 		Tile2D newTile = null;
-		newTile = room.tiles[xPos-1][yPos];
+		newTile = room.tiles[yPos][xPos-1];
 		if(newTile==null) return this;
 		else return newTile;
 	}
 
 	public Tile2D getTileRight(){
 		Tile2D newTile = null;
-		newTile = room.tiles[xPos+1][yPos];
+		newTile = room.tiles[yPos][xPos+1];
 		if(newTile==null) return this;
 		else return newTile;
 	}
@@ -68,7 +68,7 @@ public class Tile2D implements Serializable{
 
 	public Tile2D getTileDown(){
 		Tile2D newTile = null;
-		newTile = room.tiles[xPos][yPos+1];
+		newTile = room.tiles[yPos+1][xPos];
 		if(newTile==null) return this;
 		else return newTile;
 	}
