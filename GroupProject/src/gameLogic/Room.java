@@ -119,12 +119,6 @@ public class Room implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((avatars == null) ? 0 : avatars.hashCode());
-		result = prime * result + ((doors == null) ? 0 : doors.hashCode());
-		result = prime * result + ((floors == null) ? 0 : floors.hashCode());
-		result = prime * result + ((items == null) ? 0 : items.hashCode());
-		result = prime * result + roomNumber;
-		result = prime * result + Arrays.hashCode(tiles);
-		result = prime * result + ((walls == null) ? 0 : walls.hashCode());
 		return result;
 	}
 

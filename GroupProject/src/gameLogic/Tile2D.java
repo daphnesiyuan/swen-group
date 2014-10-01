@@ -144,16 +144,11 @@ public class Tile2D implements Serializable{
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final int prime = 37;
 		int result = 1;
 		result = prime * result
 				+ ((avatarOnTile == null) ? 0 : avatarOnTile.hashCode());
-		result = prime * result
-				+ ((itemsOnTile == null) ? 0 : itemsOnTile.hashCode());
-		result = prime * result + ((room == null) ? 0 : room.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + xPos;
-		result = prime * result + yPos;
+
 		return result;
 	}
 
