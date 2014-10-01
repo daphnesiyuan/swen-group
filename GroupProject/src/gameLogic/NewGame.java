@@ -51,7 +51,7 @@ public class NewGame {
 		Room room = roomsInGame.get(0);
 		Tile2D tile = room.getTiles()[3][3];
 
-		Avatar avatar = new Avatar("Ryan",game,tile,room);
+		Avatar avatar = new Avatar("Ryan",tile,room);
 		avatars.add(avatar);
 
 		return avatars;

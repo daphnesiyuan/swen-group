@@ -7,10 +7,9 @@ import java.util.List;
 import networking.Move;
 
 
-public class Game implements Serializable {
+public class Game{
 
 
-	private static final long serialVersionUID = 2936338356693550591L;
 
 	private List<Room> roomsInGame;
 	private List<Avatar> activeAvatars;
@@ -47,7 +46,7 @@ public class Game implements Serializable {
 	public Room addPlayer(String playerName){
 		Room room = roomsInGame.get(0);
 		Tile2D tile = room.getTiles()[3][3];
-		Avatar avatar = new Avatar(playerName,this,tile,room);
+		Avatar avatar = new Avatar(playerName,tile,room);
 		activeAvatars.add(avatar);
 		return room;
 	}

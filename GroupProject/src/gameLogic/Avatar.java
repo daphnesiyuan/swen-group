@@ -15,8 +15,6 @@ public class Avatar implements Serializable {
 
 	private static final long serialVersionUID = 4723069455200795911L;
 
-	Game game;
-
 	Game.Facing facing;
 	List <Item> Inventory;
 
@@ -27,9 +25,8 @@ public class Avatar implements Serializable {
 	String playerName;
 
 
-	public Avatar(String name, Game game, Tile2D tile, Room room){
+	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
-		this.game = game;
 
 		updateLocations(tile, room);
 
@@ -123,7 +120,7 @@ public class Avatar implements Serializable {
 			int newX = door.getToRoomXPos();
 			int newY = door.getToRoomYPos();
 
-			if (changeRoom(newRoomIndex,newX,newY) == false) return false;
+			//if (changeRoom(newRoomIndex,newX,newY) == false) return false;
 
 
 		}
@@ -147,16 +144,6 @@ public class Avatar implements Serializable {
 		else if(newPosition.equals(currentTile.getTileLeft())) facing = Facing.West;
 	}
 
-	private boolean changeRoom(int newRoomIndex, int newX, int newY){
-		List<Room> rooms = game.getRoomsInGame();
-		for(Room room : rooms){
-			if(room.getRoomNumber()==newRoomIndex){
-				currentRoom = room;
-				return true;
-			}
-		}
-		return false;
-	}
 
 
 
@@ -197,13 +184,6 @@ public class Avatar implements Serializable {
 		facing = f;
 	}
 
-	public Game getGame() {
-		return game;
-	}
-
-	public void setGame(Game game) {
-		this.game = game;
-	}
 
 	public Game.Facing getFacing() {
 		return facing;
@@ -216,66 +196,5 @@ public class Avatar implements Serializable {
 	public void setCurrentTile(Tile2D currentTile) {
 		this.currentTile = currentTile;
 	}
-
-
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((Inventory == null) ? 0 : Inventory.hashCode());
-		result = prime * result
-				+ ((currentRoom == null) ? 0 : currentRoom.hashCode());
-		result = prime * result
-				+ ((currentTile == null) ? 0 : currentTile.hashCode());
-		result = prime * result + ((facing == null) ? 0 : facing.hashCode());
-		result = prime * result + ((game == null) ? 0 : game.hashCode());
-		result = prime * result
-				+ ((playerName == null) ? 0 : playerName.hashCode());
-		return result;
-	}
-
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Avatar other = (Avatar) obj;
-		if (Inventory == null) {
-			if (other.Inventory != null)
-				return false;
-		} else if (!Inventory.equals(other.Inventory))
-			return false;
-		if (currentRoom == null) {
-			if (other.currentRoom != null)
-				return false;
-		} else if (!currentRoom.equals(other.currentRoom))
-			return false;
-		if (currentTile == null) {
-			if (other.currentTile != null)
-				return false;
-		} else if (!currentTile.equals(other.currentTile))
-			return false;
-		if (facing != other.facing)
-			return false;
-		if (game == null) {
-			if (other.game != null)
-				return false;
-		} else if (!game.equals(other.game))
-			return false;
-		if (playerName == null) {
-			if (other.playerName != null)
-				return false;
-		} else if (!playerName.equals(other.playerName))
-			return false;
-		return true;
-	}
-
 
 }
