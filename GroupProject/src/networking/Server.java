@@ -190,7 +190,7 @@ public abstract class Server implements Runnable{
 			}
 			return -1;
 		}
-		return pingServer(data.getIPAddress(), data.getCalendar());
+		return pingServer(data.getIPAddress(), data.getTimeInMillis());
 	}
 
 	protected synchronized void pingClient(String whoToPing, NetworkObject data){
@@ -213,10 +213,9 @@ public abstract class Server implements Runnable{
 		to.sendData(data);
 	}
 
-	protected synchronized long pingServer(String whoPingedMe, Calendar dateSentFromClient){
+	protected synchronized long pingServer(String whoPingedMe, long ms){
 		Calendar currentTime = Calendar.getInstance();
-		long delay = currentTime.getTimeInMillis()
-				- dateSentFromClient.getTimeInMillis();
+		long delay = Math.abs(System.currentTimeMillis() - ms);
 
 		// Get who pinged the server
 		ClientThread client = getClientFromIP(whoPingedMe);
@@ -473,7 +472,7 @@ public abstract class Server implements Runnable{
 							continue;
 						}
 						else{
-							data = new NetworkObject(getIPAddress(), data.getData(), data.getCalendar());
+							data = new NetworkObject(getIPAddress(), data.getData(), data.getHours(), data.getMinutes(), data.getSeconds(), data.getTimeInMillis() );
 						}
 					}
 

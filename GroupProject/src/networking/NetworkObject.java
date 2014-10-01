@@ -38,7 +38,20 @@ public class NetworkObject implements Serializable{
 	public NetworkObject(String IPAddress, NetworkData data, Calendar calendar){
 		this.data = data;
 		this.IPAddress = IPAddress;
-		data.dataSent = calendar;
+		this.data.setTime(calendar);
+	}
+
+	/**
+	 * Creates a new NetworkObject and attaches the IPAddress of the client that sends the data
+	 * @param IPAddress IP of the client sending the data
+	 * @param name Name of the client sending the data
+	 * @param data The data wanting to be sent through the network
+	 * @param calendar Date on the calendar for when the object was sent through the network
+	 */
+	public NetworkObject(String IPAddress, NetworkData data, int hours, int minutes, int seconds, long ms){
+		this.data = data;
+		this.IPAddress = IPAddress;
+		this.data.setTime(hours,minutes,seconds, ms);
 	}
 
 	public String toString(){
@@ -57,8 +70,24 @@ public class NetworkObject implements Serializable{
 	 * Returns when the message was sent
 	 * @return Calendar containing the information of when the data was sent
 	 */
-	public Calendar getCalendar() {
-		return data.dataSent;
+	public int getHours() {
+		return data.hours;
+	}
+
+	/**
+	 * Returns when the message was sent
+	 * @return Calendar containing the information of when the data was sent
+	 */
+	public int getMinutes() {
+		return data.minutes;
+	}
+
+	/**
+	 * Returns when the message was sent
+	 * @return Calendar containing the information of when the data was sent
+	 */
+	public int getSeconds() {
+		return data.seconds;
 	}
 
 	/**
@@ -75,5 +104,13 @@ public class NetworkObject implements Serializable{
 	 */
 	public String getIPAddress() {
 		return IPAddress;
+	}
+
+	/**
+	 * Time in ms when this object was made
+	 * @return representation of the time in ms
+	 */
+	public long getTimeInMillis() {
+		return data.timeInMillis;
 	}
 }

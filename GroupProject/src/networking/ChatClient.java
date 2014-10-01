@@ -51,7 +51,7 @@ public class ChatClient extends Client {
 					if( scan.hasNext(getName()) ){
 
 						// Someone Pinged me
-						long delay = Math.abs(Calendar.getInstance().getTimeInMillis() - data.getCalendar().getTimeInMillis());
+						long delay = (System.currentTimeMillis() - data.getTimeInMillis());
 
 						try {
 							sendData(new ChatMessage(chatMessage.sendersName + " pinged " + getName() + " at " + delay + "ms",chatMessage.color,true));

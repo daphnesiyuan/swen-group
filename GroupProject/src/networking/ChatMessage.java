@@ -70,7 +70,9 @@ public class ChatMessage extends NetworkData{
 		ChatMessage other = (ChatMessage)object;
 		if( !sendersName.equals(other.sendersName) ) return false;
 		if( !message.equals(other.message) ) return false;
+		if( hours != other.hours ) return false;
+		if( minutes != other.minutes ) return false;
 
-		return dataSent.equals(other.dataSent);
+		return seconds == other.seconds;
 	}
 }

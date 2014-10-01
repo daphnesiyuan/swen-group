@@ -35,9 +35,6 @@ public class ChatServer extends Server {
 			// Save the message
 			chatHistory.add(cm);
 
-			// Display for the server in console
-			System.out.println(data);
-
 			// Send it to all our clients
 			sendToAllClients(data);
 		}
