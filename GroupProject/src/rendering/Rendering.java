@@ -63,15 +63,18 @@ public class Rendering extends JPanel implements KeyListener{
 
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 	boolean chatMode;
-	Avatar charac = new Avatar("willy", tile, null);
+	//Avatar charac = new Avatar("willy", tile, null);
+	Avatar charac;
 
 
 
-	public Rendering(Room room){
+	public Rendering(Room room, Avatar avatar){
 		this.room = room;
 		direction = 0;
+		//this.charac = avatar;
 
-		draw = new DrawWorld(charac, this);
+		//draw = new DrawWorld(charac, this);
+		//draw = new DrawWorld(null, this);
 		inventory = new DrawInventory(this);
 		compass = new DrawCompass(this);
 		miniMap = new DrawMiniMap(this, charac);
@@ -83,7 +86,33 @@ public class Rendering extends JPanel implements KeyListener{
 
 		chat = new DrawChat(this);
 		currentMessage = "";
+
 		room.getTiles()[2][3].addPlayer(charac);
+
+		chatMessages.add(new ChatMessage("Leon","This is a test message.", Color.BLUE));
+		chatMessages.add(new ChatMessage("Ryan","This is another test message.", Color.RED));
+		chatMessages.add(new ChatMessage("Jimmy","Hurr Durr.", Color.MAGENTA));
+	}
+
+	public Rendering(Room room){
+		this.room = room;
+		direction = 0;
+		//this.charac = avatar;
+
+		draw = new DrawWorld(this);
+		inventory = new DrawInventory(this);
+		compass = new DrawCompass(this);
+		//miniMap = new DrawMiniMap(this, charac);
+
+		directionMap.put(0, "north");
+		directionMap.put(1, "west");
+		directionMap.put(2, "south");
+		directionMap.put(3, "east");
+
+		chat = new DrawChat(this);
+		currentMessage = "";
+
+		//room.getTiles()[2][3].addPlayer(charac);
 
 		chatMessages.add(new ChatMessage("Leon","This is a test message.", Color.BLUE));
 		chatMessages.add(new ChatMessage("Ryan","This is another test message.", Color.RED));
@@ -93,9 +122,9 @@ public class Rendering extends JPanel implements KeyListener{
 	protected void paintComponent(Graphics g) {
 
 		draw.redraw(g, room, directionMap.get(direction));
-		inventory.redraw(g, charac.getInventory(), Direction.get(direction));
+		//inventory.redraw(g, charac.getInventory(), Direction.get(direction));
 		compass.redraw(g, Direction.get(direction));
-		miniMap.redraw(g, room, Direction.get(direction));
+		//miniMap.redraw(g, room, Direction.get(direction));
 		if(chatMode)chat.redraw(g, chatMessages, currentMessage);
 	}
 
