@@ -16,8 +16,8 @@ public class GameClient extends ChatClient {
 	private Object roomLock = new Object();
 	private Room clientRoom = null;
 
-	private boolean modified = false;
-	private Object modifiedLock = new Object();
+	private boolean roomModified = false;
+	private Object roomModifiedLock = new Object();
 
 	/**
 	 * Creates a new GameClient to connect to a server
@@ -90,13 +90,13 @@ public class GameClient extends ChatClient {
 		// Client side commands
 		if( chat.message.equals("/clear") ){
 			clearChatHistory();
-			setModified(true);
+			setChatModified(true);
 			return true;
 		}
 
 		// Record client sided message
 		addChatMessage(chat);
-		setModified(true);
+		setChatModified(true);
 
 		// Send data to the server
 		return super.sendData(chat);
@@ -124,7 +124,7 @@ public class GameClient extends ChatClient {
 			clientRoom = room.updatedRoom;
 
 			// Record when we last updated
-			setModified(true);
+			setRoomModified(true);
 		}
 	}
 
@@ -138,9 +138,9 @@ public class GameClient extends ChatClient {
 	 * Checks if the current client has had anything modified since the last refresh. Determines if the listener of this client needs to update or not.
 	 * @return True if something has changed in the chat
 	 */
-	public synchronized boolean isModified() {
-		synchronized (modifiedLock){
-			return modified;
+	public synchronized boolean roomIsModified() {
+		synchronized (roomModifiedLock){
+			return roomModified;
 		}
 	}
 
@@ -148,9 +148,9 @@ public class GameClient extends ChatClient {
 	 * Sets the current state of the clients modifications status to what's given.
 	 * @param modified
 	 */
-	public synchronized void setModified(boolean modified) {
-		synchronized (modifiedLock){
-			this.modified = modified;
+	public synchronized void setRoomModified(boolean modified) {
+		synchronized (roomModifiedLock){
+			this.roomModified = modified;
 		}
 	}
 }

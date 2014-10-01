@@ -24,6 +24,10 @@ public class ChatClient extends Client {
 	// Color of the clients messages
 	private Color chatMessageColor = new Color(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255));
 
+
+	private boolean chatModified = false;
+	private Object chatModifiedLock = new Object();
+
 	/**
 	 * Creates a new GameClient to connect to a server
 	 * @param playerName Name of the client
@@ -306,5 +310,25 @@ public class ChatClient extends Client {
 
 		// Change the name of the player
 		player.setName(playerName);
+	}
+
+	/**
+	 * Checks if the current client has had anything modified since the last refresh. Determines if the listener of this client needs to update or not.
+	 * @return True if something has changed in the chat
+	 */
+	public synchronized boolean chatIsModified() {
+		synchronized (chatModifiedLock){
+			return chatModified;
+		}
+	}
+
+	/**
+	 * Sets the current state of the clients modifications status to what's given.
+	 * @param modified
+	 */
+	public synchronized void setChatModified(boolean modified) {
+		synchronized (chatModifiedLock){
+			this.chatModified = modified;
+		}
 	}
 }
