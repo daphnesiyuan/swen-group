@@ -197,4 +197,54 @@ public class Avatar implements Serializable {
 		this.currentTile = currentTile;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((Inventory == null) ? 0 : Inventory.hashCode());
+		result = prime * result
+				+ ((currentRoom == null) ? 0 : currentRoom.hashCode());
+		result = prime * result
+				+ ((currentTile == null) ? 0 : currentTile.hashCode());
+		result = prime * result + ((facing == null) ? 0 : facing.hashCode());
+		result = prime * result
+				+ ((playerName == null) ? 0 : playerName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Avatar other = (Avatar) obj;
+		if (Inventory == null) {
+			if (other.Inventory != null)
+				return false;
+		} else if (!Inventory.equals(other.Inventory))
+			return false;
+		if (currentRoom == null) {
+			if (other.currentRoom != null)
+				return false;
+		} else if (!currentRoom.equals(other.currentRoom))
+			return false;
+		if (currentTile == null) {
+			if (other.currentTile != null)
+				return false;
+		} else if (!currentTile.equals(other.currentTile))
+			return false;
+		if (facing != other.facing)
+			return false;
+		if (playerName == null) {
+			if (other.playerName != null)
+				return false;
+		} else if (!playerName.equals(other.playerName))
+			return false;
+		return true;
+	}
+
 }

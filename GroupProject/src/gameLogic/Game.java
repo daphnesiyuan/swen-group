@@ -54,7 +54,6 @@ public class Game{
 
 
 	public boolean moveAvatar(Move move){
-
 		Avatar mover = null;
 
 		for(Avatar avatar : activeAvatars){
