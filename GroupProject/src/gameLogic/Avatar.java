@@ -41,11 +41,16 @@ public class Avatar implements Serializable {
 	}
 
 	public void updateTile(Tile2D newTile){
+		System.out.println("11");
 		if(newTile.equals(currentTile)) return;
+		System.out.println("2");
 		if(currentTile != null){
+			System.out.println("3");
 			currentTile.removeAvatar(this);
 		}
+		System.out.println("4");
 		newTile.addAvatar(this);
+		System.out.println("5");
 		currentTile = newTile;
 	}
 
