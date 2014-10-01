@@ -37,7 +37,7 @@ public class Avatar implements Serializable {
 
 	public void updateLocations(Tile2D tile, Room room) {
 		updateTile(tile);
-		updateRoom(room);
+		//updateRoom(room);
 	}
 
 	public void updateTile(Tile2D newTile){
@@ -70,8 +70,8 @@ public class Avatar implements Serializable {
 
 
 	public boolean moveTo(Move move){
-		Tile2D newPosition2 = currentRoom.getTiles()[3][2];
-		//Tile2D newPosition2 = currentTile.getTileUp();
+		//Tile2D newPosition2 = currentRoom.getTiles()[3][2];
+		Tile2D newPosition2 = currentTile.getTileUp();
 		updateLocations(newPosition2,currentRoom);
 		return true;
 
