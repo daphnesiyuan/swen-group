@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class ChatClient extends Client {
 
-	// Name of the client to display their messages as
-	private String clientName;
+	// Which player the gameclient is controlling
+	protected Player player;
 
 	// Clients sides version of the current chat history
 	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
@@ -34,13 +34,13 @@ public class ChatClient extends Client {
 
 				// Ping command is received
 				if( scan.hasNext("/ping") ){ scan.next();
-					if( scan.hasNext(clientName) ){
+					if( scan.hasNext(getName()) ){
 
 						// Someone Pinged me
 						long delay = Math.abs(Calendar.getInstance().getTimeInMillis() - data.getCalendar().getTimeInMillis());
 
 						try {
-							sendData(new ChatMessage(chatMessage.sendersName + " pinged " + clientName + " at " + delay + "ms",chatMessage.color,true));
+							sendData(new ChatMessage(chatMessage.sendersName + " pinged " + getName() + " at " + delay + "ms",chatMessage.color,true));
 						} catch (IOException e) {}
 					}
 					else if( scan.hasNext("everyone") ){
@@ -77,7 +77,7 @@ public class ChatClient extends Client {
 		try {
 			// Try and change it on the servers
 			sendData(new ChatMessage("/name " + name, chatMessageColor));
-			this.clientName = name;
+			setName(name);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -88,7 +88,7 @@ public class ChatClient extends Client {
 	 * @return
 	 */
 	public String getName() {
-		return clientName;
+		return player.getName();
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class ChatClient extends Client {
 	 */
 	public boolean sendData(String message) throws IOException{
 
-		ChatMessage chat = new ChatMessage(clientName, message,chatMessageColor);
+		ChatMessage chat = new ChatMessage(getName(), message,chatMessageColor);
 
 		// Check client commands
 		if( checkClientCommands(chat) ){
@@ -131,7 +131,7 @@ public class ChatClient extends Client {
 			chatHistory.add(chat);	// Record message
 
 			// Attempt to reconnect
-			if(	reconnect(clientName) ){
+			if(	reconnect(getName()) ){
 				appendWarningMessage("Connected successfully to " + connectedIP + " : " + connectedPort);
 				return true;
 			}
@@ -141,7 +141,7 @@ public class ChatClient extends Client {
 
 			// Check if we REALLY are assigning our name
 			if( scan.hasNext() ){
-				this.clientName = scan.next();
+				setName( scan.next() );
 			}
 			return true;
 		}

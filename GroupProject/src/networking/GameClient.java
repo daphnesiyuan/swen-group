@@ -22,10 +22,6 @@ public class GameClient extends ChatClient {
 	private boolean modified = false;
 	private Object modifiedLock = new Object();
 
-
-	// Which player the gameclient is controlling
-	private Player player;
-
 	public GameClient(String playerName){
 		player = new Player(playerName);
 	}

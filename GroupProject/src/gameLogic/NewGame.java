@@ -33,6 +33,7 @@ public class NewGame {
 	public NewGame(Game g){
 		game = g;
 
+		startRoom = makeRoom();
 
 		roomsInGame = new ArrayList<Room>();
 		spawnTiles = new ArrayList<Floor>();
@@ -41,6 +42,7 @@ public class NewGame {
 
 		game.setRoomsInGame(roomsInGame);
 		game.setActiveAvatars(activeCharacters);
+
 
 
 	}
@@ -55,7 +57,7 @@ public class NewGame {
 
 		for(String s : clientStrings){
 			Floor spawnXY = spawnXY();
-			Avatar player = new Avatar(s,spawnXY,game);
+			Avatar player = new Avatar(s,startRoom.getTiles()[0][0],game);
 			characters.add(player);
 		}
 
@@ -72,6 +74,29 @@ public class NewGame {
 		Collections.shuffle(spawnTiles);
 		return spawnTile;
 
+	}
+
+	private Room makeRoom() {
+
+		int roomNumber = 1;
+
+		Tile2D[][] tiles = new Tile2D[][]{
+				{new Wall(0,0),  new Wall(1,0),         new Wall(2,0),         new Wall(3,0),        new Wall(4,0),         new Wall(5,0),        new Wall(6,0)},
+				{new Door(0,1), new Floor(1,1, false), new Floor(2,1, false), new Floor(3,1, false),new Floor(4,1, false), new Floor(5,1, false), new Wall(6,1) },
+				{new Wall(0,2), new Floor(1,2, false), new Floor(2,2, false), new Floor(3,2, false),new Floor(4,2, false), new Floor(5,2, false), new Wall(6,2) },
+				{new Wall(0,3), new Floor(1,3, false), new Floor(2,3, false), new Floor(3,3, false),new Floor(4,3, false), new Floor(5,3, false), new Wall(6,3) },
+				{new Wall(0,4), new Floor(1,4, false), new Floor(2,4, false), new Floor(3,4, false),new Floor(4,4, false), new Floor(5,4, false), new Wall(6,4) },
+				{new Wall(0,5), new Floor(1,5, false), new Floor(2,5, false), new Floor(3,5, false),new Floor(4,5, false), new Floor(5,5, false), new Wall(6,5) },
+				{new Wall(0,6),  new Wall(1,6),         new Wall(2,6),         new Wall(3,6),        new Wall(4,6),         new Door(5,6),        new Wall(6,6), }
+		};
+
+		Room room = new Room(roomNumber,tiles,null);
+		for(int i = 0; i < tiles.length; i++){
+			for(int j = 0; j < tiles[i].length; j++){
+				tiles[i][j].setRoom(room);
+			}
+		}
+		return room;
 	}
 
 
