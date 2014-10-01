@@ -166,7 +166,7 @@ public class GameServer extends ChatServer {
 		// Tell console this client connected
 		System.out.println(cl.getPlayerName() + " has Reconnected.");
 
-		Room currentRoom = gameServer.addPlayer(cl.getPlayerName());
+		Room currentRoom = gameServer.getRoom(cl.getPlayerName());
 		System.out.println("currentRoom: " + currentRoom);
 
 		// Send the soom back to the client

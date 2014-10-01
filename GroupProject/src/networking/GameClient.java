@@ -90,13 +90,11 @@ public class GameClient extends ChatClient {
 		// Client side commands
 		if( chat.message.equals("/clear") ){
 			clearChatHistory();
-			setChatModified(true);
 			return true;
 		}
 
 		// Record client sided message
 		addChatMessage(chat);
-		setChatModified(true);
 
 		// Send data to the server
 		return super.sendData(chat);

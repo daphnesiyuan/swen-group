@@ -270,6 +270,7 @@ public class ChatClient extends Client {
 	 * Clears all messages from the chat history
 	 */
 	protected void clearChatHistory() {
+		setChatModified(true);
 		chatHistory.clear();
 	}
 
@@ -278,6 +279,7 @@ public class ChatClient extends Client {
 	 * @param chat Chat Message to add to our history
 	 */
 	protected void addChatMessage(ChatMessage chat) {
+		setChatModified(true);
 		chatHistory.add(chat);
 	}
 
@@ -289,6 +291,7 @@ public class ChatClient extends Client {
 
 		// Save the message
 		chatHistory.add(new ChatMessage("WARNING",warning, Color.black, true));
+		setChatModified(true);
 	}
 
 	/**

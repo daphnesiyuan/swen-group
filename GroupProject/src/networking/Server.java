@@ -50,36 +50,6 @@ public abstract class Server implements Runnable{
 		Thread myThread = new Thread(this);
 		myThread.start();
 
-		// Check for dead clients
-		/*Thread checkClients = new Thread(){
-
-			private long timeLastPing;
-			private int clientPingDelay = 1000;
-
-			@Override
-			public void run(){
-
-				while( true ){
-
-					// Ping clients to check for outgoing packets
-					if( System.currentTimeMillis() > (timeLastPing + clientPingDelay) ){
-						pingClients();
-						timeLastPing = System.currentTimeMillis();
-					}
-
-
-
-
-					try {
-						sleep(30);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		checkClients.start();*/
-
 		// What happens when shut down
 		Runtime.getRuntime().addShutdownHook(new Thread(){
 			@Override
@@ -447,6 +417,8 @@ public abstract class Server implements Runnable{
 					try {
 						input = new ObjectInputStream(socket.getInputStream());
 					} catch (IOException e) {
+						continue;
+					} catch (NullPointerException e){
 						continue;
 					}
 
