@@ -3,28 +3,37 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.net.ConnectException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayDeque;
 
 /**
  *Abstract Client class that holds all the required features when connecting, sending and receiving data from/to the server
  * @author veugeljame
  *
  */
-public abstract class Client implements Runnable{
+public abstract class Client{
 
+	// Current connected server
 	private Socket socket;
+	protected String connectedIP = "null";
+	protected int connectedPort = -1;
+
+	// Private IP
 	protected String IPAddress = "null";
 
+	// Everyone to be sent to the server
+	private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>();
 
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
 
-	private Thread myThread;
+	private InputWaiter myThread;
 
 	/**
 	 * Creates a new Client object with a link to who is waiting for information from the server
@@ -38,6 +47,52 @@ public abstract class Client implements Runnable{
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+
+		// Check for dead clients
+		Thread checkSocket = new Thread(){
+
+			@Override
+			public void run(){
+
+				while( true ){
+
+
+					if( socket != null && !socket.isClosed() ){
+						try {
+
+							// Try pinging the server if we have a server
+							if( outgoingPackets.isEmpty() ){
+								sendData(new ChatMessage(getName(), "/ping everyone", Color.black, true));
+							}
+
+
+							// Send to server
+							outputStream = new ObjectOutputStream(socket.getOutputStream());
+
+							// Get packet to send
+							NetworkObject popped = outgoingPackets.pop();
+							outputStream.writeObject(popped);
+							outputStream.flush();
+
+							// Send to client for client sided review
+							retrieveObject(popped);
+
+						} catch(SocketException e){
+							socket = null;
+							continue;
+						}catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						try { sleep(30); } catch (InterruptedException e) {e.printStackTrace();}
+					}
+					else{
+						try { sleep(1000); } catch (InterruptedException e) {retrieveObject(new NetworkObject(IPAddress, new ChatMessage("WARNING", "Waiting for socket to reconnect....",Color.black,true)));}
+					}
+				}
+			}
+		};
+		checkSocket.start();
 	}
 
 	/**
@@ -74,19 +129,8 @@ public abstract class Client implements Runnable{
 	public boolean connect(String IPAddress, String playerName, int port) throws UnknownHostException, IOException{
 
 
-		// Check if we have a current Socket, close if we do
-		if( socket != null && !socket.isClosed()){
-			socket.close();
-		}
-
-		//Wait for us to stop listening to the current socket
-		if( myThread != null ){
-			try {
-				myThread.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		// Disconnect from the server
+		disconnect();
 
 		// Attempt Connection
 		try{
@@ -104,12 +148,60 @@ public abstract class Client implements Runnable{
 		out.flush();
 
 		// Start our new socket
-		myThread = new Thread(this);
+		myThread = new InputWaiter();
 		myThread.start();
 
+		// Clear all packets that were pending
+		outgoingPackets.clear();
+
+		// Record server
+		connectedIP = IPAddress;
+		connectedPort = port;
 
 		// Successful connection
 		return true;
+	}
+
+	/**
+	 * Disconnects from the current server
+	 * @return
+	 */
+	public boolean disconnect(){
+
+		// Check if we have a current Socket, close if we do
+		if( socket != null && !socket.isClosed()){
+			try {
+				socket.close();
+			} catch (IOException e) { return false;}
+		}
+
+		//Wait for us to stop listening to the current socket
+		if( myThread != null ){
+			try {
+				myThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Closed
+		return true;
+	}
+
+	/**
+	 * Attemps to reconnect to the current server using the given name
+	 * @return true if connected, false if not.
+	 */
+	public boolean reconnect(String name){
+		try {
+			return connect(connectedIP, name, connectedPort);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	/**
@@ -124,54 +216,8 @@ public abstract class Client implements Runnable{
 		return connect(server.getIPAddress(), ID, server.getPort());
 	}
 
-	@Override
-	public void run() {
-		try{
-
-
-			while( socket != null && !socket.isClosed() ){
-
-				// Wait for text
-				try{
-					inputStream = new ObjectInputStream(socket.getInputStream());
-				}catch(IOException e ){ continue; }
-
-				// Get data sent to us
-				NetworkObject data;
-				try{
-					data = (NetworkObject)inputStream.readObject();
-				}catch(SocketException e){
-					continue;
-				}
-
-				// Send object to client that is waiting for data
-				retrieveObject(data);
-			}
-
-
-		}
-		catch(SocketException e){
-			e.printStackTrace();
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		finally{
-			if( socket != null && !socket.isClosed() ){
-				try {
-					socket.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			retrieveObject(new NetworkObject(IPAddress, new ChatMessage("You have been Disconnected", Color.black)));
-		}
-	}
-
 	/**
-	 * Sends the given object to the server that the client is connected to
+	 * Stores the given packet in a queue for sending once we have a socket
 	 * @param data Object to sent to the server for processing
 	 */
 	protected boolean sendData(NetworkData data) throws IOException{
@@ -181,18 +227,62 @@ public abstract class Client implements Runnable{
 			return false;
 		}
 
-		// Send to server
-		try{
-			outputStream = new ObjectOutputStream(socket.getOutputStream());
-		}catch(SocketException e){
-			return false;
-		}
+		// Add to our packets to send
+		outgoingPackets.add(new NetworkObject(IPAddress, data));
 
-		outputStream.writeObject(new NetworkObject(IPAddress, data));
-		outputStream.flush();
-
-		// Data sent successfully
+		// Data stored successfully
 		return true;
+	}
+
+	public class InputWaiter extends Thread{
+		@Override
+		public void run() {
+			try{
+
+				while( socket != null && !socket.isClosed() ){
+
+					// Wait for text
+					try{
+						inputStream = new ObjectInputStream(socket.getInputStream());
+					}catch(IOException e ){ continue; }
+					catch(NullPointerException e ){ continue; }
+
+					// Get data sent to us
+					NetworkObject data;
+					try{
+						data = (NetworkObject)inputStream.readObject();
+					}catch(SocketException e){
+						continue;
+					}
+
+					// Send object to client that is waiting for data
+					retrieveObject(data);
+				}
+
+
+			}
+			catch(SocketException e){
+				e.printStackTrace();
+			}
+			catch(StreamCorruptedException e){
+				e.printStackTrace();
+			}
+			catch(IOException e){
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			finally{
+				if( socket != null && !socket.isClosed() ){
+					try {
+						socket.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				retrieveObject(new NetworkObject(IPAddress, new ChatMessage("You have been Disconnected", Color.black, true)));
+			}
+		}
 	}
 
 	/**
@@ -203,5 +293,10 @@ public abstract class Client implements Runnable{
 	 * @return
 	 */
 	public abstract void retrieveObject(NetworkObject data);
+
+	/**
+	 * What's called once we successfully connect to a server
+	 * @param playerName name of our player that we are connecting with
+	 */
 	public abstract void successfullyConnected(String playerName);
 }

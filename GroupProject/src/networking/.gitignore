@@ -24,3 +24,7 @@
 /GameServer$1.class
 /Player.class
 /RoomUpdate.class
+/ChatRoomServer$ServerTextListener.class
+/ChatRoomServer.class
+/Client$1.class
+/Client$InputWaiter.class

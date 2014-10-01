@@ -44,6 +44,15 @@ public class ChatMessage extends NetworkData{
 		this.acknowledged = acknowledged;
 	}
 
+	/**
+	 * Returns a clone of the given message, but as an acknowledged message
+	 * @param message the Chat message to clone
+	 * @return a clone of the givven message with acknowledged == true
+	 */
+	public static ChatMessage getAcknowledged(ChatMessage message){
+		return new ChatMessage(message.sendersName, message.message, message.color, true);
+	}
+
 	public String toString(){
 		// Time > James: MESSAGE!
 		// Time James: Confirmed on the server
@@ -53,6 +62,7 @@ public class ChatMessage extends NetworkData{
 				message;
 	}
 
+	@Override
 	public boolean equals(Object object){
 		if( object == null ) return false;
 		if( !(object instanceof ChatMessage) ) return false;
