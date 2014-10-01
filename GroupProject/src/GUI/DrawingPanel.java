@@ -35,7 +35,7 @@ public class DrawingPanel extends JPanel{
 		}
 
 		else{ //else it is in game
-			dw.redraw(g, null, null, null); //param: graphics, room, char, direction
+			dw.redraw(g, null, null); //param: graphics, room, char, direction
 			//potential changes later: flag for menu mode or play mode, and to have logic
 
 			System.out.println("in game");
