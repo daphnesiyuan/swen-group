@@ -34,6 +34,15 @@ public class Game implements Serializable {
 		new NewGame(this);
 	}
 
+	public Avatar getAvatar(String playerName){
+		for(Avatar avatar: activeAvatars){
+			if(playerName.equals(avatar.getPlayerName())){
+				return avatar;
+			}
+		}
+		return null;
+	}
+
 
 	public Room addPlayer(String playerName){
 		Room room = roomsInGame.get(0);
