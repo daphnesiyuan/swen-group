@@ -33,7 +33,7 @@ public class DrawingPanel extends JPanel{
 
 
 
-
+	private String direction;
 	private DrawCompass compass;
 	private DrawInventory invo;
 	private DrawMiniMap map;
@@ -44,9 +44,8 @@ public class DrawingPanel extends JPanel{
 		sm = new StartMenu( this );
 		startMenu = true; //by default
 		handler = new Handler();
-		/* change the dw-later */
-		//dw = new DrawWorld( null, this ); //param: the character, and then a panel
 
+		direction = "North"; //hard coded now...NEED TO CHANGE
 		mouse = new MyMouseListener(this);
 		this.addMouseListener( mouse );
 
@@ -62,12 +61,11 @@ public class DrawingPanel extends JPanel{
 		}
 
 		else{ //else it is in game
-			
-			dw.redraw(g, ClientTest.gc.getRoom(), "North"); //param: graphics, room, char, direction
+			dw.redraw(g, ClientTest.gc.getRoom(), direction); //param: graphics, room, char, direction
 			//potential changes later: flag for menu mode or play mode, and to have logic
-			compass.redraw(g, "North");
-			invo.redraw(g, new ArrayList<Item>()  , "North");
-			map.redraw(g, ClientTest.gc.getRoom() , "North");
+			compass.redraw(g, direction);
+			invo.redraw(g, ClientTest.gc.getAvatar().getInventory()  , direction);
+			map.redraw(g, ClientTest.gc.getRoom() , direction);
 			System.out.println("in game");
 		}
 	}
