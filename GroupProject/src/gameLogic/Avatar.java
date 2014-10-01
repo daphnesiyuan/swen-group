@@ -98,8 +98,11 @@ public class Avatar implements Serializable {
 		int key = Direction.getKeyDirection(move.getInteraction());
 		//int change = dir + key;
 		int change = key;
+
+		System.out.println("Key recieved: "+ change);
 		change = change % 4;
 
+		System.out.println("Key recieved with modulus: "+change);
 
 		if(change == 0) newPosition = currentTile.getTileUp();
 		else if(change == 1) newPosition = currentTile.getTileRight();
@@ -107,7 +110,8 @@ public class Avatar implements Serializable {
 		else if(change == 3) newPosition = currentTile.getTileLeft();
 
 		if(newPosition == null) System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
-
+		System.out.println("currentTile x: "+ currentTile.getxPos() + ",currentTile y: "+ currentTile.getyPos());
+		System.out.println("newPosition x: "+ newPosition.getxPos() + ",newPosition y: "+ newPosition.getyPos());
 
 		// if the move is the characters current square - return false
 		if(this.currentTile.equals(newPosition)) return false;
