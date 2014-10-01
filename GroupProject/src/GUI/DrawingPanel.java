@@ -1,5 +1,6 @@
 package GUI;
 
+import gameLogic.Item;
 import gameLogic.Room;
 
 import java.awt.Dimension;
@@ -8,10 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import networking.GameClient;
+import rendering.DrawCompass;
+import rendering.DrawInventory;
+import rendering.DrawMiniMap;
 import rendering.DrawWorld;
 
 public class DrawingPanel extends JPanel{
@@ -25,6 +30,13 @@ public class DrawingPanel extends JPanel{
 	private int mouseX;
 	private int mouseY;
 	private Handler handler;
+
+
+
+
+	private DrawCompass compass;
+	private DrawInventory invo;
+	private DrawMiniMap map;
 
 
 	public DrawingPanel(WindowFrame win){
@@ -50,10 +62,12 @@ public class DrawingPanel extends JPanel{
 		}
 
 		else{ //else it is in game
-
+			
 			dw.redraw(g, ClientTest.gc.getRoom(), "North"); //param: graphics, room, char, direction
 			//potential changes later: flag for menu mode or play mode, and to have logic
-
+			compass.redraw(g, "North");
+			invo.redraw(g, new ArrayList<Item>()  , "North");
+			map.redraw(g, ClientTest.gc.getRoom() , "North");
 			System.out.println("in game");
 		}
 	}
@@ -111,6 +125,9 @@ public class DrawingPanel extends JPanel{
 				System.out.println("clicked start button");
 				startMenu = false; //no longer in the start menu mode
 				dw = new DrawWorld( ClientTest.gc.getAvatar() ,DrawingPanel.this ); //param: the character, and then a panel
+				compass = new DrawCompass( DrawingPanel.this );
+				invo = new DrawInventory( DrawingPanel.this );
+				map = new DrawMiniMap( DrawingPanel.this, ClientTest.gc.getAvatar() );
 				repaint();
 			}
 
