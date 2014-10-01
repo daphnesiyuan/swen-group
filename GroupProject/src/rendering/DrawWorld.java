@@ -37,7 +37,7 @@ public class DrawWorld {
 	double scale;
 	int width;
 	int height;
-	Point offset = new Point(600,320);
+	Point offset = new Point(690,220);
 	JPanel panel;
 	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
 	Point relativeOffset;

@@ -6,8 +6,8 @@ import gameLogic.Room;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.HashMap;
+
+import dataStorage.XMLSaver;
 
 /**
  *Game server class of which handles all the processing of the game on a server side level.
@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class GameServer extends ChatServer {
 
 	// Game that all players are playing off
-	private Object serverLock;
+	private Object serverLock = new Object();
 	private Game gameServer;
 
 	public GameServer() {
@@ -36,7 +36,6 @@ public class GameServer extends ChatServer {
 			public void run(){
 				try {
 					while(true){
-						//System.out.println("Running");
 						updateAllClients();
 
 						Thread.sleep(30);
@@ -50,18 +49,25 @@ public class GameServer extends ChatServer {
 	}
 
 	/**
+	 * Saves the game to a file
+	 */
+	public void saveGame(){
+		XMLSaver saver = new XMLSaver(gameServer);
+		saver.saveGame();
+	}
+
+	/**
 	 * Updates all clients with a new room according to the state of the game logic
 	 */
 	private void updateAllClients(){
-		//System.out.println("Updating.......");
 
 		for (int i = 0; i < clients.size(); i++) {
-			//System.out.println(clients.get(i).getPlayerName() + " getting Room");
 
 			// Get each of our clients, and the room they are in
 			ClientThread client = clients.get(i);
 			Room room = gameServer.getRoom(client.player.getName());
-			//System.out.println("Room: " + room);
+
+			//System.out.println("Sending Room " + room + " to " + client.getPlayerName());
 
 			// Send the new room to the player
 			client.sendData(new RoomUpdate(room));
@@ -74,9 +80,10 @@ public class GameServer extends ChatServer {
 
 		// Determine what to do with each of the different types of objects sent from clients
 		if( data.getData() instanceof Move ){
+			Move move = (Move)data.getData();
 
 			// A move performed by a client
-			processMove((Move)data.getData(), data);
+			processMove(move, data);
 		}
 
 	}
@@ -88,7 +95,10 @@ public class GameServer extends ChatServer {
 	 */
 	private synchronized void processMove(Move move, NetworkObject data){
 
+		System.out.println(move);
+
 		synchronized(serverLock){
+
 			gameServer.moveAvatar(move);
 		}
 	}

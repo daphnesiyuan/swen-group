@@ -41,6 +41,7 @@ public class Avatar implements Serializable {
 	}
 
 	public void updateTile(Tile2D newTile){
+		if(newTile.equals(currentTile)) return;
 		if(currentTile != null){
 			currentTile.removeAvatar(this);
 		}
@@ -49,6 +50,7 @@ public class Avatar implements Serializable {
 	}
 
 	public void updateRoom(Room newRoom){
+		if(newRoom.equals(currentRoom)) return;
 		if(currentRoom != null){
 			currentRoom.removeAvatar(this);
 		}
@@ -68,6 +70,17 @@ public class Avatar implements Serializable {
 
 
 	public boolean moveTo(Move move){
+		Tile2D[][] tiles = currentRoom.getTiles();
+		for(int i = 0; i < tiles.length; i++){
+			for(int j = 0; j < tiles[0].length; j++){
+				System.out.print(tiles[j][i].getAvatar());
+			}
+			System.out.println();
+		}
+
+
+
+
 		if(move.getRenderDirection() == null){
 			System.out.println("Avatar: moveTo() - RenderDirection in provided move object is null");
 			return false;
@@ -127,9 +140,23 @@ public class Avatar implements Serializable {
 		updateFacing(newPosition);
 
 
-		//updateLocations(newPosition,newRoom);
+		updateLocations(newPosition,currentRoom);
+
+
+
+		Tile2D[][] tiles2 = currentRoom.getTiles();
+		for(int i = 0; i < tiles2.length; i++){
+			for(int j = 0; j < tiles2[0].length; j++){
+				System.out.print(tiles2[j][i].getAvatar());
+			}
+			System.out.println();
+		}
 
 		return true;
+
+
+
+
 
 	}
 
@@ -199,17 +226,11 @@ public class Avatar implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final int prime = 41;
 		int result = 1;
 		result = prime * result
 				+ ((Inventory == null) ? 0 : Inventory.hashCode());
-		result = prime * result
-				+ ((currentRoom == null) ? 0 : currentRoom.hashCode());
-		result = prime * result
-				+ ((currentTile == null) ? 0 : currentTile.hashCode());
-		result = prime * result + ((facing == null) ? 0 : facing.hashCode());
-		result = prime * result
-				+ ((playerName == null) ? 0 : playerName.hashCode());
+
 		return result;
 	}
 
