@@ -18,3 +18,5 @@
 /DrawCompass.class
 /miniMap.class
 /DrawMiniMap.class
+/Rendering$renderTread.class
+/Rendering$RenderThread.class

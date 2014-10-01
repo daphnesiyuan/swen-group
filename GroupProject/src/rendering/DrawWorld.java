@@ -122,17 +122,17 @@ public class DrawWorld {
 		Tile2D[][] tiles = room.getTiles().clone();
 
 		//rotate the game the correct number of tiles
-		for (int i = 0; i < Direction.get(direction); i++){
-			tiles = rotate90(tiles);
-		}
+//		for (int i = 0; i < Direction.get(direction); i++){
+//			tiles = rotate90(tiles);
+//		}
 
 		//Temporary code here, this sets the rotated90 boolean which is used to flip images
-		if(Direction.get(direction) == 1 ||Direction.get(direction) == 3){
-			rotated90 = true;
-		}
-		else{
-			rotated90 = false;
-		}
+//		if(Direction.get(direction) == 1 ||Direction.get(direction) == 3){
+//			rotated90 = true;
+//		}
+//		else{
+//			rotated90 = false;
+//		}
 
 		for(int i = 0; i < tiles.length; i++){
 			for (int j = 0; j < tiles[i].length; j++) {

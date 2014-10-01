@@ -126,16 +126,15 @@ public class Rendering extends JPanel implements KeyListener{
 
 	protected void paintComponent(Graphics g) {
 
-		Tile2D[][] tiles = gameClient.getRoom().getTiles();
-		for(int i = 0; i < tiles.length; i++){
-			for(int j = 0; j < tiles[0].length; j++){
-				System.out.print(tiles[j][i].getAvatar());
-			}
-			System.out.println();
-		}
+//		Tile2D[][] tiles = gameClient.getRoom().getTiles();
+//		for(int i = 0; i < tiles.length; i++){
+//			for(int j = 0; j < tiles[0].length; j++){
+//				System.out.print(tiles[j][i].getAvatar());
+//			}
+//			System.out.println();
+//		}
 
-
-
+		chatMessages = gameClient.getChatHistory();
 		draw.redraw(g, gameClient.getRoom(), Direction.get(direction));
 		inventory.redraw(g, charac.getInventory(), Direction.get(direction));
 		compass.redraw(g, Direction.get(direction));
@@ -166,6 +165,7 @@ public class Rendering extends JPanel implements KeyListener{
 		//System.out.println("bla");
 		repaint();
 	}
+
 
 	private void actionKeys() {
 
@@ -216,6 +216,13 @@ public class Rendering extends JPanel implements KeyListener{
 			e.printStackTrace();
 		}
 		System.out.println("sending move");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

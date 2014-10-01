@@ -17,7 +17,6 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import sun.awt.event.IgnorePaintEvent;
 import networking.GameClient;
 import networking.GameServer;
 import networking.Player;
@@ -38,9 +37,12 @@ public class testRendering extends javax.swing.JFrame {
 		GameServer gameServer = new GameServer();
 
 
+
+
 		gameClient = new GameClient("Ryan");
 		try {
-			gameClient.connect(InetAddress.getLocalHost().getHostAddress(), "Ryan", 32768);
+			//gameClient.connect(InetAddress.getLocalHost().getHostAddress(), "Ryan", 32768);
+			gameClient.connect("130.195.7.84", "Ryan", 32768);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
