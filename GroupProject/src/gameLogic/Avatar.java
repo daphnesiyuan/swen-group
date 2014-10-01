@@ -70,6 +70,17 @@ public class Avatar implements Serializable {
 
 
 	public boolean moveTo(Move move){
+		Tile2D[][] tiles = currentRoom.getTiles();
+		for(int i = 0; i < tiles.length; i++){
+			for(int j = 0; j < tiles[0].length; j++){
+				System.out.print(tiles[j][i].getAvatar());
+			}
+			System.out.println();
+		}
+
+
+
+
 		if(move.getRenderDirection() == null){
 			System.out.println("Avatar: moveTo() - RenderDirection in provided move object is null");
 			return false;
@@ -131,7 +142,21 @@ public class Avatar implements Serializable {
 
 		updateLocations(newPosition,currentRoom);
 
+
+
+		Tile2D[][] tiles2 = currentRoom.getTiles();
+		for(int i = 0; i < tiles2.length; i++){
+			for(int j = 0; j < tiles2[0].length; j++){
+				System.out.print(tiles2[j][i].getAvatar());
+			}
+			System.out.println();
+		}
+
 		return true;
+
+
+
+
 
 	}
 
