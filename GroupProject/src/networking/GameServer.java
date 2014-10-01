@@ -148,6 +148,9 @@ public class GameServer extends ChatServer {
 
 		// Tell console this client connected
 		System.out.println(cl.getPlayerName() + " has Connected.");
+
+		// Set new players current room
+		//gameServer
 	}
 
 	@Override

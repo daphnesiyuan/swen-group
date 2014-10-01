@@ -286,6 +286,14 @@ public abstract class Client{
 	}
 
 	/**
+	 * Checks if the client is connected to a server
+	 * @return True if socket is valid
+	 */
+	public boolean isConnect(){
+		return socket != null && !socket.isClosed();
+	}
+
+	/**
 	 * Servers send out objects as data to all their clients.
 	 * This method is called once a single object is sent to a client to be handled by who is listening.
 	 * Method MUST be synchronized
