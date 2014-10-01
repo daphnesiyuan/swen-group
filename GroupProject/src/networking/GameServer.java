@@ -73,34 +73,12 @@ public class GameServer extends ChatServer {
 		super.retrieveObject(data);
 
 		// Determine what to do with each of the different types of objects sent from clients
-		if( data.getData() instanceof ChatMessage ){
-
-			// ChatMessage sent from a client
-			processChatMessage((ChatMessage)data.getData(), data);
-		}
-		else if( data.getData() instanceof Move ){
+		if( data.getData() instanceof Move ){
 
 			// A move performed by a client
 			processMove((Move)data.getData(), data);
 		}
 
-	}
-
-	/**
-	 *
-	 * @param chatMessage the message sent FROM a client
-	 * @param data original NetworkObject sent through the network
-	 */
-	private synchronized void processChatMessage(ChatMessage chatMessage, NetworkObject data){
-
-		// Save the message
-		chatHistory.add(chatMessage);
-
-		// Display for the server in console
-		System.out.println(data);
-
-		// Send it to all our clients
-		sendToAllClients(data);
 	}
 
 	/**
@@ -157,7 +135,15 @@ public class GameServer extends ChatServer {
 		System.out.println(cl.getPlayerName() + " has Connected.");
 
 		// Set new players current room
-		//gameServer
+		Room currentRoom = gameServer.addPlayer(cl.getPlayerName());
+		System.out.println("currentRoom: " + currentRoom);
+
+		// Send the soom back to the client
+		if( currentRoom != null ){
+			cl.sendData(new RoomUpdate(currentRoom));
+			System.out.println("SEND NEW ROOM!");
+		}
+
 	}
 
 	@Override

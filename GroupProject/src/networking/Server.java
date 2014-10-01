@@ -183,7 +183,7 @@ public abstract class Server implements Runnable{
 					pingClient(client.getPlayerName(), data);
 				}
 			}
-			else{
+			else if( !scan.hasNext("everyone") ){
 
 				// Where is the message going to?
 				pingClient(scan.nextLine().trim(),data);
