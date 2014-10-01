@@ -1,6 +1,7 @@
 package rendering;
 
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -18,6 +19,7 @@ import GUI.DrawingPanel;
 import gameLogic.entity.GameCharacter;
 import gameLogic.location.Room;
 import gameLogic.location.Tile2D;
+import gameLogic.physical.Item;
 
 /**
  * This class will draw the location and everything in it.
@@ -29,21 +31,31 @@ public class DrawWorld {
 
 	GameCharacter character; // the main player
 
-	int scale = 40;
-	int width = 1 * scale;
-	int height = width;
-	Point offset = new Point(350,100);
+	double scale;
+	int width;
+	int height;
+	Point offset = new Point(600,150);
 	JPanel panel;
-	boolean rotated90; // used as a cheap way to show room rotation by flipping the images horizontally.
-	Map<Integer, String> directionMap = new HashMap<Integer, String>();
+	boolean rotated90 = false; // used as a cheap way to show room rotation by flipping the images horizontally.
+	Map<String, Integer> directionMap = new HashMap<String, Integer>();
 
+	public DrawWorld(GameCharacter character, Rendering rendering){
+		this.character = character;
+		this.panel = rendering;
+		directionMap.put("north", 0);
+		directionMap.put("west", 1);
+		directionMap.put("south", 2);
+		directionMap.put("east", 3);
+	}
+
+	//This constructor is only for testing
 	public DrawWorld(GameCharacter character, DrawingPanel rendering){
 		this.character = character;
 		this.panel = rendering;
-		directionMap.put(0, "north");
-		directionMap.put(1, "west");
-		directionMap.put(2, "south");
-		directionMap.put(3, "east");
+		directionMap.put("north", 0);
+		directionMap.put("west", 1);
+		directionMap.put("south", 2);
+		directionMap.put("east", 3);
 	}
 
 
@@ -55,8 +67,21 @@ public class DrawWorld {
 	 * @param String direction
 	 */
 	public void redraw(Graphics g, Room room, GameCharacter character, String direction){
-		System.out.println("redraw");
-		System.out.println(direction);
+
+		//set offset based on character position.
+		//This doesn't really work very well because the tiles x
+		//and y will not change with my rotate. Will fix later.
+		if (character != null){
+			Point temp = twoDToIso(new Point(character.getCurrentTile().getXPos()*height, character.getCurrentTile().getYPos()*width));
+			offset.x = (panel.getWidth()/2)+ temp.x;  //will get rid of magic numbers
+			offset.y = (panel.getHeight()/4) + temp.y;
+		}
+
+		//set scaling based on frame size
+		scale = 50 * (panel.getWidth()/1280.0);
+		width =(int) (1 * scale);
+		height = width;
+
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
 		drawLocation(g, room, direction);
@@ -74,29 +99,72 @@ public class DrawWorld {
 	 */
 	private void drawLocation(Graphics g, Room room, String direction) {
 		// TODO Auto-generated method stub
-		Tile2D[][] tiles = rotate2DArray(room.getTiles(), direction);
+		Tile2D[][] tiles = room.getTiles().clone();
+
+		//rotate the game the correct number of tiles
+		for (int i = 0; i < directionMap.get(direction); i++){
+			tiles = rotate90(tiles);
+		}
+
+		//Temporary code here, this sets the rotated90 boolean which is used to flip images
+		if(directionMap.get(direction) == 1 ||directionMap.get(direction) == 3){
+			rotated90 = true;
+		}
+		else{
+			rotated90 = false;
+		}
 
 		for(int i = 0; i < tiles.length; i++){
 			for (int j = 0; j < tiles[i].length; j++) {
 				int x = i * width;
 				int y = j * height;
-				String tileName = tiles[i][j].getClass().getName();
-				placeTile(twoDToIso(new Point(x,y)),tileName,g);
+				//String tileName = tiles[i][j].getClass().getName();
+				placeTile(twoDToIso(new Point(x,y)),tiles[i][j],g);
 			}
 		}
 	}
 
 	/**
-	 * Takes the name of the class and draws that image that is stored to the
-	 * graphics at the point provided
+	 * Rotates the given 2d array 90 degrees
+	 * @param Tile2D[][] tiles
+	 * @return Tile2D[][] newTiles
+	 */
+	private Tile2D[][] rotate90(Tile2D[][] tiles) {
+		// TODO Auto-generated method stub
+	    int width = tiles.length;
+	    int height = tiles[0].length;
+	    Tile2D[][] newTiles = new Tile2D[height][width];
+	    for (int i = 0; i < height; ++i) {
+	        for (int j = 0; j < width; ++j) {
+	            newTiles[i][j] = tiles[width - j - 1][i];
+	        }
+	    }
+	    return newTiles;
+	}
+
+	/**
+	 * Takes the name of the class and gets drawObject(...) to draw it.
 	 * @param Point pt
 	 * @param String tileName
 	 * @param Graphics g
 	 */
-	private void placeTile(Point pt, String tileName, Graphics g) {
+	private void placeTile(Point pt, Tile2D tile, Graphics g) {
+		String tileName = tile.getClass().getName();
 		java.net.URL imageURL = Rendering.class.getResource(tileName+".png");
+		drawObject(g, pt, imageURL);
 
-		Image img = null;
+		drawItems(g, pt, tile);
+		drawCharacter(g, pt, tile);
+	}
+
+	/**
+	 * Generic drawing method that gets called to draw Tile2D, GameCharacter, Item
+	 * @param Graphics g
+	 * @param Point pt
+	 * @param java.net.URL imageURL
+	 */
+	private void drawObject(Graphics g, Point pt, java.net.URL imageURL){
+		BufferedImage img = null;
 		try {
 			img = ImageIO.read(imageURL);
 		} catch (IOException e) {
@@ -115,6 +183,43 @@ public class DrawWorld {
 	}
 
 	/**
+	 * Takes the name of the class and gets drawObject(...) to draw it.
+	 * @param Point pt
+	 * @param Tile2D tile
+	 * @param Graphics g
+	 */
+	private void drawCharacter(Graphics g, Point pt, Tile2D tile) {
+		// this if statement is only used until ryan finished the getCharacter() method on Tile2D class
+		String characterName = null;
+		if (character.getCurrentTile().getXPos() == tile.getXPos() &&
+				character.getCurrentTile().getYPos() == tile.getYPos()){
+			characterName = character.getClass().getName();
+		} else{
+			return;
+		}
+
+		//if (tile.getCharacter == null){return;}
+		//String characterName = tile.getCharacter.getClass().getName();
+		java.net.URL imageURL = Rendering.class.getResource(characterName+".png");
+		drawObject(g, pt, imageURL);
+	}
+
+	/**
+	 * Takes the name of the class and gets drawObject(...) to draw it.
+	 * @param Point pt
+	 * @param Tile2D tile
+	 * @param Graphics g
+	 */
+	private void drawItems(Graphics g, Point pt, Tile2D tile) {
+		Item tempItem = tile.getItem() ;
+		while (tempItem != null){
+
+		}
+
+	}
+
+
+	/**
 	 * converts the coordinates of a 2d array to isometric
 	 * @param Point point
 	 * @return Point tempPt
@@ -125,68 +230,4 @@ public class DrawWorld {
 		  tempPt.y = (point.x + point.y) / 2;
 		  return(tempPt);
 	}
-
-
-	/**
-	 * Takes a 2d array and will rotate it by 90 degree segments as dictated by the string direction.
-	 * The actual rotation is handled by rotateHelper(...).
-	 * North - tiles should not be rotated.
-	 * West - tiles will be rotated 90 degrees
-	 * South - tiles will be rotated 180 degrees
-	 * East - tiles will be rotated 270 degrees
-	 * @param Tile2D[][] tiles
-	 * @param String direction
-	 * @return Tile2d[][] tiles
-	 */
-	private Tile2D[][] rotate2DArray(Tile2D[][] tiles, String direction) {
-		Tile2D[][] newTiles = tiles.clone();
-
-		if (direction == null || direction.equalsIgnoreCase("north")){
-			return newTiles;
-		}
-//		else{
-//			if (direction.equalsIgnoreCase("west")){
-//				newTiles = rotateHelper(tiles, 1);
-//				System.out.println("west");
-//			}
-//			if (direction.equalsIgnoreCase("south")){
-//				newTiles = rotateHelper(tiles, 2);
-//				System.out.println("south");
-//			}
-//			if (direction.equalsIgnoreCase("east")){
-//				newTiles = rotateHelper(tiles, 3);
-//				System.out.println("east");
-//			}
-//		}
-
-
-
-		return newTiles;
-	}
-
-
-	/**
-	 * Only called from rotate2DArray(). Uses an algorithm to rotate the given
-	 * 2D array the given number of times.
-	 * @param Tile2D[][] tiles
-	 * @param String direction
-	 * @return Tile2d[][] tiles
-	 */
-	private Tile2D[][] rotateHelper(Tile2D[][] tiles, int numRotations) {
-	    int w = tiles.length;
-	    int h = tiles[0].length;
-	    Tile2D[][] newTiles = new Tile2D[h][w]; // new array to return
-		for (int k = 0; k < numRotations; k++) { // for the number of rotations
-			for (int i = 0; i < h; ++i) { // iterate over the array
-				for (int j = 0; j < w; ++j) { // iterate over the array
-					newTiles[i][j] = tiles[w - j - 1][i]; //Formulea for the rotation.
-					System.out.println(i+" "+j+" "+(w - j - 1)+" "+i);
-				}
-			}
-			rotated90 = !rotated90; //
-	    }
-	    return newTiles;
-	}
-
-
 }

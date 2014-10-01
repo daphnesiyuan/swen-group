@@ -1,4 +1,5 @@
 package networking;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -64,13 +65,13 @@ public abstract class Client implements Runnable{
 	/**
 	 * Attempts to connect to the given IPAddress and port number of the
 	 * @param IPAddress IPAddress of the connection to connect as
-	 * @param ID Identification of this client
+	 * @param playerName Identification of this client
 	 * @param port Default: 32768
 	 * @return True if connection worked, otherwise a exception gets thrown
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public boolean connect(String IPAddress, String ID, int port) throws UnknownHostException, IOException{
+	public boolean connect(String IPAddress, String playerName, int port) throws UnknownHostException, IOException{
 
 
 		// Check if we have a current Socket, close if we do
@@ -94,9 +95,12 @@ public abstract class Client implements Runnable{
 			return false;
 		}
 
+		// Perform our setup since we connected to a server
+		successfullyConnected(playerName);
+
 		// Give the server our name
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-		out.writeObject(ID);
+		out.writeObject(playerName);
 		out.flush();
 
 		// Start our new socket
@@ -140,12 +144,6 @@ public abstract class Client implements Runnable{
 					continue;
 				}
 
-				// Check for a ping
-				if( (data.getData().toString()).equals("/ping all") ){
-					sendData(new ChatMessage("/ping all"));
-					continue;
-				}
-
 				// Send object to client that is waiting for data
 				retrieveObject(data);
 			}
@@ -168,7 +166,7 @@ public abstract class Client implements Runnable{
 					e.printStackTrace();
 				}
 			}
-			retrieveObject(new NetworkObject(IPAddress, new ChatMessage("You have been Disconnected")));
+			retrieveObject(new NetworkObject(IPAddress, new ChatMessage("You have been Disconnected", Color.black)));
 		}
 	}
 
@@ -205,4 +203,5 @@ public abstract class Client implements Runnable{
 	 * @return
 	 */
 	public abstract void retrieveObject(NetworkObject data);
+	public abstract void successfullyConnected(String playerName);
 }

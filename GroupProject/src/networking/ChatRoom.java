@@ -1,4 +1,5 @@
 package networking;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -6,15 +7,15 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Calendar;
+import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.DefaultCaret;
 
 
 /**
@@ -32,7 +33,7 @@ public class ChatRoom implements ActionListener{
 
 	private int port = 32768;
 
-	private JTextArea chatHistory;
+	private JPanel chatHistory;
 	private JScrollPane scroll;
 	private JTextField message;
 	private JButton send;
@@ -59,11 +60,8 @@ public class ChatRoom implements ActionListener{
 
 			// Update our text if anything has changed
 			if( client.isModified() ){
+				refreshChatHistoryPanel();
 				client.setModified(false);
-
-				chatHistory.setText(client.getChatHistory());
-				DefaultCaret caret = (DefaultCaret) chatHistory.getCaret();
-				caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 			}
 
 			try {
@@ -72,6 +70,29 @@ public class ChatRoom implements ActionListener{
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void refreshChatHistoryPanel(){
+
+		System.out.println("CALLED");
+
+		chatHistory.removeAll();
+
+		// Get the chat history
+		ArrayList<ChatMessage> history = client.getChatHistory();
+		System.out.println("Size: " + history.size());
+
+		for(ChatMessage cm : history ){
+			JLabel label = new JLabel(cm.toString());
+			System.out.println("Label: " + label.getText());
+			label.setForeground(cm.color);
+			chatHistory.add(label);
+		}
+
+		chatHistory.revalidate();
+
+		int height = (int)chatHistory.getPreferredSize().getHeight();
+        scroll.getVerticalScrollBar().setValue(height);
 	}
 
 	private void setUpGui(){
@@ -95,9 +116,10 @@ public class ChatRoom implements ActionListener{
 		startServer = new JButton("Start Server");
 		startServer.addActionListener(this);
 
-		chatHistory = new JTextArea(15,15);
-		chatHistory.setEditable(false);
-		chatHistory.setLineWrap(true);
+		chatHistory = new JPanel();
+		chatHistory.setFocusable(false);
+		chatHistory.setBackground(Color.white);
+		chatHistory.setLayout(new BoxLayout(chatHistory, BoxLayout.Y_AXIS));
 		scroll = new JScrollPane(chatHistory);
 		scroll.setPreferredSize(new Dimension(500,200));
 		message = new JTextField(15);
