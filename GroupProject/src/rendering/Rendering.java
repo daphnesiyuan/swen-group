@@ -187,6 +187,15 @@ public class Rendering extends JPanel implements KeyListener{
 			if(keysDown.contains(KeyEvent.VK_W)){
 				moveForward();
 			}
+			if(keysDown.contains(KeyEvent.VK_A)){
+				moveLeft();
+			}
+			if(keysDown.contains(KeyEvent.VK_S)){
+				moveBack();
+			}
+			if(keysDown.contains(KeyEvent.VK_D)){
+				moveRight();
+			}
 		}
 		keysDown.clear();
 		System.out.println(gameClient.roomIsModified());
@@ -204,10 +213,73 @@ public class Rendering extends JPanel implements KeyListener{
 		repaint();
 	}
 
+	private void moveRight() {
+		System.out.println(player);
+		Move move = new Move(player, "D", Direction.get(direction));
+
+		try {
+			testrendering.gameClient.sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("sending move");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void moveBack() {
+		System.out.println(player);
+		Move move = new Move(player, "S", Direction.get(direction));
+
+		try {
+			testrendering.gameClient.sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("sending move");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void moveLeft() {
+		System.out.println(player);
+		Move move = new Move(player, "A", Direction.get(direction));
+
+		try {
+			testrendering.gameClient.sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("sending move");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	private void moveForward() {
 
 		System.out.println(player);
-		Move move = new Move(player, "W", "North");
+		Move move = new Move(player, "W", Direction.get(direction));
 
 		try {
 			testrendering.gameClient.sendMoveToServer(move);
