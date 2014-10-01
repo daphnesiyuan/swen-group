@@ -28,14 +28,24 @@ public class Room implements Serializable {
 
 		avatars = new ArrayList<Avatar>();
 
-
-
 	}
+
+	public Avatar getAvatar(String playerName){
+		for(Avatar avatar: avatars){
+			if(playerName.equals(avatar.getPlayerName())){
+				return avatar;
+			}
+		}
+		return null;
+	}
+
+
+
 
 	public void removeAvatar(Avatar avatar){
 		avatars.remove(avatar);
 	}
-	
+
 	public void addAvatar(Avatar avatar){
 		avatars.add(avatar);
 	}
