@@ -134,6 +134,8 @@ public class Rendering extends JPanel implements KeyListener{
 			System.out.println();
 		}
 
+
+
 		draw.redraw(g, gameClient.getRoom(), Direction.get(direction));
 		inventory.redraw(g, charac.getInventory(), Direction.get(direction));
 		compass.redraw(g, Direction.get(direction));
@@ -187,6 +189,19 @@ public class Rendering extends JPanel implements KeyListener{
 			}
 		}
 		keysDown.clear();
+		System.out.println(gameClient.roomIsModified());
+		while(!gameClient.roomIsModified()){
+			System.out.println("checking modified");
+
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		gameClient.setRoomModified(false);
+		repaint();
 	}
 
 	private void moveForward() {

@@ -198,7 +198,7 @@ public class DrawWorld {
 			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 			img = op.filter((BufferedImage) img, null);
 		}
-		int imgHeight = ((int) img.getHeight(null)/500);
+		int imgHeight = ((int) img.getHeight(null)/250);
 
 		g.drawImage(img, offset.x+pt.x - width, offset.y+pt.y - ((width*imgHeight)),width*2, height*imgHeight, null);
 	}
