@@ -62,7 +62,7 @@ public class  Game {
 	 * @return the Room the given player is in
 	 */
 	public Room getRoom(String playerName){
-		System.out.println("\n Game : getRoom()");
+		System.out.println("RoomsinGame : " + roomsInGame);
 		for(Room room : roomsInGame){
 			System.out.println("\n  Room: "+room);
 			for(Avatar player : room.getAvatars()){
