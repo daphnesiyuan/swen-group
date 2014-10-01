@@ -125,7 +125,7 @@ public class Avatar implements Serializable {
 		System.out.println("3");
 
 		// if there is an Item in the move position - return false;
-		if(newPosition.itemOnTile()==true) return false;
+		//if(newPosition.itemOnTile()==true) return false;
 
 		System.out.println("4");
 
