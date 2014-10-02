@@ -4,6 +4,7 @@ import gameLogic.Avatar;
 import gameLogic.Room;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 /**
  *Chat Client that deals with the main aspects of the Chat program when it comes to the client
@@ -66,6 +67,10 @@ public class GameClient extends ChatClient {
 	 */
 	public boolean sendMoveToServer(Move interaction) throws IOException{
 
+		if( interaction instanceof Move ){
+			System.out.println("Queueing on Client: " + interaction + " " + Calendar.getInstance().getTime());
+		}
+
 		// Send data to the server
 		return super.sendData(interaction);
 	}
@@ -120,6 +125,8 @@ public class GameClient extends ChatClient {
 	public synchronized void retrievedUpdatedRoom(RoomUpdate room){
 		synchronized(roomLock){
 			clientRoom = room.updatedRoom;
+
+			System.out.println("Client Recieved new Room: " + Calendar.getInstance().getTime());
 
 			// Record when we last updated
 			setRoomModified(true);

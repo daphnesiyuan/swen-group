@@ -4,9 +4,12 @@ import gameLogic.Game;
 import gameLogic.Room;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Calendar;
 
+import dataStorage.XMLLoader;
 import dataStorage.XMLSaver;
 
 /**
@@ -21,11 +24,43 @@ public class GameServer extends ChatServer {
 	private Object serverLock = new Object();
 	private Game gameServer;
 
+	private Object gameModifiedLock = new Object();
+	private boolean gameModified = false;
+
 	public GameServer() {
 		super();
 
 		// Create a new game
 		gameServer = new Game();
+
+		// Server listens for input directly to servers terminal Thread
+		Thread serverTextBox = new Thread(new ServerTextListener());
+		serverTextBox.start();
+
+		Thread refreshThread = new Thread(){
+			@Override
+			public void run(){
+				try {
+					while(true){
+
+						// Update clients if the game has been modified
+						if( isGameModified() ){
+							updateAllClients();
+						}
+
+						Thread.sleep(30);
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		refreshThread.start();
+
+	}
+
+	public GameServer(File gameToLoad) {
+		super();
 
 		// Server listens for input directly to servers terminal Thread
 		Thread serverTextBox = new Thread(new ServerTextListener());
@@ -47,14 +82,40 @@ public class GameServer extends ChatServer {
 		};
 		refreshThread.start();
 
+		// Load the game from a file a file
+		loadGame(gameToLoad);
+	}
+
+	/**
+	 *
+	 * @param file
+	 * @return
+	 */
+	public boolean loadGame(File file){
+		// Load a file
+		XMLLoader loader = new XMLLoader();
+
+		Game game = loader.loadGame(file);
+		if( game != null ){
+			System.out.println("Successfully loaded game from file:\n\t" + file);
+
+			gameServer = game;
+			return true;
+		}
+
+		System.out.println("Failed to load game from file:\n\t" + file);
+
+		// Could not load the file
+		return false;
 	}
 
 	/**
 	 * Saves the game to a file
+	 * @return
 	 */
-	public void saveGame(){
+	public boolean saveGame(){
 		XMLSaver saver = new XMLSaver(gameServer);
-		saver.saveGame();
+		return saver.saveGame();
 	}
 
 	/**
@@ -62,17 +123,27 @@ public class GameServer extends ChatServer {
 	 */
 	private void updateAllClients(){
 
-		for (int i = 0; i < clients.size(); i++) {
+		System.out.println("Updating Clients: " + Calendar.getInstance().getTime());
 
-			// Get each of our clients, and the room they are in
-			ClientThread client = clients.get(i);
-			Room room = gameServer.getRoom(client.player.getName());
+			// Make sure we have a server to update the clients with
+			if( gameServer == null ){
+				return;
+			}
 
-			//System.out.println("Sending Room " + room + " to " + client.getPlayerName());
+			// Sent the room of the lcient ot all it's clients
+			for (int i = 0; i < clients.size(); i++) {
 
-			// Send the new room to the player
-			client.sendData(new RoomUpdate(room));
-		}
+				// Get each of our clients, and the room they are in
+				ClientThread client = clients.get(i);
+				Room room = gameServer.getRoom(client.player.getName());
+
+				//System.out.println("Sending Room " + room + " to " + client.getPlayerName());
+
+				// Send the new room to the player
+				client.sendData(new RoomUpdate(room));
+			}
+
+				setGameModified(false);
 	}
 
 	@Override
@@ -82,6 +153,8 @@ public class GameServer extends ChatServer {
 		// Determine what to do with each of the different types of objects sent from clients
 		if( data.getData() instanceof Move ){
 			Move move = (Move)data.getData();
+
+			System.out.println(move + " " + Calendar.getInstance().getTime());
 
 			// A move performed by a client
 			processMove(move, data);
@@ -96,11 +169,16 @@ public class GameServer extends ChatServer {
 	 */
 	private synchronized void processMove(Move move, NetworkObject data){
 
-		System.out.println(move);
+		System.out.println("Processing move: " + move + " " + Calendar.getInstance().getTime());
 
-		synchronized(serverLock){
 
-			gameServer.moveAvatar(move);
+		System.out.println("Moving Piece: " + Calendar.getInstance().getTime());
+		if( gameServer.moveAvatar(move) ){
+
+			System.out.println("Piece has been moved: " + Calendar.getInstance().getTime());
+
+			setGameModified(true);
+			System.out.println("Game has been modified: " + Calendar.getInstance().getTime());
 		}
 	}
 
@@ -160,6 +238,10 @@ public class GameServer extends ChatServer {
 	@Override
 	public void clientRejoins(ClientThread cl) {
 
+		// TODO THIS DOES NOT WORK
+		// TODO THIS DOES NOT WORK
+		// TODO THIS DOES NOT WORK
+
 		// Tell everyone the new client has joined the server
 		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Reconnected.", chatMessageColor, true),cl);
 
@@ -172,7 +254,19 @@ public class GameServer extends ChatServer {
 		// Send the soom back to the client
 		if( currentRoom != null ){
 			cl.sendData(new RoomUpdate(currentRoom));
-			System.out.println("SEND NEW ROOM!");
+		}
+	}
+
+	public boolean isGameModified() {
+
+		synchronized(gameModifiedLock){
+			return gameModified;
+		}
+	}
+
+	public void setGameModified(boolean gameModified) {
+		synchronized(gameModifiedLock){
+			this.gameModified = gameModified;
 		}
 	}
 

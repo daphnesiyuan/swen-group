@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayDeque;
+import java.util.Calendar;
 
 /**
  *Abstract Client class that holds all the required features when connecting, sending and receiving data from/to the server
@@ -28,7 +29,7 @@ public abstract class Client{
 	protected String IPAddress = "null";
 
 	// Everyone to be sent to the server
-	private Object outGoingPacketLock = new Object();
+	//private Object outGoingPacketLock = new Object();
 	private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>();
 
 	private ObjectInputStream inputStream;
@@ -55,8 +56,10 @@ public abstract class Client{
 			@Override
 			public void run(){
 
+
 				final int SENDRATE = 10;
-				final int PINGRATE = 50;
+				final int PINGRATE = 1000;
+				long lastPing = System.currentTimeMillis() + PINGRATE;
 
 				while( true ){
 
@@ -67,7 +70,7 @@ public abstract class Client{
 							NetworkObject popped;
 
 							// Try pinging the server if we have a server
-							synchronized(outGoingPacketLock){
+							//synchronized(outGoingPacketLock){
 								if( outgoingPackets.isEmpty() ){
 									sendData(new ChatMessage(getName(), "/ping everyone", Color.black, true));
 									try { sleep(PINGRATE); } catch (InterruptedException e) {}
@@ -75,7 +78,11 @@ public abstract class Client{
 
 								// Get the next packet to send
 								popped = outgoingPackets.pop();
-							}
+
+								if( popped.getData() instanceof Move ){
+									System.out.println("Sending To Server: " + popped.getData() + " " + Calendar.getInstance().getTime());
+								}
+							//}
 
 
 							// Send to server
@@ -163,9 +170,9 @@ public abstract class Client{
 		myThread.start();
 
 		// Clear all packets that were pending
-		synchronized(outGoingPacketLock){
+		//synchronized(outGoingPacketLock){
 			outgoingPackets.clear();
-		}
+		//}
 
 		// Record server
 		connectedIP = IPAddress;
@@ -241,9 +248,7 @@ public abstract class Client{
 		}
 
 		// Add to our packets to send
-		synchronized(outGoingPacketLock){
-			outgoingPackets.add(new NetworkObject(IPAddress, data));
-		}
+		outgoingPackets.add(new NetworkObject(IPAddress, data));
 
 		// Data stored successfully
 		return true;

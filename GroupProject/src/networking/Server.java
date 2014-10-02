@@ -331,10 +331,10 @@ public abstract class Server implements Runnable{
 		// Socket to send backs to and receive from the client
 		Socket socket;
 
-		private Object outGoingPacketLock = new Object();
+		//private Object outGoingPacketLock = new Object();
 		private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>();
 
-		public ClientThread(Socket socket, Player player) {
+		public ClientThread(Socket socket, Player player){
 			this.socket = socket;
 			this.player = player;
 
@@ -349,19 +349,22 @@ public abstract class Server implements Runnable{
 						if( isConnected() ){
 							try {
 
-								NetworkObject popped;
+								NetworkObject popped = null;
 
 								// Try pinging the server if we have a server
-								synchronized(outGoingPacketLock){
-									if( outgoingPackets.isEmpty() ){
-										sendData(new ChatMessage(getName(), "/ping everyone", Color.black, true));
-										try { sleep(1000); } catch (InterruptedException e) {}
-									}
+								if( outgoingPackets.isEmpty() ){
+									popped = new NetworkObject(IPAddress, new ChatMessage(getName(), "/ping everyone", Color.black, true));
+									continue;
+								}
+								else{
+									// Get packet to send
+									popped = outgoingPackets.pop();
 								}
 
 
-								// Get packet to send
-								popped = outgoingPackets.pop();
+								if( popped.getData() instanceof Move || popped.getData() instanceof RoomUpdate ){
+									System.out.println("Server Send Data: " + popped.getData() + " " + Calendar.getInstance().getTime());
+								}
 
 								// Send to server
 								outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
@@ -370,7 +373,7 @@ public abstract class Server implements Runnable{
 								outputStream.flush();
 
 								// Send to client for client sided review
-								retrieveObject(popped);
+								//retrieveObject(popped);
 
 							} catch(SocketException e){
 								ClientThread.this.socket = null;
@@ -379,10 +382,7 @@ public abstract class Server implements Runnable{
 								e.printStackTrace();
 							}
 
-							try { sleep(30); } catch (InterruptedException e) {e.printStackTrace();}
-						}
-						else{
-							try { sleep(1000); } catch (InterruptedException e) {retrieveObject(new NetworkObject(IPAddress, new ChatMessage("WARNING", "Waiting for socket to reconnect....",Color.black,true)));}
+							try { sleep(10); } catch (InterruptedException e) {e.printStackTrace();}
 						}
 					}
 				}
@@ -466,14 +466,16 @@ public abstract class Server implements Runnable{
 		 * Queues data to be stored for sending to this client
 		 * @param data To be sent to the client
 		 */
-		public synchronized void sendData(NetworkObject data) {
+		public void sendData(NetworkObject data) {
 			// Check if we have a connection
 			if( socket != null && !socket.isClosed() ){
 
 				// Add to our packets to send
-				synchronized(outGoingPacketLock){
-					outgoingPackets.add(data);
+				if( data.getData() instanceof Move || data.getData() instanceof RoomUpdate ){
+					System.out.println("Server Queueing Data: " + data + " " + Calendar.getInstance().getTime());
 				}
+
+				outgoingPackets.add(data);
 			}
 		}
 
@@ -481,7 +483,7 @@ public abstract class Server implements Runnable{
 		 * Queues data to be stored for sending to this client
 		 * @param data To be sent to the client
 		 */
-		public synchronized void sendData(NetworkData data) {
+		public void sendData(NetworkData data) {
 			sendData(new NetworkObject(IPAddress, data));
 		}
 
