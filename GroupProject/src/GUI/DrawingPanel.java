@@ -181,11 +181,14 @@ public class DrawingPanel extends JPanel implements KeyListener{
 		static GameServer gs = new GameServer();
 		static GameClient gc = new GameClient("Daphne");
 
+
+
 		public ClientTest(){
 
+
 			try {
-				//gc.connect("130.195.7.84",32768);
-				gc.connect(gs, gc.getName());
+				gc.connect("130.195.6.69",32768);
+				//gc.connect(gs, gc.getName());
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -307,7 +310,7 @@ public class DrawingPanel extends JPanel implements KeyListener{
 		System.out.println("sending move");
 
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -328,7 +331,7 @@ public class DrawingPanel extends JPanel implements KeyListener{
 		System.out.println("sending move");
 
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -349,7 +352,7 @@ public class DrawingPanel extends JPanel implements KeyListener{
 		System.out.println("sending move");
 
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -371,7 +374,7 @@ public class DrawingPanel extends JPanel implements KeyListener{
 		System.out.println("sending move");
 
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

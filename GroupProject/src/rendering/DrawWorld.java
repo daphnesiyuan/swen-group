@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import networking.ChatMessage;
 import GUI.DrawingPanel;
 import gameLogic.Avatar;
+import gameLogic.Game.Facing;
 import gameLogic.Item;
 import gameLogic.Room;
 import gameLogic.Tile2D;
@@ -223,6 +224,7 @@ public class DrawWorld {
 		if(tile.getAvatar() == null) {
 			return;
 		}
+		//Facing dir = tile.getAvatar().getFacing();
 		String characterName = tile.getAvatar().getClass().getName();
 		if (back){characterName+="Back";}
 		java.net.URL imageURL = Rendering.class.getResource(characterName+".png");
