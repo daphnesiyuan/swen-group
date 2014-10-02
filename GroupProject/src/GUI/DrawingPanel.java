@@ -3,24 +3,32 @@ package GUI;
 import gameLogic.Item;
 import gameLogic.Room;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
+import networking.ChatMessage;
 import networking.GameClient;
 import networking.GameServer;
+import networking.Move;
+import rendering.Direction;
+import rendering.DrawChat;
 import rendering.DrawCompass;
 import rendering.DrawInventory;
 import rendering.DrawMiniMap;
 import rendering.DrawWorld;
 
-public class DrawingPanel extends JPanel{
+public class DrawingPanel extends JPanel implements KeyListener{
 
 	private DrawWorld dw; //this draws all the game-stuff: locations chars items etc
 	private StartMenu sm;
@@ -32,6 +40,10 @@ public class DrawingPanel extends JPanel{
 	private int mouseY;
 	private Handler handler;
 
+	//Leons fields
+	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
+	String currentMessage = "";
+	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
 
 
 	private String direction;
@@ -39,6 +51,9 @@ public class DrawingPanel extends JPanel{
 	private DrawCompass compass;
 	private DrawInventory invo;
 	private DrawMiniMap map;
+
+	//leon added
+	private DrawChat chat;
 
 
 	private boolean chatMode; //from rendering
@@ -55,6 +70,9 @@ public class DrawingPanel extends JPanel{
 		this.addMouseListener( mouse );
 		new ClientTest();
 		keyboard = new KeyBoard(this);
+
+		//leon added:
+		chat = new DrawChat(this);
 	}
 
 	//from rendering
@@ -83,12 +101,13 @@ public class DrawingPanel extends JPanel{
 		}
 
 		else{ //else it is in game
-			dw.redraw(g, ClientTest.gc.getRoom(), direction); //param: graphics, room, char, direction
+			dw.redraw(g, ClientTest.gc.getRoom(), Direction.get(directionI)); //param: graphics, room, char, direction
 			//potential changes later: flag for menu mode or play mode, and to have logic
 			compass.redraw(g, direction);
-			invo.redraw(g, ClientTest.gc.getAvatar().getInventory()  , direction);
-			map.redraw(g, ClientTest.gc.getRoom() , direction);
+			invo.redraw(g, ClientTest.gc.getAvatar().getInventory()  , Direction.get(directionI));
+			map.redraw(g, ClientTest.gc.getRoom() , Direction.get(directionI));
 			System.out.println("in game");
+			if(chatMode)chat.redraw(g, ClientTest.gc.getChatHistory(10), currentMessage);
 		}
 	}
 
@@ -192,6 +211,161 @@ public class DrawingPanel extends JPanel{
 			//gc.setName(name);
 
 		}
+
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+
+		if (!keysDown.contains(e.getKeyCode()))
+			keysDown.add(new Integer(e.getKeyCode()));
+		if(chatMode){
+			currentMessage+=e.getKeyChar();
+		}
+		actionKeys();
+		repaint();
+	}
+
+
+	private void actionKeys() {
+
+		if (keysDown.contains(KeyEvent.VK_ALT)){
+			chatMode = !chatMode;
+		}
+		if (chatMode){
+			if (keysDown.contains(KeyEvent.VK_ENTER)){
+				chatMessages.add(new ChatMessage("Ryan", currentMessage, Color.RED));
+				currentMessage = "";
+			} else {
+
+			}
+		}
+		else{
+			if (keysDown.contains(KeyEvent.VK_CONTROL)) {
+				directionI = (directionI + 1) % 4;
+			}
+			if(keysDown.contains(KeyEvent.VK_W)){
+				moveForward();
+			}
+			if(keysDown.contains(KeyEvent.VK_A)){
+				moveLeft();
+			}
+			if(keysDown.contains(KeyEvent.VK_S)){
+				moveBack();
+			}
+			if(keysDown.contains(KeyEvent.VK_D)){
+				moveRight();
+			}
+		}
+		keysDown.clear();
+//		System.out.println(gameClient.roomIsModified());
+//		while(!gameClient.roomIsModified()){
+//			System.out.println("checking modified");
+//
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		gameClient.setRoomModified(false);
+		repaint();
+	}
+
+	private void moveRight() {
+		//System.out.println(player);
+		Move move = new Move(ClientTest.gc.getPlayer(), "D", Direction.get(directionI));
+
+		try {
+			ClientTest.gc.sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("sending move");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void moveBack() {
+		//System.out.println(player);
+		Move move = new Move(ClientTest.gc.getPlayer(), "S", Direction.get(directionI));
+
+		try {
+			ClientTest.gc.sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("sending move");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void moveLeft() {
+		//System.out.println(player);
+		Move move = new Move(ClientTest.gc.getPlayer(), "A", Direction.get(directionI));
+
+		try {
+			ClientTest.gc.sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("sending move");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void moveForward() {
+
+//		System.out.println(player);
+		Move move = new Move(ClientTest.gc.getPlayer(), "W", Direction.get(directionI));
+
+		try {
+			ClientTest.gc.sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("sending move");
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
 
 	}
 }
