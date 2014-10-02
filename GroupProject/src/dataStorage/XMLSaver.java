@@ -13,6 +13,15 @@ import gameLogic.Floor;
 import gameLogic.Game;
 import gameLogic.Room;
 
+/**
+ * A class that acts as a shell for a save parser. Contains the saveGame() method
+ * which creates the root element, parses all the rooms in the game and then creates
+ * a new document using these elements which is outputted to a file.
+ *
+ *
+ * @author caskeyanto
+ *
+ */
 public class XMLSaver {
 
 	Game game;
@@ -27,31 +36,16 @@ public class XMLSaver {
 
 
 		Element root = new Element("Game");
-		System.out.println("The number of rooms in the game is:"+ game.getRoomsInGame().size());
 		for(Room r : game.getRoomsInGame()){
-			System.out.println("The number of floor tiles in the room is: " + r.getTiles().length);
 			Element e = parser.parseRoom(r);
 			if(e == null)return false;
 			root.addContent(e);
 		}
 
-/*		for(Avatar a :game.getActiveCharacters()){
-			Element e = parser.parseAvatar(a);
-			if(e == null)return false;
-			root.addContent(e);
-		}
-
-		for(Floor s: game.getSpawnTiles()){
-			Element e = parser.parseTiles(s);
-			if(e == null)return false;
-			root.addContent(e);
-		}
-*/			//MAYBE WILL NOT NEED
-
 	    Document doc = new Document();
 	    doc.setRootElement(root);
 	    try {
-	      XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
+	      XMLOutputter xmlOutput = new XMLOutputter(Format.getCompactFormat());
 	      xmlOutput.output(doc, new FileOutputStream(fileName));
 	    }
 	    catch (IOException e) {
