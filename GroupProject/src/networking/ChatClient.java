@@ -246,8 +246,16 @@ public class ChatClient extends Client {
 	 */
 	public ArrayList<ChatMessage> getChatHistory(int size) {
 
-		// Send a get ArrayList of the chat messages to the client
-		return getChatHistory(chatHistory.size());
+		size = Math.min(size, chatHistory.size());
+
+		// TODO Synchronise chatHistory with a lock
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = 0; i < size; i++) {
+			history.add(chatHistory.get(i));
+		}
+
+		// Send a new ArrayList of the chat messages to the client
+		return history;
 	}
 
 	/**
@@ -255,15 +263,8 @@ public class ChatClient extends Client {
 	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
 	public ArrayList<ChatMessage> getChatHistory() {
-
-		// TODO Synchronise chatHistory with a lock
-		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
-		for (int i = 0; i < chatHistory.size(); i++) {
-			history.add(chatHistory.get(i));
-		}
-
-		// Send a new ArrayList of the chat messages to the client
-		return history;
+		// Send a get ArrayList of the chat messages to the client
+		return getChatHistory(chatHistory.size());
 	}
 
 	/**
