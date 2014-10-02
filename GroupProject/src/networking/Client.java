@@ -270,17 +270,17 @@ public abstract class Client{
 			return false;
 		}
 
-			// Send to server
-			outputStream = new ObjectOutputStream(socket.getOutputStream());
+		// Send to server
+		outputStream = new ObjectOutputStream(socket.getOutputStream());
 
-			// Get packet to send
-			outputStream.writeObject(data);
-			outputStream.flush();
+		// Get packet to send
+		outputStream.writeObject(data);
+		outputStream.flush();
 
-			// Send to client for client sided review
-			retrieveObject(data);
+		// Send to client for client sided review
+		retrieveObject(data);
 
-			return true;
+		return true;
 	}
 
 	public class InputWaiter extends Thread{
@@ -301,6 +301,8 @@ public abstract class Client{
 					try{
 						data = (NetworkObject)inputStream.readObject();
 					}catch(SocketException e){
+						continue;
+					}catch(StreamCorruptedException e){
 						continue;
 					}
 

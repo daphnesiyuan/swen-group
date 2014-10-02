@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
+import java.util.Stack;
 
 import networking.Server.ClientThread;
 
@@ -11,7 +12,7 @@ public class ChatServer extends Server {
 
 
 	protected Color chatMessageColor = Color.black;
-	protected ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
+	protected Stack<ChatMessage> chatHistory = new Stack<ChatMessage>();
 
 	@Override
 	public void retrieveObject(NetworkObject data) {
@@ -35,23 +36,11 @@ public class ChatServer extends Server {
 
 			// Save the message
 			chatHistory.add(cm);
+			//System.out.println(cm);
 
 			// Send it to all our clients
 			sendToAllClients(data);
 		}
-
-		// Check if the data sent back to us was a ping all
-//		if( ((ChatMessage)data.getData()).message.startsWith("/ping") ){
-//
-//			// Ping Everyone
-//			if( ((ChatMessage)data.getData()).message.startsWith("/ping everyone") ){
-//				lastPinged.put(getPlayerName(), Calendar.getInstance());
-//				continue;
-//			}
-//			else{
-//				data = new NetworkObject(getIPAddress(), data.getData(), data.getHours(), data.getMinutes(), data.getSeconds(), data.getTimeInMillis() );
-//			}
-//		}
 
 	}
 
@@ -64,11 +53,10 @@ public class ChatServer extends Server {
 	private synchronized void sendHistoryToClient(String clientIP, int size) {
 
 		// Make sure we don't get a size greater than the list
-		size = Math.min(chatHistory.size(),size);
+		size = Math.min(size, chatHistory.size());
 
-		// TODO Synchronise chatHistory with a lock
-		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
-		for (int i = (chatHistory.size()) - size; i < chatHistory.size(); i++) {
+		Stack<ChatMessage> history = new Stack<ChatMessage>();
+		for (int i = chatHistory.size()-1; i > (chatHistory.size() - size); i--) {
 			history.add(chatHistory.get(i));
 		}
 

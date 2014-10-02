@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public abstract class Server implements Runnable{
 	protected Server() {
 
 		try {
-			IPAddress = InetAddress.getLocalHost().getHostAddress();
+			IPAddress = InetAddress.getLocalHost().getLocalHost().getHostAddress();
 
 			// Save the localhost as an admin
 			admins.add(IPAddress);
@@ -332,7 +333,7 @@ public abstract class Server implements Runnable{
 		Socket socket;
 
 		//private Object outGoingPacketLock = new Object();
-		private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>();
+		//private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>();
 
 		public ClientThread(Socket socket, Player player){
 			this.socket = socket;
@@ -356,7 +357,7 @@ public abstract class Server implements Runnable{
 								NetworkObject popped;
 
 								// Try pinging the server if we have a server
-								if( outgoingPackets.isEmpty() ){
+								//if( outgoingPackets.isEmpty() ){
 
 									// See if we can ping
 									if( System.currentTimeMillis() > nextPing ){
@@ -367,7 +368,7 @@ public abstract class Server implements Runnable{
 										// Can't ping, sleep and continue
 										try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
 										continue;
-									}
+									}/*
 								}
 								else{
 									// Get the next packet to send
@@ -376,7 +377,7 @@ public abstract class Server implements Runnable{
 
 								if( popped.getData() instanceof Move || popped.getData() instanceof RoomUpdate ){
 									System.out.println("Client Sending To Server: " + popped.getData() + " " + Calendar.getInstance().getTime());
-								}
+								}*/
 
 
 								// Send to server
@@ -489,7 +490,32 @@ public abstract class Server implements Runnable{
 					System.out.println("Server Queueing Data: " + data + " " + Calendar.getInstance().getTime());
 				}
 
-				outgoingPackets.add(data);
+
+				try {
+
+					// Send to server
+					ObjectOutputStream outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
+
+					// Get packet to send
+					outputStream.writeObject(data);
+					outputStream.flush();
+
+					// Send to client for client sided review
+					//retrieveObject(data);
+
+				}catch(SocketException e){
+					e.printStackTrace();
+				}
+				catch(StreamCorruptedException e){
+					e.printStackTrace();
+				}
+				catch(IOException e){
+					e.printStackTrace();
+				}
+
+
+
+				//outgoingPackets.add(data);
 			}
 		}
 
