@@ -23,6 +23,7 @@ public class DrawChat {
 
 	private void drawChat(Graphics g, List<ChatMessage> chatMessages, String currentMessage) {
 
+		//System.out.println(currentMessage);
 		//draw a box to make the background dark
 		g.setColor(new Color(0f, 0f, 0f, 0.5f));
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
@@ -38,11 +39,18 @@ public class DrawChat {
 			int y = (fontSize * i)+offset;
 			int x = 0 + offset;
 			g.drawString(nameAndMessage, x, y);
+			//System.out.println("printing current message: "+x+" "+y+" "+fontSize);
 		}
 
-		g.setColor(Color.GRAY);
+
 		int x = offset;
 		int y = panel.getHeight() - offset - fontSize;
+
+//		g.setColor(Color.BLACK);
+//		g.drawRect(x, y, panel.getWidth()-x, fontSize);
+
+		g.setColor(Color.BLUE);
 		g.drawString(currentMessage, x, y);
+		//System.out.println("printing current message: "+x+" "+y+" "+fontSize);
 	}
 }

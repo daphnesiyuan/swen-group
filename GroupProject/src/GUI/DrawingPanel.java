@@ -103,7 +103,7 @@ public class DrawingPanel extends JPanel implements KeyListener{
 		else{ //else it is in game
 			dw.redraw(g, ClientTest.gc.getRoom(), Direction.get(directionI)); //param: graphics, room, char, direction
 			//potential changes later: flag for menu mode or play mode, and to have logic
-			compass.redraw(g, direction);
+			compass.redraw(g, Direction.get(directionI));
 			invo.redraw(g, ClientTest.gc.getAvatar().getInventory()  , Direction.get(directionI));
 			map.redraw(g, ClientTest.gc.getRoom() , Direction.get(directionI));
 			System.out.println("in game");
@@ -214,6 +214,15 @@ public class DrawingPanel extends JPanel implements KeyListener{
 
 	}
 
+	/*
+	 *
+	 *Leons code for key listener and other small things
+	 *
+	 *
+	 *
+	 *
+	 */
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
@@ -240,7 +249,13 @@ public class DrawingPanel extends JPanel implements KeyListener{
 		}
 		if (chatMode){
 			if (keysDown.contains(KeyEvent.VK_ENTER)){
-				chatMessages.add(new ChatMessage("Ryan", currentMessage, Color.RED));
+				//chatMessages.add(new ChatMessage("Ryan", currentMessage, Color.RED));
+				try {
+					ClientTest.gc.sendChatMessageToServer(currentMessage);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				currentMessage = "";
 			} else {
 

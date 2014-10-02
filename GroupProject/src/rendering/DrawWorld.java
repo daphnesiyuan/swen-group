@@ -74,13 +74,13 @@ public class DrawWorld {
 	public void redraw(Graphics g, Room room, String direction){
 
 		//set scaling based on frame size
-		scale = 50 * (panel.getWidth()/1280.0);
+		scale = 80 * (panel.getWidth()/1280.0);
 		width =(int) (1 * scale);
 		height = width;
 
 		//set offset based on character position.
 		//calibrateOffset(direction, room);
-		offset = new Point((int)(panel.getWidth()/2.0), (int)(panel.getHeight()/3.0));
+		offset = new Point((int)(panel.getWidth()/2.0), (int)(panel.getHeight()/5.0));
 
 
 

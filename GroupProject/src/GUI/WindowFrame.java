@@ -47,8 +47,8 @@ public class WindowFrame extends JFrame {
 		topMenu = new TopMenu(this);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
-		setSize(1000, 700);
-		setResizable(false); // prevent us from being resizeable
+		setSize(1280, 720);
+		//setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
 	}
 
