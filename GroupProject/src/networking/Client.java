@@ -30,7 +30,7 @@ public abstract class Client{
 
 	// Everyone to be sent to the server
 	//private Object outGoingPacketLock = new Object();
-	private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>();
+	private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>(200);
 
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
@@ -58,31 +58,42 @@ public abstract class Client{
 
 
 				final int SENDRATE = 10;
-				final int PINGRATE = 1000;
-				long lastPing = System.currentTimeMillis() + PINGRATE;
+				final int PINGRATE = 5000;
+				long nextPing = System.currentTimeMillis() + PINGRATE;
 
 				while( true ){
 
 
 					if( socket != null && !socket.isClosed() ){
+						System.out.println("LOOPING");
 						try {
 
 							NetworkObject popped;
 
-							// Try pinging the server if we have a server
-							//synchronized(outGoingPacketLock){
-								if( outgoingPackets.isEmpty() ){
-									sendData(new ChatMessage(getName(), "/ping everyone", Color.black, true));
-									try { sleep(PINGRATE); } catch (InterruptedException e) {}
-								}
+							System.out.println(outgoingPackets.size());
 
+							// Try pinging the server if we have a server
+							if( outgoingPackets.isEmpty() ){
+
+								// See if we can ping
+								if( nextPing < System.currentTimeMillis() ){
+									popped = new NetworkObject(IPAddress, new ChatMessage(getName(), "/ping everyone", Color.black, true));
+									nextPing = System.currentTimeMillis() + PINGRATE;
+								}
+								else{
+									// Can't ping, sleep and continue
+									try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
+									continue;
+								}
+							}
+							else{
 								// Get the next packet to send
 								popped = outgoingPackets.pop();
+							}
 
-								if( popped.getData() instanceof Move ){
-									System.out.println("Sending To Server: " + popped.getData() + " " + Calendar.getInstance().getTime());
-								}
-							//}
+							if( popped.getData() instanceof Move || popped.getData() instanceof RoomUpdate ){
+								System.out.println("Sending To Server: " + popped.getData() + " " + Calendar.getInstance().getTime());
+							}
 
 
 							// Send to server
@@ -104,13 +115,10 @@ public abstract class Client{
 
 						try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
 					}
-					else{
-						try { sleep(PINGRATE); } catch (InterruptedException e) {retrieveObject(new NetworkObject(IPAddress, new ChatMessage("WARNING", "Waiting for socket to reconnect....",Color.black,true)));}
-					}
 				}
 			}
 		};
-		checkSocket.start();
+		//checkSocket.start();
 	}
 
 	/**
@@ -243,15 +251,36 @@ public abstract class Client{
 	protected boolean sendData(NetworkData data) throws IOException{
 
 		// Check if we have a connection
-		if( socket == null || socket.isClosed() ){
+		/*if( socket == null || socket.isClosed() ){
 			return false;
 		}
 
 		// Add to our packets to send
-		outgoingPackets.add(new NetworkObject(IPAddress, data));
+		outgoingPackets.add(new NetworkObject(IPAddress, data));*/
 
 		// Data stored successfully
-		return true;
+		return sendData(new NetworkObject(IPAddress, data));
+	}
+
+	protected boolean sendData(NetworkObject data) throws IOException{
+
+
+		// Check if we have a connection
+		if( socket == null || socket.isClosed() ){
+			return false;
+		}
+
+			// Send to server
+			outputStream = new ObjectOutputStream(socket.getOutputStream());
+
+			// Get packet to send
+			outputStream.writeObject(data);
+			outputStream.flush();
+
+			// Send to client for client sided review
+			retrieveObject(data);
+
+			return true;
 	}
 
 	public class InputWaiter extends Thread{

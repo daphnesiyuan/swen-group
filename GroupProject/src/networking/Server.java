@@ -342,6 +342,10 @@ public abstract class Server implements Runnable{
 				@Override
 				public void run(){
 
+					final int SENDRATE = 10;
+					final int PINGRATE = 1000;
+					long nextPing = System.currentTimeMillis() + PINGRATE;
+
 					ObjectOutputStream outputStream = null;
 					while( running ){
 
@@ -349,31 +353,41 @@ public abstract class Server implements Runnable{
 						if( isConnected() ){
 							try {
 
-								NetworkObject popped = null;
+								NetworkObject popped;
 
 								// Try pinging the server if we have a server
 								if( outgoingPackets.isEmpty() ){
-									popped = new NetworkObject(IPAddress, new ChatMessage(getName(), "/ping everyone", Color.black, true));
-									continue;
+
+									// See if we can ping
+									if( System.currentTimeMillis() > nextPing ){
+										popped = new NetworkObject(IPAddress, new ChatMessage(getName(), "/ping everyone", Color.black, true));
+										nextPing = System.currentTimeMillis() + PINGRATE;
+									}
+									else{
+										// Can't ping, sleep and continue
+										try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
+										continue;
+									}
 								}
 								else{
-									// Get packet to send
+									// Get the next packet to send
 									popped = outgoingPackets.pop();
 								}
 
-
 								if( popped.getData() instanceof Move || popped.getData() instanceof RoomUpdate ){
-									System.out.println("Server Send Data: " + popped.getData() + " " + Calendar.getInstance().getTime());
+									System.out.println("Client Sending To Server: " + popped.getData() + " " + Calendar.getInstance().getTime());
 								}
+
 
 								// Send to server
 								outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
 
+								// Get packet to send
 								outputStream.writeObject(popped);
 								outputStream.flush();
 
 								// Send to client for client sided review
-								//retrieveObject(popped);
+								retrieveObject(popped);
 
 							} catch(SocketException e){
 								ClientThread.this.socket = null;
@@ -382,7 +396,7 @@ public abstract class Server implements Runnable{
 								e.printStackTrace();
 							}
 
-							try { sleep(10); } catch (InterruptedException e) {e.printStackTrace();}
+							try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
 						}
 					}
 				}
