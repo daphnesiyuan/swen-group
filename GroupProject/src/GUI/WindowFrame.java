@@ -33,10 +33,14 @@ public class WindowFrame extends JFrame {
 	public static GameClient gameClient;
 	public static Player player;
 
+
 	public WindowFrame() {
 		super("Game title");
 		JFrameSetUp();
 		JPanelStuff();
+
+		//
+		this.addKeyListener(panel);
 	}
 
 	public void JFrameSetUp() {
