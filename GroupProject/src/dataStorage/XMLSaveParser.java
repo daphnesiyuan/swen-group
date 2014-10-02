@@ -56,7 +56,7 @@ public class XMLSaveParser {
 	public Element parseRoom(Room room){
 		Element e = new Element("Room");
 		e.addContent(new Element("roomNumber").setText(Integer.toString(room.getRoomNumber())));	//ROOM NUMBER
-		//maybe don't need to parse 2d tiles :D
+		Element tiles = new Element("Tiles2D");//floors//maybe do need to parse 2d tiles D:
 		Element items = new Element("items");//items
 		Element characters = new Element("characters");//characters
 		Element doors = new Element("doors");//doors
@@ -65,7 +65,7 @@ public class XMLSaveParser {
 		Element walls = new Element("walls");//walls
 		//All these list yoooo
 		//ITEMS
-		if(!  room.getItems().isEmpty()){
+		if(room.getItems()!=null && ! room.getItems().isEmpty()){
 			for(Item i: room.getItems()){
 				items.addContent(new Element("item").setText(i.getDescription()));
 			}
@@ -83,41 +83,55 @@ public class XMLSaveParser {
 		else{characters.addContent(new Element("NULL"));}//add a NULL string
 
 		//DOORS
-		if(! room.getDoors().isEmpty()){
+		if(room.getDoors()!= null && ! room.getDoors().isEmpty()){
 			for(Door d: room.getDoors()){
-				this.parseDoor(d);//PARSE DOOR
+				doors.addContent(this.parseDoor(d));//PARSE DOOR
 			}
 			e.addContent(doors);
 		}
-		else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. DOORS
+		//else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. DOORS
+
+		//TILES
+		if(room.getTiles()!= null &&!(room.getTiles().length ==0)){
+				Tile2D[][] t = room.getTiles();
+
+				for(int i = 0; i<t.length;i++){
+					for(int j = 0;j<t[i].length;j++){
+						tiles.addContent(this.parseTiles(t[i][j]));
+					}
+
+				}
+				e.addContent(tiles);
+		}
+		//else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. floor
 
 		//FLOORS
-		if(! room.getFloors().isEmpty()){
+		if(room.getFloors()!= null &&! room.getFloors().isEmpty()){
 				for(Floor f: room.getFloors()){
-					this.parseTiles(f);
+					floors.addContent(this.parseTiles(f));
 				}
 				e.addContent(floors);
 		}
-		else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. floor
+		//else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. floor
 
 //		//SPAWNS
 //		if(! room.getSpawns().isEmpty()){
 //			for(Floor s: room.getSpawns()){
-//				this.parseTiles(s);
+//				spawns.addContent(this.parseTiles(s));
 //			}
 //			e.addContent(spawns);
 //		}
 //		else{spawns.addContent(new Element("NULL"));}//add a NULL string
 
 		//WALLS
-		if(! room.getWalls().isEmpty()){
+		if(room.getWalls()!= null &&! room.getWalls().isEmpty()){
 			for(Wall w: room.getWalls()){
-				this.parseWall(w);//PARSE WALL
+				walls.addContent(this.parseWall(w));//PARSE WALL
 			}
 			e.addContent(walls);
 
 		}
-		else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. walls maybe
+		//else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. walls maybe
 
 		return e;
 	}
@@ -174,13 +188,13 @@ public class XMLSaveParser {
  *
  */
 
-	public Element parseTiles(Floor floor){
+	public Element parseTiles(Tile2D floor){
 		Element e = new Element("Tile");
 		e.addContent(new Element("xPos").setText(Integer.toString(floor.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(floor.getyPos())));
 		e.addContent(new Element("type").setText(floor.getType()));
 		e.addContent(new Element("room").setText(Integer.toString(floor.getRoom().getRoomNumber()))); 		//ROOM NUMBER
-		e.addContent(new Element("isSpawn").setText(Boolean.toString(floor.isSpawn())));		//Adding fields
+		//e.addContent(new Element("isSpawn").setText(Boolean.toString(floor.isSpawn())));		//Adding fields
 
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
 		Element charactersOnTile = new Element("charactersOnTile");		//creating new element for list of characters on tile

@@ -27,8 +27,9 @@ public class XMLSaver {
 
 
 		Element root = new Element("Game");
-
+		System.out.println("The number of rooms in the game is:"+ game.getRoomsInGame().size());
 		for(Room r : game.getRoomsInGame()){
+			System.out.println("The number of floor tiles in the room is: " + r.getTiles().length);
 			Element e = parser.parseRoom(r);
 			if(e == null)return false;
 			root.addContent(e);
