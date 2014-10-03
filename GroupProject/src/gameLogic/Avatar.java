@@ -24,6 +24,8 @@ public class Avatar implements Serializable {
 
 	String playerName;
 
+	Battery battery;
+
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
@@ -33,7 +35,13 @@ public class Avatar implements Serializable {
 		Inventory = new ArrayList<Item>();
 		facing = Facing.North;
 
+		battery = new Battery(this);
 	}
+
+	public double getBatteryLife(){
+		return battery.getBatteryLife();
+	}
+
 
 	public void updateLocations(Tile2D tile, Room room) {
 		updateTile(tile);
@@ -127,6 +135,7 @@ public class Avatar implements Serializable {
 		updateLocations(newPosition,currentRoom);
 
 
+		battery.iMoved();
 		return true;
 
 	}
