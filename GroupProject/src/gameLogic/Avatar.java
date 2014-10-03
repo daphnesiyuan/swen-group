@@ -41,25 +41,18 @@ public class Avatar implements Serializable {
 	}
 
 	public void updateTile(Tile2D newTile){
-		//if(newTile.equals(currentTile)) return;
-		if(currentTile != null){
-			currentTile.removeAvatar(this);
-		}
+		if(newTile.equals(currentTile)) return;
+		if(currentTile != null) currentTile.removeAvatar(this);
 		newTile.addAvatar(this);
 		currentTile = newTile;
 	}
 
 	public void updateRoom(Room newRoom){
-		//if(newRoom.equals(currentRoom)) return;
-		if(currentRoom != null){
-			currentRoom.removeAvatar(this);
-		}
+		if(newRoom.equals(currentRoom)) return;
+		if(currentRoom != null)	currentRoom.removeAvatar(this);
 		newRoom.addAvatar(this);
 		currentRoom = newRoom;
 	}
-
-
-
 
 
 
@@ -70,11 +63,6 @@ public class Avatar implements Serializable {
 
 
 	public boolean moveTo(Move move){
-
-
-
-
-
 		if(move.getRenderDirection() == null){
 			System.out.println("Avatar: moveTo() - RenderDirection in provided move object is null");
 			return false;
@@ -85,53 +73,31 @@ public class Avatar implements Serializable {
 		}
 
 
-
 		Tile2D newPosition = null;
 
-		//int dir = Direction.get(move.getRenderDirection());
+		int dir = Direction.get(move.getRenderDirection());
 		int key = Direction.getKeyDirection(move.getInteraction());
-		//int change = dir + key;
-		int change = key;
-
+		int change = dir + key;
 		change = change % 4;
 
 
+		if(change == 0) newPosition = currentTile.getTileUp();
+		else if(change == 1) newPosition = currentTile.getTileRight();
+		else if(change == 2) newPosition = currentTile.getTileDown();
+		else if(change == 3) newPosition = currentTile.getTileLeft();
 
-		if(change == 0){
-			newPosition = currentTile.getTileUp();
-		}
-		else if(change == 1){
-			newPosition = currentTile.getTileRight();
-		}
-		else if(change == 2){
-			newPosition = currentTile.getTileDown();
-		}
-		else if(change == 3){
-			newPosition = currentTile.getTileLeft();
-		}
+		if(newPosition == null) System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
 
-		if(newPosition == null){
-			System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
-		}
 
 
 		// if the move is the characters current square - return false
-		if(this.currentTile.equals(newPosition)){
-			return false;
-		}
-
+		if(this.currentTile.equals(newPosition)) return false;
 
 		// if the move is in a different room to the characters current room - return false NB: moving through door moves onto tile, which IS in same room.
-		if(newPosition.getRoom()!= this.currentRoom){
-			return false;
-		}
-
+		if(newPosition.getRoom()!= this.currentRoom) return false;
 
 		// if move position is a wall - return false
-		if(newPosition instanceof Wall){
-			return false;
-		}
-
+		if(newPosition instanceof Wall) return false;
 
 		// if there is an Item in the move position - return false;
 		//if(newPosition.itemOnTile()==true) return false;
@@ -175,9 +141,6 @@ public class Avatar implements Serializable {
 		else if(newPosition.equals(currentTile.getTileDown())) facing = Facing.South;
 		else if(newPosition.equals(currentTile.getTileLeft())) facing = Facing.West;
 	}
-
-
-
 
 
 	public void setPlayerName(String name) {
