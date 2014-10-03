@@ -68,7 +68,7 @@ public class DrawingPanel extends JPanel implements KeyListener{
 		direction = "North"; //hard coded now...NEED TO CHANGE
 		mouse = new MyMouseListener(this);
 		this.addMouseListener( mouse );
-		new ClientTest();
+		new ClientTest(this);
 		keyboard = new KeyBoard(this);
 
 		//leon added:
@@ -179,16 +179,16 @@ public class DrawingPanel extends JPanel implements KeyListener{
 
 	private static class ClientTest {
 		static GameServer gs = new GameServer();
-		static GameClient gc = new GameClient("Daphne");
+		static GameClient gc;
 
 
 
-		public ClientTest(){
-
+		public ClientTest(DrawingPanel panel){
+			gc = new GameClient("Daphne", panel);
 
 			try {
-				gc.connect("130.195.6.69",32768);
-				//gc.connect(gs, gc.getName());
+				//gc.connect("130.195.6.69",32768); //jimmy
+				gc.connect(gs, gc.getName()); //your own server
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
