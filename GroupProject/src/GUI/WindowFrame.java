@@ -40,7 +40,7 @@ public class WindowFrame extends JFrame {
 		JPanelStuff();
 
 		//
-		this.addKeyListener(panel);
+		this.addKeyListener(panel.getKeyB());
 	}
 
 	public void JFrameSetUp() {
