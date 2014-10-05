@@ -14,7 +14,7 @@ public class XMLLoader {
 	public Game loadGame(File file){
 		Game g = new Game();
 		xmlLoad = new XMLLoadParser(file);
-
+		g = xmlLoad.loadGame();
 		return g;
 	}
 

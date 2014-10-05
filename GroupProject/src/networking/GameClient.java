@@ -20,6 +20,26 @@ public class GameClient extends ChatClient {
 
 	public GameClient(String playerName, JComponent clientImage) {
 		super(playerName, clientImage);
+
+		Thread drawThread = new Thread(){
+			@Override
+			public void run(){
+
+				// Draw every 30ms
+				while( true ){
+
+					// Tell the component to repaint
+					repaintImage();
+					try {
+						Thread.sleep(30);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		};
+		drawThread.start();
 	}
 
 	/**
@@ -116,9 +136,6 @@ public class GameClient extends ChatClient {
 		clientRoom = room.updatedRoom;
 
 		System.out.println("Client Recieved new Room: " + Calendar.getInstance().getTime());
-
-		// Room has changed to redraw it
-		repaintImage();
 	}
 
 	@Override
