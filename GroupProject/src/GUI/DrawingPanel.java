@@ -39,6 +39,8 @@ public class DrawingPanel extends JPanel  {
 	private int mouseX;
 	private int mouseY;
 	private Handler handler;
+	private KeyBoard keyboard;
+	private MouseMotion mouseMotion;
 
 	//Leons fields
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
@@ -59,7 +61,7 @@ public class DrawingPanel extends JPanel  {
 
 
 	private boolean chatMode; //from rendering
-	private KeyBoard keyboard;
+
 
 	public DrawingPanel(WindowFrame win){
 		wf = win;
@@ -68,10 +70,9 @@ public class DrawingPanel extends JPanel  {
 		handler = new Handler();
 
 		direction = "North"; //hard coded now...NEED TO CHANGE
-		mouse = new MyMouseListener(this);
-		this.addMouseListener( mouse );
-		new ClientTest(this);
-		keyboard = new KeyBoard(this);
+
+		//set up mouse and key board stuff
+		setUpMouseKeys();
 
 		//leon added:
 		chat = new DrawChat(this);
@@ -80,6 +81,7 @@ public class DrawingPanel extends JPanel  {
 		gs = new GameServer();
 		setUpNWEN();
 	}
+
 
 	////////////////getters and setters
 
@@ -95,7 +97,7 @@ public class DrawingPanel extends JPanel  {
 		chatMode = b;
 	}
 
-	public void addCurrentMessage(String s){
+	public void addToCurrentMessage(String s){
 		currentMessage+=s;
 	}
 
@@ -145,7 +147,13 @@ public class DrawingPanel extends JPanel  {
 	}
 
 
-
+	public void setUpMouseKeys(){
+		keyboard = new KeyBoard(this);
+		mouse = new MyMouseListener(this);
+		this.addMouseListener( mouse );
+		mouseMotion = new MouseMotion(this);
+		this.addMouseMotionListener(mouseMotion);
+	}
 
 
 	@Override
@@ -162,7 +170,7 @@ public class DrawingPanel extends JPanel  {
 
 
 	/**
-	 * A helper class which takes cordinates and finds the button that match those
+	 * A helper method which takes cordinates and finds the button that match those
 	 * If no matching button is found on the mouse click then it will return an empty string
 	 * @param x: the x coordinate of the click
 	 * @param y: the y coordinate of the click
@@ -273,189 +281,5 @@ public class DrawingPanel extends JPanel  {
 
 	}
 
-	private static class ClientTest {
 
-
-
-
-		public ClientTest(DrawingPanel panel){
-
-
-			//gc.setName(name);
-
-		}
-
-	}
-
-	/*
-	 *
-	 *Leons code for key listener and other small things
-	 *
-	 *
-	 *
-	 *
-	 */
-
-/*	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-
-		if (!keysDown.contains(e.getKeyCode()))
-			keysDown.add(new Integer(e.getKeyCode()));
-		if(chatMode){
-			currentMessage+=e.getKeyChar();
-		}
-		actionKeys();
-		//repaint();
-	}
-
-
-	private void actionKeys() {
-
-		if (keysDown.contains(KeyEvent.VK_ALT)){
-			chatMode = !chatMode;
-		}
-		if (chatMode){
-			if (keysDown.contains(KeyEvent.VK_ENTER)){
-				//chatMessages.add(new ChatMessage("Ryan", currentMessage, Color.RED));
-				try {
-					gc.sendChatMessageToServer(currentMessage);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				currentMessage = "";
-			} else {
-
-			}
-		}
-		else{
-			if (keysDown.contains(KeyEvent.VK_CONTROL)) {
-				directionI = (directionI + 1) % 4;
-			}
-			if(keysDown.contains(KeyEvent.VK_W)){
-				moveForward();
-			}
-			if(keysDown.contains(KeyEvent.VK_A)){
-				moveLeft();
-			}
-			if(keysDown.contains(KeyEvent.VK_S)){
-				moveBack();
-			}
-			if(keysDown.contains(KeyEvent.VK_D)){
-				moveRight();
-			}
-		}
-		keysDown.clear();
-//		System.out.println(gameClient.roomIsModified());
-//		while(!gameClient.roomIsModified()){
-//			System.out.println("checking modified");
-//
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		gameClient.setRoomModified(false);
-
-
-		//repaint();
-	}
-
-	private void moveRight() {
-		//System.out.println(player);
-		Move move = new Move(gc.getPlayer(), "D", Direction.get(directionI));
-
-		try {
-			gc.sendMoveToServer(move);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("sending move");
-
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	private void moveBack() {
-		//System.out.println(player);
-		Move move = new Move(gc.getPlayer(), "S", Direction.get(directionI));
-
-		try {
-			gc.sendMoveToServer(move);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("sending move");
-
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	private void moveLeft() {
-		//System.out.println(player);
-		Move move = new Move(gc.getPlayer(), "A", Direction.get(directionI));
-
-		try {
-			gc.sendMoveToServer(move);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("sending move");
-
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	private void moveForward() {
-
-//		System.out.println(player);
-		Move move = new Move(gc.getPlayer(), "W", Direction.get(directionI));
-
-		try {
-			gc.sendMoveToServer(move);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("sending move");
-
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}*/
 }
