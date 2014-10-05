@@ -54,16 +54,6 @@ public class DrawWorld {
 	Map<String, BufferedImage> images;
 	String direction;
 
-//	public DrawWorld(Avatar character, Rendering rendering) {
-//		this.character = character;
-//		this.panel = rendering;
-//		relativeOffset = new Point(character.getCurrentTile().getxPos(),
-//				character.getCurrentTile().getxPos());
-//	}
-
-
-
-
 	public DrawWorld(Avatar character, DrawingPanel rendering) {
 
 		floatingPointer = new FloatingPointer();
@@ -83,14 +73,10 @@ public class DrawWorld {
 	 * This method will be call externally from the UI to draw everything
 	 * gameplay related
 	 *
-	 * @param Graphics
-	 *            g
-	 * @param Room
-	 *            room
-	 * @param Avatar
-	 *            character
-	 * @param String
-	 *            direction
+	 * @param Graphics g
+	 * @param Room room
+	 * @param Avatar character
+	 * @param String direction
 	 */
 	public void redraw(Graphics g, Room room, String direction) {
 
@@ -129,12 +115,9 @@ public class DrawWorld {
 	 * provided. Draws the tiles to the Graphics provided using the placeTile()
 	 * method.
 	 *
-	 * @param Graphics
-	 *            g
-	 * @param Room
-	 *            room
-	 * @param String
-	 *            direction
+	 * @param Graphics g
+	 * @param Room room
+	 * @param String direction
 	 */
 	private void drawLocation(Graphics g, Room room, String direction) {
 		// TODO Auto-generated method stub
@@ -176,8 +159,7 @@ public class DrawWorld {
 	/**
 	 * Rotates the given 2d array 90 degrees
 	 *
-	 * @param Tile2D
-	 *            [][] tiles
+	 * @param Tile2D [][] tiles
 	 * @return Tile2D[][] newTiles
 	 */
 	private Tile2D[][] rotate90(Tile2D[][] tiles) {
@@ -196,12 +178,9 @@ public class DrawWorld {
 	/**
 	 * Takes the name of the class and gets drawObject(...) to draw it.
 	 *
-	 * @param Point
-	 *            pt
-	 * @param String
-	 *            tileName
-	 * @param Graphics
-	 *            g
+	 * @param Point pt
+	 * @param String tileName
+	 * @param Graphics g
 	 */
 	private void drawTile(Point pt, Tile2D tile, Graphics g) {
 
@@ -225,12 +204,9 @@ public class DrawWorld {
 	 * Generic drawing method that gets called to draw Tile2D, GameCharacter,
 	 * Item
 	 *
-	 * @param Graphics
-	 *            g
-	 * @param Point
-	 *            pt
-	 * @param java
-	 *            .net.URL imageURL
+	 * @param Graphics g
+	 * @param Point pt
+	 * @param java.net.URL imageURL
 	 */
 	private void drawObject(Graphics g, Point pt, BufferedImage img) {
 		int imgHeight = ((int) img.getHeight(null) / 250);
@@ -242,12 +218,9 @@ public class DrawWorld {
 	/**
 	 * Takes the name of the class and gets drawObject(...) to draw it.
 	 *
-	 * @param Point
-	 *            pt
-	 * @param Tile2D
-	 *            tile
-	 * @param Graphics
-	 *            g
+	 * @param Point pt
+	 * @param Tile2D tile
+	 * @param Graphics g
 	 */
 	private void drawCharacter(Graphics g, Point pt, Tile2D tile) {
 		if (tile.getAvatar() == null) {
@@ -255,23 +228,25 @@ public class DrawWorld {
 		}
 		Avatar avatar = tile.getAvatar();
 		double stepSize = width/100.0;
-		int x = (int)((stepSize * avatar.getTileXPos()) - (width/2.0));
-		int y = (int)(stepSize * avatar.getTileYPos() - (height/2.0));
-		Point avatarOffset = new Point(x,y);
-//
-//		//System.out.println(stepSize +"\n"+avatarOffset+"\n"+avatar.getFacing().toString());
-//		//System.out.println(width+" "+ stepSize);
-//		//System.out.println(avatar.getFacing());
-//		System.out.println(avatarOffset);
-		for(int i = 0; i < Direction.get(direction); i++){
-			avatarOffset = new Point(width-avatarOffset.y,avatarOffset.x);
-		}
 
-		avatarOffset = twoDToIso(avatarOffset);
-//		System.out.println(avatarOffset);
-		pt.x += avatarOffset.x;
-		pt.y += avatarOffset.y;
+		Point tilePoint = new Point((int)avatar.getTileXPos(), (int)avatar.getTileYPos());
 
+
+		for(int i = 0; i < Direction.get(direction)*3; i++){
+			tilePoint = new Point((100-tilePoint.y),(tilePoint.x));
+	    }
+
+		tilePoint = twoDToIso(tilePoint);
+
+		tilePoint.x = (int)(tilePoint.x * stepSize);
+		tilePoint.y = (int)(tilePoint.y * stepSize);
+
+
+
+		pt.y-=(height/2);
+
+		pt.x+=tilePoint.x;
+		pt.y+=tilePoint.y;
 
 		drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 
@@ -283,33 +258,17 @@ public class DrawWorld {
 	/**
 	 * Takes the name of the class and gets drawObject(...) to draw it.
 	 *
-	 * @param Point
-	 *            pt
-	 * @param Tile2D
-	 *            tile
-	 * @param Graphics
-	 *            g
+	 * @param Point pt
+	 * @param Tile2D tile
+	 * @param Graphics g
 	 */
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
-//		List<Item> items = tile.getItems();
-//		for (int i = 0; i < items.size(); i++) {
-//			String itemName = items.get(i).getClass().getName();
-//			java.net.URL imageURL = Rendering.class.getResource(itemName
-//					+ ".png");
-//			drawObject(g, pt, imageURL);
-//		}
-
-	}
-
-	public void setCharacter(Avatar character) {
-		this.character = character;
 	}
 
 	/**
 	 * converts the coordinates of a 2d array to isometric
 	 *
-	 * @param Point
-	 *            point
+	 * @param Point point
 	 * @return Point tempPt
 	 */
 	private Point twoDToIso(Point point) {
