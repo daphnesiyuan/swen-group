@@ -3,8 +3,10 @@ package networking;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -481,7 +483,8 @@ public abstract class Server implements Runnable{
 		 * Queues data to be stored for sending to this client
 		 * @param data To be sent to the client
 		 */
-		public void sendData(NetworkObject data) {
+		public synchronized void sendData(NetworkObject data) {
+
 			// Check if we have a connection
 			if( socket != null && !socket.isClosed() ){
 
@@ -496,6 +499,8 @@ public abstract class Server implements Runnable{
 					// Send to server
 					ObjectOutputStream outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
 
+
+
 					// Get packet to send
 					outputStream.writeObject(data);
 					outputStream.flush();
@@ -507,6 +512,10 @@ public abstract class Server implements Runnable{
 					e.printStackTrace();
 				}
 				catch(StreamCorruptedException e){
+					e.printStackTrace();
+				}
+				catch(NotSerializableException e){
+					System.out.println("Something is not Serializable, and can not be sent in object:\n" + data);
 					e.printStackTrace();
 				}
 				catch(IOException e){

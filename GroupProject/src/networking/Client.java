@@ -1,6 +1,7 @@
 package networking;
 import java.awt.Color;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
@@ -262,7 +263,7 @@ public abstract class Client{
 		return sendData(new NetworkObject(IPAddress, data));
 	}
 
-	protected boolean sendData(NetworkObject data) throws IOException{
+	protected boolean sendData(NetworkObject data){
 
 
 		// Check if we have a connection
@@ -271,16 +272,25 @@ public abstract class Client{
 		}
 
 		// Send to server
-		outputStream = new ObjectOutputStream(socket.getOutputStream());
+		try {
+			outputStream = new ObjectOutputStream(socket.getOutputStream());
 
-		// Get packet to send
-		outputStream.writeObject(data);
-		outputStream.flush();
+			// Get packet to send
+			outputStream.writeObject(data);
+			outputStream.flush();
 
-		// Send to client for client sided review
-		retrieveObject(data);
+			// Send to client for client sided review
+			retrieveObject(data);
 
-		return true;
+			return true;
+		} catch(NotSerializableException e){
+			System.out.println("Client: Something is not Serializable, and can not be sent in object:\n" + data);
+			e.printStackTrace();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	public class InputWaiter extends Thread{

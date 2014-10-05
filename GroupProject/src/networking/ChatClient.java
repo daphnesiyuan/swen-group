@@ -48,11 +48,10 @@ public class ChatClient extends Client {
 	}
 
 	@Override
-	public void retrieveObject(NetworkObject data) {
+	public synchronized void retrieveObject(NetworkObject data) {
 
 		if( data.getData() instanceof ChatHistory ){
 			chatHistory.addAll(((ChatHistory)data.getData()).history);
-			repaintImage();
 			return;
 		}
 		else if( data.getData() instanceof ChatMessage ){
@@ -89,13 +88,11 @@ public class ChatClient extends Client {
 
 				// Acknowledge the message
 				chatHistory.get(chatHistory.indexOf(chatMessage)).acknowledged = true;
-				repaintImage();
 			}
 			else{
 
 				// Save the message
 				chatHistory.add(chatMessage);
-				repaintImage();
 			}
 		}
 	}
@@ -112,7 +109,6 @@ public class ChatClient extends Client {
 			// Try and change it on the servers
 			sendData(new ChatMessage("/name " + name, chatMessageColor));
 			player.setName(name);
-			repaintImage();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -173,20 +169,17 @@ public class ChatClient extends Client {
 		// Client side commands
 		if( scan.hasNext("/clear") ){
 			chatHistory.clear();
-			repaintImage();
 			return true;
 		}
 		else if( scan.hasNext("/disconnect") ){
 			chat.acknowledged = true; // Chat worked
 			chatHistory.add(chat);	// Record message
-			repaintImage();
 			disconnect(); // Disconnect from server
 			return true;
 		}
 		else if( scan.hasNext("/reconnect") ){
 			chat.acknowledged = true; // Chat worked
 			chatHistory.add(chat);	// Record message
-			repaintImage();
 
 			// Attempt to reconnect
 			if(	reconnect(getName()) ){
@@ -291,7 +284,6 @@ public class ChatClient extends Client {
 	 */
 	protected void clearChatHistory() {
 		chatHistory.clear();
-		repaintImage();
 	}
 
 	/**
@@ -300,7 +292,6 @@ public class ChatClient extends Client {
 	 */
 	protected void addChatMessage(ChatMessage chat) {
 		chatHistory.add(chat);
-		repaintImage();
 	}
 
 	/**
@@ -311,7 +302,6 @@ public class ChatClient extends Client {
 
 		// Save the message
 		chatHistory.add(new ChatMessage("WARNING",warning, Color.black, true));
-		repaintImage();
 	}
 
 	/**
