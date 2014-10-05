@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 public class FloatingPointer {
 
+	int delay = 0;
 	int totalAnimations = 6;
 	int animationNum = 0;
 	Map<String, BufferedImage> images;
@@ -46,7 +47,12 @@ public class FloatingPointer {
 		g.drawImage(img, offset.x + pt.x - width, offset.y + pt.y
 				- ((width * imgHeight)), width * 2, height * imgHeight, null);
 
-		animationNum = (animationNum + 1) % totalAnimations;
+		delay++;
+		if (delay == 4){
+			delay = 0;
+			animationNum = (animationNum + 1) % totalAnimations;
+		}
+
 	}
 
 }

@@ -158,7 +158,7 @@ public class Avatar implements Serializable {
 
 	public void animation(){
 		spriteIndex++;
-		spriteIndex = spriteIndex % 3; // 4 images but 0 indexed.
+		spriteIndex = spriteIndex % 4; // 4 images but 0 indexed.
 	}
 
 	/**
@@ -324,6 +324,13 @@ public class Avatar implements Serializable {
 		this.currentTile = currentTile;
 	}
 
+	public double getTileXPos(){
+		return tileXPos;
+	}
+
+	public double getTileYPos(){
+		return tileYPos;
+	}
 
 	public double getGlobalXPos(){
 		return globalXPos;

@@ -52,6 +52,7 @@ public class DrawWorld {
 	boolean back = true;
 	Point relativeOffset;
 	Map<String, BufferedImage> images;
+	String direction;
 
 //	public DrawWorld(Avatar character, Rendering rendering) {
 //		this.character = character;
@@ -92,6 +93,8 @@ public class DrawWorld {
 	 *            direction
 	 */
 	public void redraw(Graphics g, Room room, String direction) {
+
+		this.direction = direction;
 
 		// set scaling based on frame size
 		scale = 80 * (panel.getWidth() / 1280.0);
@@ -211,7 +214,7 @@ public class DrawWorld {
 			drawObject(g, pt, images.get("Wall"+tileNum));
 		}
 		else if(tile instanceof Floor){
-			drawObject(g, pt, images.get("Floor"+tileNum));
+			//drawObject(g, pt, images.get("Floor"+tileNum));
 		}
 		else if(tile instanceof Door){
 			drawObject(g, pt, images.get("Door"+tileNum));
@@ -251,15 +254,23 @@ public class DrawWorld {
 			return;
 		}
 		Avatar avatar = tile.getAvatar();
-//		double stepSize = width/100.0;
-//		int x = (int)((stepSize * avatar.getTileXPos()) - (width/2.0));
-//		int y = (int)(stepSize * avatar.getTileYPos() - (height/2.0));
-//		Point avatarOffset = twoDToIso(new Point(x,y));
-//		pt.x += avatarOffset.x;
-//		pt.y += avatarOffset.y;
+		double stepSize = width/100.0;
+		int x = (int)((stepSize * avatar.getTileXPos()) - (width/2.0));
+		int y = (int)(stepSize * avatar.getTileYPos() - (height/2.0));
+		Point avatarOffset = new Point(x,y);
+//
 //		//System.out.println(stepSize +"\n"+avatarOffset+"\n"+avatar.getFacing().toString());
 //		//System.out.println(width+" "+ stepSize);
-//		System.out.println(avatar.getFacing());
+//		//System.out.println(avatar.getFacing());
+//		System.out.println(avatarOffset);
+		for(int i = 0; i < Direction.get(direction); i++){
+			avatarOffset = new Point(width-avatarOffset.y,avatarOffset.x);
+		}
+
+		avatarOffset = twoDToIso(avatarOffset);
+//		System.out.println(avatarOffset);
+		pt.x += avatarOffset.x;
+		pt.y += avatarOffset.y;
 
 
 		drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));

@@ -141,7 +141,7 @@ public class DrawingPanel extends JPanel  {
 			compass.redraw(g, Direction.get(directionI));
 			invo.redraw(g, gc.getAvatar().getInventory()  , Direction.get(directionI));
 			map.redraw(g, gc.getRoom() , Direction.get(directionI));
-			System.out.println("in game");
+			//System.out.println("in game");
 			if(chatMode)chat.redraw(g, gc.getChatHistory(10), currentMessage);
 		}
 	}
