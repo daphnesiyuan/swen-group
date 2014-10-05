@@ -26,12 +26,12 @@ public class MakeImageMap {
 			for(int i = 0; i < avatarAnimations; i++){
 				//Avatar A
 				String avatarAName = "AvatarA"+Direction.get(j)+""+i;
-				java.net.URL avatarAURL = Rendering.class.getResource(avatarAName + ".png");
+				java.net.URL avatarAURL = MakeImageMap.class.getResource(avatarAName + ".png");
 				addToMap(avatarAName, avatarAURL);
 
 				//		Avatar B
 				String avatarBName = "AvatarB"+Direction.get(j)+""+i;
-				java.net.URL avatarBURL = Rendering.class.getResource(avatarBName + ".png");
+				java.net.URL avatarBURL = MakeImageMap.class.getResource(avatarBName + ".png");
 				addToMap(avatarBName, avatarBURL);
 			}
 		}
@@ -39,23 +39,23 @@ public class MakeImageMap {
 		for(int i = 0; i < tileAnimations; i++){
 			//wall
 			String wallName = "Wall"+i;
-			java.net.URL wallURL = Rendering.class.getResource(wallName + ".png");
+			java.net.URL wallURL = MakeImageMap.class.getResource(wallName + ".png");
 			addToMap(wallName, wallURL);
 
 			//floor
 			String floorName = "Floor"+i;
-			java.net.URL floorURL = Rendering.class.getResource(floorName + ".png");
+			java.net.URL floorURL = MakeImageMap.class.getResource(floorName + ".png");
 			addToMap(floorName, floorURL);
 
 			//door
 			String doorName = "Door"+i;
-			java.net.URL doorURL = Rendering.class.getResource(doorName + ".png");
+			java.net.URL doorURL = MakeImageMap.class.getResource(doorName + ".png");
 			addToMap(doorName, doorURL);
 		}
 
 		for(int i = 0; i < pointerAnimations; i++){
 			String pointerName = "FloatingPointer"+i;
-			java.net.URL pointerURL = Rendering.class.getResource(pointerName + ".png");
+			java.net.URL pointerURL = MakeImageMap.class.getResource(pointerName + ".png");
 			addToMap(pointerName, pointerURL);
 		}
 		return images;

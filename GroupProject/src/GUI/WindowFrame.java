@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 
 import networking.GameClient;
 import networking.Player;
-import rendering.Rendering;
+
 
 public class WindowFrame extends JFrame {
 	private TopMenu topMenu;
