@@ -20,3 +20,5 @@
 /DrawMiniMap.class
 /Rendering$renderTread.class
 /Rendering$RenderThread.class
+/MakeImageMap.class
+/FloatingPointer.class
