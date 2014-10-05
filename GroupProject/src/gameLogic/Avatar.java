@@ -15,16 +15,26 @@ public class Avatar implements Serializable {
 
 	private static final long serialVersionUID = 4723069455200795911L;
 
-	Game.Facing facing;
-	List <Item> Inventory;
+	private Game.Facing facing;
+	private List <Item> Inventory;
 
 
-	Tile2D currentTile;
-	Room currentRoom;
+	private Tile2D currentTile;
+	private Room currentRoom;
 
-	String playerName;
+	private String playerName;
 
-	Battery battery;
+	private Battery battery;
+
+	// coordinates used for animation
+	private double globalXPos, globalYPos;
+	private double tileXPos, tileYPos;
+
+
+	// TODO tile dimensions needed
+	private final double tileWidth = 10;
+	private final double tileHeight = 10;
+
 
 
 	public Avatar(String name, Tile2D tile, Room room){
@@ -36,6 +46,17 @@ public class Avatar implements Serializable {
 		facing = Facing.North;
 
 		battery = new Battery(this);
+
+
+		// Avatar start coordinates initialized to the middle of its starting tile
+		globalXPos = currentTile.getxPos()+(tileWidth/2);
+		globalYPos = currentTile.getyPos()+(tileHeight/2);
+
+		// Avatars relative tile coordinates are initalized to the center of the tile
+		tileXPos = (tileWidth/2);
+		tileYPos = (tileHeight/2);
+
+
 	}
 
 	public double getBatteryLife(){
@@ -89,7 +110,9 @@ public class Avatar implements Serializable {
 		change = change % 4;
 
 
-		if(change == 0) newPosition = currentTile.getTileUp();
+		if(change == 0) newPosition = moveUp(currentTile.getTileUp());
+
+
 		else if(change == 1) newPosition = currentTile.getTileRight();
 		else if(change == 2) newPosition = currentTile.getTileDown();
 		else if(change == 3) newPosition = currentTile.getTileLeft();
@@ -97,9 +120,6 @@ public class Avatar implements Serializable {
 		if(newPosition == null) System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
 
 
-
-		// if the move is the characters current square - return false
-		if(this.currentTile.equals(newPosition)) return false;
 
 		// if the move is in a different room to the characters current room - return false NB: moving through door moves onto tile, which IS in same room.
 		if(newPosition.getRoom()!= this.currentRoom) return false;
@@ -137,6 +157,36 @@ public class Avatar implements Serializable {
 
 		battery.iMoved();
 		return true;
+
+	}
+
+	public Tile2D moveUp(Tile2D tile2d){
+		globalYPos--;
+		tileYPos--;
+
+		if(tileYPos>tileHeight){
+			tileYPos = tileYPos % tileHeight;
+
+		}
+
+		return null;
+	}
+
+	public void moveDown(){
+		globalYPos++;
+		tileYPos++;
+
+	}
+
+	public void moveLeft(){
+		globalXPos--;
+		tileXPos--;
+
+	}
+
+	public void moveRight(){
+		globalXPos++;
+		tileXPos++;
 
 	}
 
