@@ -16,7 +16,7 @@ public class Battery extends Thread {
 
 		batteryLife = 100;
 
-		this.start();
+		//this.start();
 
 		charging = true;
 
