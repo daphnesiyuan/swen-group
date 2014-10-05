@@ -137,13 +137,27 @@ public class DrawingPanel extends JPanel implements KeyListener{
 	 */
 	public String findButton(int x, int y){
 
-		//panel.getWidth()/2 - (buttonWidth/2), panel.getHeight()/3 - buttonHeight/2 + (i*(panel.getHeight()/3)/2)
 		int startW = (getWidth()/2 - (sm.getButtonWidth()/2));
-		int startH = getHeight()/3 - sm.getButtonHeight()/2 + (-1*(getHeight()/3)/2);
+		int startH1 = getHeight()/3 - sm.getButtonHeight()/2 + (-1*(getHeight()/3)/2);
+		int startH2 = getHeight()/3 - sm.getButtonHeight()/2 + (0*(getHeight()/3)/2);
+		int startH3 = getHeight()/3 - sm.getButtonHeight()/2 + (1*(getHeight()/3)/2);
+		int startH4 = getHeight()/3 - sm.getButtonHeight()/2 + (2*(getHeight()/3)/2);
+
+		//panel.getWidth()/2 - (buttonWidth/2),
+		//panel.getHeight()/3 - buttonHeight/2 + (i*(panel.getHeight()/3)/2)
 
 		//System.out.println("x="+startW + " y="+startH);
-		if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH && y<startH+sm.getButtonHeight() ){
+		if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH1 && y<startH1+sm.getButtonHeight() ){
 			return "start";
+		}
+		else if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH2 && y<startH2+sm.getButtonHeight() ){
+			return "join";
+		}
+		else if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH3 && y<startH3+sm.getButtonHeight() ){
+			return "load";
+		}
+		else if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH4 && y<startH4+sm.getButtonHeight() ){
+			return "help";
 		}
 
 		return "";
@@ -168,6 +182,18 @@ public class DrawingPanel extends JPanel implements KeyListener{
 				invo = new DrawInventory( DrawingPanel.this );
 				map = new DrawMiniMap( DrawingPanel.this, ClientTest.gc.getAvatar() );
 				repaint();
+			}
+
+
+			else if ( findButton( mouseX, mouseY ).equals("join") ){
+				System.out.println("PRESSED JOIN BUTTON");
+			}
+
+			else if ( findButton( mouseX, mouseY ).equals("load") ){
+				System.out.println("PRESSED LOAD BUTTON");
+			}
+			else if ( findButton( mouseX, mouseY ).equals("help") ){
+				System.out.println("PRESSED HELP BUTTON");
 			}
 
 			else{
@@ -241,7 +267,7 @@ public class DrawingPanel extends JPanel implements KeyListener{
 			currentMessage+=e.getKeyChar();
 		}
 		actionKeys();
-		repaint();
+		//repaint();
 	}
 
 
@@ -294,7 +320,9 @@ public class DrawingPanel extends JPanel implements KeyListener{
 //			}
 //		}
 //		gameClient.setRoomModified(false);
-		repaint();
+
+
+		//repaint();
 	}
 
 	private void moveRight() {
