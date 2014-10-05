@@ -106,8 +106,8 @@ public class Avatar implements Serializable {
 		int key = Direction.getKeyDirection(move.getInteraction());
 		int change = dir + key;
 		change = change % 4;
-		
-		
+
+
 		Tile2D newPosition = null;
 
 
@@ -126,19 +126,9 @@ public class Avatar implements Serializable {
 
 
 		// If Player is trying to pass through a door
-		if(newPosition instanceof Door){
-			doorMove(newPosition);
-			Door door = (Door) newPosition;
+		if(newPosition instanceof Door) newPosition = moveDoor(newPosition);
 
-			if(door.getLocked()){/*For when Doors and keys are implemented*/}
 
-			int newRoomIndex = door.getToRoomIndex();
-			int newX = door.getToRoomXPos();
-			int newY = door.getToRoomYPos();
-
-			//if (changeRoom(newRoomIndex,newX,newY) == false) return false;
-
-		}
 		updateFacing(newPosition);
 
 		updateLocations(newPosition,currentRoom);
@@ -196,8 +186,22 @@ public class Avatar implements Serializable {
 
 		return null;
 	}
-	
-	public 
+
+	public Tile2D moveDoor(Tile2D tileDoor){
+		Door door = (Door) tileDoor;
+
+		if(door.getLocked()){
+			/*For when Doors and keys are implemented*/
+		}
+
+		int newRoomIndex = door.getToRoomIndex();
+		int newX = door.getToRoomXPos();
+		int newY = door.getToRoomYPos();
+
+		//if (changeRoom(newRoomIndex,newX,newY) == false) return false;
+
+		return tileDoor;
+	}
 
 
 
