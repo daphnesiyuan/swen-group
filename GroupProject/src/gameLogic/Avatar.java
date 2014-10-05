@@ -43,6 +43,16 @@ public class Avatar implements Serializable {
 	private final double tileMaxPos = 100;
 
 
+	// The total number of images the animation sequence will cycle through
+	private final int spriteImages = 4;
+
+	// While the sprite is animating, spriteIndex will hold the index to the current frame to be displayed for the animation.
+	private int spriteIndex;
+
+
+	//TODO - for animation of moving heads to charge like socket, create system wherein Avatar sprite is moved to the center of a tile,
+	// regardless of their current x and y tile coordinates.
+
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
@@ -63,12 +73,12 @@ public class Avatar implements Serializable {
 		tileXPos = (tileWidth/2);
 		tileYPos = (tileHeight/2);
 
+		// Avatars initial sprite image is the 0th element in the animation sequence
+		spriteIndex = 0;
 
 	}
 
-	public double getBatteryLife(){
-		return battery.getBatteryLife();
-	}
+
 
 
 	public void updateLocations(Tile2D tile, Room room) {
@@ -131,6 +141,7 @@ public class Avatar implements Serializable {
 		updateLocations(newPosition,currentRoom);
 
 		battery.iMoved();
+		animation();
 		return true;
 
 	}
@@ -145,6 +156,11 @@ public class Avatar implements Serializable {
 		int change = dir + key;
 		change = change % 4;
 		return change;
+	}
+
+	public void animation(){
+		spriteIndex++;
+		spriteIndex = spriteIndex % 4;
 	}
 
 	/**
@@ -235,9 +251,9 @@ public class Avatar implements Serializable {
 			/*For when Doors and keys are implemented*/
 		}
 
-//		int newRoomIndex = door.getToRoomIndex();
-//		int newX = door.getToRoomXPos();
-//		int newY = door.getToRoomYPos();
+		//		int newRoomIndex = door.getToRoomIndex();
+		//		int newX = door.getToRoomXPos();
+		//		int newY = door.getToRoomYPos();
 
 		//if (changeRoom(newRoomIndex,newX,newY) == false) return false;
 
@@ -317,6 +333,14 @@ public class Avatar implements Serializable {
 
 	public double getGlobalYPos(){
 		return globalYPos;
+	}
+
+	public double getBatteryLife(){
+		return battery.getBatteryLife();
+	}
+
+	public int getSpriteIndex(){
+		return spriteIndex;
 	}
 
 	@Override
