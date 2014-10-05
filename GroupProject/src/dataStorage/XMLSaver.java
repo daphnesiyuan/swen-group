@@ -45,7 +45,7 @@ public class XMLSaver {
 	    Document doc = new Document();
 	    doc.setRootElement(root);
 	    try {
-	      XMLOutputter xmlOutput = new XMLOutputter(Format.getCompactFormat());
+	      XMLOutputter xmlOutput = new XMLOutputter(Format.getPrettyFormat());
 	      xmlOutput.output(doc, new FileOutputStream(fileName));
 	    }
 	    catch (IOException e) {

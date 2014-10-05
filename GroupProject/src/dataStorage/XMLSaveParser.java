@@ -159,9 +159,9 @@ public class XMLSaveParser {
 		e.addContent(new Element("type").setText(floor.getType()));
 		e.addContent(new Element("room").setText(Integer.toString(floor.getRoom().getRoomNumber()))); 		//ROOM NUMBER
 		e.addContent(new Element("isSpawn").setText(Boolean.toString(floor.isSpawn())));		//Adding fields
-
+		if(!(floor.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(floor.getAvatar().getPlayerName()));
+		else e.addContent(new Element("characterOnTile").setText("NULL"));
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
-		Element charactersOnTile = new Element("charactersOnTile");		//creating new element for list of characters on tile
 
 		if(!floor.getItems().isEmpty()){
 			for(Item i: floor.getItems()){		//iterate through list
@@ -172,14 +172,7 @@ public class XMLSaveParser {
 		else{
 			itemsOnTile.addContent(new Element("NULL"));//add a NULL string
 		}
-	if(floor.getAvatar()!=null){
-		parseAvatar(floor.getAvatar());//add character element
-		}
-		else{
-			charactersOnTile.addContent(new Element("NULL"));//add a NULL string
-		}
 		e.addContent(itemsOnTile);
-		e.addContent(charactersOnTile);
 
 		return e;
 	}
@@ -198,11 +191,9 @@ public class XMLSaveParser {
 		e.addContent(new Element("yPos").setText(Integer.toString(wall.getyPos())));
 		e.addContent(new Element("type").setText(wall.getType()));
 		e.addContent(new Element("room").setText(Integer.toString(wall.getRoom().getRoomNumber()))); 		//ROOM NUMBER
-		//e.addContent(new Element("isSpawn").setText(Boolean.toString(floor.isSpawn())));		//Adding fields
-
+		if(!(wall.getAvatar() == null))e.addContent(new Element("characterOnTile").setText(wall.getAvatar().getPlayerName()));
+		else e.addContent(new Element("characterOnTile").setText("NULL"));
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
-		Element charactersOnTile = new Element("charactersOnTile");		//creating new element for list of characters on tile
-
 		if(!wall.getItems().isEmpty()){
 			for(Item i: wall.getItems()){		//iterate through list
 				itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
@@ -212,14 +203,7 @@ public class XMLSaveParser {
 		else{
 			itemsOnTile.addContent(new Element("NULL"));//add a NULL string
 		}
-		if(wall.getAvatar() != null){
-			parseAvatar(wall.getAvatar());//add character element
-		}
-		else{
-			charactersOnTile.addContent(new Element("NULL"));//add a NULL string
-		}
 		e.addContent(itemsOnTile);
-		e.addContent(charactersOnTile);
 
 		return e;
 	}
@@ -239,11 +223,31 @@ public class XMLSaveParser {
 
 	public Element parseDoor(Door door){
 		Element e = new Element("Door");
+		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
+		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
+		e.addContent(new Element("type").setText(door.getType()));
 		e.addContent(new Element("room").setText(Integer.toString(door.getRoom().getRoomNumber())));			//JUST THE ROOM NUMBER
 		e.addContent(new Element("toRoomIndex").setText(Integer.toString(door.getToRoomIndex())));
 		e.addContent(new Element("toRoomXPos").setText(Integer.toString(door.getToRoomXPos())));
 		e.addContent(new Element("toRoomYPos").setText(Integer.toString(door.getToRoomYPos())));
 		e.addContent(new Element("locked").setText(Boolean.toString(door.getLocked())));
+
+		if(!(door.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(door.getAvatar().getPlayerName()));
+		else e.addContent(new Element("characterOnTile").setText("NULL"));
+
+		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
+
+		if(!door.getItems().isEmpty()){
+			for(Item i: door.getItems()){		//iterate through list
+				itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
+
+			}
+		}
+		else{
+			itemsOnTile.addContent(new Element("NULL"));//add a NULL string
+		}
+		e.addContent(itemsOnTile);
+
 		return e;
 	}
 
