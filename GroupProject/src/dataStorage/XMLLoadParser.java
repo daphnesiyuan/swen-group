@@ -85,7 +85,10 @@ public class XMLLoadParser {
 		for(int i = 0; i<avatars.size();i++){
 			parseAvatar((Element)avatars.get(i),room);
 		}
+		room.setTiles(tiles);
 		game.addRoom(room);
+		
+		
 	}
 
 	/**
@@ -96,7 +99,11 @@ public class XMLLoadParser {
 	 */
 
 	public void parseAvatar(Element e, Room r){
-
+		int roomNum = Integer.parseInt(e.getChildText("currentRoom"));
+		String playerName = e.getChildText("playerName");
+		//WAITING FOR ITEMS TO BE IMPLEMENTED
+		
+		
 	}
 
 	/**

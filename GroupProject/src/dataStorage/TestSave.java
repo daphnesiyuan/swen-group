@@ -43,7 +43,7 @@ public class TestSave extends javax.swing.JFrame {
 			e1.printStackTrace();
 		}
 
-		gameClient = new GameClient("Ryan");
+		gameClient = new GameClient("Ryan", null);
 		try {
 			gameClient.connect(InetAddress.getLocalHost().getHostAddress(), "Ryan", 32768);
 			//gameClient.connect("130.195.7.84", "Ryan", 32768);
