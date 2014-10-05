@@ -2,23 +2,28 @@ package gameLogic;
 
 public class Charger extends Item{
 
+	private Tile2D tile;
+	private final int xPos, yPos;
 
-
-	public Charger(){
-
-
+	public Charger(Tile2D tile){
+		this.tile = tile;
+		this.xPos = tile.getxPos();
+		this.yPos = tile.getyPos();
+		this.movable = false;
+		this.startX = xPos;
+		this.startY = yPos;
 	}
 
 	@Override
 	public String getDescription() {
-
-		return null;
+		String desc = "";
+		desc+= "Charger at: ( "+xPos+" , "+xPos+" )";
+		return desc;
 	}
 
 	@Override
 	public Tile2D getTile() {
-		// TODO Auto-generated method stub
-		return null;
+		return tile;
 	}
 
 	@Override
