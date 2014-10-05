@@ -160,7 +160,7 @@ public class Avatar implements Serializable {
 
 	public void animation(){
 		spriteIndex++;
-		spriteIndex = spriteIndex % 4;
+		spriteIndex = spriteIndex % 3; // 4 images but 0 indexed.
 	}
 
 	/**

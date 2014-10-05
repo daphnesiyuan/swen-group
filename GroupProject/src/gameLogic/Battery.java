@@ -36,7 +36,9 @@ public class Battery extends Thread implements Serializable {
 	}
 
 	public void iMoved(){
-
+		if(!charging){
+			batteryLife--;
+		}
 
 	}
 
