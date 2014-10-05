@@ -6,6 +6,8 @@ import gameLogic.Room;
 import java.io.IOException;
 import java.util.Calendar;
 
+import javax.swing.JComponent;
+
 /**
  *Chat Client that deals with the main aspects of the Chat program when it comes to the client
  * @author veugeljame
@@ -14,18 +16,10 @@ import java.util.Calendar;
 public class GameClient extends ChatClient {
 
 	// Client side of the game
-	private Object roomLock = new Object();
 	private Room clientRoom = null;
 
-	private boolean roomModified = false;
-	private Object roomModifiedLock = new Object();
-
-	/**
-	 * Creates a new GameClient to connect to a server
-	 * @param playerName Name of the client
-	 */
-	public GameClient(String playerName){
-		super(playerName);
+	public GameClient(String playerName, JComponent clientImage) {
+		super(playerName, clientImage);
 	}
 
 	/**
@@ -39,9 +33,7 @@ public class GameClient extends ChatClient {
 			return null;
 		}
 
-		synchronized(roomLock){
-			return clientRoom;
-		}
+		return clientRoom;
 	}
 
 	/**
@@ -56,9 +48,7 @@ public class GameClient extends ChatClient {
 			return null;
 		}
 
-		synchronized(roomLock){
-			return clientRoom.getAvatar(getName());
-		}
+		return clientRoom.getAvatar(getName());
 	}
 
 	/**
@@ -123,39 +113,17 @@ public class GameClient extends ChatClient {
 	 * @param chatMessage Message that was sent from the given IP
 	 */
 	public synchronized void retrievedUpdatedRoom(RoomUpdate room){
-		synchronized(roomLock){
-			clientRoom = room.updatedRoom;
+		clientRoom = room.updatedRoom;
 
-			System.out.println("Client Recieved new Room: " + Calendar.getInstance().getTime());
+		System.out.println("Client Recieved new Room: " + Calendar.getInstance().getTime());
 
-			// Record when we last updated
-			setRoomModified(true);
-		}
+		// Room has changed to redraw it
+		repaintImage();
 	}
 
 	@Override
 	public void successfullyConnected(String playerName) {
 
 
-	}
-
-	/**
-	 * Checks if the current client has had anything modified since the last refresh. Determines if the listener of this client needs to update or not.
-	 * @return True if something has changed in the chat
-	 */
-	public synchronized boolean roomIsModified() {
-		synchronized (roomModifiedLock){
-			return roomModified;
-		}
-	}
-
-	/**
-	 * Sets the current state of the clients modifications status to what's given.
-	 * @param modified
-	 */
-	public synchronized void setRoomModified(boolean modified) {
-		synchronized (roomModifiedLock){
-			this.roomModified = modified;
-		}
 	}
 }

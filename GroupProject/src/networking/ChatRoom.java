@@ -8,10 +8,11 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Stack;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,51 +52,13 @@ public class ChatRoom implements ActionListener{
 
 		// Set up a basic client for this ChatRoom
 		// Tell this chat room to wait for input from the server that sends data to this client
-		client = new ChatClient("BOB - Undefined");
+		client = new ChatClient("BOB - Undefined", null);
 
 		// Set up interface
 		setUpGui();
 
-		// Loop forever
-		while( true ){
-
-			// Update our text if anything has changed
-			refreshChatHistoryPanel();
-
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Refreshes the panel to display all the chat messages accordingly
-	 */
-	private void refreshChatHistoryPanel(){
-
-		// Remove all the panels
-		chatHistory.removeAll();
-
-		// Get the chat history
-		ArrayList<ChatMessage> history = client.getChatHistory();
-
-		for(ChatMessage cm : history ){
-			JLabel label = new JLabel(cm.toString());
-			label.setForeground(cm.color);
-			chatHistory.add(label);
-		}
-
-		// Reorganize it's components
-		chatHistory.revalidate();
-
-		// Scroll to bottom of the page
-		int height = (int)chatHistory.getPreferredSize().getHeight();
-        scroll.getVerticalScrollBar().setValue(height);
-
-        // Reset the panel
-        chatHistory.repaint();
+		client.setPaintComponent(chatHistory);
+		client.repaintImage();
 	}
 
 	private void setUpGui(){
@@ -119,7 +82,55 @@ public class ChatRoom implements ActionListener{
 		startServer = new JButton("Start Server");
 		startServer.addActionListener(this);
 
-		chatHistory = new JPanel();
+		// Chat Messages display on the board
+		chatHistory = new JPanel(){
+
+			boolean drawing = false;
+
+			@Override
+			public void paintComponent(Graphics g){
+				super.paintComponent(g);
+
+				while( drawing ){
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				drawing = true;
+
+				// Remove all the panels
+				//removeAll();
+
+
+
+				// Get the chat history
+				Stack<ChatMessage> history = client.getChatHistory(10);
+				int maxMessages = Math.min(history.size(), 20);
+				//for(int i = 0; i < maxMessages; i++){
+				for(int i = history.size()-1; i > (history.size()-maxMessages); i--){
+					ChatMessage cm = history.get(i);
+					g.setColor(cm.color);
+					g.drawString(cm.toString(), 0, (history.size()-i)*10);
+				}
+				/*for(ChatMessage cm : history ){
+					JLabel label = new JLabel(cm.toString());
+					label.setForeground(cm.color);
+					add(label);
+				}*/
+
+				// Reorganize it's components
+				//revalidate();
+
+				// Scroll to bottom of the page
+				int height = getHeight();
+		        scroll.getVerticalScrollBar().setValue(height);
+
+		        drawing = false;
+			}
+		};
 		chatHistory.setFocusable(false);
 		chatHistory.setBackground(Color.white);
 		chatHistory.setLayout(new BoxLayout(chatHistory, BoxLayout.Y_AXIS));

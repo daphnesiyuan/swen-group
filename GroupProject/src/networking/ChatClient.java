@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Stack;
+
+import javax.swing.JComponent;
 
 import networking.Client.InputWaiter;
 
@@ -19,21 +22,29 @@ public class ChatClient extends Client {
 	protected Player player;
 
 	// Clients sides version of the current chat history
-	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
+	private Stack<ChatMessage> chatHistory = new Stack<ChatMessage>();
 
 	// Color of the clients messages
 	private Color chatMessageColor = new Color(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255));
 
-
-	private boolean chatModified = false;
-	private Object chatModifiedLock = new Object();
+	// Where to draw
+	private JComponent clientImage;
 
 	/**
 	 * Creates a new GameClient to connect to a server
 	 * @param playerName Name of the client
 	 */
-	public ChatClient(String playerName){
+	public ChatClient(String playerName, JComponent clientImage){
 		player = new Player(playerName);
+		this.clientImage = clientImage;
+	}
+
+	/**
+	 * Assigns the component to call when anything ischanged
+	 * @param component
+	 */
+	public void setPaintComponent(JComponent component){
+		this.clientImage = component;
 	}
 
 	@Override
@@ -41,6 +52,7 @@ public class ChatClient extends Client {
 
 		if( data.getData() instanceof ChatHistory ){
 			chatHistory.addAll(((ChatHistory)data.getData()).history);
+			repaintImage();
 			return;
 		}
 		else if( data.getData() instanceof ChatMessage ){
@@ -62,9 +74,11 @@ public class ChatClient extends Client {
 						} catch (IOException e) {}
 					}
 					else if( scan.hasNext("everyone") ){
-						try {
+						//TODO GET PINGING WORKING
+						//TODO GET PINGING WORKING
+						/*try {
 							sendData(chatMessage);
-						} catch (IOException e) {}
+						} catch (IOException e) {}*/
 						return;
 					}
 				}
@@ -75,11 +89,13 @@ public class ChatClient extends Client {
 
 				// Acknowledge the message
 				chatHistory.get(chatHistory.indexOf(chatMessage)).acknowledged = true;
+				repaintImage();
 			}
 			else{
 
 				// Save the message
 				chatHistory.add(chatMessage);
+				repaintImage();
 			}
 		}
 	}
@@ -96,6 +112,7 @@ public class ChatClient extends Client {
 			// Try and change it on the servers
 			sendData(new ChatMessage("/name " + name, chatMessageColor));
 			player.setName(name);
+			repaintImage();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -156,17 +173,20 @@ public class ChatClient extends Client {
 		// Client side commands
 		if( scan.hasNext("/clear") ){
 			chatHistory.clear();
+			repaintImage();
 			return true;
 		}
 		else if( scan.hasNext("/disconnect") ){
 			chat.acknowledged = true; // Chat worked
 			chatHistory.add(chat);	// Record message
+			repaintImage();
 			disconnect(); // Disconnect from server
 			return true;
 		}
 		else if( scan.hasNext("/reconnect") ){
 			chat.acknowledged = true; // Chat worked
 			chatHistory.add(chat);	// Record message
+			repaintImage();
 
 			// Attempt to reconnect
 			if(	reconnect(getName()) ){
@@ -244,13 +264,12 @@ public class ChatClient extends Client {
 	 * Size indicates how many of the most recent messages to claim
 	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
-	public ArrayList<ChatMessage> getChatHistory(int size) {
+	public Stack<ChatMessage> getChatHistory(int size) {
 
 		size = Math.min(size, chatHistory.size());
 
-		// TODO Synchronise chatHistory with a lock
-		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
-		for (int i = 0; i < size; i++) {
+		Stack<ChatMessage> history = new Stack<ChatMessage>();
+		for (int i = chatHistory.size()-1; i > (chatHistory.size() - size); i--) {
 			history.add(chatHistory.get(i));
 		}
 
@@ -262,7 +281,7 @@ public class ChatClient extends Client {
 	 * Returns a new arrayList containing all the chatMessages up to "size" back
 	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
-	public ArrayList<ChatMessage> getChatHistory() {
+	public Stack<ChatMessage> getChatHistory() {
 		// Send a get ArrayList of the chat messages to the client
 		return getChatHistory(chatHistory.size());
 	}
@@ -271,8 +290,8 @@ public class ChatClient extends Client {
 	 * Clears all messages from the chat history
 	 */
 	protected void clearChatHistory() {
-		setChatModified(true);
 		chatHistory.clear();
+		repaintImage();
 	}
 
 	/**
@@ -280,8 +299,8 @@ public class ChatClient extends Client {
 	 * @param chat Chat Message to add to our history
 	 */
 	protected void addChatMessage(ChatMessage chat) {
-		setChatModified(true);
 		chatHistory.add(chat);
+		repaintImage();
 	}
 
 	/**
@@ -292,7 +311,7 @@ public class ChatClient extends Client {
 
 		// Save the message
 		chatHistory.add(new ChatMessage("WARNING",warning, Color.black, true));
-		setChatModified(true);
+		repaintImage();
 	}
 
 	/**
@@ -300,6 +319,13 @@ public class ChatClient extends Client {
 	 */
 	public Color getChatMessageColor() {
 		return chatMessageColor;
+	}
+
+	public void repaintImage(){
+
+		if( clientImage != null ){
+			clientImage.repaint();
+		}
 	}
 
 	/**
@@ -314,25 +340,5 @@ public class ChatClient extends Client {
 
 		// Change the name of the player
 		player.setName(playerName);
-	}
-
-	/**
-	 * Checks if the current client has had anything modified since the last refresh. Determines if the listener of this client needs to update or not.
-	 * @return True if something has changed in the chat
-	 */
-	public synchronized boolean chatIsModified() {
-		synchronized (chatModifiedLock){
-			return chatModified;
-		}
-	}
-
-	/**
-	 * Sets the current state of the clients modifications status to what's given.
-	 * @param modified
-	 */
-	public synchronized void setChatModified(boolean modified) {
-		synchronized (chatModifiedLock){
-			this.chatModified = modified;
-		}
 	}
 }

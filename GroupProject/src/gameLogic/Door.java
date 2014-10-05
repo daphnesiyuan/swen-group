@@ -28,8 +28,8 @@ public class Door extends Tile2D{
 
 	}
 
-	public void setLocked(){
-		locked = !locked;
+	public void setLocked(boolean locked){
+		locked = this.locked;
 	}
 
 //	public List<Key> getKeys(){

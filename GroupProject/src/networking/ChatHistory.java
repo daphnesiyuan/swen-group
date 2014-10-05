@@ -1,6 +1,7 @@
 package networking;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * A chathistory that contains an arrayList of ChatMessages sent throguh the network.
@@ -13,13 +14,13 @@ public class ChatHistory extends NetworkData {
 	 *
 	 */
 	private static final long serialVersionUID = -5022978323415087568L;
-	public final ArrayList<ChatMessage> history;
+	public final Stack<ChatMessage> history;
 
-	public ChatHistory(ArrayList<ChatMessage> history){
+	public ChatHistory(Stack<ChatMessage> history){
 		this.history = history;
 	}
 
-	public ChatHistory(ArrayList<ChatMessage> history, boolean acknowledged){
+	public ChatHistory(Stack<ChatMessage> history, boolean acknowledged){
 		this.history = history;
 		this.acknowledged = acknowledged;
 	}
