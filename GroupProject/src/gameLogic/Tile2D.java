@@ -14,7 +14,6 @@ public class Tile2D implements Serializable{
 
 	private int xPos;
 	private int yPos;
-	private String type;
 	private Room room;
 
 	private List <Item> itemsOnTile;
@@ -27,11 +26,16 @@ public class Tile2D implements Serializable{
 		this.xPos = xPos;
 		this.yPos = yPos;
 
-		itemsOnTile = new ArrayList<Item>();
-		avatarOnTile = null;
+		this.itemsOnTile = new ArrayList<Item>();
+		this.avatarOnTile = null;
 	}
 
-	// items on tile will be returned with the lowest weights first
+
+
+	/**
+	 *  items on tile will be returned with the lowest weights first
+	 * @param item - the Item object to be added to the tile
+	 */
 	public void addItem(Item item){
 		itemsOnTile.add(item);
 		Collections.sort(itemsOnTile,new Comparator<Item>() {
@@ -114,14 +118,6 @@ public class Tile2D implements Serializable{
 		this.yPos = yPos;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public Room getRoom() {
 		return room;
 	}
@@ -175,11 +171,6 @@ public class Tile2D implements Serializable{
 			if (other.room != null)
 				return false;
 		} else if (!room.equals(other.room))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
 			return false;
 		if (xPos != other.xPos)
 			return false;

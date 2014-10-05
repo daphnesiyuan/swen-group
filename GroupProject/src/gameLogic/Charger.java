@@ -1,6 +1,10 @@
 package gameLogic;
 
-public class Charger extends Item{
+import java.io.Serializable;
+
+public class Charger extends Item implements Serializable{
+
+	private static final long serialVersionUID = -120239992386564353L;
 
 	private Tile2D tile;
 	private final int xPos, yPos;
@@ -28,26 +32,50 @@ public class Charger extends Item{
 
 	@Override
 	public boolean moveItemTo(Tile2D toTile) {
-		// TODO Auto-generated method stub
-		return false;
+		return false; // always returns false as Item is unmovable
 	}
 
 	@Override
 	public int getWeight() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 0; // Item should never be placed on top of anything else
 	}
 
 	@Override
-	public String interactWith(Avatar avatar) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean interactWith(Avatar avatar) {
+		ChargerThread ct = new ChargerThread(avatar, this);
+		ct.start();
+		return true;
 	}
 
 	@Override
 	public void returnToStartPos() {
-		// TODO Auto-generated method stub
-
+		// Does nothing - charger is unmovable
 	}
+
+	@Override
+	public boolean pickItemUp() {
+		return false;	// charger cannot be picked up
+	}
+
+	static class ChargerThread extends Thread{
+		Avatar avatar;
+		Charger charger;
+		public ChargerThread(Avatar avatar, Charger charger){
+			this.avatar = avatar;
+			this.charger = charger;
+		}
+		public void run(){
+			while(true){
+				if(avatar.getCurrentTile().equals(charger.tile)){
+					avatar.setCharging(true);
+				}
+				else{
+					avatar.setCharging(false);
+					break;
+				}
+			}
+		}
+	}
+
 
 }
