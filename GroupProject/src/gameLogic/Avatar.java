@@ -101,21 +101,20 @@ public class Avatar implements Serializable {
 			return false;
 		}
 
-
-		Tile2D newPosition = null;
-
+		// Calculate direction to be moved
 		int dir = Direction.get(move.getRenderDirection());
 		int key = Direction.getKeyDirection(move.getInteraction());
 		int change = dir + key;
 		change = change % 4;
+		
+		
+		Tile2D newPosition = null;
 
 
 		if(change == 0) newPosition = moveUp(currentTile.getTileUp());
-
-
-		else if(change == 1) newPosition = currentTile.getTileRight();
-		else if(change == 2) newPosition = currentTile.getTileDown();
-		else if(change == 3) newPosition = currentTile.getTileLeft();
+		else if(change == 1) newPosition = moveRight(currentTile.getTileRight());
+		else if(change == 2) newPosition = moveDown(currentTile.getTileDown());
+		else if(change == 3) newPosition = moveLeft(currentTile.getTileLeft());
 
 		if(newPosition == null) System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
 
@@ -124,20 +123,11 @@ public class Avatar implements Serializable {
 		// if the move is in a different room to the characters current room - return false NB: moving through door moves onto tile, which IS in same room.
 		if(newPosition.getRoom()!= this.currentRoom) return false;
 
-		// if move position is a wall - return false
-		if(newPosition instanceof Wall) return false;
-
-		// if there is an Item in the move position - return false;
-		//if(newPosition.itemOnTile()==true) return false;
-
-
-		// Check the desired move position is not more than one tile away from current Tile
-		if(this.currentTile.getxPos() - newPosition.getxPos() > 1) return false;
-		if(this.currentTile.getyPos() - newPosition.getyPos() > 1) return false;
 
 
 		// If Player is trying to pass through a door
 		if(newPosition instanceof Door){
+			doorMove(newPosition);
 			Door door = (Door) newPosition;
 
 			if(door.getLocked()){/*For when Doors and keys are implemented*/}
@@ -147,7 +137,6 @@ public class Avatar implements Serializable {
 			int newY = door.getToRoomYPos();
 
 			//if (changeRoom(newRoomIndex,newX,newY) == false) return false;
-
 
 		}
 		updateFacing(newPosition);
@@ -160,35 +149,55 @@ public class Avatar implements Serializable {
 
 	}
 
-	public Tile2D moveUp(Tile2D tile2d){
+	/**
+	 *
+	 * @param tile2d = the Tile above the current tile
+	 * @return tile2d = returns the current tile if the movement made keeps the avatar on the same tile, else returns the tile above the current tile.
+	 */
+	public Tile2D moveUp(Tile2D tileUp){
 		globalYPos--;
 		tileYPos--;
 
 		if(tileYPos>tileHeight){
 			tileYPos = tileYPos % tileHeight;
+			if(tileUp instanceof Wall){
+				globalYPos--;
+				tileYPos--;
+				return null;
+			}
+			return tileUp;
+		}
+		else{
+			return currentTile;
 
 		}
+	}
+
+	public Tile2D moveDown(Tile2D tileDown){
+		globalYPos++;
+		tileYPos++;
+
 
 		return null;
 	}
 
-	public void moveDown(){
-		globalYPos++;
-		tileYPos++;
-
-	}
-
-	public void moveLeft(){
+	public Tile2D moveLeft(Tile2D tileLeft){
 		globalXPos--;
 		tileXPos--;
 
+		return null;
+
 	}
 
-	public void moveRight(){
+	public Tile2D moveRight(Tile2D tileRight){
 		globalXPos++;
 		tileXPos++;
 
+
+		return null;
 	}
+	
+	public 
 
 
 

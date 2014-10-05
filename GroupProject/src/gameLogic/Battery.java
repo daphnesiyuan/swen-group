@@ -1,7 +1,10 @@
 package gameLogic;
 
-public class Battery extends Thread {
+import java.io.Serializable;
 
+public class Battery extends Thread implements Serializable {
+
+	private static final long serialVersionUID = 7833445205893995697L;
 
 	private double batteryLife;
 
