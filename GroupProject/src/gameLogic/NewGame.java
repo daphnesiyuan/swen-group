@@ -40,9 +40,20 @@ public class NewGame {
 
 	private List<Room> createRooms(){
 		List<Room> rooms = new ArrayList<Room>();
-		Room start1 = makeRoom();
-		Room arena = makeArena();
+
+
+
+
+		Room start1 = makeRoom("src/gameLogic/basic_room.txt");
+		Room start2 = makeRoom("src/gameLogic/basic_room.txt");
+		Room start3 = makeRoom("src/gameLogic/basic_room.txt");
+		Room start4 = makeRoom("src/gameLogic/basic_room.txt");
+		Room arena = makeRoom("src/gameLogic/arena.txt");
+
 		rooms.add(start1);
+		rooms.add(start2);
+		rooms.add(start3);
+		rooms.add(start4);
 		rooms.add(arena);
 		return rooms;
 	}
@@ -62,38 +73,15 @@ public class NewGame {
 
 	}
 
-
-	public static Room makeRoom() {
-
-		int roomNumber = 1;
-
-		Tile2D[][] tiles = new Tile2D[][]{
-				{new Wall(0,0),  new Wall(1,0),         new Wall(2,0),         new Door(3,0),        new Wall(4,0),         new Wall(5,0),        new Wall(6,0)},
-				{new Wall(0,1), new Floor(1,1, false), new Floor(2,1, false), new Floor(3,1, false),new Floor(4,1, false), new Floor(5,1, false), new Wall(6,1) },
-				{new Wall(0,2), new Floor(1,2, false), new Floor(2,2, false), new Floor(3,2, false),new Floor(4,2, false), new Floor(5,2, false), new Wall(6,2) },
-				{new Wall(0,3), new Floor(1,3, false), new Floor(2,3, false), new Floor(3,3, false),new Floor(4,3, false), new Floor(5,3, false), new Wall(6,3) },
-				{new Wall(0,4), new Floor(1,4, false), new Floor(2,4, false), new Floor(3,4, false),new Floor(4,4, false), new Floor(5,4, false), new Wall(6,4) },
-				{new Wall(0,5), new Floor(1,5, false), new Floor(2,5, false), new Floor(3,5, false),new Floor(4,5, false), new Floor(5,5, false), new Wall(6,5) },
-				{new Wall(0,6),  new Wall(1,6),         new Wall(2,6),         new Wall(3,6),        new Wall(4,6),         new Wall(5,6),        new Wall(6,6), }
-		};
-
-		Room room = new Room(roomNumber,tiles,null);
-		for(int i = 0; i < tiles.length; i++){
-			for(int j = 0; j < tiles[i].length; j++){
-				tiles[i][j].setRoom(room);
-			}
-		}
-		return room;
-	}
-
 	/**
 	 * Important to Note that if there is an IO exception thrown in this method, even if it is caught the method will return null.
+	 * @param string
 	 * @return
 	 */
-	public static Room makeArena(){
+	public static Room makeRoom(String roomFile){
 		//TODO inverse x and y for array ?????
 		try {
-			File file = new File("src/gameLogic/arena.txt");
+			File file = new File(roomFile);
 			Scanner scan = new Scanner(file);
 
 
@@ -137,7 +125,7 @@ public class NewGame {
 					tiles[y][x] = wall;
 				}
 				else if(tile.toUpperCase().equals("F")){
-					Tile2D floor = new Floor(x,y,false);
+					Tile2D floor = new Floor(x,y);
 					tiles[y][x] = floor;
 				}
 				else if(tile.toUpperCase().equals("D")){

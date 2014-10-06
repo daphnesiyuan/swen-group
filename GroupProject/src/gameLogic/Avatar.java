@@ -264,10 +264,6 @@ public class Avatar implements Serializable {
 	public Tile2D moveDoor(Tile2D tileDoor){
 		Door door = (Door) tileDoor;
 
-		if(door.getLocked()){
-			/*For when Doors and keys are implemented*/
-		}
-
 		//		int newRoomIndex = door.getToRoomIndex();
 		//		int newX = door.getToRoomXPos();
 		//		int newY = door.getToRoomYPos();
