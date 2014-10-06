@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.plaf.FileChooserUI;
+
 
 
 /**
@@ -80,6 +82,81 @@ public class NewGame {
 			}
 		}
 		return room;
+	}
+
+	/**
+	 * Important to Note that if there is an IO exception thrown in this method, even if it is caught the method will return null.
+	 * @return
+	 */
+	public static Room makeArena(){
+		//TODO inverse x and y for array ?????
+		try {
+			FileReader fr = new FileReader("arena.txt");
+			Scanner scan = new Scanner(fr);
+
+
+			String tile = null;
+			int tileRows = 0;
+			int tileCols = 0;
+			int tileRowsFinal = 0;
+
+			while(scan.hasNext()){	// Initial loop to count tiles for 2d array construction
+				tile = scan.next();
+				if(tile == null) break;
+				else if(tile.toUpperCase().equals("E")){
+					tileCols++;
+					tileRowsFinal = tileRows;
+					tileRows = 0;
+				}
+				else{
+					tileRows ++;
+				}
+			}
+			scan = new Scanner(fr);		// reset the scanner for a second file reading iteration, this time the tiles will actually be created.
+			tile = null;				// precautionary read reset
+			int x = 0;
+			int y = 0;
+
+			Tile2D[][] tiles = new Tile2D[tileRowsFinal][tileCols];
+
+			while(scan.hasNext()){
+				tile = scan.next();
+				if(tile == null) break;
+				else if(tile.toUpperCase().equals("E")){
+					x = 0;
+					y ++;
+
+				}
+				else if(tile.toUpperCase().equals("W")){
+					Tile2D wall = new Wall(x,y);
+					tiles[x][y] = wall;
+				}
+				else if(tile.toUpperCase().equals("F")){
+					Tile2D floor = new Floor(x,y,false);
+					tiles[x][y] = floor;
+				}
+				else if(tile.toUpperCase().equals("D")){
+					Tile2D door = new Door(x,y);
+					tiles[x][y] = door;
+				}
+				x++;
+
+			}
+			int roomNumber = 9;
+			Room room = new Room(roomNumber,tiles,null);
+			for(int i = 0; i < tiles.length; i++){
+				for(int j = 0; j < tiles[i].length; j++){
+					tiles[i][j].setRoom(room);
+				}
+			}
+
+		return room;
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 
