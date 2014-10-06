@@ -40,8 +40,10 @@ public class NewGame {
 
 	private List<Room> createRooms(){
 		List<Room> rooms = new ArrayList<Room>();
-		Room room = makeRoom();
-		rooms.add(room);
+		Room start1 = makeRoom();
+		Room arena = makeArena();
+		rooms.add(start1);
+		rooms.add(arena);
 		return rooms;
 	}
 
@@ -91,8 +93,8 @@ public class NewGame {
 	public static Room makeArena(){
 		//TODO inverse x and y for array ?????
 		try {
-			FileReader fr = new FileReader("arena.txt");
-			Scanner scan = new Scanner(fr);
+			File file = new File("src/gameLogic/arena.txt");
+			Scanner scan = new Scanner(file);
 
 
 			String tile = null;
@@ -112,7 +114,7 @@ public class NewGame {
 					tileRows ++;
 				}
 			}
-			scan = new Scanner(fr);		// reset the scanner for a second file reading iteration, this time the tiles will actually be created.
+			scan = new Scanner(file);		// reset the scanner for a second file reading iteration, this time the tiles will actually be created.
 			tile = null;				// precautionary read reset
 			int x = 0;
 			int y = 0;
@@ -125,19 +127,22 @@ public class NewGame {
 				else if(tile.toUpperCase().equals("E")){
 					x = 0;
 					y ++;
+					continue;
 
 				}
 				else if(tile.toUpperCase().equals("W")){
 					Tile2D wall = new Wall(x,y);
-					tiles[x][y] = wall;
+					System.out.println(x);
+					System.out.println(y);
+					tiles[y][x] = wall;
 				}
 				else if(tile.toUpperCase().equals("F")){
 					Tile2D floor = new Floor(x,y,false);
-					tiles[x][y] = floor;
+					tiles[y][x] = floor;
 				}
 				else if(tile.toUpperCase().equals("D")){
 					Tile2D door = new Door(x,y);
-					tiles[x][y] = door;
+					tiles[y][x] = door;
 				}
 				x++;
 
