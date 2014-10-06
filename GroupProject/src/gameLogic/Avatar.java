@@ -400,8 +400,6 @@ public class Avatar implements Serializable {
 				return false;
 		} else if (!Inventory.equals(other.Inventory))
 			return false;
-		if (facing != other.facing)
-			return false;
 		if (playerName == null) {
 			if (other.playerName != null)
 				return false;

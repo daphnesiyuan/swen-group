@@ -15,3 +15,5 @@
 /gameClientTest.class
 /Battery.class
 /Charger.class
+/Charger$ChargerThread.class
+/ColorChange.class

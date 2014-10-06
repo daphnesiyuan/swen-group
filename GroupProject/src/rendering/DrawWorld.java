@@ -64,9 +64,9 @@ public class DrawWorld {
 
 		images = MakeImageMap.makeMap();
 
-		for(Map.Entry<String, BufferedImage> s: images.entrySet()){
-			System.out.println(s);
-		}
+//		for(Map.Entry<String, BufferedImage> s: images.entrySet()){
+//			System.out.println(s);
+//		}
 	}
 
 	/**
@@ -88,9 +88,7 @@ public class DrawWorld {
 		height = width;
 
 		// set offset based on character position.
-		// calibrateOffset(direction, room);
-		offset = new Point((int) (panel.getWidth() / 2.0),
-				(int) (panel.getHeight() / 5.0));
+		calibrateOffset(direction, room);
 
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
@@ -99,14 +97,47 @@ public class DrawWorld {
 	}
 
 	private void calibrateOffset(String direction, Room room) {
-		// This doesn't really work very well because the tiles x
-		// and y will not change with my rotate. Will fix later.
 
-		Point temp = twoDToIso(new Point(character.getCurrentTile().getxPos()
-				* height, character.getCurrentTile().getyPos() * width));
-		offset.x = (panel.getWidth() / 2) + temp.x; // need to get rid of magic
-													// numbers
-		offset.y = (panel.getHeight() / 2) - temp.y;
+		Point tile = null;
+
+		Tile2D[][] tiles= room.getTiles().clone();
+
+		for (int i = 0; i < Direction.get(direction)+3; i++){
+			 tiles = rotate90(tiles);
+		}
+		for(int i = 0; i < tiles.length; i++){
+			for(int j = 0; j < tiles.length; j++){
+				if(tiles[j][i].getAvatar() != null && tiles[j][i].getAvatar().equals(character)){
+					tile = new Point(j,i);
+					System.out.println(i+" "+j);
+					break;
+				}
+			}
+		}
+
+		if(tile == null){
+			System.out.println("\n\n\nDrawWorld.calibrateOffset - tile == null");
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		Point avatarOffset = avatarTilePos(tiles[tile.x][tile.y]);
+
+		tile.x = (tile.x * width);
+		tile.y = (tile.y * height);
+		tile = twoDToIso(tile);
+
+		tile.x = tile.x + avatarOffset.x;
+		tile.y = tile.y + avatarOffset.y;
+		tile.x = panel.getWidth() - (tile.x + (panel.getWidth() / 2));
+		tile.y = (panel.getHeight()/3) - (tile.y - (panel.getHeight() / 4));
+
+		offset = tile;
+
 
 	}
 
@@ -223,36 +254,40 @@ public class DrawWorld {
 	 * @param Graphics g
 	 */
 	private void drawCharacter(Graphics g, Point pt, Tile2D tile) {
-		if (tile.getAvatar() == null) {
-			return;
-		}
+		if (tile.getAvatar() == null) return;
+
 		Avatar avatar = tile.getAvatar();
-		double stepSize = width/100.0;
 
-		Point tilePoint = new Point((int)avatar.getTileXPos(), (int)avatar.getTileYPos());
-
-
-		for(int i = 0; i < Direction.get(direction)*3; i++){
-			tilePoint = new Point((100-tilePoint.y),(tilePoint.x));
-	    }
-
-		tilePoint = twoDToIso(tilePoint);
-
-		tilePoint.x = (int)(tilePoint.x * stepSize);
-		tilePoint.y = (int)(tilePoint.y * stepSize);
-
-
+		Point avatarOffset = avatarTilePos(tile);
 
 		pt.y-=(height/2);
-
-		pt.x+=tilePoint.x;
-		pt.y+=tilePoint.y;
+		pt.x+=avatarOffset.x;
+		pt.y+=avatarOffset.y;
 
 		drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 
-		if (tile.getAvatar().equals(character)){
+		if (tile.getAvatar().equals(character))
 			floatingPointer.reDraw(g, pt, width, height, offset);
-		}
+	}
+
+	public Point avatarTilePos(Tile2D tile){
+
+		double stepSize = width/100.0;
+		Avatar avatar = tile.getAvatar();
+
+		Point avatarPoint = new Point((int)avatar.getTileXPos(), (int)avatar.getTileYPos());
+
+
+		for(int i = 0; i < Direction.get(direction)*3; i++){
+			avatarPoint = new Point((100-avatarPoint.y),(avatarPoint.x));
+	    }
+
+		avatarPoint = twoDToIso(avatarPoint);
+
+		avatarPoint.x = (int)(avatarPoint.x * stepSize);
+		avatarPoint.y = (int)(avatarPoint.y * stepSize);
+
+		return avatarPoint;
 	}
 
 	/**
