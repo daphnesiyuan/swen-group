@@ -10,8 +10,10 @@ import networking.Server.ClientThread;
 
 public class ChatServer extends Server {
 
-
+	// Color of the chat messages sent from the server
 	protected Color chatMessageColor = Color.black;
+
+	// Total chat history from all clients and the server
 	protected Stack<ChatMessage> chatHistory = new Stack<ChatMessage>();
 
 	@Override
@@ -36,7 +38,6 @@ public class ChatServer extends Server {
 
 			// Save the message
 			chatHistory.add(cm);
-			//System.out.println(cm);
 
 			// Send it to all our clients
 			sendToAllClients(data);
@@ -80,8 +81,19 @@ public class ChatServer extends Server {
 		return new CommandParser().parseCommand(scan, data);
 	}
 
+	/**
+	 * Parser for all the commands that the server processes from ChatMessages sent from clients
+	 * @author veugeljame
+	 *
+	 */
 	private class CommandParser {
 
+		/**
+		 * Process the command in the scanner and see if it contains a command that the server can work with.
+		 * @param scan Scanner attached to a string/chat message
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
 		public boolean parseCommand(Scanner scan, NetworkObject data) {
 
 			if (!scan.hasNext()) {
@@ -110,6 +122,13 @@ public class ChatServer extends Server {
 			return true;
 		}
 
+		/**
+		 * ADMIN COMMAND
+		 * Close the server and disconnect all clients
+		 * @param scan Scanner with no more unsused text
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
 		private boolean parseClose(Scanner scan, NetworkObject data) {
 
 			// Only admins can close the server
@@ -121,6 +140,12 @@ public class ChatServer extends Server {
 			return false;
 		}
 
+		/**
+		 * Changes the name of the client that sent the data
+		 * @param scan Scanner attached to a string/chat message with the next name to be used with the client
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
 		private boolean parseName(Scanner scan, NetworkObject data) {
 
 			// Check for name
@@ -145,7 +170,7 @@ public class ChatServer extends Server {
 			String newName = scan.nextLine().trim();
 
 			// set "name" name worked
-			retrieveObject(new NetworkObject(IPAddress, new ChatMessage(client.getPlayerName()
+			retrieveObject(new NetworkObject(getIPAddress(), new ChatMessage(client.getPlayerName()
 					+ " has changed their name to " + newName,chatMessageColor, true)));
 
 			client.setPlayerName(newName);
@@ -153,6 +178,12 @@ public class ChatServer extends Server {
 			return true;
 		}
 
+		/**
+		 * Get to retrieve some data from the server
+		 * @param scan Scanner attached to a string/chat message with a command on what to get
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
 		private boolean parseGet(Scanner scan, NetworkObject data) {
 
 			// Check for name
@@ -172,6 +203,12 @@ public class ChatServer extends Server {
 			return true;
 		}
 
+		/**
+		 * Sends the chat history to the client that sent the data
+		 * @param scan Scanner attached to a string/chat message
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
 		private boolean parseHistory(Scanner scan, NetworkObject data){
 			int size = chatHistory.size();
 
@@ -190,6 +227,12 @@ public class ChatServer extends Server {
 			return false;
 		}
 
+		/**
+		 * Client is pinging, so find out what we should ping
+		 * @param scan Scanner attached to a string/chat message possible extension of everyone or another clients name/IP
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
 		private boolean parsePing(Scanner scan, NetworkObject data) {
 
 			// Send history back to the client
@@ -204,6 +247,12 @@ public class ChatServer extends Server {
 			return false;
 		}
 
+		/**
+		 * Sends a list of the IP's that are admins on the server
+		 * @param scan Scanner attached to a string/chat message
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
 		private boolean parseAdmins(Scanner scan, NetworkObject data) {
 
 			// Send history back to the client
@@ -217,6 +266,12 @@ public class ChatServer extends Server {
 			return false;
 		}
 
+		/**
+		 * Displays all the possible commands that can be send form a client to the server
+		 * @param scan Scanner attached to a string/chat message
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
 		private boolean parseHelp(Scanner scan, NetworkObject data) {
 
 			// Send history back to the client

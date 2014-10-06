@@ -3,11 +3,12 @@ package networking;
 import java.io.Serializable;
 import java.util.Calendar;
 
+/**
+ *Abstract Data that contains information if the data has been acknowledged from the server and also whe nthe data was created
+ * @author veugeljame
+ *
+ */
 public abstract class NetworkData implements Serializable{
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 4448513134913822794L;
 
 	// Check if the data has been acknowledged if sent from a client to the server

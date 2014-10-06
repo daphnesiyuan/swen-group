@@ -1,4 +1,4 @@
-package networking;
+package network.testing;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -18,6 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import networking.ChatClient;
+import networking.ChatMessage;
 
 
 /**
@@ -44,6 +47,7 @@ public class ChatRoom implements ActionListener{
 	private JTextField IPConnection;
 	private JLabel connectLabel;
 	private JButton connect;
+	private JButton connectLocal;
 	private JButton startServer;
 
 
@@ -79,56 +83,33 @@ public class ChatRoom implements ActionListener{
 		connectLabel = new JLabel("Connect To: ");
 		connect = new JButton("Connect");
 		connect.addActionListener(this);
+		connectLocal = new JButton("Local");
+		connectLocal.addActionListener(this);
 		startServer = new JButton("Start Server");
 		startServer.addActionListener(this);
 
 		// Chat Messages display on the board
 		chatHistory = new JPanel(){
 
-			boolean drawing = false;
 
 			@Override
 			public void paintComponent(Graphics g){
 				super.paintComponent(g);
 
-				while( drawing ){
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				drawing = true;
-
-				// Remove all the panels
-				//removeAll();
-
-
-
 				// Get the chat history
 				Stack<ChatMessage> history = client.getChatHistory(10);
 				int maxMessages = Math.min(history.size(), 20);
-				//for(int i = 0; i < maxMessages; i++){
+
+				// Display
 				for(int i = history.size()-1; i > (history.size()-maxMessages); i--){
 					ChatMessage cm = history.get(i);
 					g.setColor(cm.color);
 					g.drawString(cm.toString(), 0, (history.size()-i)*10);
 				}
-				/*for(ChatMessage cm : history ){
-					JLabel label = new JLabel(cm.toString());
-					label.setForeground(cm.color);
-					add(label);
-				}*/
-
-				// Reorganize it's components
-				//revalidate();
 
 				// Scroll to bottom of the page
 				int height = getHeight();
 		        scroll.getVerticalScrollBar().setValue(height);
-
-		        drawing = false;
 			}
 		};
 		chatHistory.setFocusable(false);
@@ -145,6 +126,7 @@ public class ChatRoom implements ActionListener{
 		frame.getContentPane().add(connectLabel);
 		frame.getContentPane().add(IPConnection);
 		frame.getContentPane().add(connect);
+		frame.getContentPane().add(connectLocal);
 		frame.getContentPane().add(startServer);
 		frame.getContentPane().add(scroll);
 		frame.getContentPane().add(message);
@@ -162,7 +144,9 @@ public class ChatRoom implements ActionListener{
 		try {
 
 			// Send the chat message to the server
-			client.sendData(chatMessage);
+			if( !client.sendChatMessageToServer(chatMessage) ){
+				System.out.println("Didn't send...");
+			}
 		} catch (IOException e) {
 
 			// Could not send message to the server
@@ -229,6 +213,11 @@ public class ChatRoom implements ActionListener{
 
 			// Attempt to connect to the server
 			connectToServer(IPConnection.getText(), port);
+		}
+		else if( ae.getSource() == connectLocal || ae.getSource() == IPConnection ){
+
+			// Attempt to connect to the server
+			connectToServer(client.getClientIPAddress(), port);
 		}
 	}
 

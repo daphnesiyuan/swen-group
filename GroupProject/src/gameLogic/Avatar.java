@@ -3,6 +3,7 @@ package gameLogic;
 
 import gameLogic.Game.Facing;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,10 @@ public class Avatar implements Serializable {
 	private final double tileWidth = 100;
 	private final double tileHeight = 100;
 
+	// Tile Centers
+	private final double tileXCenter = tileWidth / 2 ;
+	private final double tileYCenter = tileHeight / 2;
+
 
 	//If avatar moves to adjacent tile their local tile coordinates are set with these fields
 	private final double tileMinPos = 1;
@@ -49,33 +54,47 @@ public class Avatar implements Serializable {
 	// While the sprite is animating, spriteIndex will hold the index to the current frame to be displayed for the animation.
 	private int spriteIndex;
 
-
-	//TODO - for animation of moving heads to charge like socket, create system wherein Avatar sprite is moved to the center of a tile,
-	// regardless of their current x and y tile coordinates.
-
+	// Color the Avatar is painted currently
+	private Color color;
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
 
-		updateLocations(tile, room);
+		this.updateLocations(tile, room);
 
-		Inventory = new ArrayList<Item>();
-		facing = Facing.North;
+		this.Inventory = new ArrayList<Item>();
+		this.facing = Facing.North;
 
-		battery = new Battery(this);
+		this.battery = new Battery(this);
 
 
 		// Avatar start coordinates initialized to the middle of its starting tile
-		globalXPos = currentTile.getxPos()+(tileWidth/2);
-		globalYPos = currentTile.getyPos()+(tileHeight/2);
+		this.globalXPos = currentTile.getxPos()+(tileWidth/2);
+		this.globalYPos = currentTile.getyPos()+(tileHeight/2);
 
 		// Avatars relative tile coordinates are initalized to the center of the tile
-		tileXPos = (tileWidth/2);
-		tileYPos = (tileHeight/2);
+		this.tileXPos = (tileWidth/2);
+		this.tileYPos = (tileHeight/2);
 
 		// Avatars initial sprite image is the 0th element in the animation sequence
-		spriteIndex = 0;
+		this.spriteIndex = 0;
 
+		this.color = Color.white;
+
+	}
+
+
+	/**
+	 * When called, the Avatars tileXPos and tileYPos are set to 50. The global coordinates are updated respectivley.
+	 * This method is used to center the avatar on a tile.
+	 */
+	public void centerAvatar(){
+		double xChange = tileXCenter - tileXPos;
+		double yChange = tileYCenter - tileYPos;
+		tileXPos = tileXCenter;
+		tileYPos = tileYCenter;
+		globalXPos += xChange;
+		globalYPos += yChange;
 	}
 
 
@@ -106,11 +125,12 @@ public class Avatar implements Serializable {
 		// check item within range before interacting -> (absolute value of the difference between location coordiantes)
 		if(Math.abs(item.getTile().getxPos()-currentTile.getxPos())>1) return false;
 		if(Math.abs(item.getTile().getyPos()-currentTile.getyPos())>1) return false;
-		return item.interactWith(this) != null;
+		return item.interactWith(this);
 	}
 
 
 	public boolean moveTo(Move move){
+
 		if(move.getRenderDirection() == null){
 			System.out.println("Avatar: moveTo() - RenderDirection in provided move object is null");
 			return false;
@@ -122,7 +142,6 @@ public class Avatar implements Serializable {
 
 		int change = calcDirection(move);
 		Tile2D newPosition = null;
-
 		if(change == 0) newPosition = moveUp(currentTile.getTileUp());
 		else if(change == 1) newPosition = moveRight(currentTile.getTileRight());
 		else if(change == 2) newPosition = moveDown(currentTile.getTileDown());
@@ -133,9 +152,7 @@ public class Avatar implements Serializable {
 			System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
 			return false;
 		}
-
 		if(newPosition instanceof Door) newPosition = moveDoor(newPosition); // If Player is trying to pass through a door
-
 
 		updateFacing(move.getInteraction());
 		updateLocations(newPosition,currentRoom);
@@ -160,7 +177,7 @@ public class Avatar implements Serializable {
 
 	public void animation(){
 		spriteIndex++;
-		spriteIndex = spriteIndex % 4;
+		spriteIndex = spriteIndex % 4; // 4 images but 0 indexed.
 	}
 
 	/**
@@ -247,10 +264,6 @@ public class Avatar implements Serializable {
 	public Tile2D moveDoor(Tile2D tileDoor){
 		Door door = (Door) tileDoor;
 
-		if(door.getLocked()){
-			/*For when Doors and keys are implemented*/
-		}
-
 		//		int newRoomIndex = door.getToRoomIndex();
 		//		int newX = door.getToRoomXPos();
 		//		int newY = door.getToRoomYPos();
@@ -271,9 +284,10 @@ public class Avatar implements Serializable {
 	 */
 	public void updateFacing(String dirKey){
 		if(dirKey.toLowerCase().equals("w")) facing = Facing.North;
-		else if(dirKey.toLowerCase().equals("D")) facing = Facing.East;
-		else if(dirKey.toLowerCase().equals("S")) facing = Facing.South;
-		else if(dirKey.toLowerCase().equals("A")) facing = Facing.West;
+		else if(dirKey.toLowerCase().equals("d")) facing = Facing.East;
+		else if(dirKey.toLowerCase().equals("s")) facing = Facing.South;
+		else if(dirKey.toLowerCase().equals("a")) facing = Facing.West;
+		else System.out.println("Avatar - updateFacing() : facing direction calculation error after movement");
 	}
 
 
@@ -326,6 +340,13 @@ public class Avatar implements Serializable {
 		this.currentTile = currentTile;
 	}
 
+	public double getTileXPos(){
+		return tileXPos;
+	}
+
+	public double getTileYPos(){
+		return tileYPos;
+	}
 
 	public double getGlobalXPos(){
 		return globalXPos;
@@ -339,8 +360,16 @@ public class Avatar implements Serializable {
 		return battery.getBatteryLife();
 	}
 
+	public void setCharging(boolean charging){
+		this.battery.setCharging(charging);
+	}
+
 	public int getSpriteIndex(){
 		return spriteIndex;
+	}
+
+	public void setColor(Color color){
+		this.color = color;
 	}
 
 	@Override
@@ -366,8 +395,6 @@ public class Avatar implements Serializable {
 			if (other.Inventory != null)
 				return false;
 		} else if (!Inventory.equals(other.Inventory))
-			return false;
-		if (facing != other.facing)
 			return false;
 		if (playerName == null) {
 			if (other.playerName != null)

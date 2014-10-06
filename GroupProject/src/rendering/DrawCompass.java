@@ -17,15 +17,15 @@ public class DrawCompass {
 
 	public void redraw(Graphics g, String direction){
 
-		
+
 		if (direction.toLowerCase().equals("east")){
 			direction = "West";
 		}
 		else if (direction.toLowerCase().equals("west")){
 			direction = "East";
 		}
-		
-		java.net.URL imageURL = Rendering.class.getResource("Compass"+direction+".png");
+
+		java.net.URL imageURL = DrawCompass.class.getResource("Compass"+direction+".png");
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(imageURL);

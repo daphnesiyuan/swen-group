@@ -97,7 +97,7 @@ public abstract class Client{
 							}
 
 
-							// Send to server
+							// Sent FROM server
 							outputStream = new ObjectOutputStream(socket.getOutputStream());
 
 							// Get packet to send
@@ -179,9 +179,7 @@ public abstract class Client{
 		myThread.start();
 
 		// Clear all packets that were pending
-		//synchronized(outGoingPacketLock){
-			outgoingPackets.clear();
-		//}
+		outgoingPackets.clear();
 
 		// Record server
 		connectedIP = IPAddress;
@@ -250,14 +248,6 @@ public abstract class Client{
 	 * @param data Object to sent to the server for processing
 	 */
 	protected boolean sendData(NetworkData data) throws IOException{
-
-		// Check if we have a connection
-		/*if( socket == null || socket.isClosed() ){
-			return false;
-		}
-
-		// Add to our packets to send
-		outgoingPackets.add(new NetworkObject(IPAddress, data));*/
 
 		// Data stored successfully
 		return sendData(new NetworkObject(IPAddress, data));
