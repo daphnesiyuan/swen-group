@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -38,9 +39,12 @@ public class DrawingPanel extends JPanel  {
 	private MyMouseListener mouse;
 	private int mouseX;
 	private int mouseY;
+	private int hoverX;
+	private int hoverY;
 	private Handler handler;
 	private KeyBoard keyboard;
 	private MouseMotion mouseMotion;
+	private String hoveredButton="";
 
 	//Leons fields
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
@@ -131,7 +135,6 @@ public class DrawingPanel extends JPanel  {
 	protected void paintComponent (Graphics g){
 
 		if( startMenu ){
-			System.out.println("start menu mode, ready to draw");
 			sm.redraw(g);
 		}
 
@@ -141,7 +144,6 @@ public class DrawingPanel extends JPanel  {
 			compass.redraw(g, Direction.get(directionI));
 			invo.redraw(g, gc.getAvatar().getInventory()  , Direction.get(directionI));
 			map.redraw(g, gc.getRoom() , Direction.get(directionI));
-			//System.out.println("in game");
 			if(chatMode)chat.redraw(g, gc.getChatHistory(10), currentMessage);
 		}
 	}
@@ -168,6 +170,12 @@ public class DrawingPanel extends JPanel  {
 		handler.mouseListener();
 	}
 
+	public void sendHover(int x, int y){
+		hoverX = x;
+		hoverY = y;
+		handler.mouseMoved();
+	}
+
 
 	/**
 	 * A helper method which takes cordinates and finds the button that match those
@@ -184,10 +192,6 @@ public class DrawingPanel extends JPanel  {
 		int startH3 = getHeight()/3 - sm.getButtonHeight()/2 + (1*(getHeight()/3)/2);
 		int startH4 = getHeight()/3 - sm.getButtonHeight()/2 + (2*(getHeight()/3)/2);
 
-		//panel.getWidth()/2 - (buttonWidth/2),
-		//panel.getHeight()/3 - buttonHeight/2 + (i*(panel.getHeight()/3)/2)
-
-		//System.out.println("x="+startW + " y="+startH);
 		if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH1 && y<startH1+sm.getButtonHeight() ){
 			return "start";
 		}
@@ -203,6 +207,7 @@ public class DrawingPanel extends JPanel  {
 
 		return "";
 	}
+
 
 	public void setUpNWEN(){
 		gc = new GameClient("Daphne", this);
@@ -243,6 +248,39 @@ public class DrawingPanel extends JPanel  {
 
 		}
 
+		//handles hovering
+		public void mouseMoved() {
+			if(startMenu){
+				if( findButton(hoverX, hoverY).equals("start") ){
+					hoveredButton = "start";
+					sm.loadHoverButton("start");
+					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on start button");
+				}
+				else if( findButton(hoverX, hoverY).equals("join") ){
+					hoveredButton = "join";
+					sm.loadHoverButton("join");
+					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on join button");
+				}
+				else if( findButton(hoverX, hoverY).equals("load") ){
+					hoveredButton = "load";
+					sm.loadHoverButton("load");
+					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on load button");
+				}
+				else if( findButton(hoverX, hoverY).equals("help") ){
+					hoveredButton = "help";
+					sm.loadHoverButton("help");
+					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on help button");
+				}
+
+				else if(hoveredButton!=""){
+					sm.resetUnHoverButton(hoveredButton); //sends through the button which was last hovered on
+					hoveredButton="";
+				}
+			}
+		}
+
+
+		//handles clicking
 		public void mouseListener(){
 			if(startMenu){
 				if ( findButton( mouseX, mouseY ).equals("start") ){

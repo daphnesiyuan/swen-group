@@ -19,8 +19,7 @@ public class MouseMotion implements MouseMotionListener{
 
 	@Override
     public void mouseMoved(MouseEvent e){
-    	System.out.println("Mouse moved at " + e.getX() + ", " + e.getY());
-    	panel.sendClick(e.getX(), e.getY()); //maybe change to sendHover
+    	panel.sendHover(e.getX(), e.getY()); //maybe change to sendHover
     }
 
 }
