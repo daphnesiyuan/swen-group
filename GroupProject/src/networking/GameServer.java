@@ -121,9 +121,7 @@ public class GameServer extends ChatServer {
 	/**
 	 * Updates all clients with a new room according to the state of the game logic
 	 */
-	private void updateAllClients(){
-
-		System.out.println("Updating Clients: " + Calendar.getInstance().getTime());
+	private synchronized void updateAllClients(){
 
 			// Make sure we have a server to update the clients with
 			if( gameServer == null ){
@@ -143,7 +141,7 @@ public class GameServer extends ChatServer {
 				client.sendData(new RoomUpdate(room));
 			}
 
-				setGameModified(false);
+			setGameModified(false);
 	}
 
 	@Override
@@ -169,16 +167,9 @@ public class GameServer extends ChatServer {
 	 */
 	private synchronized void processMove(Move move, NetworkObject data){
 
-		System.out.println("Processing move: " + move + " " + Calendar.getInstance().getTime());
-
-
-		System.out.println("Moving Piece: " + Calendar.getInstance().getTime());
+		// Move the players Avatar
 		if( gameServer.moveAvatar(move) ){
-
-			System.out.println("Piece has been moved: " + Calendar.getInstance().getTime());
-
 			setGameModified(true);
-			System.out.println("Game has been modified: " + Calendar.getInstance().getTime());
 		}
 	}
 
@@ -213,50 +204,36 @@ public class GameServer extends ChatServer {
 
 	@Override
 	public void newClientConnection(ClientThread cl) {
-
-		// Tell everyone the new client has joined the server
-		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Connected.", chatMessageColor, true),cl);
-
-		// Display welcome message for the new client
-		cl.sendData(new ChatMessage("","Welcome Message::" + "\nType /help for commands", chatMessageColor, true));
-
-		// Tell console this client connected
-		System.out.println(cl.getPlayerName() + " has Connected.");
+		super.newClientConnection(cl);
 
 		// Set new players current room
 		Room currentRoom = gameServer.addPlayer(cl.getPlayerName());
-		System.out.println("currentRoom: " + currentRoom);
 
-		// Send the soom back to the client
+		// Send the room back to the client
 		if( currentRoom != null ){
 			cl.sendData(new RoomUpdate(currentRoom));
-			System.out.println("SEND NEW ROOM!");
 		}
 
 	}
 
 	@Override
 	public void clientRejoins(ClientThread cl) {
+		super.clientRejoins(cl);
 
 		// TODO THIS DOES NOT WORK
 		// TODO THIS DOES NOT WORK
 		// TODO THIS DOES NOT WORK
-
-		// Tell everyone the new client has joined the server
-		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Reconnected.", chatMessageColor, true),cl);
-
-		// Tell console this client connected
-		System.out.println(cl.getPlayerName() + " has Reconnected.");
 
 		Room currentRoom = gameServer.getRoom(cl.getPlayerName());
-		System.out.println("currentRoom: " + currentRoom);
-
-		// Send the soom back to the client
 		if( currentRoom != null ){
 			cl.sendData(new RoomUpdate(currentRoom));
 		}
 	}
 
+	/**
+	 * Checks if the game has been modified so we are able to update our clients
+	 * @return True if modified
+	 */
 	public boolean isGameModified() {
 
 		synchronized(gameModifiedLock){
@@ -264,6 +241,10 @@ public class GameServer extends ChatServer {
 		}
 	}
 
+	/**
+	 * Assigns the game to be modified or not
+	 * @param gameModified What to change it to
+	 */
 	public void setGameModified(boolean gameModified) {
 		synchronized(gameModifiedLock){
 			this.gameModified = gameModified;

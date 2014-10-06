@@ -30,17 +30,20 @@ public abstract class Server implements Runnable{
 	protected ArrayList<String> admins = new ArrayList<String>(); // List of admin
 																// IP Addresses
 
-	// Pings from IP to time sent
-	private HashMap<String, Calendar> lastPinged = new HashMap<String, Calendar>();
+	// Pings from IP to how many times we haven't been able to ping them
+	private HashMap<String, Integer> failedPings = new HashMap<String, Integer>();
 
 	protected String IPAddress;
 	protected int port = 32768;
 	private ServerSocket serverSocket;
 
+	/**
+	 * Sets up a basic server that addresses it's own IPAddress, adds the localIP to be an admin
+	 */
 	protected Server() {
 
 		try {
-			IPAddress = InetAddress.getLocalHost().getLocalHost().getHostAddress();
+			IPAddress = InetAddress.getLocalHost().getHostAddress();
 
 			// Save the localhost as an admin
 			admins.add(IPAddress);
@@ -60,14 +63,71 @@ public abstract class Server implements Runnable{
 				stopServer();
 			}
 		});
+
+		Thread clientChecker = new Thread(){
+
+			final int maxFailPings = 5;
+			final int pingTime = 5000;
+
+			@Override
+			public void run(){
+				while( true ){
+
+					// Sleep 5s
+					try { Thread.sleep(pingTime);} catch (InterruptedException e) {}
+
+					// Ping all
+					for (int i = 0; i < clients.size(); i++) {
+
+						ClientThread client = clients.get(i);
+						NetworkObject ping = new NetworkObject(IPAddress, new ChatMessage("~Admin","/ping everyone",Color.black,true));
+						int failCount = failedPings.get(client.getIPAddress());
+						boolean pinged = pingClient(client.getPlayerName(), ping);
+
+						// Couldn't ping them
+						if( !pinged ){
+							System.out.println("Could not ping: " + client.getPlayerName());
+
+							// Should we remove them?
+							if( failCount > maxFailPings ){
+								removeClient(client, false);
+								i--;
+							}
+							else{
+								// Update their counter
+								failedPings.put(client.getIPAddress(),failCount+1);
+							}
+						}
+						else{
+							// Pinged correctly. Reset their fail count
+							if( failCount > 0 ){
+								failedPings.put(client.getIPAddress(),0);
+							}
+						}
+					}
+				}
+			}
+		};
+		clientChecker.start();
 	}
 
 	/**
 	 * Clients interact with server
 	 */
 	public void run() {
+
+
+		// Try and start a new server off the default port
 		try {
 			serverSocket = new ServerSocket(port);
+		} catch (IOException e1) {
+			System.out.println("Unable to start new server\n\tLocal server already running");
+			return;
+		}
+
+		// Working port
+		try {
+
 			System.out.print("Servers IP: " + IPAddress + " : " + port + "\n");
 			System.out.print("Waiting for clients...\n");
 
@@ -101,6 +161,7 @@ public abstract class Server implements Runnable{
 
 				// Add the client to our list
 				clients.add(cl);
+				failedPings.put(cl.getIPAddress(), 0);
 				cl.start();
 			}
 		}  catch ( SocketException e ){
@@ -109,10 +170,9 @@ public abstract class Server implements Runnable{
 			System.out.print("\n====\n" + e.getMessage() + "\n====\n");
 			e.printStackTrace();
 		}finally {
-			// Close our clients
-			while( !clients.isEmpty() ){
-				removeClient(clients.get(0),false);
-			}
+
+			// Turn the server off
+			shutDownServer();
 		}
 		System.out.print("WARNING: The Server has closed\n");
 	}
@@ -133,6 +193,7 @@ public abstract class Server implements Runnable{
 		// Check if this client has disconnected
 		if ( !reconnecting ) {
 			sendToAllClients(new ChatMessage("~Admin",c.getPlayerName() + " has Disconnected.", Color.black, true), client);
+			failedPings.remove(c.getIPAddress());
 			System.out.println(c.getPlayerName() + " has Disconnected.");
 		}
 	}
@@ -166,29 +227,30 @@ public abstract class Server implements Runnable{
 		return pingServer(data.getIPAddress(), data.getTimeInMillis());
 	}
 
-	protected synchronized void pingClient(String whoToPing, NetworkObject data){
+	protected synchronized boolean pingClient(String whoToPing, NetworkObject data){
 
 		// Get who pinged the server
 		ClientThread to = getClientFromName(whoToPing);
 
 		// Check if we can find the client via name instead
 		if( to == null ){
-			System.out.println("Couldnt find client from Name");
 			to = getClientFromIP(whoToPing);
 			if( to == null ){
-
-				// Couldn't send TO a person
-				System.out.println("Unable to find client with whoToPing: " + whoToPing);
-				return;
+				return false;
 			}
 		}
 
-		to.sendData(data);
+		return to.sendData(data);
 	}
 
-	protected synchronized long pingServer(String whoPingedMe, long ms){
-		Calendar currentTime = Calendar.getInstance();
-		long delay = Math.abs(System.currentTimeMillis() - ms);
+	/**
+	 * Someone pinged the server
+	 * @param whoPingedMe IP or name of who pinged the server
+	 * @param sentMilliSeconds ms's of when the gile was sent
+	 * @return Delay between the sending of the ping, and receiving of the ping
+	 */
+	protected synchronized long pingServer(String whoPingedMe, long sentMilliSeconds){
+		long delay = Math.abs(System.currentTimeMillis() - sentMilliSeconds);
 
 		// Get who pinged the server
 		ClientThread client = getClientFromIP(whoPingedMe);
@@ -206,26 +268,6 @@ public abstract class Server implements Runnable{
 		}
 
 		return delay;
-	}
-
-	/**
-	 * Server was pinged by a client
-	 *
-	 * @param clientIP
-	 *            IP of who wants the history sent to them
-	 */
-	protected synchronized void pingClients() {
-
-		for (int i = 0; i < clients.size(); i++) {
-
-			ClientThread client = clients.get(i);
-
-			pingClient(client.getPlayerName(), new NetworkObject(IPAddress, new ChatMessage("~Admin","/ping everyone",Color.black,true)));
-
-			if( !clients.contains(client) ){
-				i--;
-			}
-		}
 	}
 
 	/**
@@ -280,15 +322,23 @@ public abstract class Server implements Runnable{
 
 	}
 
-	protected void sendToClient(String clientIP, NetworkData data) {
+	/**
+	 * Sends the given NetworkData to the client with the given IP
+	 * @param clientIP Who to send the IP to
+	 * @param data What to send to the given client
+	 * @return True if send successfully
+	 */
+	protected boolean sendToClient(String clientIP, NetworkData data) {
 
 		// TODO HACK. Make FASTER!
 		for (int i = 0; i < clients.size(); i++) {
 			if (clients.get(i).getIPAddress().equals(clientIP)) {
-				clients.get(i).sendData(data);
-				break;
+				return clients.get(i).sendData(data);
 			}
 		}
+
+		// Couldn't send
+		return false;
 	}
 
 	protected ClientThread getClientFromName(String name) {
@@ -341,7 +391,7 @@ public abstract class Server implements Runnable{
 			this.socket = socket;
 			this.player = player;
 
-			Thread outgoingThread = new Thread(){
+			/*Thread outgoingThread = new Thread(){
 				@Override
 				public void run(){
 
@@ -358,28 +408,16 @@ public abstract class Server implements Runnable{
 
 								NetworkObject popped;
 
-								// Try pinging the server if we have a server
-								//if( outgoingPackets.isEmpty() ){
-
-									// See if we can ping
-									if( System.currentTimeMillis() > nextPing ){
-										popped = new NetworkObject(IPAddress, new ChatMessage(getName(), "/ping everyone", Color.black, true));
-										nextPing = System.currentTimeMillis() + PINGRATE;
-									}
-									else{
-										// Can't ping, sleep and continue
-										try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
-										continue;
-									}/*
+								// See if we can ping
+								if( System.currentTimeMillis() > nextPing ){
+									popped = new NetworkObject(IPAddress, new ChatMessage(getName(), "/ping everyone", Color.black, true));
+									nextPing = System.currentTimeMillis() + PINGRATE;
 								}
 								else{
-									// Get the next packet to send
-									popped = outgoingPackets.pop();
+									// Can't ping, sleep and continue
+									try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
+									continue;
 								}
-
-								if( popped.getData() instanceof Move || popped.getData() instanceof RoomUpdate ){
-									System.out.println("Client Sending To Server: " + popped.getData() + " " + Calendar.getInstance().getTime());
-								}*/
 
 
 								// Send to server
@@ -404,7 +442,7 @@ public abstract class Server implements Runnable{
 					}
 				}
 			};
-			outgoingThread.start();
+			outgoingThread.start();*/
 		}
 
 		/**
@@ -439,23 +477,20 @@ public abstract class Server implements Runnable{
 						continue;
 					}
 
+
+
 					// Get the data from what was sent through the network
 					NetworkObject data = null;
-					try{
-						data = (NetworkObject)input.readObject();
-						data.getData().acknowledged = true; // We received the data
-					}catch(InvalidClassException e){
-						System.out.println("Incoming object must be NetworkObject: " + e.classname);
-						e.printStackTrace();
-					}
-					catch(SocketException e){
-						continue;
-					}
+					data = (NetworkObject)input.readObject();
+					data.getData().acknowledged = true; // We received the data
 
 					// Sent data to our subclass for processing
 					retrieveObject(data);
 
-				} catch (SocketException e) {
+				} catch(InvalidClassException e){
+					System.out.println("Incoming object must be NetworkObject: " + e.classname);
+					e.printStackTrace();
+				}catch (SocketException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -483,31 +518,29 @@ public abstract class Server implements Runnable{
 		 * Queues data to be stored for sending to this client
 		 * @param data To be sent to the client
 		 */
-		public synchronized void sendData(NetworkObject data) {
+		public synchronized boolean sendData(NetworkObject data) {
 
 			// Check if we have a connection
 			if( socket != null && !socket.isClosed() ){
-
-				// Add to our packets to send
-				if( data.getData() instanceof Move || data.getData() instanceof RoomUpdate ){
-					System.out.println("Server Queueing Data: " + data + " " + Calendar.getInstance().getTime());
-				}
-
-
 				try {
 
 					// Send to server
-					ObjectOutputStream outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
-
-
+					ObjectOutputStream outputStream;
+					try{
+						outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
+					}catch(SocketException e){
+						return false;
+					}
 
 					// Get packet to send
-					outputStream.writeObject(data);
+					try{
+						outputStream.writeObject(data);
+					}catch(SocketException e){
+						return false;
+					}
 					outputStream.flush();
 
-					// Send to client for client sided review
-					//retrieveObject(data);
-
+					return true;
 				}catch(SocketException e){
 					e.printStackTrace();
 				}
@@ -521,39 +554,34 @@ public abstract class Server implements Runnable{
 				catch(IOException e){
 					e.printStackTrace();
 				}
-
-
-
-				//outgoingPackets.add(data);
 			}
+
+			// Could not send
+			return false;
 		}
 
 		/**
 		 * Queues data to be stored for sending to this client
 		 * @param data To be sent to the client
+		 * @return
 		 */
-		public void sendData(NetworkData data) {
-			sendData(new NetworkObject(IPAddress, data));
+		public boolean sendData(NetworkData data) {
+			return sendData(new NetworkObject(IPAddress, data));
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
+		/* (non-Javadoc)
 		 * @see java.lang.Object#hashCode()
 		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + getOuterType().hashCode();
 			result = prime * result
-					+ ((IPAddress == null) ? 0 : IPAddress.hashCode());
+					+ ((player == null) ? 0 : player.hashCode());
 			return result;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
+		/* (non-Javadoc)
 		 * @see java.lang.Object#equals(java.lang.Object)
 		 */
 		@Override
@@ -565,18 +593,12 @@ public abstract class Server implements Runnable{
 			if (!(obj instanceof ClientThread))
 				return false;
 			ClientThread other = (ClientThread) obj;
-			if (!getOuterType().equals(other.getOuterType()))
-				return false;
 			if (player == null) {
 				if (other.player != null)
 					return false;
 			} else if (!player.equals(other.player))
 				return false;
 			return true;
-		}
-
-		private Server getOuterType() {
-			return Server.this;
 		}
 
 		public String getPlayerName(){
@@ -618,6 +640,19 @@ public abstract class Server implements Runnable{
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Shuts down the sever by closing all sockets associated with all clients, then closing all threads
+	 */
+	private void shutDownServer(){
+
+		// Close our clients
+		while( !clients.isEmpty() ){
+			removeClient(clients.get(0),false);
+		}
+
+		System.out.print("WARNING: The Server has closed\n");
 	}
 
 	public synchronized boolean isAdmin(String IP){

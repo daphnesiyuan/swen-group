@@ -37,6 +37,27 @@ public class ChatClient extends Client {
 	public ChatClient(String playerName, JComponent clientImage){
 		player = new Player(playerName);
 		this.clientImage = clientImage;
+
+		// Draws consistantly to display the new messages
+		Thread drawThread = new Thread(){
+			@Override
+			public void run(){
+
+				// Draw every 30ms
+				while( true ){
+
+					// Tell the component to repaint
+					repaintImage();
+					try {
+						Thread.sleep(30);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		};
+		drawThread.start();
 	}
 
 	/**
@@ -59,29 +80,27 @@ public class ChatClient extends Client {
 
 			// Check for commands
 			Scanner scan = new Scanner(chatMessage.message);
-			//if( !data.getIPAddress().equals(IPAddress) ){
 
-				// Ping command is received
-				if( scan.hasNext("/ping") ){ scan.next();
-					if( scan.hasNext(getName()) ){
+			// Ping command is received
+			if( scan.hasNext("/ping") ){ scan.next();
+				if( scan.hasNext(getName()) ){
 
-						// Someone Pinged me
-						long delay = (System.currentTimeMillis() - data.getTimeInMillis());
+					// Someone Pinged me
+					long delay = (System.currentTimeMillis() - data.getTimeInMillis());
 
-						try {
-							sendData(new ChatMessage(chatMessage.sendersName + " pinged " + getName() + " at " + delay + "ms",chatMessage.color,true));
-						} catch (IOException e) {}
-					}
-					else if( scan.hasNext("everyone") ){
-						//TODO GET PINGING WORKING
-						//TODO GET PINGING WORKING
-						/*try {
-							sendData(chatMessage);
-						} catch (IOException e) {}*/
-						return;
-					}
+					try {
+						sendData(new ChatMessage(chatMessage.sendersName + " pinged " + getName() + " at " + delay + "ms",chatMessage.color,true));
+					} catch (IOException e) {}
 				}
-			//}
+				else if( scan.hasNext("everyone") ){
+					//TODO GET PINGING WORKING
+					//TODO GET PINGING WORKING
+					/*try {
+						sendData(chatMessage);
+					} catch (IOException e) {}*/
+					return;
+				}
+			}
 
 			// Check if we have just gotten an acknowledgement
 			if( chatHistory.contains(chatMessage) ){
@@ -133,18 +152,28 @@ public class ChatClient extends Client {
 	/**
 	 * Sends the given object to the server that the client is connected to
 	 * @param data Object to sent to the server for processing
-	 * @return
 	 */
-	public boolean sendData(String message) throws IOException{
+	public boolean sendChatMessageToServer(String message) throws IOException{
 
-		ChatMessage chat = new ChatMessage(getName(), message,chatMessageColor);
+		// Create a new chatMessage
+		ChatMessage chat = new ChatMessage(player.getName(), message, getChatMessageColor());
+		return sendChatMessageToServer(chat);
+	}
 
-		// Check client commands
-		if( checkClientCommands(chat) ){
+	/**
+	 * Sends the given object to the server that the client is connected to
+	 * @param data Object to sent to the server for processing
+	 */
+	public boolean sendChatMessageToServer(ChatMessage chat) throws IOException{
+
+		// Client side commands
+		if( chat.message.equals("/clear") ){
+			clearChatHistory();
 			return true;
 		}
 
-		return super.sendData(chat);
+		// Send data to the server
+		return sendData(chat);
 	}
 
 	/**
@@ -157,6 +186,17 @@ public class ChatClient extends Client {
 	 */
 	public boolean connect(String IPAddress, int port) throws UnknownHostException, IOException{
 		return connect(IPAddress, player.getName(), port);
+	}
+
+	/**
+	 * Attempts to connect to the given Server
+	 * @param IPAddress IPAddress of the connection to connect as
+	 * @return True if connection worked, otherwise a exception gets thrown
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
+	public boolean connect(ChatServer server) throws UnknownHostException, IOException{
+		return connect(server, player.getName());
 	}
 
 	/**
@@ -197,15 +237,10 @@ public class ChatClient extends Client {
 			return true;
 		}
 		else if( scan.hasNext("/ping") ){
-			System.out.println("PING");
 			scan.next();
-
 
 			if( scan.hasNext("everyone") ){
 				return false;
-			}
-			else if( scan.hasNext() ){
-				System.out.println(scan.next());
 			}
 		}
 		else if( scan.hasNext("/chatcolor") ){

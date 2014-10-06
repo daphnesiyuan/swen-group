@@ -36,7 +36,6 @@ public class ChatServer extends Server {
 
 			// Save the message
 			chatHistory.add(cm);
-			//System.out.println(cm);
 
 			// Send it to all our clients
 			sendToAllClients(data);
@@ -80,6 +79,11 @@ public class ChatServer extends Server {
 		return new CommandParser().parseCommand(scan, data);
 	}
 
+	/**
+	 * Parser for all the commands that the server processes from ChatMessages sent from clients
+	 * @author veugeljame
+	 *
+	 */
 	private class CommandParser {
 
 		public boolean parseCommand(Scanner scan, NetworkObject data) {

@@ -4,6 +4,7 @@ import gameLogic.Avatar;
 import gameLogic.Room;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 
 import javax.swing.JComponent;
@@ -18,28 +19,25 @@ public class GameClient extends ChatClient {
 	// Client side of the game
 	private Room clientRoom = null;
 
+	/**
+	 * Constructor for a GameClient to specify what it's characteristics are. And how it will appear when being drawn
+	 * @param playerName Name of the player
+	 * @param clientImage Where to draw the Room given
+	 */
 	public GameClient(String playerName, JComponent clientImage) {
 		super(playerName, clientImage);
+	}
 
-		Thread drawThread = new Thread(){
-			@Override
-			public void run(){
-
-				// Draw every 30ms
-				while( true ){
-
-					// Tell the component to repaint
-					repaintImage();
-					try {
-						Thread.sleep(30);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-		};
-		drawThread.start();
+	/**
+	 * Constructor that allows a client to be created then will connect it directly to a server
+	 * @param playerName What to call the player
+	 * @param clientImage Where to draw the game on
+	 * @param serverIP IP Of the server to join
+	 * @param serverPort Port of the server to join
+	 */
+	public GameClient(String playerName, JComponent clientImage, String serverIP, int serverPort) throws UnknownHostException, IOException{
+		this(playerName, clientImage);
+		connect(serverIP, serverPort);
 	}
 
 	/**
@@ -77,42 +75,8 @@ public class GameClient extends ChatClient {
 	 */
 	public boolean sendMoveToServer(Move interaction) throws IOException{
 
-		if( interaction instanceof Move ){
-			System.out.println("Queueing on Client: " + interaction + " " + Calendar.getInstance().getTime());
-		}
-
 		// Send data to the server
 		return super.sendData(interaction);
-	}
-
-	/**
-	 * Sends the given object to the server that the client is connected to
-	 * @param data Object to sent to the server for processing
-	 */
-	public boolean sendChatMessageToServer(String message) throws IOException{
-
-		// Create a new chatMessage
-		ChatMessage chat = new ChatMessage(player.getName(), message, getChatMessageColor());
-		return sendChatMessageToServer(chat);
-	}
-
-	/**
-	 * Sends the given object to the server that the client is connected to
-	 * @param data Object to sent to the server for processing
-	 */
-	public boolean sendChatMessageToServer(ChatMessage chat) throws IOException{
-
-		// Client side commands
-		if( chat.message.equals("/clear") ){
-			clearChatHistory();
-			return true;
-		}
-
-		// Record client sided message
-		addChatMessage(chat);
-
-		// Send data to the server
-		return super.sendData(chat);
 	}
 
 	@Override
@@ -134,8 +98,6 @@ public class GameClient extends ChatClient {
 	 */
 	public synchronized void retrievedUpdatedRoom(RoomUpdate room){
 		clientRoom = room.updatedRoom;
-
-		System.out.println("Client Recieved new Room: " + Calendar.getInstance().getTime());
 	}
 
 	@Override
