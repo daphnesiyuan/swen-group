@@ -111,6 +111,7 @@ public class Avatar implements Serializable {
 
 
 	public boolean moveTo(Move move){
+
 		if(move.getRenderDirection() == null){
 			System.out.println("Avatar: moveTo() - RenderDirection in provided move object is null");
 			return false;
@@ -122,7 +123,6 @@ public class Avatar implements Serializable {
 
 		int change = calcDirection(move);
 		Tile2D newPosition = null;
-
 		if(change == 0) newPosition = moveUp(currentTile.getTileUp());
 		else if(change == 1) newPosition = moveRight(currentTile.getTileRight());
 		else if(change == 2) newPosition = moveDown(currentTile.getTileDown());
@@ -133,9 +133,7 @@ public class Avatar implements Serializable {
 			System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
 			return false;
 		}
-
 		if(newPosition instanceof Door) newPosition = moveDoor(newPosition); // If Player is trying to pass through a door
-
 
 		updateFacing(move.getInteraction());
 		updateLocations(newPosition,currentRoom);
@@ -160,7 +158,7 @@ public class Avatar implements Serializable {
 
 	public void animation(){
 		spriteIndex++;
-		spriteIndex = spriteIndex % 3; // 4 images but 0 indexed.
+		spriteIndex = spriteIndex % 4; // 4 images but 0 indexed.
 	}
 
 	/**
@@ -326,6 +324,13 @@ public class Avatar implements Serializable {
 		this.currentTile = currentTile;
 	}
 
+	public double getTileXPos(){
+		return tileXPos;
+	}
+
+	public double getTileYPos(){
+		return tileYPos;
+	}
 
 	public double getGlobalXPos(){
 		return globalXPos;

@@ -12,7 +12,7 @@ import networking.Move;
 
 public class KeyBoard implements KeyListener{
 
-	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
+	//private ArrayList<Integer> keysDown = new ArrayList<Integer>();
 
 	private DrawingPanel panel;
 
@@ -23,76 +23,72 @@ public class KeyBoard implements KeyListener{
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 
-		if (!keysDown.contains(e.getKeyCode()))
-			keysDown.add(new Integer(e.getKeyCode()));
-		if( panel.isChatMode() ){
-			currentMessage+=e.getKeyChar();
+		if (!(panel.getKeysDown()).contains(e.getKeyCode()))
+			(panel.getKeysDown()).add(new Integer(e.getKeyCode()));
+		if(panel.isChatMode()){
+			panel.addToCurrentMessage( Character.toString(e.getKeyChar()) );
+
 		}
 		actionKeys();
-		//System.out.println("bla");
-		panel.repaint();
+		//repaint();
 	}
 
 
 	private void actionKeys() {
 
-		if (keysDown.contains(KeyEvent.VK_ALT)){
-			//chatMode = !chatMode;
-			boolean b = !panel.isChatMode();
-			panel.setChatMode(b);
+		if ((panel.getKeysDown()).contains(KeyEvent.VK_ALT)){
+			boolean b = panel.isChatMode();
+			panel.setChatMode(!b);
 		}
 		if ( panel.isChatMode() ){
-			if (keysDown.contains(KeyEvent.VK_ENTER)){
-				chatMessages.add(new ChatMessage("Ryan", currentMessage, Color.RED));
-				currentMessage = "";
+			if ((panel.getKeysDown()).contains(KeyEvent.VK_ENTER)){
+				//chatMessages.add(new ChatMessage("Ryan", currentMessage, Color.RED));
+				try {
+					(panel.getGameClient()).sendChatMessageToServer( panel.getCurrentMessage() );
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				panel.setCurrentMessage("");
 			} else {
 
 			}
 		}
 		else{
-			if (keysDown.contains(KeyEvent.VK_CONTROL)) {
-				direction = (direction + 1) % 4;
+			if ((panel.getKeysDown()).contains(KeyEvent.VK_CONTROL)) {
+				int d = panel.getDirection();
+				//directionI = (directionI + 1) % 4;
+				panel.setDirection( (d+1)%4 );
 			}
-			if(keysDown.contains(KeyEvent.VK_W)){
+			if((panel.getKeysDown()).contains(KeyEvent.VK_W)){
 				moveForward();
 			}
-			if(keysDown.contains(KeyEvent.VK_A)){
+			if((panel.getKeysDown()).contains(KeyEvent.VK_A)){
 				moveLeft();
 			}
-			if(keysDown.contains(KeyEvent.VK_S)){
+			if((panel.getKeysDown()).contains(KeyEvent.VK_S)){
 				moveBack();
 			}
-			if(keysDown.contains(KeyEvent.VK_D)){
+			if((panel.getKeysDown()).contains(KeyEvent.VK_D)){
 				moveRight();
 			}
 		}
-		keysDown.clear();
-		System.out.println(gameClient.roomIsModified());
-		while(!gameClient.roomIsModified()){
-			System.out.println("checking modified");
+		(panel.getKeysDown()).clear();
 
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		gameClient.setRoomModified(false);
-		repaint();
 	}
 
 	private void moveRight() {
-		System.out.println(player);
-		Move move = new Move(player, "D", Direction.get(direction));
+		//System.out.println(player);
+		Move move = new Move((panel.getGameClient()).getPlayer(), "D", Direction.get( panel.getDirection() ));
 
 		try {
-			testrendering.gameClient.sendMoveToServer(move);
+			panel.getGameClient().sendMoveToServer(move);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,7 +96,7 @@ public class KeyBoard implements KeyListener{
 		System.out.println("sending move");
 
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -109,11 +105,11 @@ public class KeyBoard implements KeyListener{
 	}
 
 	private void moveBack() {
-		System.out.println(player);
-		Move move = new Move(player, "S", Direction.get(direction));
+		//System.out.println(player);
+		Move move = new Move(panel.getGameClient().getPlayer(), "S", Direction.get(panel.getDirection()));
 
 		try {
-			testrendering.gameClient.sendMoveToServer(move);
+			panel.getGameClient().sendMoveToServer(move);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,7 +117,7 @@ public class KeyBoard implements KeyListener{
 		System.out.println("sending move");
 
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,11 +126,11 @@ public class KeyBoard implements KeyListener{
 	}
 
 	private void moveLeft() {
-		System.out.println(player);
-		Move move = new Move(player, "A", Direction.get(direction));
+		//System.out.println(player);
+		Move move = new Move(panel.getGameClient().getPlayer(), "A", Direction.get( panel.getDirection() ));
 
 		try {
-			testrendering.gameClient.sendMoveToServer(move);
+			panel.getGameClient().sendMoveToServer(move);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -142,7 +138,7 @@ public class KeyBoard implements KeyListener{
 		System.out.println("sending move");
 
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -152,11 +148,11 @@ public class KeyBoard implements KeyListener{
 
 	private void moveForward() {
 
-		System.out.println(player);
-		Move move = new Move(player, "W", Direction.get(direction));
+//		System.out.println(player);
+		Move move = new Move(panel.getGameClient().getPlayer(), "W", Direction.get(panel.getDirection()));
 
 		try {
-			testrendering.gameClient.sendMoveToServer(move);
+			panel.getGameClient().sendMoveToServer(move);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -164,7 +160,7 @@ public class KeyBoard implements KeyListener{
 		System.out.println("sending move");
 
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -174,6 +170,6 @@ public class KeyBoard implements KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-	}
 
+	}
 }

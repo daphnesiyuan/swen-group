@@ -17,11 +17,6 @@ public class MyMouseListener implements MouseListener{
 
 
     }
-
-
-
-
-
     public void mousePressed(MouseEvent e) {
         //System.out.println("Mouse pressed at " + e.getX() + ", " + e.getY());
     	}
@@ -37,7 +32,5 @@ public class MyMouseListener implements MouseListener{
     public void mouseExited(MouseEvent e) {
         //System.out.println("Mouse exited at " + e.getX() + ", " + e.getY());
     	}
-
-
 
 }

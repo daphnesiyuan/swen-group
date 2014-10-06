@@ -39,7 +39,7 @@ public class DrawInventory {
 	private void drawInvItem(Graphics g, int i, List<Item> inventory) {
 		if (i >= inventory.size()){return;}
 		String itemName = inventory.get(i).getClass().getName();
-		java.net.URL imageURL = Rendering.class.getResource(itemName+".png");
+		java.net.URL imageURL = DrawInventory.class.getResource(itemName+".png");
 		if(imageURL == null){
 			System.out.println("could not find image on disk");
 		}
