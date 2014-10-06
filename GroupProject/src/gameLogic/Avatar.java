@@ -288,9 +288,10 @@ public class Avatar implements Serializable {
 	 */
 	public void updateFacing(String dirKey){
 		if(dirKey.toLowerCase().equals("w")) facing = Facing.North;
-		else if(dirKey.toLowerCase().equals("D")) facing = Facing.East;
-		else if(dirKey.toLowerCase().equals("S")) facing = Facing.South;
-		else if(dirKey.toLowerCase().equals("A")) facing = Facing.West;
+		else if(dirKey.toLowerCase().equals("d")) facing = Facing.East;
+		else if(dirKey.toLowerCase().equals("s")) facing = Facing.South;
+		else if(dirKey.toLowerCase().equals("a")) facing = Facing.West;
+		else System.out.println("Avatar - updateFacing() : facing direction calculation error after movement");
 	}
 
 
