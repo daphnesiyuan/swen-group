@@ -1,5 +1,6 @@
 package gameLogic;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,9 +15,9 @@ public class Door extends Tile2D{
 	private int toRoomXPos;
 	private int toRoomYPos;
 
-	private boolean locked;
+	private boolean locked;		// White door - unlocked
 
-	//private List<Key> unlockKeys;
+	private Color color;
 
 	public Door(int xPos, int yPos) {
 		super(xPos, yPos);
@@ -31,17 +32,6 @@ public class Door extends Tile2D{
 	public void setLocked(boolean locked){
 		locked = this.locked;
 	}
-
-//	public List<Key> getKeys(){
-//		return unlockKeys;
-//	}
-//
-//	public void setKeys(List<Key> keys){
-//		unlockKeys = keys;
-//	}
-
-
-
 
 	public void setToRoomIndex(int ri) {
 		toRoomIndex = ri;
@@ -71,4 +61,11 @@ public class Door extends Tile2D{
 		return toRoomIndex;
 	}
 
+	public void setColor(Color color){
+		this.color = color;
+	}
+
+	public Color getColor(){
+		return color;
+	}
 }

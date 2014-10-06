@@ -1,27 +1,32 @@
 package gameLogic;
 
+import java.awt.Color;
 import java.io.Serializable;
 
-public class Charger extends Item implements Serializable{
+public class ColorChange extends Item implements Serializable{
 
-	private static final long serialVersionUID = -120239992386564353L;
+
+	private static final long serialVersionUID = 88537099210702004L;
 
 	private Tile2D tile;
 	private final int xPos, yPos;
+	private Color color;
 
-	public Charger(Tile2D tile){
+	public ColorChange(Tile2D tile, Color color){
 		this.tile = tile;
 		this.xPos = tile.getxPos();
 		this.yPos = tile.getyPos();
 		this.movable = false;
 		this.startX = xPos;
 		this.startY = yPos;
+
+		this.color = color;
 	}
 
 	@Override
 	public String getDescription() {
 		String desc = "";
-		desc+= "Charger at: ( "+xPos+" , "+xPos+" )";
+		desc+= "ColorChange ("+color+"), at: ( "+xPos+" , "+xPos+" )";
 		return desc;
 	}
 
@@ -42,8 +47,7 @@ public class Charger extends Item implements Serializable{
 
 	@Override
 	public boolean interactWith(Avatar avatar) {
-		ChargerThread ct = new ChargerThread(avatar, this);
-		ct.start();
+		avatar.setColor(color);
 		return true;
 	}
 
@@ -56,26 +60,5 @@ public class Charger extends Item implements Serializable{
 	public boolean pickItemUp() {
 		return false;	// charger cannot be picked up
 	}
-
-	static class ChargerThread extends Thread{
-		Avatar avatar;
-		Charger charger;
-		public ChargerThread(Avatar avatar, Charger charger){
-			this.avatar = avatar;
-			this.charger = charger;
-		}
-		public void run(){
-			while(true){
-				if(avatar.getCurrentTile().equals(charger.tile)){
-					avatar.setCharging(true);
-				}
-				else{
-					avatar.setCharging(false);
-					break;
-				}
-			}
-		}
-	}
-
 
 }
