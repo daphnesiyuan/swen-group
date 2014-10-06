@@ -32,7 +32,7 @@ public class KeyBoard implements KeyListener{
 		if (!(panel.getKeysDown()).contains(e.getKeyCode()))
 			(panel.getKeysDown()).add(new Integer(e.getKeyCode()));
 		if(panel.isChatMode()){
-			panel.addCurrentMessage( Character.toString(e.getKeyChar()) );
+			panel.addToCurrentMessage( Character.toString(e.getKeyChar()) );
 
 		}
 		actionKeys();
