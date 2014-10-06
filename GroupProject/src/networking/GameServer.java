@@ -3,12 +3,14 @@ package networking;
 import gameLogic.Game;
 import gameLogic.Room;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 
+import networking.Server.ClientThread;
 import dataStorage.XMLLoader;
 import dataStorage.XMLSaver;
 
@@ -248,6 +250,22 @@ public class GameServer extends ChatServer {
 	public void setGameModified(boolean gameModified) {
 		synchronized(gameModifiedLock){
 			this.gameModified = gameModified;
+		}
+	}
+
+	/**
+	 * Removes the client at the given location from our list of clients
+	 *
+	 * @param client
+	 *            index to remove a client from
+	 * @param reconnecting
+	 */
+	@Override
+	public synchronized void removeClient(ClientThread client, boolean reconnecting) {
+		super.removeClient(client, reconnecting);
+
+		if ( !reconnecting ) {
+			gameServer.removePlayerFromGame(client.getPlayerName());
 		}
 	}
 
