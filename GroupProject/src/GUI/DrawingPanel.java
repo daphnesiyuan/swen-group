@@ -254,22 +254,18 @@ public class DrawingPanel extends JPanel  {
 				if( findButton(hoverX, hoverY).equals("start") ){
 					hoveredButton = "start";
 					sm.loadHoverButton("start");
-					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on start button");
 				}
 				else if( findButton(hoverX, hoverY).equals("join") ){
 					hoveredButton = "join";
 					sm.loadHoverButton("join");
-					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on join button");
 				}
 				else if( findButton(hoverX, hoverY).equals("load") ){
 					hoveredButton = "load";
 					sm.loadHoverButton("load");
-					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on load button");
 				}
 				else if( findButton(hoverX, hoverY).equals("help") ){
 					hoveredButton = "help";
 					sm.loadHoverButton("help");
-					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on help button");
 				}
 
 				else if(hoveredButton!=""){
@@ -296,6 +292,9 @@ public class DrawingPanel extends JPanel  {
 
 				else if ( findButton( mouseX, mouseY ).equals("join") ){
 					System.out.println("PRESSED JOIN BUTTON");
+					//open a pop up menu: String for IP address, connect button
+					//gc.connect(thestringtheyenter);
+					//so we need to cherck for a catch error: if it fails then invalid try again etc
 				}
 
 				else if ( findButton( mouseX, mouseY ).equals("load") ){

@@ -127,10 +127,7 @@ public class StartMenu {
 	 */
 	public void loadHoverButton(String button){
 
-		System.out.println("===================== AT HOVER BUTTON METHOD: "+button);
-
 		if(button.equals("start")){
-			System.out.println("start button hovered");
 			buttons.set(0, buttonsHOV.get(0));
 			panel.repaint();
 		}
@@ -139,7 +136,6 @@ public class StartMenu {
 			panel.repaint();
 		}
 		else if(button.equals("load")){
-			System.out.println("sload button hovered");
 			buttons.set(2, buttonsHOV.get(2));
 			panel.repaint();
 		}
@@ -156,22 +152,18 @@ public class StartMenu {
 	 */
 	public void resetUnHoverButton(String button){
 		if(button.equals("start")){
-			System.out.println("start button un-hovered");
 			buttons.set(0, buttonsDEF.get(0));
 			panel.repaint();
 		}
 		else if(button.equals("join")){
-			System.out.println("join button un-hovered");
 			buttons.set(1, buttonsDEF.get(1));
 			panel.repaint();
 		}
 		else if(button.equals("load")){
-			System.out.println("load button un-hovered");
 			buttons.set(2, buttonsDEF.get(2));
 			panel.repaint();
 		}
 		else if(button.equals("help")){
-			System.out.println("help button un-hovered");
 			buttons.set(3, buttonsDEF.get(3));
 			panel.repaint();
 		}
