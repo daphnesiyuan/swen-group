@@ -21,18 +21,34 @@ public class Player implements Serializable {
 		this.setName(name);
 	}
 
+	/**
+	 * Gets the name of the player
+	 * @return String containing name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Assigns a new name to the player
+	 * @param name New name to assign the player
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the IP Address of the player
+	 * @return String with IP
+	 */
 	public String getIPAddress() {
 		return IPAddress;
 	}
 
+	/**
+	 * Assigns a new IP address to the player
+	 * @param iPAddress new IP to assign the player
+	 */
 	public void setIPAddress(String iPAddress) {
 		IPAddress = iPAddress;
 	}

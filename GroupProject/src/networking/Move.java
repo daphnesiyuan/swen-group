@@ -1,5 +1,10 @@
 package networking;
 
+/**
+ * Interaction associated when a Client has requested a move on their side and is sent through to the gamelogic for processing
+ * @author veugeljame
+ *
+ */
 public class Move extends NetworkData {
 
 	/**
@@ -11,18 +16,24 @@ public class Move extends NetworkData {
 	public final Player player;
 	public final String renderDirection;
 
-
-
 	public Move(Player player, String interaction, String renderDirection){
 		this.interaction = interaction;
 		this.player = player;
 		this.renderDirection = renderDirection;
 	}
 
+	/**
+	 * What to do when the move is performed
+	 * @return Interaction
+	 */
 	public String getInteraction() {
 		return interaction;
 	}
 
+	/**
+	 * Gets the player that is performing this move
+	 * @return Player object of who to move
+	 */
 	public Player getPlayer(){
 		return player;
 	}
@@ -32,6 +43,10 @@ public class Move extends NetworkData {
 		return player.getName() + " performs " + interaction;
 	}
 
+	/**
+	 * Which direction the rendering is currently facing
+	 * @return North, East, South, West
+	 */
 	public String getRenderDirection() {
 		return renderDirection;
 	}

@@ -10,6 +10,8 @@ import gameLogic.Room;
  */
 public class RoomUpdate extends NetworkData {
 	private static final long serialVersionUID = 8175985451592995007L;
+
+	// New room to be sent to clients
 	public final Room updatedRoom;
 
 	public RoomUpdate(Room room){

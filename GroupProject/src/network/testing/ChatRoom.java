@@ -100,19 +100,12 @@ public class ChatRoom implements ActionListener{
 				Stack<ChatMessage> history = client.getChatHistory(10);
 				int maxMessages = Math.min(history.size(), 20);
 
+				// Display
 				for(int i = history.size()-1; i > (history.size()-maxMessages); i--){
 					ChatMessage cm = history.get(i);
 					g.setColor(cm.color);
 					g.drawString(cm.toString(), 0, (history.size()-i)*10);
 				}
-				/*for(ChatMessage cm : history ){
-					JLabel label = new JLabel(cm.toString());
-					label.setForeground(cm.color);
-					add(label);
-				}*/
-
-				// Reorganize it's components
-				//revalidate();
 
 				// Scroll to bottom of the page
 				int height = getHeight();

@@ -135,7 +135,7 @@ public class GameServer extends ChatServer {
 
 				// Get each of our clients, and the room they are in
 				ClientThread client = clients.get(i);
-				Room room = gameServer.getRoom(client.player.getName());
+				Room room = gameServer.getRoom(client.getPlayerName());
 
 				//System.out.println("Sending Room " + room + " to " + client.getPlayerName());
 
@@ -195,7 +195,7 @@ public class GameServer extends ChatServer {
 					if (text != null) {
 
 						// Process to everyone
-						retrieveObject(new NetworkObject(IPAddress, new ChatMessage("~Admin", text, chatMessageColor, true)));
+						retrieveObject(new NetworkObject(getIPAddress(), new ChatMessage("~Admin", text, chatMessageColor, true)));
 					}
 				} catch (IOException e) {
 					e.printStackTrace();

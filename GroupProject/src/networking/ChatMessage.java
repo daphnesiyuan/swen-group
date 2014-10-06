@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Random;
 
 /**
- * Chat message sent through the network
+ * Chat message sent through the network that contains Who sent the message, the message it self and what color it should be drawn in
  * @author veugeljame
  *
  */
@@ -53,6 +53,11 @@ public class ChatMessage extends NetworkData{
 		return new ChatMessage(message.sendersName, message.message, message.color, true);
 	}
 
+	/**
+	 * Displays the in readable format:
+	 * time + acknowledgement + name + message
+	 */
+	@Override
 	public String toString(){
 		// Time > James: MESSAGE!
 		// Time James: Confirmed on the server

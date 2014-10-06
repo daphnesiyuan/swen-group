@@ -36,7 +36,7 @@ public class ChatRoomServer extends ChatServer {
 	private synchronized void processServerMessage(String message) {
 
 		// Process to everyone
-		retrieveObject(new NetworkObject(IPAddress, new ChatMessage("~Admin", message, chatMessageColor, true)));
+		retrieveObject(new NetworkObject(getIPAddress(), new ChatMessage("~Admin", message, chatMessageColor, true)));
 	}
 
 	/**
