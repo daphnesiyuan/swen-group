@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import networking.ChatMessage;
 import GUI.DrawingPanel;
 import gameLogic.Avatar;
+import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Game.Facing;
@@ -168,12 +169,7 @@ public class DrawWorld {
 		 else{
 		 rotated90 = false;
 		 }
-		 if (Direction.get(direction) == 0 || Direction.get(direction) == 1){
-		 back = true;
-		 }
-		 else{
-		 back = false;
-		 }
+
 
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
@@ -229,6 +225,9 @@ public class DrawWorld {
 		}
 		else if(tile instanceof Door){
 			drawObject(g, pt, images.get("Door"+tileNum));
+		}
+		else if(tile instanceof Column){
+			drawObject(g, pt, images.get("Column"+tileNum));
 		}
 	}
 
