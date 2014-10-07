@@ -109,21 +109,21 @@ public class DrawWorld {
 			for(int j = 0; j < tiles.length; j++){
 				if(tiles[j][i].getAvatar() != null && tiles[j][i].getAvatar().equals(character)){
 					tile = new Point(j,i);
-					System.out.println(i+" "+j);
+					//System.out.println(i+" "+j);
 					break;
 				}
 			}
 		}
 
-		if(tile == null){
-			System.out.println("\n\n\nDrawWorld.calibrateOffset - tile == null");
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		if(tile == null){
+//			System.out.println("\n\n\nDrawWorld.calibrateOffset - tile == null");
+//			try {
+//				Thread.sleep(10000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 
 		Point avatarOffset = avatarTilePos(tiles[tile.x][tile.y]);
 
