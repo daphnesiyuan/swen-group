@@ -21,7 +21,7 @@ public class Game{
 
 
 	public Game(){
-		roomNumber = 1; // RE: 0th room is arena
+		roomNumber = 0; // RE: 0th room is arena
 
 
 		roomsInGame = new ArrayList<Room>();
