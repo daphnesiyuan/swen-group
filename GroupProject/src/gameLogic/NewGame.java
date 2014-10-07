@@ -19,7 +19,8 @@ public class NewGame {
 
 	private List<Room> roomsInGame;
 
-
+// HEY THERE
+	
 	public NewGame(Game g){
 		game = g;
 
