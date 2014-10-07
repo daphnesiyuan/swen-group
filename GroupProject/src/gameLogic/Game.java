@@ -17,11 +17,18 @@ public class Game{
 
 	public enum Facing { North, South, East, West; }
 
+	private int roomNumber;
+
 
 	public Game(){
+		roomNumber = 1; // RE: 0th room is arena
+
+
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
 		createNewGame();
+
+
 	}
 
 
@@ -44,9 +51,14 @@ public class Game{
 
 
 	public Room addPlayer(String playerName){
-		Room room = roomsInGame.get(0);
+		if(roomNumber>=4){
+			System.out.println("Cannot add player - there are no rooms left !");
+			return null;
+		}
+		Room room = roomsInGame.get(roomNumber++);
 		Tile2D tile = room.getTiles()[3][3];
 		Avatar avatar = new Avatar(playerName,tile,room);
+		avatar.setHomeRoom(room);
 		activeAvatars.add(avatar);
 		return room;
 	}
@@ -106,14 +118,6 @@ public class Game{
 	 * @param roomIndex attached to the sought room
 	 * @return the Room with the associated RoomIndex - useful for finding the room that a door is attached to.
 	 */
-	public Room getRoom(int roomIndex) {
-		for(Room room : roomsInGame){
-			if(room.getRoomNumber() == roomIndex){
-				return room;
-			}
-		}
-		return null;
-	}
 
 	public boolean removePlayerFromGame(String playerName){
 		Avatar leaving = null;

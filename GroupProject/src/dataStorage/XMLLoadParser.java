@@ -9,6 +9,7 @@ import gameLogic.Room;
 import gameLogic.Tile2D;
 import gameLogic.Wall;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -85,7 +86,10 @@ public class XMLLoadParser {
 		for(int i = 0; i<avatars.size();i++){
 			parseAvatar((Element)avatars.get(i),room);
 		}
+		room.setTiles(tiles);
 		game.addRoom(room);
+
+
 	}
 
 	/**
@@ -96,6 +100,10 @@ public class XMLLoadParser {
 	 */
 
 	public void parseAvatar(Element e, Room r){
+		int roomNum = Integer.parseInt(e.getChildText("currentRoom"));
+		String playerName = e.getChildText("playerName");
+		//WAITING FOR ITEMS TO BE IMPLEMENTED
+
 
 	}
 
@@ -127,10 +135,10 @@ public class XMLLoadParser {
 		//bringing in the xml info
 		Avatar a = game.getAvatar(characterOnTile);
 		//making necessary adjustments and calculations
-		Floor f = new Floor(xPos,yPos,isSpawn);
+		Floor f = new Floor(xPos,yPos);
 		f.setRoom(r);
 		f.setAvatarOnTile(a);
-		f.setType(type);
+		//f.setType(type);
 		//WAITING FOR ITEMS TO BE IMPLEMENTED
 
 		//setting the floor tile
@@ -168,7 +176,7 @@ public class XMLLoadParser {
 		Wall w = new Wall(xPos,yPos);
 		w.setRoom(r);
 		w.setAvatarOnTile(a);
-		w.setType(type);
+		//w.setType(type);
 		//WAITING FOR ITEMS TO BE IMPLEMENTED
 
 		//setting the floor tile
@@ -204,22 +212,20 @@ public class XMLLoadParser {
 		String characterOnTile = e.getChildText("characterOnTile");
 		List items = e.getChildren("itemsOnTile");
 		int toRoomIndex = Integer.parseInt(e.getChildText("toRoomIndex"));
-		int toRoomXPos = Integer.parseInt(e.getChildText("toRoomXPos"));
-		int toRoomYPos = Integer.parseInt(e.getChildText("toRoomYPos"));
-		boolean locked = Boolean.parseBoolean(e.getChildText("locked"));
-
+		List colors = e.getChildren("color");
+		int red = (Integer) colors.get(0);
+		int green = (Integer) colors.get(1);
+		int blue = (Integer) colors.get(2);
 		//bringing in the xml info
 		Avatar a = game.getAvatar(characterOnTile);
 		//making necessary adjustments and calculations
 		Door d = new Door(xPos,yPos);
 		d.setRoom(r);
 		d.setAvatarOnTile(a);
-		d.setType(type);
 		//WAITING FOR ITEMS TO BE IMPLEMENTED
 		d.setToRoomIndex(toRoomIndex);
-		d.setToRoomX(toRoomXPos);
-		d.setToRoomY(toRoomYPos);
-		d.setLocked(locked);
+		Color c = new Color(red,green,blue);
+		d.setColor(c);
 		//setting the floor tile
 		tiles[xPos][yPos] = d;
 	}

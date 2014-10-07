@@ -156,9 +156,9 @@ public class XMLSaveParser {
 		Element e = new Element("Floor");
 		e.addContent(new Element("xPos").setText(Integer.toString(floor.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(floor.getyPos())));
-		e.addContent(new Element("type").setText(floor.getType()));
+		//e.addContent(new Element("type").setText(floor.getType()));
 		e.addContent(new Element("room").setText(Integer.toString(floor.getRoom().getRoomNumber()))); 		//ROOM NUMBER
-		e.addContent(new Element("isSpawn").setText(Boolean.toString(floor.isSpawn())));		//Adding fields
+		//e.addContent(new Element("isSpawn").setText(Boolean.toString(floor.isSpawn())));		//Adding fields
 		if(!(floor.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(floor.getAvatar().getPlayerName()));
 		else e.addContent(new Element("characterOnTile").setText("NULL"));
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
@@ -189,7 +189,7 @@ public class XMLSaveParser {
 		Element e = new Element("Wall");
 		e.addContent(new Element("xPos").setText(Integer.toString(wall.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(wall.getyPos())));
-		e.addContent(new Element("type").setText(wall.getType()));
+		//e.addContent(new Element("type").setText(wall.getType()));
 		e.addContent(new Element("room").setText(Integer.toString(wall.getRoom().getRoomNumber()))); 		//ROOM NUMBER
 		if(!(wall.getAvatar() == null))e.addContent(new Element("characterOnTile").setText(wall.getAvatar().getPlayerName()));
 		else e.addContent(new Element("characterOnTile").setText("NULL"));
@@ -225,12 +225,19 @@ public class XMLSaveParser {
 		Element e = new Element("Door");
 		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
-		e.addContent(new Element("type").setText(door.getType()));
+		//e.addContent(new Element("type").setText(door.getType()));
 		e.addContent(new Element("room").setText(Integer.toString(door.getRoom().getRoomNumber())));			//JUST THE ROOM NUMBER
 		e.addContent(new Element("toRoomIndex").setText(Integer.toString(door.getToRoomIndex())));
-		e.addContent(new Element("toRoomXPos").setText(Integer.toString(door.getToRoomXPos())));
-		e.addContent(new Element("toRoomYPos").setText(Integer.toString(door.getToRoomYPos())));
-		e.addContent(new Element("locked").setText(Boolean.toString(door.getLocked())));
+
+		Element color = new Element("color");
+		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
+		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
+		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
+
+		e.addContent(color);
+		//e.addContent(new Element("toRoomXPos").setText(Integer.toString(door.getToRoomXPos())));
+		//e.addContent(new Element("toRoomYPos").setText(Integer.toString(door.getToRoomYPos())));
+		//e.addContent(new Element("locked").setText(Boolean.toString(door.getLocked())));
 
 		if(!(door.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(door.getAvatar().getPlayerName()));
 		else e.addContent(new Element("characterOnTile").setText("NULL"));

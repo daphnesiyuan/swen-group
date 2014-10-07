@@ -7,12 +7,20 @@ import java.util.List;
 public class Door extends Tile2D{
 
 
-	private int toRoomIndex;
+
+	private Room room_one;
+	private Room room_two;
+
 
 	private Color color;
 
+
+
 	public Door(int xPos, int yPos) {
 		super(xPos, yPos);
+
+		room_one = null;
+		room_two = null;
 	}
 
 
@@ -23,4 +31,27 @@ public class Door extends Tile2D{
 	public Color getColor(){
 		return color;
 	}
+
+
+	public Room getRoomOne() {
+		return room_one;
+	}
+
+
+	public void setRoomOne(Room room_one) {
+		this.room_one = room_one;
+	}
+
+
+	public Room getRoomTwo() {
+		return room_two;
+	}
+
+
+	public void setRoomTwo(Room room_two) {
+		this.room_two = room_two;
+	}
+
+
+
 }

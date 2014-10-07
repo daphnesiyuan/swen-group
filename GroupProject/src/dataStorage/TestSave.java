@@ -14,11 +14,10 @@ import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 
+import GUI.DrawingPanel;
 import networking.GameClient;
 import networking.GameServer;
 import networking.Player;
-import rendering.Rendering;
-import rendering.testRendering;
 
 
 /**
@@ -28,7 +27,6 @@ import rendering.testRendering;
  */
 public class TestSave extends javax.swing.JFrame {
 
-	public static Rendering canvas;
 	public static GameClient gameClient;
 	public static Player player;
 
@@ -43,7 +41,7 @@ public class TestSave extends javax.swing.JFrame {
 			e1.printStackTrace();
 		}
 
-		gameClient = new GameClient("Ryan");
+		gameClient = new GameClient("Ryan", null);
 		try {
 			gameClient.connect(InetAddress.getLocalHost().getHostAddress(), "Ryan", 32768);
 			//gameClient.connect("130.195.7.84", "Ryan", 32768);
