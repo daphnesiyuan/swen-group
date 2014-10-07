@@ -295,19 +295,30 @@ public class DrawingPanel extends JPanel {
 
 				int i=invo.findBox(mouseX, mouseY);
 				if(i==0){ //box 1
-					Item item = gc.getAvatar().getInventory().get(1);
+					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(0))!=null ){
+						Item item = gc.getAvatar().getInventory().get(0);
+					}
 				}
 				else if(i==1){
-					Item item = gc.getAvatar().getInventory().get(1);
+					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(1))!=null ){
+						Item item = gc.getAvatar().getInventory().get(1);
+					}
 				}
 				else if (i==2){
-					Item item = gc.getAvatar().getInventory().get(2);
+					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(2))!=null ){
+						Item item = gc.getAvatar().getInventory().get(2);
+					}
 				}
+
 				else if (i==3){
-					Item item = gc.getAvatar().getInventory().get(3);
+					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(3))!=null ){
+						Item item = gc.getAvatar().getInventory().get(3);
+					}
 				}
 				else if (i==4){
-					Item item = gc.getAvatar().getInventory().get(4);
+					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(4))!=null ){
+						Item item = gc.getAvatar().getInventory().get(4);
+					}
 				}
 			}
 		}
