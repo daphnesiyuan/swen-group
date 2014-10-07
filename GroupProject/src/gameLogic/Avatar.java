@@ -143,6 +143,8 @@ public class Avatar implements Serializable {
 			return false;
 		}
 
+		updateFacing(move.getInteraction());
+
 		int change = calcDirection(move);
 		Tile2D newPosition = null;
 		if(change == 0) newPosition = moveUp(currentTile.getTileUp());
@@ -153,11 +155,12 @@ public class Avatar implements Serializable {
 		// newPosition invalid or not found - ie if movement up is a wall
 		if(newPosition == null){
 			System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
+
 			return false;
 		}
 		if(newPosition instanceof Door) newPosition = moveDoor(newPosition); // If Player is trying to pass through a door
 
-		updateFacing(move.getInteraction());
+		//updateFacing(move.getInteraction());
 		updateLocations(newPosition,currentRoom);
 
 		battery.iMoved();
@@ -193,10 +196,8 @@ public class Avatar implements Serializable {
 		tileYPos-=stepAmount;
 
 		if(tileYPos<tileMinPos){
-			tileYPos = tileMaxPos;	 // might not work coz logic
-			// tileYPos = tileYPos % tileHeight;
-			if(tileUp instanceof Wall){
-				// cant actually move here so undo changes to position and return null
+			tileYPos = tileMaxPos;
+			if(tileUp instanceof Wall){ // cant actually move here so undo changes to position and return null
 				globalYPos+=stepAmount;
 				tileYPos+=stepAmount;
 				return null;
@@ -214,13 +215,12 @@ public class Avatar implements Serializable {
 		tileYPos+=stepAmount;
 
 		if(tileYPos>tileHeight){
-			tileYPos = tileMinPos;
-			if(tileDown instanceof Wall){
-				// cant actually move here so undo changes to position and return null
+			if(tileDown instanceof Wall){ // cant actually move here so undo changes to position and return null
 				globalYPos-=stepAmount;
 				tileYPos-=stepAmount;
 				return null;
 			}
+			tileYPos = tileMinPos;
 			return tileDown;
 		}
 		else{
@@ -232,13 +232,13 @@ public class Avatar implements Serializable {
 		globalXPos-=stepAmount;
 		tileXPos-=stepAmount;
 		if(tileXPos<tileMinPos){
-			tileXPos = tileMaxPos;
-			if(tileLeft instanceof Wall){
-				// cant actually move here so undo changes to position and return null
+
+			if(tileLeft instanceof Wall){ // cant actually move here so undo changes to position and return null
 				globalXPos+=stepAmount;
 				tileXPos+=stepAmount;
 				return null;
 			}
+			tileXPos = tileMaxPos;
 			return tileLeft;
 		}
 		else{
@@ -250,13 +250,13 @@ public class Avatar implements Serializable {
 		globalXPos+=stepAmount;
 		tileXPos+=stepAmount;
 		if(tileXPos>tileWidth){
-			tileXPos = tileMinPos;
-			if(tileRight instanceof Wall){
-				// cant actually move here so undo changes to position and return null
+
+			if(tileRight instanceof Wall){ // cant actually move here so undo changes to position and return null
 				globalXPos-=stepAmount;
 				tileXPos-=stepAmount;
 				return null;
 			}
+			tileXPos = tileMinPos;
 			return tileRight;
 		}
 		else{
