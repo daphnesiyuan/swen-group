@@ -16,7 +16,8 @@ import javax.swing.plaf.FileChooserUI;
 
 /**
  * NewGame class is used when starting a new game.
- * Room data arguments must be provided when constructing a new NewGame object, so that the class can create and populate game attributes, including rooms, tiles, characters and items.
+ * Room data arguments must be provided when constructing a new NewGame object,
+ * so that the class can create and populate game attributes, including rooms, tiles, characters and items.
  *
  * @author Ryan Griffin
  */
@@ -36,6 +37,8 @@ public class NewGame {
 		roomsInGame = createRooms();
 		activeAvatars = createCharacters();
 
+		new GameLayout(activeAvatars,roomsInGame);
+
 		game.setRoomsInGame(roomsInGame);
 		game.setActiveAvatars(activeAvatars);
 
@@ -47,18 +50,19 @@ public class NewGame {
 
 
 
-
+		Room arena = makeRoom("src/gameLogic/arena.txt");
 		Room start1 = makeRoom("src/gameLogic/basic_room.txt");
 		Room start2 = makeRoom("src/gameLogic/basic_room.txt");
 		Room start3 = makeRoom("src/gameLogic/basic_room.txt");
 		Room start4 = makeRoom("src/gameLogic/basic_room.txt");
-		Room arena = makeRoom("src/gameLogic/arena.txt");
 
+
+		rooms.add(arena);
 		rooms.add(start1);
 		rooms.add(start2);
 		rooms.add(start3);
 		rooms.add(start4);
-		rooms.add(arena);
+
 		return rooms;
 	}
 

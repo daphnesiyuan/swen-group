@@ -48,14 +48,14 @@ public class Avatar implements Serializable {
 	private final double tileMaxPos = 100;
 
 
-	// The total number of images the animation sequence will cycle through
-	private final int spriteImages = 4;
-
 	// While the sprite is animating, spriteIndex will hold the index to the current frame to be displayed for the animation.
 	private int spriteIndex;
 
 	// Color the Avatar is painted currently
 	private Color color;
+
+	// Avatars Home room object - where the avatar spawns and has access to during the game
+	private Room homeRoom;
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
@@ -381,6 +381,16 @@ public class Avatar implements Serializable {
 
 		return result;
 	}
+
+	public Room getHomeRoom(){
+		return homeRoom;
+	}
+
+	public void setHomeRoom(Room room){
+		homeRoom = room;
+	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {
