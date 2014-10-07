@@ -39,7 +39,7 @@ public class NewGame {
 		roomsInGame = createRooms();
 		activeAvatars = createCharacters();
 
-		new GameLayout(activeAvatars,roomsInGame);
+		//new GameLayout(activeAvatars,roomsInGame);
 
 		game.setRoomsInGame(roomsInGame);
 		game.setActiveAvatars(activeAvatars);
@@ -61,7 +61,6 @@ public class NewGame {
 		Room start2 = makeRoom(c);
 		Room start3 = makeRoom(d);
 		Room start4 = makeRoom(e);
-
 
 		rooms.add(arena);
 		rooms.add(start1);
@@ -97,84 +96,75 @@ public class NewGame {
 
 
 		try {
-			File file = null;
-			Scanner scan = null;
 			try {
-				file = new File(v.toURI());
-			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			scan = new Scanner(file);
+				File file = new File(v.toURI());
+				Scanner scan = new Scanner(file);
 
+				String tile = null;
+				int tileRows = 0;
+				int tileCols = 0;
+				int tileRowsFinal = 0;
 
-
-			String tile = null;
-			int tileRows = 0;
-			int tileCols = 0;
-			int tileRowsFinal = 0;
-
-			while(scan.hasNext()){	// Initial loop to count tiles for 2d array construction
-				tile = scan.next();
-				if(tile == null) break;
-				else if(tile.toUpperCase().equals("E")){
-					tileCols++;
-					tileRowsFinal = tileRows;
-					tileRows = 0;
+				while(scan.hasNext()){	// Initial loop to count tiles for 2d array construction
+					tile = scan.next();
+					if(tile == null) break;
+					else if(tile.toUpperCase().equals("E")){
+						tileCols++;
+						tileRowsFinal = tileRows;
+						tileRows = 0;
+					}
+					else{
+						tileRows ++;
+					}
 				}
-				else{
-					tileRows ++;
+
+				scan = new Scanner(file);		// reset the scanner for a second file reading iteration, this time the tiles will actually be created.
+				tile = null;				// precautionary read reset
+				int x = 0;
+				int y = 0;
+
+				Tile2D[][] tiles = new Tile2D[tileRowsFinal][tileCols];
+
+				while(scan.hasNext()){
+					tile = scan.next();
+					if(tile == null) break;
+					else if(tile.toUpperCase().equals("E")){
+						x = 0;
+						y ++;
+						continue;
+
+					}
+					else if(tile.toUpperCase().equals("W")){
+						System.out.println(x+" , "+y);
+						Tile2D wall = new Wall(x,y);
+						tiles[y][x] = wall;
+
+					}
+					else if(tile.toUpperCase().equals("F")){
+						Tile2D floor = new Floor(x,y);
+						tiles[y][x] = floor;
+					}
+					else if(tile.toUpperCase().equals("D")){
+						Tile2D door = new Door(x,y);
+						tiles[y][x] = door;
+					}
+					x++;
+
 				}
-			}
-			scan = new Scanner(file);		// reset the scanner for a second file reading iteration, this time the tiles will actually be created.
-			tile = null;				// precautionary read reset
-			int x = 0;
-			int y = 0;
 
-			Tile2D[][] tiles = new Tile2D[tileRowsFinal][tileCols];
 
-			while(scan.hasNext()){
-				tile = scan.next();
-				if(tile == null) break;
-				else if(tile.toUpperCase().equals("E")){
-					x = 0;
-					y ++;
-					continue;
-
+				Room room = new Room(roomNumber++,tiles,null);
+				for(int i = 0; i < tiles.length; i++){
+					for(int j = 0; j < tiles[i].length; j++){
+						tiles[i][j].setRoom(room);
+					}
 				}
-				else if(tile.toUpperCase().equals("W")){
-					Tile2D wall = new Wall(x,y);
-					tiles[y][x] = wall;
-				}
-				else if(tile.toUpperCase().equals("F")){
-					Tile2D floor = new Floor(x,y);
-					tiles[y][x] = floor;
-				}
-				else if(tile.toUpperCase().equals("D")){
-					Tile2D door = new Door(x,y);
-					tiles[y][x] = door;
-				}
-				x++;
 
-			}
+			return room;
 
-			Room room = new Room(roomNumber++,tiles,null);
-			for(int i = 0; i < tiles.length; i++){
-				for(int j = 0; j < tiles[i].length; j++){
-					tiles[i][j].setRoom(room);
-				}
-			}
-
-		return room;
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+			} catch (URISyntaxException e) { e.printStackTrace(); }
+		} catch (FileNotFoundException e) { e.printStackTrace(); }
 
 		return null;
 	}
-
-
-
-
 }

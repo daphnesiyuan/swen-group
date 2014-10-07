@@ -23,7 +23,7 @@ public class GameLayout {
 		}
 
 		for(int i = 1; i < rooms.size()-1; i++){		// This starts at 1, as the 0th indexed room is the arena
-			
+
 
 		}
 
