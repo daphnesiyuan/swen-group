@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,13 +50,17 @@ public class NewGame {
 	private List<Room> createRooms(){
 		List<Room> rooms = new ArrayList<Room>();
 
+		URL a = NewGame.class.getResource("/gameLogic/arena.txt");
+		URL b = NewGame.class.getResource("/gameLogic/basic_room.txt");
+		URL c = NewGame.class.getResource("/gameLogic/basic_room.txt");
+		URL d = NewGame.class.getResource("/gameLogic/basic_room.txt");
+		URL e = NewGame.class.getResource("/gameLogic/basic_room.txt");
 
-
-		Room arena = makeRoom("src/gameLogic/arena.txt");
-		Room start1 = makeRoom("src/gameLogic/basic_room.txt");
-		Room start2 = makeRoom("src/gameLogic/basic_room.txt");
-		Room start3 = makeRoom("src/gameLogic/basic_room.txt");
-		Room start4 = makeRoom("src/gameLogic/basic_room.txt");
+		Room arena = makeRoom(a);
+		Room start1 = makeRoom(b);
+		Room start2 = makeRoom(c);
+		Room start3 = makeRoom(d);
+		Room start4 = makeRoom(e);
 
 
 		rooms.add(arena);
@@ -86,11 +92,21 @@ public class NewGame {
 	 * @param string
 	 * @return
 	 */
-	public static Room makeRoom(String roomFile){
+	public static Room makeRoom(URL v){
 		//TODO inverse x and y for array ?????
+
+
 		try {
-			File file = new File(roomFile);
-			Scanner scan = new Scanner(file);
+			File file = null;
+			Scanner scan = null;
+			try {
+				file = new File(v.toURI());
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			scan = new Scanner(file);
+
 
 
 			String tile = null;
