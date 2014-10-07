@@ -14,21 +14,10 @@ import java.util.Scanner;
 
 import javax.swing.plaf.FileChooserUI;
 
-
-
-/**
- * NewGame class is used when starting a new game.
- * Room data arguments must be provided when constructing a new NewGame object,
- * so that the class can create and populate game attributes, including rooms, tiles, characters and items.
- *
- * @author Ryan Griffin
- */
-
 public class NewGame {
-	private List<Room> roomsInGame;
-	private List<Avatar> activeAvatars;
-
 	private Game game;
+
+	private List<Room> roomsInGame;
 
 	private static int roomNumber;
 
@@ -37,13 +26,7 @@ public class NewGame {
 		game = g;
 
 		roomsInGame = createRooms();
-		activeAvatars = createCharacters();
-
-		new GameLayout(activeAvatars,roomsInGame);
-
 		game.setRoomsInGame(roomsInGame);
-		game.setActiveAvatars(activeAvatars);
-
 
 	}
 
@@ -71,20 +54,6 @@ public class NewGame {
 		return rooms;
 	}
 
-
-	private List<Avatar> createCharacters() {
-		List<Avatar> avatars = new ArrayList<Avatar>();
-
-
-		Room room = roomsInGame.get(0);
-		Tile2D tile = room.getTiles()[3][3];
-
-		Avatar avatar = new Avatar("Ryan",tile,room);
-		avatars.add(avatar);
-
-		return avatars;
-
-	}
 
 	/**
 	 * Important to Note that if there is an IO exception thrown in this method, even if it is caught the method will return null.
