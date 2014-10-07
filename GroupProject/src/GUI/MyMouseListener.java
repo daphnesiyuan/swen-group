@@ -11,7 +11,9 @@ public class MyMouseListener implements MouseListener{
 		panel = dp;
 	}
 
-
+	/**
+	 * A helper method which registers when a mouse has been clicked and then sends the location of the mouse click to the panel
+	 */
     public void mouseClicked(MouseEvent e) {
         panel.sendClick(e.getX(), e.getY());
 

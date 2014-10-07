@@ -33,6 +33,10 @@ public class StartMenu {
 
 	}
 
+	/**
+	 * A redraw method for the start menu: draws a white background and draws the buttons
+	 * @param g
+	 */
 	public void redraw(Graphics g) {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
@@ -52,6 +56,14 @@ public class StartMenu {
 	}
 
 
+	/**
+	 * A helper method which draws a single button onto the graphics object.
+	 * contains some arithmetic which deals with the i'th button and where it should be positioned relative to the panel
+	 * the size of the panel doesn't matter as the position drawn will scale with proportion
+	 * @param g: the Graphics object
+	 * @param i: i'th button being drawn
+	 * @param b: the image of the actual button
+	 */
 	public void drawButton(Graphics g, int i, Image b){
 		i--;
 		if(i==-1){ //add a spacer vertically if it is the first button
@@ -66,6 +78,10 @@ public class StartMenu {
 	}
 
 
+	/**
+	 * Helper buttons for loading image resources, and populating the 3 arraylists: default buttons, hover buttons, and buttons appeared
+	 * @throws IOException
+	 */
 	public void loadButtonImages() throws IOException {
 
 		System.out.println("images being loaded from StartMenu");
