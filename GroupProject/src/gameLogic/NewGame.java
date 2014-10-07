@@ -27,7 +27,10 @@ public class NewGame {
 
 	private Game game;
 
+	private static int roomNumber;
+
 	public NewGame(Game g){
+		roomNumber = 0;
 		game = g;
 
 		roomsInGame = createRooms();
@@ -35,6 +38,7 @@ public class NewGame {
 
 		game.setRoomsInGame(roomsInGame);
 		game.setActiveAvatars(activeAvatars);
+
 
 	}
 
@@ -120,8 +124,6 @@ public class NewGame {
 				}
 				else if(tile.toUpperCase().equals("W")){
 					Tile2D wall = new Wall(x,y);
-					System.out.println(x);
-					System.out.println(y);
 					tiles[y][x] = wall;
 				}
 				else if(tile.toUpperCase().equals("F")){
@@ -135,8 +137,8 @@ public class NewGame {
 				x++;
 
 			}
-			int roomNumber = 9;
-			Room room = new Room(roomNumber,tiles,null);
+
+			Room room = new Room(roomNumber++,tiles,null);
 			for(int i = 0; i < tiles.length; i++){
 				for(int j = 0; j < tiles[i].length; j++){
 					tiles[i][j].setRoom(room);

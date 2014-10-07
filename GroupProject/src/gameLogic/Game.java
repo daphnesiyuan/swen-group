@@ -56,11 +56,7 @@ public class Game{
 	public boolean moveAvatar(Move move){
 		Avatar mover = null;
 
-		System.out.println("Mover name: "+ move.getPlayer().getName());
-
 		for(Avatar avatar : activeAvatars){
-			System.out.println("avatar: " + avatar);
-			System.out.println("avatarname: " +avatar.getPlayerName());
 			if(avatar.getPlayerName().equals(move.getPlayer().getName())){
 				mover = avatar;
 			}
