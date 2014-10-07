@@ -12,8 +12,6 @@ import networking.Move;
 
 public class KeyBoard implements KeyListener{
 
-	//private ArrayList<Integer> keysDown = new ArrayList<Integer>();
-
 	private DrawingPanel panel;
 
 	public KeyBoard(DrawingPanel d){
@@ -26,6 +24,9 @@ public class KeyBoard implements KeyListener{
 
 	}
 
+	/**
+	 * A method for the key board class which responds to key pressing
+	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 

@@ -1,11 +1,15 @@
 package networking;
 
-import gameLogic.Avatar;
 import gameLogic.Game;
 import gameLogic.Room;
 
 import java.util.Random;
 
+/**
+ * Random AI that will walk around In a random direction everytime it's told to think
+ * @author veugeljame
+ *
+ */
 public class RandomAI extends AI {
 
 	public RandomAI(Room room, Player player) {
@@ -16,6 +20,7 @@ public class RandomAI extends AI {
 	public void think(Game game) {
 		Random rand = new Random();
 
+		// Get random direction
 		String direction;
 		switch(rand.nextInt(4)){
 			case 0:

@@ -17,6 +17,9 @@ public class MouseMotion implements MouseMotionListener{
 
 	}
 
+	/**
+	 * A method helper for mouse hovering/movement which registers when the cursor is moved and sends this change to our panel class
+	 */
 	@Override
     public void mouseMoved(MouseEvent e){
     	panel.sendHover(e.getX(), e.getY()); //maybe change to sendHover

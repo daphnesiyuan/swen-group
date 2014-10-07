@@ -29,12 +29,13 @@ import rendering.DrawInventory;
 import rendering.DrawMiniMap;
 import rendering.DrawWorld;
 
-public class DrawingPanel extends JPanel  {
+public class DrawingPanel extends JPanel {
 
-	private DrawWorld dw; //this draws all the game-stuff: locations chars items etc
+	private DrawWorld dw; // this draws all the game-stuff: locations chars
+							// items etc
 	private StartMenu sm;
 	private WindowFrame wf;
-	public static boolean startMenu; //play or menu mode flag
+	public static boolean startMenu; // play or menu mode flag
 
 	private MyMouseListener mouse;
 	private int mouseX;
@@ -44,9 +45,9 @@ public class DrawingPanel extends JPanel  {
 	private Handler handler;
 	private KeyBoard keyboard;
 	private MouseMotion mouseMotion;
-	private String hoveredButton="";
+	private String hoveredButton = "";
 
-	//Leons fields
+	// Leons fields
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 	String currentMessage = "";
 	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
@@ -60,161 +61,151 @@ public class DrawingPanel extends JPanel  {
 	private DrawInventory invo;
 	private DrawMiniMap map;
 
-	//leon added
+	// leon added
 	private DrawChat chat;
 
+	private boolean chatMode; // from rendering
 
-	private boolean chatMode; //from rendering
-
-
-	public DrawingPanel(WindowFrame win){
+	public DrawingPanel(WindowFrame win) {
 		wf = win;
-		sm = new StartMenu( this );
-		startMenu = true; //by default
+		sm = new StartMenu(this);
+		startMenu = true; // by default
 		handler = new Handler();
 
-		direction = "North"; //hard coded now...NEED TO CHANGE
+		direction = "North"; // hard coded now...NEED TO CHANGE
 
-		//set up mouse and key board stuff
+		// set up mouse and key board stuff
 		setUpMouseKeys();
 
-		//leon added:
+		// leon added:
 		chat = new DrawChat(this);
 
-		//networking setup stuff
+		// networking setup stuff
 		gs = new GameServer();
 		setUpNWEN();
 	}
 
-
-	////////////////getters and setters
-
-	public KeyBoard getKeyB(){
-		return keyboard;
-	}
-
-	public boolean isChatMode(){
-		return chatMode;
-	}
-
-	public void setChatMode(boolean b){
-		chatMode = b;
-	}
-
-	public void addToCurrentMessage(String s){
-		currentMessage+=s;
-	}
-
-	public void setCurrentMessage(String s){
-		currentMessage = s;
-	}
-
-	public String getCurrentMessage(){
-		return currentMessage;
-	}
-
-	public int getDirection(){
-		return directionI;
-	}
-
-	public void setDirection(int d){
-		directionI = d;
-	}
-
-	public GameClient getGameClient(){
-		return gc;
-	}
-
-	public ArrayList<Integer> getKeysDown(){
-		return keysDown;
-	}
-
-	////////////////////////////////////
+	/**
+	 * Paint Component: has two cases, redrawing for the start menu and
+	 * redrawing for the in game.
+	 */
 
 	@Override
-	protected void paintComponent (Graphics g){
+	protected void paintComponent(Graphics g) {
 
-		if( startMenu ){
+		if (startMenu) {
 			sm.redraw(g);
 		}
 
-		else{ //else it is in game
-			dw.redraw(g, gc.getRoom(), Direction.get(directionI)); //param: graphics, room, char, direction
-			//potential changes later: flag for menu mode or play mode, and to have logic
+		else { // else it is in game
+			dw.redraw(g, gc.getRoom(), Direction.get(directionI)); // param:
+																	// graphics,
+																	// room,
+																	// char,
+																	// direction
+			// potential changes later: flag for menu mode or play mode, and to
+			// have logic
 			compass.redraw(g, Direction.get(directionI));
-			invo.redraw(g, gc.getAvatar().getInventory()  , Direction.get(directionI));
-			map.redraw(g, gc.getRoom() , Direction.get(directionI));
-			if(chatMode)chat.redraw(g, gc.getChatHistory(10), currentMessage);
+			invo.redraw(g, gc.getAvatar().getInventory(),
+					Direction.get(directionI));
+			map.redraw(g, gc.getRoom(), Direction.get(directionI));
+			if (chatMode)
+				chat.redraw(g, gc.getChatHistory(10), currentMessage);
 		}
 	}
 
-
-	public void setUpMouseKeys(){
+	/**
+	 * Helper menu for setting up the mouse and key listeners
+	 */
+	public void setUpMouseKeys() {
 		keyboard = new KeyBoard(this);
 		mouse = new MyMouseListener(this);
-		this.addMouseListener( mouse );
+		this.addMouseListener(mouse);
 		mouseMotion = new MouseMotion(this);
 		this.addMouseMotionListener(mouseMotion);
 	}
 
 
-	@Override
-	public Dimension getPreferredSize() {
-		Dimension dimension = new Dimension(1280, 720);
-		return dimension;
-	}
-
-	public void sendClick(int x, int y){
+	/**
+	 * helper method used by the mouse classes to interact with the panel and
+	 * register clicks
+	 *
+	 * @param x
+	 *            : the x coordinate of the click
+	 * @param y
+	 *            : the y coordinate of the click
+	 */
+	public void sendClick(int x, int y) {
 		mouseX = x;
 		mouseY = y;
 		handler.mouseListener();
 	}
 
-	public void sendHover(int x, int y){
+	/**
+	 * helper method used by the mouse classes to interact with the panel and
+	 * register when the curser has moved
+	 *
+	 * @param x
+	 *            : the x coordinate of the move position
+	 * @param y
+	 *            : the y coordinate of the move position
+	 */
+	public void sendHover(int x, int y) {
 		hoverX = x;
 		hoverY = y;
 		handler.mouseMoved();
 	}
 
-
 	/**
-	 * A helper method which takes cordinates and finds the button that match those
-	 * If no matching button is found on the mouse click then it will return an empty string
-	 * @param x: the x coordinate of the click
-	 * @param y: the y coordinate of the click
+	 * A helper method which takes cordinates and finds the button that match
+	 * those If no matching button is found on the mouse click then it will
+	 * return an empty string
+	 *
+	 * @param x
+	 *            : the x coordinate of the click
+	 * @param y
+	 *            : the y coordinate of the click
 	 * @return: the string name associated with the appropriate button
 	 */
-	public String findButton(int x, int y){
+	public String findButton(int x, int y) {
 
-		int startW = (getWidth()/2 - (sm.getButtonWidth()/2));
-		int startH1 = getHeight()/3 - sm.getButtonHeight()/2 + (-1*(getHeight()/3)/2);
-		int startH2 = getHeight()/3 - sm.getButtonHeight()/2 + (0*(getHeight()/3)/2);
-		int startH3 = getHeight()/3 - sm.getButtonHeight()/2 + (1*(getHeight()/3)/2);
-		int startH4 = getHeight()/3 - sm.getButtonHeight()/2 + (2*(getHeight()/3)/2);
+		int startW = (getWidth() / 2 - (sm.getButtonWidth() / 2));
+		int startH1 = getHeight() / 3 - sm.getButtonHeight() / 2
+				+ (-1 * (getHeight() / 3) / 2);
+		int startH2 = getHeight() / 3 - sm.getButtonHeight() / 2
+				+ (0 * (getHeight() / 3) / 2);
+		int startH3 = getHeight() / 3 - sm.getButtonHeight() / 2
+				+ (1 * (getHeight() / 3) / 2);
+		int startH4 = getHeight() / 3 - sm.getButtonHeight() / 2
+				+ (2 * (getHeight() / 3) / 2);
 
-		if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH1 && y<startH1+sm.getButtonHeight() ){
+		if (x >= startW && x <= startW + sm.getButtonWidth() && y > startH1
+				&& y < startH1 + sm.getButtonHeight()) {
 			return "start";
-		}
-		else if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH2 && y<startH2+sm.getButtonHeight() ){
+		} else if (x >= startW && x <= startW + sm.getButtonWidth()
+				&& y > startH2 && y < startH2 + sm.getButtonHeight()) {
 			return "join";
-		}
-		else if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH3 && y<startH3+sm.getButtonHeight() ){
+		} else if (x >= startW && x <= startW + sm.getButtonWidth()
+				&& y > startH3 && y < startH3 + sm.getButtonHeight()) {
 			return "load";
-		}
-		else if ( x>=startW && x<=startW+sm.getButtonWidth() && y>startH4 && y<startH4+sm.getButtonHeight() ){
+		} else if (x >= startW && x <= startW + sm.getButtonWidth()
+				&& y > startH4 && y < startH4 + sm.getButtonHeight()) {
 			return "help";
 		}
 
 		return "";
 	}
 
-
-	public void setUpNWEN(){
+	/**
+	 * A helper method which sets up the client/server tools required to play
+	 * the game
+	 */
+	public void setUpNWEN() {
 		gc = new GameClient("Daphne", this);
 
 		try {
-			//gc.connect("130.195.6.69",32768); //jimmy
-			gc.connect(gs, gc.getName()); //your own server
+			// gc.connect("130.195.6.69",32768); //jimmy
+			gc.connect(gs, gc.getName()); // your own server
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -231,93 +222,141 @@ public class DrawingPanel extends JPanel  {
 		}
 
 		Room room = gc.getRoom();
-		while(room == null){
+		while (room == null) {
 			room = gc.getRoom();
 			System.out.println(room);
 			System.out.println(gc.isConnected());
 		}
 	}
 
-
-	/*
-	 * Private inner class to handle action listeners - dealing with buttons
+	/**
+	 * A private inner class to take care of the actions associated with mouse
+	 * hovering and clicking
 	 */
-
-	private class Handler implements ActionListener{
-		public void actionPerformed(ActionEvent e){
+	private class Handler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
 
 		}
 
-		//handles hovering
+		// handles hovering
 		public void mouseMoved() {
-			if(startMenu){
-				if( findButton(hoverX, hoverY).equals("start") ){
+			if (startMenu) {
+				if (findButton(hoverX, hoverY).equals("start")) {
 					hoveredButton = "start";
 					sm.loadHoverButton("start");
-					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on start button");
-				}
-				else if( findButton(hoverX, hoverY).equals("join") ){
+				} else if (findButton(hoverX, hoverY).equals("join")) {
 					hoveredButton = "join";
 					sm.loadHoverButton("join");
-					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on join button");
-				}
-				else if( findButton(hoverX, hoverY).equals("load") ){
+				} else if (findButton(hoverX, hoverY).equals("load")) {
 					hoveredButton = "load";
 					sm.loadHoverButton("load");
-					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on load button");
-				}
-				else if( findButton(hoverX, hoverY).equals("help") ){
+				} else if (findButton(hoverX, hoverY).equals("help")) {
 					hoveredButton = "help";
 					sm.loadHoverButton("help");
-					System.out.println(">>>>>>>>>>>>>>>>>>> hovering on help button");
 				}
 
-				else if(hoveredButton!=""){
-					sm.resetUnHoverButton(hoveredButton); //sends through the button which was last hovered on
-					hoveredButton="";
+				else if (hoveredButton != "") {
+					sm.resetUnHoverButton(hoveredButton); // sends through the
+															// button which was
+															// last hovered on
+					hoveredButton = "";
 				}
 			}
 		}
 
-
-		//handles clicking
-		public void mouseListener(){
-			if(startMenu){
-				if ( findButton( mouseX, mouseY ).equals("start") ){
+		// handles mouse clicking
+		public void mouseListener() {
+			if (startMenu) {
+				if (findButton(mouseX, mouseY).equals("start")) {
 					System.out.println("clicked start button");
-					startMenu = false; //no longer in the start menu mode
-					dw = new DrawWorld( gc.getAvatar() ,DrawingPanel.this ); //param: the character, and then a panel
-					compass = new DrawCompass( DrawingPanel.this );
-					invo = new DrawInventory( DrawingPanel.this );
-					map = new DrawMiniMap( DrawingPanel.this, gc.getAvatar() );
+					startMenu = false; // no longer in the start menu mode
+					dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this); // param:
+																			// the
+																			// character,
+																			// and
+																			// then
+																			// a
+																			// panel
+					compass = new DrawCompass(DrawingPanel.this);
+					invo = new DrawInventory(DrawingPanel.this);
+					map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
 					repaint();
 				}
 
-
-				else if ( findButton( mouseX, mouseY ).equals("join") ){
+				else if (findButton(mouseX, mouseY).equals("join")) {
 					System.out.println("PRESSED JOIN BUTTON");
+					// open a pop up menu: String for IP address, connect button
+					// gc.connect(thestringtheyenter);
+					// so we need to cherck for a catch error: if it fails then
+					// invalid try again etc
 				}
 
-				else if ( findButton( mouseX, mouseY ).equals("load") ){
+				else if (findButton(mouseX, mouseY).equals("load")) {
 					System.out.println("PRESSED LOAD BUTTON");
-				}
-				else if ( findButton( mouseX, mouseY ).equals("help") ){
+				} else if (findButton(mouseX, mouseY).equals("help")) {
 					System.out.println("PRESSED HELP BUTTON");
 				}
 
-				else{
+				else {
 					System.out.println("no active button");
 				}
 			}
 
-			else{ //not in start menu and in game.
+			else { // not in start menu and in game.
 
-				System.out.println("clicked mouse at x="+mouseX+" y="+mouseY);
+				System.out.println("clicked mouse at x=" + mouseX + " y="
+						+ mouseY);
 
 			}
 		}
 
 	}
 
+	// //////////////getters and setters
+	@Override
+	public Dimension getPreferredSize() {
+		Dimension dimension = new Dimension(1280, 720);
+		return dimension;
+	}
+
+	public KeyBoard getKeyB() {
+		return keyboard;
+	}
+
+	public boolean isChatMode() {
+		return chatMode;
+	}
+
+	public void setChatMode(boolean b) {
+		chatMode = b;
+	}
+
+	public void addToCurrentMessage(String s) {
+		currentMessage += s;
+	}
+
+	public void setCurrentMessage(String s) {
+		currentMessage = s;
+	}
+
+	public String getCurrentMessage() {
+		return currentMessage;
+	}
+
+	public int getDirection() {
+		return directionI;
+	}
+
+	public void setDirection(int d) {
+		directionI = d;
+	}
+
+	public GameClient getGameClient() {
+		return gc;
+	}
+
+	public ArrayList<Integer> getKeysDown() {
+		return keysDown;
+	}
 
 }

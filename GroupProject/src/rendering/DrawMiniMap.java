@@ -36,7 +36,7 @@ public class DrawMiniMap {
 	public void redraw(Graphics g, Room room, String direction){
 		width = ((panel.getWidth() / 1280.0) * 135.0);
 		height = width;
-		buffer = (width / 135.0)*2;
+		buffer = (width / 135.0);
 		int x = (int) width*5;
 		int y = (int)(panel.getHeight() - height - (buffer * 5));
 		g.setColor(new Color(0.5f,0.5f,0.5f,0.5f));
@@ -52,7 +52,7 @@ public class DrawMiniMap {
 				if (tiles[i][j] instanceof Floor) {
 					if (tiles[i][j].getAvatar() != null) {
 						if (tiles[i][j].getAvatar().equals(charac)) {
-							g.setColor(new Color(1.0f, 0.0f, 0.0f, 0.5f));
+							g.setColor(new Color(1.0f, 0.0f, 0.0f));
 						} else {
 							g.setColor(new Color(0.5f, 0.1f, 0.1f, 0.5f));
 						}

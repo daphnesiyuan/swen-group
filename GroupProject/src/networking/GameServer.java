@@ -154,8 +154,6 @@ public class GameServer extends ChatServer {
 		if( data.getData() instanceof Move ){
 			Move move = (Move)data.getData();
 
-			System.out.println(move + " " + Calendar.getInstance().getTime());
-
 			// A move performed by a client
 			processMove(move, data);
 		}

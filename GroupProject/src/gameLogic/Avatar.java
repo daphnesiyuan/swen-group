@@ -47,15 +47,18 @@ public class Avatar implements Serializable {
 	private final double tileMinPos = 1;
 	private final double tileMaxPos = 100;
 
+	// The amount the avatar moves with each key press
+	private int stepAmount = 50;
 
-	// The total number of images the animation sequence will cycle through
-	private final int spriteImages = 4;
 
 	// While the sprite is animating, spriteIndex will hold the index to the current frame to be displayed for the animation.
 	private int spriteIndex;
 
 	// Color the Avatar is painted currently
 	private Color color;
+
+	// Avatars Home room object - where the avatar spawns and has access to during the game
+	private Room homeRoom;
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
@@ -140,6 +143,8 @@ public class Avatar implements Serializable {
 			return false;
 		}
 
+		updateFacing(move.getInteraction());
+
 		int change = calcDirection(move);
 		Tile2D newPosition = null;
 		if(change == 0) newPosition = moveUp(currentTile.getTileUp());
@@ -150,11 +155,12 @@ public class Avatar implements Serializable {
 		// newPosition invalid or not found - ie if movement up is a wall
 		if(newPosition == null){
 			System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
+
 			return false;
 		}
 		if(newPosition instanceof Door) newPosition = moveDoor(newPosition); // If Player is trying to pass through a door
 
-		updateFacing(move.getInteraction());
+		//updateFacing(move.getInteraction());
 		updateLocations(newPosition,currentRoom);
 
 		battery.iMoved();
@@ -186,16 +192,14 @@ public class Avatar implements Serializable {
 	 * @return tile2d = returns the current tile if the movement made keeps the avatar on the same tile, else returns the tile above the current tile.
 	 */
 	public Tile2D moveUp(Tile2D tileUp){
-		globalYPos-=5;
-		tileYPos-=5;
+		globalYPos-=stepAmount;
+		tileYPos-=stepAmount;
 
 		if(tileYPos<tileMinPos){
-			tileYPos = tileMaxPos;	 // might not work coz logic
-			// tileYPos = tileYPos % tileHeight;
-			if(tileUp instanceof Wall){
-				// cant actually move here so undo changes to position and return null
-				globalYPos+=5;
-				tileYPos+=5;
+			tileYPos = tileMaxPos;
+			if(tileUp instanceof Wall){ // cant actually move here so undo changes to position and return null
+				globalYPos+=stepAmount;
+				tileYPos+=stepAmount;
 				return null;
 			}
 			return tileUp;
@@ -207,17 +211,16 @@ public class Avatar implements Serializable {
 	}
 
 	public Tile2D moveDown(Tile2D tileDown){
-		globalYPos+=5;
-		tileYPos+=5;
+		globalYPos+=stepAmount;
+		tileYPos+=stepAmount;
 
 		if(tileYPos>tileHeight){
-			tileYPos = tileMinPos;
-			if(tileDown instanceof Wall){
-				// cant actually move here so undo changes to position and return null
-				globalYPos-=5;
-				tileYPos-=5;
+			if(tileDown instanceof Wall){ // cant actually move here so undo changes to position and return null
+				globalYPos-=stepAmount;
+				tileYPos-=stepAmount;
 				return null;
 			}
+			tileYPos = tileMinPos;
 			return tileDown;
 		}
 		else{
@@ -226,16 +229,16 @@ public class Avatar implements Serializable {
 	}
 
 	public Tile2D moveLeft(Tile2D tileLeft){
-		globalXPos-=5;
-		tileXPos-=5;
+		globalXPos-=stepAmount;
+		tileXPos-=stepAmount;
 		if(tileXPos<tileMinPos){
-			tileXPos = tileMaxPos;
-			if(tileLeft instanceof Wall){
-				// cant actually move here so undo changes to position and return null
-				globalXPos+=5;
-				tileXPos+=5;
+
+			if(tileLeft instanceof Wall){ // cant actually move here so undo changes to position and return null
+				globalXPos+=stepAmount;
+				tileXPos+=stepAmount;
 				return null;
 			}
+			tileXPos = tileMaxPos;
 			return tileLeft;
 		}
 		else{
@@ -244,16 +247,16 @@ public class Avatar implements Serializable {
 	}
 
 	public Tile2D moveRight(Tile2D tileRight){
-		globalXPos+=5;
-		tileXPos+=5;
+		globalXPos+=stepAmount;
+		tileXPos+=stepAmount;
 		if(tileXPos>tileWidth){
-			tileXPos = tileMinPos;
-			if(tileRight instanceof Wall){
-				// cant actually move here so undo changes to position and return null
-				globalXPos-=5;
-				tileXPos-=5;
+
+			if(tileRight instanceof Wall){ // cant actually move here so undo changes to position and return null
+				globalXPos-=stepAmount;
+				tileXPos-=stepAmount;
 				return null;
 			}
+			tileXPos = tileMinPos;
 			return tileRight;
 		}
 		else{
@@ -381,6 +384,16 @@ public class Avatar implements Serializable {
 
 		return result;
 	}
+
+	public Room getHomeRoom(){
+		return homeRoom;
+	}
+
+	public void setHomeRoom(Room room){
+		homeRoom = room;
+	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {

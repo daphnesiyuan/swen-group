@@ -1,12 +1,9 @@
 package networking;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Stack;
-
-import networking.Server.ClientThread;
 
 public class ChatServer extends Server {
 
@@ -15,6 +12,57 @@ public class ChatServer extends Server {
 
 	// Total chat history from all clients and the server
 	protected Stack<ChatMessage> chatHistory = new Stack<ChatMessage>();
+
+	// Pings from IP to how many times we haven't been able to ping them
+	private HashMap<String, Integer> failedPings = new HashMap<String, Integer>();
+
+	public ChatServer(){
+		Thread clientChecker = new Thread(){
+
+			final int maxFailPings = 5;
+			final int pingTime = 5000;
+
+			@Override
+			public void run(){
+				while( true ){
+
+					// Sleep 5s
+					try { Thread.sleep(pingTime);} catch (InterruptedException e) {}
+
+					// Ping all
+					for (int i = 0; i < clients.size(); i++) {
+
+						ClientThread client = clients.get(i);
+						NetworkObject ping = new NetworkObject(getIPAddress(), new ChatMessage("~Admin","/ping everyone",Color.black,true));
+						int failCount = failedPings.get(client.getIPAddress());
+						boolean pinged = pingClient(client.getPlayerName(), ping);
+
+						// Couldn't ping them
+						if( !pinged ){
+							System.out.println("Could not ping: " + client.getPlayerName());
+
+							// Should we remove them?
+							if( failCount > maxFailPings ){
+								removeClient(client, false);
+								i--;
+							}
+							else{
+								// Update their counter
+								failedPings.put(client.getIPAddress(),failCount+1);
+							}
+						}
+						else{
+							// Pinged correctly. Reset their fail count
+							if( failCount > 0 ){
+								failedPings.put(client.getIPAddress(),0);
+							}
+						}
+					}
+				}
+			}
+		};
+		clientChecker.start();
+	}
 
 	@Override
 	public void retrieveObject(NetworkObject data) {
@@ -295,6 +343,78 @@ public class ChatServer extends Server {
 		}
 	}
 
+	/**
+	 * Server was pinged by a client
+	 * @param scan2
+	 *
+	 * @param clientIP
+	 *            IP of who wants the history sent to them
+	 */
+	protected synchronized long ping(Scanner scan, NetworkObject data) {
+
+		// See if the ping has a destination
+		if( scan.hasNext() && !scan.hasNext(getIPAddress()) ){
+
+			// Ping all clients?
+			if( scan.hasNext("all") ){
+				for (int i = 0; i < clients.size(); i++) {
+					ClientThread client = clients.get(i);
+					pingClient(client.getPlayerName(), data);
+				}
+			}
+			else if( !scan.hasNext("everyone") ){
+
+				// Where is the message going to?
+				pingClient(scan.nextLine().trim(),data);
+			}
+			return -1;
+		}
+		return pingServer(data.getIPAddress(), data.getTimeInMillis());
+	}
+
+	protected synchronized boolean pingClient(String whoToPing, NetworkObject data){
+
+		// Get who pinged the server
+		ClientThread to = getClientFromName(whoToPing);
+
+		// Check if we can find the client via name instead
+		if( to == null ){
+			to = getClientFromIP(whoToPing);
+			if( to == null ){
+				return false;
+			}
+		}
+
+		return to.sendData(data);
+	}
+
+	/**
+	 * Someone pinged the server
+	 * @param whoPingedMe IP or name of who pinged the server
+	 * @param sentMilliSeconds ms's of when the gile was sent
+	 * @return Delay between the sending of the ping, and receiving of the ping
+	 */
+	protected synchronized long pingServer(String whoPingedMe, long sentMilliSeconds){
+		long delay = Math.abs(System.currentTimeMillis() - sentMilliSeconds);
+
+		// Get who pinged the server
+		ClientThread client = getClientFromIP(whoPingedMe);
+
+		// Check client
+		if (client == null) {
+			if( !whoPingedMe.equals(getIPAddress()) ){
+				System.out.println("Pinged by unknown client " + whoPingedMe);
+			}
+
+		}
+		else{
+			// Send the ping back to the client
+			client.sendData(new NetworkObject(getIPAddress(), new ChatMessage("~Admin", "Ping: " + delay + "ms", Color.black, true)));
+		}
+
+		return delay;
+	}
+
 	@Override
 	public void newClientConnection(ClientThread cl) {
 
@@ -306,6 +426,9 @@ public class ChatServer extends Server {
 
 		// Tell console this client connected
 		System.out.println(cl.getPlayerName() + " has Connected.");
+
+		// Add new failed Ping
+		failedPings.put(cl.getIPAddress(), 0);
 	}
 
 	@Override
@@ -316,5 +439,8 @@ public class ChatServer extends Server {
 
 		// Tell console this client connected
 		System.out.println(cl.getPlayerName() + " has Reconnected.");
+
+		// Reset current FailedPing
+		failedPings.put(cl.getIPAddress(), 0);
 	}
 }

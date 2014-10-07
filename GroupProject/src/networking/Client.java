@@ -12,7 +12,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayDeque;
-import java.util.Calendar;
 
 /**
  *Abstract Client class that holds all the required features when connecting, sending and receiving data from/to the server
@@ -50,76 +49,6 @@ public abstract class Client{
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-
-		// Check for dead clients
-		Thread checkSocket = new Thread(){
-
-			@Override
-			public void run(){
-
-
-				final int SENDRATE = 10;
-				final int PINGRATE = 5000;
-				long nextPing = System.currentTimeMillis() + PINGRATE;
-
-				while( true ){
-
-
-					if( socket != null && !socket.isClosed() ){
-						System.out.println("LOOPING");
-						try {
-
-							NetworkObject popped;
-
-							System.out.println(outgoingPackets.size());
-
-							// Try pinging the server if we have a server
-							if( outgoingPackets.isEmpty() ){
-
-								// See if we can ping
-								if( nextPing < System.currentTimeMillis() ){
-									popped = new NetworkObject(IPAddress, new ChatMessage(getName(), "/ping everyone", Color.black, true));
-									nextPing = System.currentTimeMillis() + PINGRATE;
-								}
-								else{
-									// Can't ping, sleep and continue
-									try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
-									continue;
-								}
-							}
-							else{
-								// Get the next packet to send
-								popped = outgoingPackets.pop();
-							}
-
-							if( popped.getData() instanceof Move || popped.getData() instanceof RoomUpdate ){
-								System.out.println("Sending To Server: " + popped.getData() + " " + Calendar.getInstance().getTime());
-							}
-
-
-							// Sent FROM server
-							outputStream = new ObjectOutputStream(socket.getOutputStream());
-
-							// Get packet to send
-							outputStream.writeObject(popped);
-							outputStream.flush();
-
-							// Send to client for client sided review
-							retrieveObject(popped);
-
-						} catch(SocketException e){
-							socket = null;
-							continue;
-						}catch (IOException e) {
-							e.printStackTrace();
-						}
-
-						try { sleep(SENDRATE); } catch (InterruptedException e) {e.printStackTrace();}
-					}
-				}
-			}
-		};
-		//checkSocket.start();
 	}
 
 	/**

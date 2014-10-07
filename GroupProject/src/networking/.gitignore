@@ -32,3 +32,8 @@
 /GameServer$2.class
 /ChatRoom$1.class
 /GameClient$1.class
+/ChatClient$1.class
+/AI.class
+/ChatClient$CommandParser.class
+/RandomAI.class
+/Thinker.class
