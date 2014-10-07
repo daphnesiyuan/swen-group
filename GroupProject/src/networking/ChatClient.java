@@ -94,12 +94,13 @@ public class ChatClient extends Client {
 					} catch (IOException e) {}
 				}
 				else if( scan.hasNext("everyone") ){
-					//TODO GET PINGING WORKING
-					//TODO GET PINGING WORKING
-					/*try {
-						sendData(chatMessage);
-					} catch (IOException e) {}*/
 					return;
+				}
+			}
+			else if( scan.hasNext("/name") && data.getIPAddress().equals("IPAddress")){
+				scan.next(); // /name
+				if( scan.hasNext() ){
+					player.setName(scan.nextLine());
 				}
 			}
 
@@ -167,9 +168,10 @@ public class ChatClient extends Client {
 	 */
 	public boolean sendChatMessageToServer(ChatMessage chat) throws IOException{
 
+		NetworkObject data = new NetworkObject(IPAddress, chat);
+
 		// Client side commands
-		if( chat.message.equals("/clear") ){
-			clearChatHistory();
+		if( !new CommandParser().parseCommand(new Scanner(chat.message), data) ){
 			return true;
 		}
 
@@ -198,94 +200,6 @@ public class ChatClient extends Client {
 	 */
 	public boolean connect(ChatServer server) throws UnknownHostException, IOException{
 		return connect(server, player.getName());
-	}
-
-	/**
-	 * Checks the given chat for a possible client command sent from the client.
-	 * @return True if a command was detected and processed successfully
-	 */
-	public boolean checkClientCommands(ChatMessage chat){
-		Scanner scan = new Scanner(chat.message);
-
-		// Client side commands
-		if( scan.hasNext("/clear") ){
-			chatHistory.clear();
-			return true;
-		}
-		else if( scan.hasNext("/disconnect") ){
-			chat.acknowledged = true; // Chat worked
-			chatHistory.add(chat);	// Record message
-			disconnect(); // Disconnect from server
-			return true;
-		}
-		else if( scan.hasNext("/reconnect") ){
-			chat.acknowledged = true; // Chat worked
-			chatHistory.add(chat);	// Record message
-
-			// Attempt to reconnect
-			if(	reconnect(getName()) ){
-				appendWarningMessage("Connected successfully to " + connectedIP + " : " + connectedPort);
-				return true;
-			}
-		}
-		else if( scan.hasNext("/name") ){
-			scan.next();
-
-			// Check if we REALLY are assigning our name
-			if( scan.hasNext() ){
-				setName( scan.next() );
-			}
-			return true;
-		}
-		else if( scan.hasNext("/ping") ){
-			scan.next();
-
-			if( scan.hasNext("everyone") ){
-				return false;
-			}
-		}
-		else if( scan.hasNext("/chatcolor") ){
-			scan.next();
-
-			if( scan.hasNextInt() ){
-				int r,g,b;
-
-				if( !scan.hasNextInt() ){
-					appendWarningMessage("Missing Red EG: /chatColor 0 64 128");
-					return false;
-				}
-
-				r = scan.nextInt();
-
-				if( !scan.hasNextInt() ){
-					appendWarningMessage("Missing Green EG: /chatColor 0 64 128");
-					return false;
-				}
-
-				g = scan.nextInt();
-
-				if( !scan.hasNextInt() ){
-					appendWarningMessage("Missing Blue EG: /chatColor 0 64 128");
-					return false;
-				}
-
-				b = scan.nextInt();
-
-				chatMessageColor = new Color(r,g,b);
-				return true;
-			}
-			else if( scan.hasNext() ){
-
-				// Using a color name
-				Color color = Color.getColor(scan.next());
-				if( color != null ){
-					chatMessageColor = color;
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -458,7 +372,7 @@ public class ChatClient extends Client {
 			scan.next(); // /name
 
 			// Check if we REALLY are assigning our name
-			if( scan.hasNext() ){
+			if( scan.hasNext() && data.getIPAddress().equals(IPAddress) ){
 				setName( scan.next() );
 			}
 			return true;
