@@ -14,11 +14,10 @@ import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 
+import GUI.DrawingPanel;
 import networking.GameClient;
 import networking.GameServer;
 import networking.Player;
-import rendering.Rendering;
-import rendering.testRendering;
 
 
 /**
@@ -28,7 +27,6 @@ import rendering.testRendering;
  */
 public class TestSave extends javax.swing.JFrame {
 
-	public static Rendering canvas;
 	public static GameClient gameClient;
 	public static Player player;
 
