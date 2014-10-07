@@ -98,11 +98,7 @@ public class DrawingPanel extends JPanel {
 		}
 
 		else { // else it is in game
-			dw.redraw(g, gc.getRoom(), Direction.get(directionI)); // param:
-																	// graphics,
-																	// room,
-																	// char,
-																	// direction
+			dw.redraw(g, gc.getRoom(), Direction.get(directionI), gc.getAvatar());
 			// potential changes later: flag for menu mode or play mode, and to
 			// have logic
 			compass.redraw(g, Direction.get(directionI));
@@ -266,37 +262,30 @@ public class DrawingPanel extends JPanel {
 
 		// handles mouse clicking
 		public void mouseListener() {
+			String s = findButton(mouseX, mouseY);
 			if (startMenu) {
-				if (findButton(mouseX, mouseY).equals("start")) {
+				if (s.equals("start")) {
 					System.out.println("clicked start button");
 					startMenu = false; // no longer in the start menu mode
-					dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this); // param:
-																			// the
-																			// character,
-																			// and
-																			// then
-																			// a
-																			// panel
+					dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
 					compass = new DrawCompass(DrawingPanel.this);
 					invo = new DrawInventory(DrawingPanel.this);
 					map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
 					repaint();
 				}
-
-				else if (findButton(mouseX, mouseY).equals("join")) {
+				else if (s.equals("join")) {
 					System.out.println("PRESSED JOIN BUTTON");
 					// open a pop up menu: String for IP address, connect button
 					// gc.connect(thestringtheyenter);
 					// so we need to cherck for a catch error: if it fails then
 					// invalid try again etc
 				}
-
-				else if (findButton(mouseX, mouseY).equals("load")) {
+				else if (s.equals("load")) {
 					System.out.println("PRESSED LOAD BUTTON");
-				} else if (findButton(mouseX, mouseY).equals("help")) {
+				}
+				else if (s.equals("help")) {
 					System.out.println("PRESSED HELP BUTTON");
 				}
-
 				else {
 					System.out.println("no active button");
 				}
@@ -304,9 +293,22 @@ public class DrawingPanel extends JPanel {
 
 			else { // not in start menu and in game.
 
-				System.out.println("clicked mouse at x=" + mouseX + " y="
-						+ mouseY);
-
+				int i=invo.findBox(mouseX, mouseY);
+				if(i==0){ //box 1
+					Item item = gc.getAvatar().getInventory().get(1);
+				}
+				else if(i==1){
+					Item item = gc.getAvatar().getInventory().get(1);
+				}
+				else if (i==2){
+					Item item = gc.getAvatar().getInventory().get(2);
+				}
+				else if (i==3){
+					Item item = gc.getAvatar().getInventory().get(3);
+				}
+				else if (i==4){
+					Item item = gc.getAvatar().getInventory().get(4);
+				}
 			}
 		}
 

@@ -17,7 +17,6 @@ public class MyMouseListener implements MouseListener{
     public void mouseClicked(MouseEvent e) {
         panel.sendClick(e.getX(), e.getY());
 
-
     }
     public void mousePressed(MouseEvent e) {
         //System.out.println("Mouse pressed at " + e.getX() + ", " + e.getY());
