@@ -19,10 +19,8 @@ public class NewGame {
 
 	private List<Room> roomsInGame;
 
-	private static int roomNumber;
 
 	public NewGame(Game g){
-		roomNumber = 0;
 		game = g;
 
 		roomsInGame = createRooms();
@@ -125,7 +123,7 @@ public class NewGame {
 				}
 
 
-				Room room = new Room(roomNumber++,tiles,null);
+				Room room = new Room(tiles,null);
 				for(int i = 0; i < tiles.length; i++){
 					for(int j = 0; j < tiles[i].length; j++){
 						tiles[i][j].setRoom(room);

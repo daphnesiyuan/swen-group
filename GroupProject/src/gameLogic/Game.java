@@ -118,14 +118,6 @@ public class Game{
 	 * @param roomIndex attached to the sought room
 	 * @return the Room with the associated RoomIndex - useful for finding the room that a door is attached to.
 	 */
-	public Room getRoom(int roomIndex) {
-		for(Room room : roomsInGame){
-			if(room.getRoomNumber() == roomIndex){
-				return room;
-			}
-		}
-		return null;
-	}
 
 	public boolean removePlayerFromGame(String playerName){
 		Avatar leaving = null;

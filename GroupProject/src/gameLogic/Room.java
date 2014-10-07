@@ -18,17 +18,12 @@ public class Room implements Serializable {
 	List<Floor> floors;
 	List<Wall> walls;
 
-	int roomNumber;
 
-
-
-	public Room(int roomNumber, Tile2D[][] tiles, List<Item> items) {
-		this.roomNumber = roomNumber;
+	public Room(Tile2D[][] tiles, List<Item> items) {
 		this.tiles = tiles;
 		this.items = items;
 
 		avatars = new ArrayList<Avatar>();
-
 	}
 
 	public Avatar getAvatar(String playerName){
@@ -39,8 +34,6 @@ public class Room implements Serializable {
 		}
 		return null;
 	}
-
-
 
 
 	public void removeAvatar(Avatar avatar){
@@ -81,10 +74,6 @@ public class Room implements Serializable {
 		walls = roomWalls;
 	}
 
-	public int getRoomNumber(){
-		return roomNumber;
-	}
-
 	public List<Item> getItems() {
 		return items;
 	}
@@ -110,9 +99,6 @@ public class Room implements Serializable {
 		this.tiles = tiles;
 	}
 
-	public void setRoomNumber(int roomNumber) {
-		this.roomNumber = roomNumber;
-	}
 
 	@Override
 	public int hashCode() {
@@ -150,8 +136,6 @@ public class Room implements Serializable {
 			if (other.items != null)
 				return false;
 		} else if (!items.equals(other.items))
-			return false;
-		if (roomNumber != other.roomNumber)
 			return false;
 		if (!Arrays.deepEquals(tiles, other.tiles))
 			return false;
