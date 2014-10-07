@@ -64,7 +64,7 @@ public class MakeImageMap {
 
 	private static void addToMap(String name, java.net.URL imageURL){
 
-		System.out.println(name);
+
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(imageURL);
