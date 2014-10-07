@@ -78,8 +78,9 @@ public class DrawWorld {
 	 * @param Avatar character
 	 * @param String direction
 	 */
-	public void redraw(Graphics g, Room room, String direction) {
+	public void redraw(Graphics g, Room room, String direction, Avatar avatar) {
 
+		this.character= avatar;
 		this.direction = direction;
 
 		// set scaling based on frame size
