@@ -39,7 +39,7 @@ public class NewGame {
 		roomsInGame = createRooms();
 		activeAvatars = createCharacters();
 
-		//new GameLayout(activeAvatars,roomsInGame);
+		new GameLayout(activeAvatars,roomsInGame);
 
 		game.setRoomsInGame(roomsInGame);
 		game.setActiveAvatars(activeAvatars);
@@ -146,6 +146,10 @@ public class NewGame {
 					else if(tile.toUpperCase().equals("D")){
 						Tile2D door = new Door(x,y);
 						tiles[y][x] = door;
+					}
+					else if(tile.toUpperCase().equals("C")){
+						Tile2D column = new Column(x,y);
+						tiles[y][x] = column;
 					}
 					x++;
 
