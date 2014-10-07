@@ -66,7 +66,6 @@ public abstract class Client{
 
 
 					if( socket != null && !socket.isClosed() ){
-						System.out.println("LOOPING");
 						try {
 
 							NetworkObject popped;
