@@ -32,9 +32,6 @@ public abstract class Server implements Runnable{
 	// List of admin IP addresses
 	protected ArrayList<String> admins = new ArrayList<String>();
 
-	// Pings from IP to how many times we haven't been able to ping them
-	private HashMap<String, Integer> failedPings = new HashMap<String, Integer>();
-
 	private final int port = 32768;
 	private ServerSocket serverSocket;
 	private String IPAddress;
@@ -66,52 +63,6 @@ public abstract class Server implements Runnable{
 				stopServer();
 			}
 		});
-
-		Thread clientChecker = new Thread(){
-
-			final int maxFailPings = 5;
-			final int pingTime = 5000;
-
-			@Override
-			public void run(){
-				while( true ){
-
-					// Sleep 5s
-					try { Thread.sleep(pingTime);} catch (InterruptedException e) {}
-
-					// Ping all
-					for (int i = 0; i < clients.size(); i++) {
-
-						ClientThread client = clients.get(i);
-						NetworkObject ping = new NetworkObject(IPAddress, new ChatMessage("~Admin","/ping everyone",Color.black,true));
-						int failCount = failedPings.get(client.getIPAddress());
-						boolean pinged = pingClient(client.getPlayerName(), ping);
-
-						// Couldn't ping them
-						if( !pinged ){
-							System.out.println("Could not ping: " + client.getPlayerName());
-
-							// Should we remove them?
-							if( failCount > maxFailPings ){
-								removeClient(client, false);
-								i--;
-							}
-							else{
-								// Update their counter
-								failedPings.put(client.getIPAddress(),failCount+1);
-							}
-						}
-						else{
-							// Pinged correctly. Reset their fail count
-							if( failCount > 0 ){
-								failedPings.put(client.getIPAddress(),0);
-							}
-						}
-					}
-				}
-			}
-		};
-		clientChecker.start();
 	}
 
 	/**
@@ -164,7 +115,6 @@ public abstract class Server implements Runnable{
 
 				// Add the client to our list
 				clients.add(cl);
-				failedPings.put(cl.getIPAddress(), 0);
 				cl.start();
 			}
 		}  catch ( SocketException e ){
@@ -195,82 +145,11 @@ public abstract class Server implements Runnable{
 		// Check if this client has disconnected
 		if ( !reconnecting ) {
 			sendToAllClients(new ChatMessage("~Admin",c.getPlayerName() + " has Disconnected.", Color.black, true), client);
-			failedPings.remove(c.getIPAddress());
 			System.out.println(c.getPlayerName() + " has Disconnected.");
 		}
 	}
 
-	/**
-	 * Server was pinged by a client
-	 * @param scan2
-	 *
-	 * @param clientIP
-	 *            IP of who wants the history sent to them
-	 */
-	protected synchronized long ping(Scanner scan, NetworkObject data) {
 
-		// See if the ping has a destination
-		if( scan.hasNext() && !scan.hasNext(IPAddress) ){
-
-			// Ping all clients?
-			if( scan.hasNext("all") ){
-				for (int i = 0; i < clients.size(); i++) {
-					ClientThread client = clients.get(i);
-					pingClient(client.getPlayerName(), data);
-				}
-			}
-			else if( !scan.hasNext("everyone") ){
-
-				// Where is the message going to?
-				pingClient(scan.nextLine().trim(),data);
-			}
-			return -1;
-		}
-		return pingServer(data.getIPAddress(), data.getTimeInMillis());
-	}
-
-	protected synchronized boolean pingClient(String whoToPing, NetworkObject data){
-
-		// Get who pinged the server
-		ClientThread to = getClientFromName(whoToPing);
-
-		// Check if we can find the client via name instead
-		if( to == null ){
-			to = getClientFromIP(whoToPing);
-			if( to == null ){
-				return false;
-			}
-		}
-
-		return to.sendData(data);
-	}
-
-	/**
-	 * Someone pinged the server
-	 * @param whoPingedMe IP or name of who pinged the server
-	 * @param sentMilliSeconds ms's of when the gile was sent
-	 * @return Delay between the sending of the ping, and receiving of the ping
-	 */
-	protected synchronized long pingServer(String whoPingedMe, long sentMilliSeconds){
-		long delay = Math.abs(System.currentTimeMillis() - sentMilliSeconds);
-
-		// Get who pinged the server
-		ClientThread client = getClientFromIP(whoPingedMe);
-
-		// Check client
-		if (client == null) {
-			if( !whoPingedMe.equals(IPAddress) ){
-				System.out.println("Pinged by unknown client " + whoPingedMe);
-			}
-
-		}
-		else{
-			// Send the ping back to the client
-			client.sendData(new NetworkObject(IPAddress, new ChatMessage("~Admin", "Ping: " + delay + "ms", Color.black, true)));
-		}
-
-		return delay;
-	}
 
 	/**
 	 * Sends the given message to all clients on the server, provided they aren't listen in "exceptions"
@@ -295,7 +174,6 @@ public abstract class Server implements Runnable{
 			// Send the data to this client
 			client.sendData(data);
 		}
-
 	}
 
 	/**
@@ -332,7 +210,7 @@ public abstract class Server implements Runnable{
 	 */
 	protected boolean sendToClient(String clientIP, NetworkData data) {
 
-		// TODO HACK. Make FASTER!
+		// Iterate
 		for (int i = 0; i < clients.size(); i++) {
 			if (clients.get(i).getIPAddress().equals(clientIP)) {
 				return clients.get(i).sendData(data);
@@ -385,10 +263,6 @@ public abstract class Server implements Runnable{
 	 *
 	 */
 	class ClientThread extends Thread {
-
-		// Determines if we are still running the server
-		// If False, then outgoing packets are stopped
-		private boolean running = true;
 
 		// Player object to use according to the client
 		private final Player player;
@@ -467,7 +341,6 @@ public abstract class Server implements Runnable{
 		 * Stops the clientThread from running
 		 */
 		public void stopClient(){
-			running = false;
 			if( socket != null && !socket.isClosed()){
 				try {
 					socket.close();
