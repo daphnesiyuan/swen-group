@@ -27,8 +27,10 @@ public class MakeImageMap {
 			for(int i = 0; i < avatarAnimations; i++){
 				//Avatar A
 				addToMap("AvatarA"+Direction.get(j)+""+i);
+				//Avatar A Charging
+				addToMap("AvatarA"+Direction.get(j)+"Charging"+i);
 
-				//		Avatar B
+				//Avatar B
 				addToMap("AvatarB"+Direction.get(j)+""+i);
 			}
 		}
@@ -60,6 +62,7 @@ public class MakeImageMap {
 
 	private static void addToMap(String name){
 
+		System.out.println(name);
 		java.net.URL imageURL = MakeImageMap.class.getResource(name + ".png");
 
 		BufferedImage img = null;

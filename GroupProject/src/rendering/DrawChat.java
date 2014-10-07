@@ -23,7 +23,6 @@ public class DrawChat {
 
 	private void drawChat(Graphics g, List<ChatMessage> chatMessages, String currentMessage) {
 
-		//System.out.println(currentMessage);
 		//draw a box to make the background dark
 		g.setColor(new Color(0f, 0f, 0f, 0.5f));
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());

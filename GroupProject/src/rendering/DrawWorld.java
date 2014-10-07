@@ -60,14 +60,12 @@ public class DrawWorld {
 		floatingPointer = new FloatingPointer();
 		this.character = character;
 		this.panel = rendering;
+
 		relativeOffset = new Point(character.getCurrentTile().getxPos(),
 				character.getCurrentTile().getxPos());
 
 		images = MakeImageMap.makeMap();
 
-//		for(Map.Entry<String, BufferedImage> s: images.entrySet()){
-//			System.out.println(s);
-//		}
 	}
 
 	/**
@@ -264,10 +262,19 @@ public class DrawWorld {
 		pt.x+=avatarOffset.x;
 		pt.y+=avatarOffset.y;
 
-		drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+//		if( avatar.isCharging() ){
+//			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
+//		}
+//		else{
+			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+//		}
 
 		if (tile.getAvatar().equals(character))
 			floatingPointer.reDraw(g, pt, width, height, offset);
+		else{
+			g.setColor(Color.RED);
+			g.drawString(avatar.getPlayerName(), pt.x, pt.y-4);
+		}
 	}
 
 	public Point avatarTilePos(Tile2D tile){

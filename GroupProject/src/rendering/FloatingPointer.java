@@ -48,7 +48,7 @@ public class FloatingPointer {
 				- ((width * imgHeight)), width * 2, height * imgHeight, null);
 
 		delay++;
-		if (delay == 4){
+		if (delay == 3){
 			delay = 0;
 			animationNum = (animationNum + 1) % totalAnimations;
 		}
