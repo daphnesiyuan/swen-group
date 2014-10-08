@@ -2,7 +2,7 @@ package gameLogic;
 
 import java.io.Serializable;
 
-public class Battery extends Thread implements Serializable {
+public class Cell extends Thread implements Serializable {
 
 	private static final long serialVersionUID = 7833445205893995697L;
 
@@ -13,7 +13,7 @@ public class Battery extends Thread implements Serializable {
 	boolean charging;
 
 
-	public Battery(Avatar avatar){
+	public Cell(Avatar avatar){
 
 		this.avatar = avatar;
 

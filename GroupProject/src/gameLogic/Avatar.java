@@ -25,7 +25,7 @@ public class Avatar implements Serializable {
 
 	private String playerName;
 
-	private Battery battery;
+	private Cell battery;
 
 	// Avatars coordinates relative to the room - global.
 	private double globalXPos, globalYPos;
@@ -68,7 +68,7 @@ public class Avatar implements Serializable {
 		this.Inventory = new ArrayList<Item>();
 		this.facing = Facing.North;
 
-		this.battery = new Battery(this);
+		this.battery = new Cell(this);
 
 
 		// Avatar start coordinates initialized to the middle of its starting tile
