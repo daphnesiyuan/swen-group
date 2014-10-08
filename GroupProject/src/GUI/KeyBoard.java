@@ -85,7 +85,6 @@ public class KeyBoard implements KeyListener{
 	}
 
 	private void moveRight() {
-		//System.out.println(player);
 		Move move = new Move((panel.getGameClient()).getPlayer(), "D", Direction.get( panel.getDirection() ));
 
 		try {
@@ -94,19 +93,11 @@ public class KeyBoard implements KeyListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("sending move");
 
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
 	private void moveBack() {
-		//System.out.println(player);
 		Move move = new Move(panel.getGameClient().getPlayer(), "S", Direction.get(panel.getDirection()));
 
 		try {
@@ -115,19 +106,11 @@ public class KeyBoard implements KeyListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("sending move");
 
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
 	private void moveLeft() {
-		//System.out.println(player);
 		Move move = new Move(panel.getGameClient().getPlayer(), "A", Direction.get( panel.getDirection() ));
 
 		try {
@@ -136,20 +119,10 @@ public class KeyBoard implements KeyListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("sending move");
-
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
 	private void moveForward() {
-
-//		System.out.println(player);
 		Move move = new Move(panel.getGameClient().getPlayer(), "W", Direction.get(panel.getDirection()));
 
 		try {
@@ -158,14 +131,7 @@ public class KeyBoard implements KeyListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("sending move");
 
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override
