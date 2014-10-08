@@ -10,7 +10,8 @@ import networking.Move;
 public class Game{
 
 
-
+// TODO ryan: tidy room and door and movement between code,
+	// correct implementation.
 	private List<Room> roomsInGame;
 	private List<Avatar> activeAvatars;
 
