@@ -12,18 +12,33 @@ public class Room implements Serializable {
 	private static final long serialVersionUID = -6429120453292131025L;
 
 	Tile2D[][] tiles;
-	List <Item> items;
-	List<Avatar> avatars;
 	List<Door> doors;
 	List<Floor> floors;
 	List<Wall> walls;
+	List<Column> columns;
+
+
+	List <Item> items;
+	List<Avatar> avatars;
+
+
+
 
 
 	public Room(Tile2D[][] tiles, List<Item> items) {
 		this.tiles = tiles;
 		this.items = items;
 
+
+
+
+		doors = new ArrayList<Door>();
+		floors = new ArrayList<Floor>();
+		walls = new ArrayList<Wall>();
+		columns = new ArrayList<Column>();
+
 		avatars = new ArrayList<Avatar>();
+
 	}
 
 	public Avatar getAvatar(String playerName){
@@ -145,5 +160,13 @@ public class Room implements Serializable {
 		} else if (!walls.equals(other.walls))
 			return false;
 		return true;
+	}
+
+	public List<Column> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<Column> columns) {
+		this.columns = columns;
 	}
 }

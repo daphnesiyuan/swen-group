@@ -19,12 +19,14 @@ public class NewGame {
 
 	private List<Room> roomsInGame;
 
-// HEY THERE
-	
+
 	public NewGame(Game g){
 		game = g;
 
 		roomsInGame = createRooms();
+
+		if(linkRooms()== false) System.out.println("Error in Game Creation : NewGame - linkRooms(), could not link home rooms and arena");
+
 		game.setRoomsInGame(roomsInGame);
 
 	}
@@ -33,10 +35,10 @@ public class NewGame {
 		List<Room> rooms = new ArrayList<Room>();
 
 		URL a = NewGame.class.getResource("/gameLogic/arena.txt");
-		URL b = NewGame.class.getResource("/gameLogic/basic_room.txt");
-		URL c = NewGame.class.getResource("/gameLogic/basic_room.txt");
-		URL d = NewGame.class.getResource("/gameLogic/basic_room.txt");
-		URL e = NewGame.class.getResource("/gameLogic/basic_room.txt");
+		URL b = NewGame.class.getResource("/gameLogic/basic_room_north.txt");
+		URL c = NewGame.class.getResource("/gameLogic/basic_room_south.txt");
+		URL d = NewGame.class.getResource("/gameLogic/basic_room_east.txt");
+		URL e = NewGame.class.getResource("/gameLogic/basic_room_west.txt");
 
 		Room arena = makeRoom(a);
 		Room start1 = makeRoom(b);
@@ -54,12 +56,34 @@ public class NewGame {
 	}
 
 
+	private boolean linkRooms(){
+		return (fromArena() && fromRooms());
+	}
+
+	private boolean fromArena(){
+		Room arena = roomsInGame.get(0);
+		for(int i = 1; i< roomsInGame.size()-1; i++){
+			arena.getDoors().get(i).setToRoom(roomsInGame.get(i));
+		}
+		return true;
+	}
+
+	private boolean fromRooms(){
+		Room arena = roomsInGame.get(0);
+
+		for(int i = 1; i< roomsInGame.size()-1; i++){
+			roomsInGame.get(i).getDoors().get(0).setToRoom(arena);
+		}
+		return true;
+	}
+
+
 	/**
 	 * Important to Note that if there is an IO exception thrown in this method, even if it is caught the method will return null.
 	 * @param string
 	 * @return
 	 */
-	public static Room makeRoom(URL v){
+	private static Room makeRoom(URL v){
 		//TODO inverse x and y for array ?????
 
 
@@ -128,6 +152,11 @@ public class NewGame {
 				for(int i = 0; i < tiles.length; i++){
 					for(int j = 0; j < tiles[i].length; j++){
 						tiles[i][j].setRoom(room);
+						if(tiles[i][j] instanceof Door) room.getDoors().add((Door) tiles[i][j]);
+						if(tiles[i][j] instanceof Floor) room.getFloors().add((Floor) tiles[i][j]);
+						if(tiles[i][j] instanceof Wall) room.getWalls().add((Wall) tiles[i][j]);
+						if(tiles[i][j] instanceof Column) room.getColumns().add((Column) tiles[i][j]);
+
 					}
 				}
 
