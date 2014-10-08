@@ -47,6 +47,8 @@ public class DrawingPanel extends JPanel {
 	private MouseMotion mouseMotion;
 	private String hoveredButton = "";
 
+	private JoinMenu joinMenu;
+
 	// Leons fields
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 	String currentMessage = "";
@@ -63,7 +65,6 @@ public class DrawingPanel extends JPanel {
 
 	// leon added
 	private DrawChat chat;
-
 	private boolean chatMode; // from rendering
 
 	public DrawingPanel(WindowFrame win) {
@@ -126,10 +127,8 @@ public class DrawingPanel extends JPanel {
 	 * helper method used by the mouse classes to interact with the panel and
 	 * register clicks
 	 *
-	 * @param x
-	 *            : the x coordinate of the click
-	 * @param y
-	 *            : the y coordinate of the click
+	 * @param x the x coordinate of the click
+	 * @param y the y coordinate of the click
 	 */
 	public void sendClick(int x, int y) {
 		mouseX = x;
@@ -279,6 +278,9 @@ public class DrawingPanel extends JPanel {
 					// gc.connect(thestringtheyenter);
 					// so we need to cherck for a catch error: if it fails then
 					// invalid try again etc
+					joinMenu = new JoinMenu(DrawingPanel.this, gc);
+					joinMenu.setup();
+
 				}
 				else if (s.equals("load")) {
 					System.out.println("PRESSED LOAD BUTTON");
