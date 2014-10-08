@@ -158,9 +158,19 @@ public class Avatar implements Serializable {
 
 			return false;
 		}
-		if(newPosition instanceof Door) newPosition = moveDoor(newPosition); // If Player is trying to pass through a door
 
-		//updateFacing(move.getInteraction());
+		if(newPosition.getAvatar() != null) return false; // CANNOT move to a tile if there is another player on it
+
+		if(newPosition instanceof Door){
+			newPosition = moveDoor(newPosition); // If Player is trying to pass through a door
+			battery.iMoved();
+			animation();
+			return true;
+		}
+
+		if(newPosition instanceof Column) return false; // CANNOT pass through columuns
+
+
 		updateLocations(newPosition,currentRoom);
 
 		battery.iMoved();
@@ -266,15 +276,7 @@ public class Avatar implements Serializable {
 
 	public Tile2D moveDoor(Tile2D tileDoor){
 		Door door = (Door) tileDoor;
-
-		//		int newRoomIndex = door.getToRoomIndex();
-		//		int newX = door.getToRoomXPos();
-		//		int newY = door.getToRoomYPos();
-
-		//if (changeRoom(newRoomIndex,newX,newY) == false) return false;
-
-
-		//updateLocations(...will be a different room here);
+		updateLocations(door.getToRoom().getDoors().get(0),door.getToRoom());
 		return tileDoor;
 	}
 
@@ -375,16 +377,6 @@ public class Avatar implements Serializable {
 		this.color = color;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 41;
-		int result = 1;
-		result = prime * result
-				+ ((Inventory == null) ? 0 : Inventory.hashCode());
-
-		return result;
-	}
-
 	public Room getHomeRoom(){
 		return homeRoom;
 	}
@@ -393,6 +385,15 @@ public class Avatar implements Serializable {
 		homeRoom = room;
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((playerName == null) ? 0 : playerName.hashCode());
+		return result;
+	}
 
 
 	@Override
@@ -404,11 +405,6 @@ public class Avatar implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Avatar other = (Avatar) obj;
-		if (Inventory == null) {
-			if (other.Inventory != null)
-				return false;
-		} else if (!Inventory.equals(other.Inventory))
-			return false;
 		if (playerName == null) {
 			if (other.playerName != null)
 				return false;
@@ -416,5 +412,6 @@ public class Avatar implements Serializable {
 			return false;
 		return true;
 	}
+
 
 }
