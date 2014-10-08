@@ -8,7 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-
+/**
+ *
+ * @author northleon
+ *
+ */
 public class MakeImageMap {
 
 	static Map<String, BufferedImage> images = new HashMap<String, BufferedImage>();
@@ -23,6 +27,7 @@ public class MakeImageMap {
 	}
 
 	public static Map<String, BufferedImage> makeMap(){
+		//Avatars
 		for(int j = 0; j < directions; j++){
 			for(int i = 0; i < avatarAnimations; i++){
 				//Avatar A
@@ -34,7 +39,7 @@ public class MakeImageMap {
 				addToMap("AvatarB"+Direction.get(j)+""+i);
 			}
 		}
-
+		//Tiles
 		for(int i = 0; i < tileAnimations; i++){
 			//wall
 			addToMap("Wall"+i);
@@ -50,19 +55,33 @@ public class MakeImageMap {
 
 			//door
 			addToMap("Door"+i);
+
+			//tree
+			addToMap("Tree"+i);
+
+			//charger
+			addToMap("Charger"+i);
 		}
 
+		//Pointer
 		for(int i = 0; i < pointerAnimations; i++){
 			//pointer
 			addToMap("FloatingPointer"+i);
 		}
-		return images;
 
+		//Items
+		for(int i = 0; i < itemAnimations; i++){
+
+			//Battery
+			addToMap("Battery"+i);
+		}
+
+		return images;
 	}
 
 	private static void addToMap(String name){
 
-		System.out.println(name);
+		//System.out.println(name);
 		java.net.URL imageURL = MakeImageMap.class.getResource(name + ".png");
 
 		BufferedImage img = null;

@@ -1,35 +1,25 @@
 package rendering;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-
-import networking.ChatMessage;
-import GUI.DrawingPanel;
 import gameLogic.Avatar;
+
+import gameLogic.Charger;
 import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
-import gameLogic.Game.Facing;
-import gameLogic.Item;
 import gameLogic.Room;
 import gameLogic.Tile2D;
+import gameLogic.Tree;
 import gameLogic.Wall;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.util.Map;
+
+import javax.swing.JPanel;
+
+import GUI.DrawingPanel;
 
 /**
  * This class will draw the location and everything in it.
@@ -227,6 +217,12 @@ public class DrawWorld {
 		else if(tile instanceof Column){
 			drawObject(g, pt, images.get("Column"+tileNum));
 		}
+		else if(tile instanceof Tree){
+			drawObject(g, pt, images.get("Tree"+tileNum));
+		}
+//		else if(tile instanceof Charger){
+//			drawObject(g, pt, images.get("Charger"+tileNum));
+//		}
 	}
 
 	/**
@@ -263,11 +259,14 @@ public class DrawWorld {
 		pt.y+=avatarOffset.y;
 
 //		if( avatar.isCharging() ){
+//			System.out.println("found is charging");
 //			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
 //		}
 //		else{
-			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+//			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 //		}
+
+		drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 
 		if (tile.getAvatar().equals(character))
 			floatingPointer.reDraw(g, pt, width, height, offset);
@@ -305,6 +304,19 @@ public class DrawWorld {
 	 * @param Graphics g
 	 */
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
+		if (tile.getItems() == null) return;
+
+			int tileNum = 0;
+			if (rotated90){
+				tileNum = 1;
+			}
+
+			for (int i = 0; i < tile.getItems().size(); i++){
+//				if (tile.getItems().get(i) instanceof Batery){
+//					drawObject(g,pt,images.get("Battery"+tileNum));
+//				}
+			}
+
 	}
 
 	/**

@@ -9,6 +9,11 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+/**
+ * 
+ * @author northleon
+ *
+ */
 public class FloatingPointer {
 
 	int delay = 0;
@@ -17,26 +22,7 @@ public class FloatingPointer {
 	Map<String, BufferedImage> images;
 
 	public FloatingPointer() {
-		// TODO Auto-generated constructor stub
 		images = MakeImageMap.makeMap();
-	}
-
-	private void makeFloatingSquareMap() {
-//		images = new HashMap<String,BufferedImage>();
-//		BufferedImage img = null;
-//		java.net.URL imageURL = null;
-//
-//		for (int i = 0; i < totalAnimations; i++) {
-//			imageURL = Rendering.class.getResource("FloatingPointer" + i
-//					+ ".png");
-//			try {
-//				img = ImageIO.read(imageURL);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			images.put("FloatingPointer"+i, img);
-//		}
-
 	}
 
 	public void reDraw(Graphics g, Point pt, int width, int height, Point offset) {
