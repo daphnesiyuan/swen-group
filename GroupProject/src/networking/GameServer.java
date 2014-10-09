@@ -154,8 +154,6 @@ public class GameServer extends ChatServer {
 				ClientThread client = clients.get(i);
 				Room room = gameServer.getRoom(client.getPlayerName());
 
-				//System.out.println("Sending Room " + room + " to " + client.getPlayerName());
-
 				// Send the new room to the player
 				client.sendData(new RoomUpdate(room));
 			}

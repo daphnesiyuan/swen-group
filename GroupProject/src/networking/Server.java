@@ -155,7 +155,6 @@ public abstract class Server implements Runnable{
 			}
 
 			name = (name + "(" + i + ")");
-			System.out.println("ChangeName : |" + name + "|");
 		}
 
 		// Record new name

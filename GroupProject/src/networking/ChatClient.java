@@ -99,19 +99,14 @@ public class ChatClient extends Client {
 			}
 			else if( scan.hasNext("/name") ){
 
-				System.out.println("Recieved /name");
-
 				if( data.getIPAddress().equals(IPAddress) ){
-
-					System.out.println("CORRECT!");
 
 					scan.next(); // /name
 					if( scan.hasNext() ){
 
+						// Trim the new name, removing white spaces
 						String newName = scan.nextLine().trim();
-						System.out.println("New Name: " + newName);
 						player.setName(newName);
-						System.out.println("New Name: " + player.getName());
 					}
 				}
 			}
