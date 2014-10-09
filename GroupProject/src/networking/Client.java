@@ -25,8 +25,8 @@ public abstract class Client{
 	protected String connectedIP = "null";
 	protected int connectedPort = -1;
 
-	// Private IP
-	protected String IPAddress = "null";
+	// Which player the gameclient is controlling
+	protected Player player;
 
 	// Everyone to be sent to the server
 	//private Object outGoingPacketLock = new Object();
@@ -43,8 +43,9 @@ public abstract class Client{
 	 */
 	public Client(){
 
+		player = new Player();
 		try {
-			IPAddress = Inet6Address.getLocalHost().getHostAddress();
+			player.setIPAddress( Inet6Address.getLocalHost().getHostAddress() );
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -56,20 +57,15 @@ public abstract class Client{
 	 * @return String containing the connected IP Address
 	 */
 	public String getConnectedIPAddress(){
-		return this.IPAddress;
+		return connectedIP;
 	}
 
 	/**
-	 * Returns lan IP of the Client
+	 * Returns the IP Address of the player according to the server they are connected to
 	 * @return String containing the connected IP Address
 	 */
-	public String getClientIPAddress(){
-		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		return "???.???.???";
+	public String getIPAddress(){
+		return player.getIPAddress();
 	}
 
 
@@ -88,45 +84,56 @@ public abstract class Client{
 		disconnect();
 
 		// Attempt Connection
+		Socket temp;
 		try{
-			socket = new Socket(IPAddress,port);
+			temp = new Socket(IPAddress,port);
 		}catch( ConnectException e ){
 			return false;
 		}
 
-		// Wait for new IP
-		ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-		String newIP;
+
 		try {
-			NetworkObject data = (NetworkObject)in.readObject();
-			newIP = ((ChatMessage)data.getData()).message;
+
+			// Wait for new IP
+			ObjectInputStream in = new ObjectInputStream(temp.getInputStream());
+			player.setIPAddress((String)in.readObject());
+
+			// Give the server our name
+			ObjectOutputStream out = new ObjectOutputStream(temp.getOutputStream());
+			out.writeObject(playerName);
+			out.flush();
+
+			// Receive name from server
+			in = new ObjectInputStream(temp.getInputStream());
+			player.setName((String)in.readObject());
+
+			// Start our new socket
+			myThread = new InputWaiter();
+			myThread.start();
+
+			// Clear all packets that were pending
+			outgoingPackets.clear();
+
+			// Record server
+			connectedIP = IPAddress;
+			connectedPort = port;
+
+			// Listen on this socket now
+			socket = temp;
+
+			// Perform our setup since we connected to a server
+			successfullyConnected(playerName);
+
+
+			// Successful connection
+			return true;
+
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			return false;
 		}
-		IPAddress = newIP;
 
-		// Give the server our name
-		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-		out.writeObject(playerName);
-		out.flush();
-
-		// Start our new socket
-		myThread = new InputWaiter();
-		myThread.start();
-
-		// Clear all packets that were pending
-		outgoingPackets.clear();
-
-		// Record server
-		connectedIP = IPAddress;
-		connectedPort = port;
-
-		// Perform our setup since we connected to a server
-		successfullyConnected(playerName);
-
-		// Successful connection
-		return true;
+		return false;
 	}
 
 	/**
@@ -193,7 +200,7 @@ public abstract class Client{
 	protected boolean sendData(NetworkData data) throws IOException{
 
 		// Data stored successfully
-		return sendData(new NetworkObject(IPAddress, data));
+		return sendData(new NetworkObject(getIPAddress(), data));
 	}
 
 	protected boolean sendData(NetworkObject data){
@@ -274,7 +281,7 @@ public abstract class Client{
 						e.printStackTrace();
 					}
 				}
-				retrieveObject(new NetworkObject(IPAddress, new ChatMessage("You have been Disconnected", Color.black, true)));
+				retrieveObject(new NetworkObject(getIPAddress(), new ChatMessage("You have been Disconnected", Color.black, true)));
 			}
 		}
 	}

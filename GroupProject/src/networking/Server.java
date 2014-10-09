@@ -91,42 +91,10 @@ public abstract class Server implements Runnable{
 				// Someone connects to the server
 				Socket clientSocket = serverSocket.accept();
 
-				// Joining clients IP
-				String clientIP = clientSocket.getInetAddress().getHostAddress();
-
 				// Create a thread for each client
-				ClientThread cl = new ClientThread(clientSocket, new Player(clientIP, "Client(" + clients.size() + ")"));
-
-				// Send SocketIP To client
-				cl.sendData(new ChatMessage("~Admin",clientIP, Color.black, true));
-
-				// Wait for their public name to be sent through
-				ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
-				String name = getNewPlayerName((String) input.readObject(), cl);
-
-				// Change name of player
-				cl.setPlayerName(name);
-
-				// See if this is a new client
-				if (!clients.contains(cl)) {
-
-					// Tell our sub server that we have a new clinet
-					newClientConnection(cl);
-				}
-				else{
-					// Remove the old connection
-					removeClient(cl,true);
-
-					// We have rejoined
-					clientRejoins(cl);
-				}
-
-
-				// Add the client to our list
-				clients.add(cl);
-				cl.start();
+				new ClientThread(clientSocket);
 			}
-		}  catch ( SocketException e ){
+		} catch ( SocketException e ){
 
 		} catch (Exception e) {
 			System.out.print("\n====\n" + e.getMessage() + "\n====\n");
@@ -321,6 +289,65 @@ public abstract class Server implements Runnable{
 		}
 
 		/**
+		 * STEPS:
+		 * #1 Send IP of socket to Client
+		 * #2 Recieve Name of Client
+		 * #3 Send New Name to Client
+		 * @param socket Socket to listen and send to
+		 * @param player Details on the user
+		 */
+		public ClientThread(Socket socket){
+			this.socket = socket;
+			this.player = new Player(socket.getInetAddress().getHostAddress(), "Client(" + clients.size() + ")");
+
+			// Send SocketIP To client
+			sendData(getIPAddress());
+
+			// Wait for their public name to be sent through
+			ObjectInputStream input;
+			try {
+
+				// Get Name from client
+				input = new ObjectInputStream(socket.getInputStream());
+				String name = getNewPlayerName((String) input.readObject(), this);
+
+				// Change name of player
+				setPlayerName(name);
+
+				// Send name To client
+				sendData(name);
+
+				// See if this is a new client
+				if (!clients.contains(this)) {
+
+					// Tell our sub server that we have a new clinet
+					newClientConnection(this);
+				}
+				else{
+					// Remove the old connection
+					removeClient(this,true);
+
+					// We have rejoined
+					clientRejoins(this);
+				}
+
+
+				// Add the client to our list
+				clients.add(this);
+				start();
+
+
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		/**
 		 * Checks if the client is connected to a server
 		 * @return True if socket is valid
 		 */
@@ -398,6 +425,47 @@ public abstract class Server implements Runnable{
 		 */
 		public synchronized boolean sendData(NetworkObject data) {
 
+			// Check if we have a connection
+			if( socket != null && !socket.isClosed() ){
+				try {
+
+					// Send to server
+					ObjectOutputStream outputStream;
+					try{
+						outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
+					}catch(SocketException e){
+						return false;
+					}
+
+					// Get packet to send
+					try{
+						outputStream.writeObject(data);
+					}catch(SocketException e){
+						return false;
+					}
+					outputStream.flush();
+
+					return true;
+				}catch(SocketException e){
+					e.printStackTrace();
+				}
+				catch(StreamCorruptedException e){
+					e.printStackTrace();
+				}
+				catch(NotSerializableException e){
+					System.out.println("Something is not Serializable, and can not be sent in object:\n" + data);
+					e.printStackTrace();
+				}
+				catch(IOException e){
+					e.printStackTrace();
+				}
+			}
+
+			// Could not send
+			return false;
+		}
+
+		private boolean sendData(Object data){
 			// Check if we have a connection
 			if( socket != null && !socket.isClosed() ){
 				try {

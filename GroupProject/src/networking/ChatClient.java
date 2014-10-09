@@ -19,9 +19,6 @@ import networking.Server.ClientThread;
 
 public class ChatClient extends Client {
 
-	// Which player the gameclient is controlling
-	protected Player player;
-
 	// Clients sides version of the current chat history
 	private Stack<ChatMessage> chatHistory = new Stack<ChatMessage>();
 
@@ -99,7 +96,7 @@ public class ChatClient extends Client {
 			}
 			else if( scan.hasNext("/name") ){
 
-				if( data.getIPAddress().equals(IPAddress) ){
+				if( data.getIPAddress().equals(getIPAddress()) ){
 
 					scan.next(); // /name
 					if( scan.hasNext() ){
@@ -108,13 +105,6 @@ public class ChatClient extends Client {
 						String newName = scan.nextLine().trim();
 						player.setName(newName);
 					}
-				}
-			}
-			else if( scan.hasNext("/newIP") ){
-				scan.next(); // newIP
-
-				if( scan.hasNext() ){
-					IPAddress = scan.next();
 				}
 			}
 
@@ -182,7 +172,7 @@ public class ChatClient extends Client {
 	 */
 	public boolean sendChatMessageToServer(ChatMessage chat) throws IOException{
 
-		NetworkObject data = new NetworkObject(IPAddress, chat);
+		NetworkObject data = new NetworkObject(getIPAddress(), chat);
 
 		// Client side commands
 		if( !new CommandParser().parseCommand(new Scanner(chat.message), data) ){
@@ -388,7 +378,7 @@ public class ChatClient extends Client {
 			scan.next(); // /name
 
 			// Check if we REALLY are assigning our name
-			if( scan.hasNext() && data.getIPAddress().equals(IPAddress) ){
+			if( scan.hasNext() && data.getIPAddress().equals(getIPAddress()) ){
 				setName( scan.next() );
 			}
 			return true;
@@ -465,7 +455,7 @@ public class ChatClient extends Client {
 		 * @return True if the the text should be displayed and sent to it's clients
 		 */
 		private boolean parseIP(Scanner scan, NetworkObject data) {
-			chatHistory.add(new ChatMessage("~Admin", "Your IP: " + IPAddress, Color.black, true));	// Record message
+			chatHistory.add(new ChatMessage("~Admin", "Your IP: " + getIPAddress(), Color.black, true));	// Record message
 			return false;
 		}
 	}

@@ -9,8 +9,11 @@ import java.io.Serializable;
  */
 public class Player implements Serializable {
 	private static final long serialVersionUID = 1045665174986227643L;
-	private String name; // Name of the Player
-	private String IPAddress; // IP Address of who is controlling this playher
+	private String name = null; // Name of the Player
+	private String IPAddress = null; // IP Address of who is controlling this playher
+
+	public Player(){
+	}
 
 	public Player(String name){
 		this.setName(name);

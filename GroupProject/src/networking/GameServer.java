@@ -121,23 +121,6 @@ public class GameServer extends ChatServer {
 	}
 
 	/**
-	 * Gets the name for the player. Also does a check if it's already contained, if it is then the name is given a suffix
-	 * @param name Name to be checked for in the server
-	 * @param clientIP
-	 * @return New Name to be assigned to the player
-	 */
-	@Override
-	public String getNewPlayerName(String name, ClientThread client) {
-		String newName = super.getNewPlayerName(name, client);
-
-		/*if( !newName.equals(name)){
-			gameServer.setPlayerName(name, newName);
-		}*/
-
-		return newName;
-	}
-
-	/**
 	 * Updates all clients with a new room according to the state of the game logic
 	 */
 	private synchronized void updateAllClients(){

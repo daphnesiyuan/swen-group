@@ -447,28 +447,6 @@ public class ChatServer extends Server {
 		return delay;
 	}
 
-	/**
-	 * Gets the name for the player. Also does a check if it's already contained, if it is then the name is given a suffix
-	 * @param name Name to be checked for in the server
-	 * @param clientIP
-	 * @return New Name to be assigned to the player
-	 */
-	@Override
-	public String getNewPlayerName(String name, ClientThread client) {
-		String newName = super.getNewPlayerName(name, client);
-
-		if( !newName.equals(name) ){
-
-			// Create a renaming command so the client will rename their client
-			ChatMessage renameClient = new ChatMessage(name, "/name " + newName, chatMessageColor, true);
-			NetworkObject resend = new NetworkObject(client.getIPAddress(),renameClient);
-
-			// Tell the client to change their name
-			client.sendData(resend);
-		}
-		return newName;
-	}
-
 	@Override
 	public void newClientConnection(ClientThread cl) {
 
