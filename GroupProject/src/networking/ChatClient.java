@@ -97,10 +97,22 @@ public class ChatClient extends Client {
 					return;
 				}
 			}
-			else if( scan.hasNext("/name") && data.getIPAddress().equals("IPAddress")){
-				scan.next(); // /name
-				if( scan.hasNext() ){
-					player.setName(scan.nextLine());
+			else if( scan.hasNext("/name") ){
+
+				System.out.println("Recieved /name");
+
+				if( data.getIPAddress().equals(IPAddress) ){
+
+					System.out.println("CORRECT!");
+
+					scan.next(); // /name
+					if( scan.hasNext() ){
+
+						String newName = scan.nextLine().trim();
+						System.out.println("New Name: " + newName);
+						player.setName(newName);
+						System.out.println("New Name: " + player.getName());
+					}
 				}
 			}
 

@@ -66,6 +66,12 @@ public class GameClient extends ChatClient {
 			return null;
 		}
 
+		System.out.println("Client Name: " + getName());
+		for(Avatar a : clientRoom.getAvatars()){
+			System.out.println(a.getPlayerName());
+		}
+		System.out.println("Avatar Name: " + clientRoom.getAvatar(getName()));
+
 		return clientRoom.getAvatar(getName());
 	}
 

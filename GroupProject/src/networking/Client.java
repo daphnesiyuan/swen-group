@@ -84,7 +84,6 @@ public abstract class Client{
 	 */
 	protected boolean connect(String IPAddress, String playerName, int port) throws UnknownHostException, IOException{
 
-
 		// Disconnect from the server
 		disconnect();
 
@@ -94,9 +93,6 @@ public abstract class Client{
 		}catch( ConnectException e ){
 			return false;
 		}
-
-		// Perform our setup since we connected to a server
-		successfullyConnected(playerName);
 
 		// Give the server our name
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -113,6 +109,9 @@ public abstract class Client{
 		// Record server
 		connectedIP = IPAddress;
 		connectedPort = port;
+
+		// Perform our setup since we connected to a server
+		successfullyConnected(playerName);
 
 		// Successful connection
 		return true;

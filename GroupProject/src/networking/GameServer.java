@@ -126,8 +126,9 @@ public class GameServer extends ChatServer {
 	 * @param clientIP
 	 * @return New Name to be assigned to the player
 	 */
-	public String getNewPlayerName(String name, String clientIP) {
-		String newName = super.getNewPlayerName(name, clientIP);
+	@Override
+	public String getNewPlayerName(String name, ClientThread client) {
+		String newName = super.getNewPlayerName(name, client);
 
 		if( !newName.equals(name)){
 			gameServer.setPlayerName(name, newName);
@@ -235,10 +236,6 @@ public class GameServer extends ChatServer {
 	@Override
 	public void clientRejoins(ClientThread cl) {
 		super.clientRejoins(cl);
-
-		// TODO THIS DOES NOT WORK
-		// TODO THIS DOES NOT WORK
-		// TODO THIS DOES NOT WORK
 
 		Room currentRoom = gameServer.getRoom(cl.getPlayerName());
 		if( currentRoom != null ){

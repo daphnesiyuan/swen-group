@@ -164,6 +164,8 @@ public class ChatServer extends Server {
 				return parseClose(scan,data);
 			} else if (command.equals("/admins")){
 				return parseAdmins(scan,data);
+			} else if (command.equals("/players")){
+				return parsePlayers(scan,data);
 			} else if( command.equals("/help")){
 				return parseHelp(scan,data);
 			}
@@ -324,6 +326,25 @@ public class ChatServer extends Server {
 		}
 
 		/**
+		 * Sends a list of the IP's that are admins on the server
+		 * @param scan Scanner attached to a string/chat message
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
+		private boolean parsePlayers(Scanner scan, NetworkObject data) {
+
+			// Send history back to the client
+			String playerList = "List of Players:\n";
+			for(String name : clientNameToIP.keySet()){
+				playerList = playerList + name + "\n";
+			}
+
+			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",playerList, chatMessageColor, true));
+
+			return false;
+		}
+
+		/**
 		 * Displays all the possible commands that can be send form a client to the server
 		 * @param scan Scanner attached to a string/chat message
 		 * @param data Information sent with the text
@@ -337,6 +358,7 @@ public class ChatServer extends Server {
 					+ "/get history -> Sends back the entire chat history\n"
 					+ "/get history 'number' -> Sends back the chat history up to 'number' of most recent messages\n"
 					+ "/admins -> lists the IP's of the admins\n"
+					+ "/players -> lists all the players in the game\n"
 					+ "/chatcolor r g b -> changes the color of your chat messages\n"
 					+ "/clear -> clears all messages off the screen\n"
 					+ "/disconnect -> disconnects from the server\n"
@@ -430,16 +452,18 @@ public class ChatServer extends Server {
 	 * @param clientIP
 	 * @return New Name to be assigned to the player
 	 */
-	public String getNewPlayerName(String name, String clientIP) {
-		String newName = super.getNewPlayerName(name, clientIP);
+	@Override
+	public String getNewPlayerName(String name, ClientThread client) {
+		String newName = super.getNewPlayerName(name, client);
 
 		if( !newName.equals(name) ){
+
 			// Create a renaming command so the client will rename their client
 			ChatMessage renameClient = new ChatMessage(name, "/name " + newName, chatMessageColor, true);
-			NetworkObject resend = new NetworkObject(clientIP,renameClient);
+			NetworkObject resend = new NetworkObject(client.getIPAddress(),renameClient);
 
 			// Tell the client to change their name
-			getClientFromName(name).sendData(resend);
+			client.sendData(resend);
 		}
 		return newName;
 	}

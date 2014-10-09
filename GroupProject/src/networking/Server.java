@@ -94,12 +94,16 @@ public abstract class Server implements Runnable{
 				// Joining clients IP
 				String clientIP = clientSocket.getInetAddress().getHostAddress();
 
+				// Create a thread for each client
+				ClientThread cl = new ClientThread(clientSocket, new Player(clientIP, "Client(" + clients.size() + ")"));
+
 				// Wait for their public name to be sent through
 				ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
-				String name = getNewPlayerName((String) input.readObject(), clientIP);
+				String name = getNewPlayerName((String) input.readObject(), cl);
 
-				// Create a thread for each client
-				ClientThread cl = new ClientThread(clientSocket, new Player(clientIP, name));
+				// Change name of player
+				cl.setPlayerName(name);
+
 
 				// See if this is a new client
 				if (!clients.contains(cl)) {
@@ -138,13 +142,11 @@ public abstract class Server implements Runnable{
 	 * @param clientIP
 	 * @return New Name to be assigned to the player
 	 */
-	public String getNewPlayerName(String name, String clientIP) {
-
-		ClientThread client = getClientFromName(name);
+	public String getNewPlayerName(String name, ClientThread client) {
 
 		// See if this name already exists
 		// Also if it's not a rejoining player
-		if( client != null && !clientNameToIP.get(name).equals(clientIP) ){
+		if( client != null && clientNameToIP.containsKey(name) && !clientNameToIP.get(name).equals(client.getIPAddress()) ){
 
 			// Change the name a suffix
 			int i = 1;
@@ -153,10 +155,11 @@ public abstract class Server implements Runnable{
 			}
 
 			name = (name + "(" + i + ")");
+			System.out.println("ChangeName : |" + name + "|");
 		}
 
 		// Record new name
-		clientNameToIP.put(name, clientIP);
+		clientNameToIP.put(name, client.getIPAddress());
 
 		// Return new name for assigning it to the new Client
 		return name;
