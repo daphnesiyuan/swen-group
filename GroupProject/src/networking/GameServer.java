@@ -136,7 +136,6 @@ public class GameServer extends ChatServer {
 				// Get each of our clients, and the room they are in
 				ClientThread client = clients.get(i);
 				Room room = gameServer.getRoom(client.getPlayerName());
-				System.out.println("Updating: |" + client.getPlayerName() + "|");
 
 				// Send the new room to the player
 				client.sendData(new RoomUpdate(room));
@@ -261,12 +260,19 @@ public class GameServer extends ChatServer {
 	 * @param reconnecting
 	 */
 	@Override
-	public synchronized void removeClient(ClientThread client, boolean reconnecting) {
-		super.removeClient(client, reconnecting);
+	public synchronized boolean removeClient(ClientThread client, boolean reconnecting) {
+		if( !super.removeClient(client, reconnecting) ){
+			System.out.println("Couldn't remove from Server");
+			return false;
+		}
 
 		if ( !reconnecting ) {
-			gameServer.removePlayerFromGame(client.getPlayerName());
+			if( !gameServer.removePlayerFromGame(client.getPlayerName()) ){
+				System.out.println("Couldn't remove from GameLogic!");
+				return false;
+			}
 		}
+		return true;
 	}
 
 	public static void main(String[] args) {

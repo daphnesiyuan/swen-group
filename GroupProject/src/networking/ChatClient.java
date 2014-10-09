@@ -375,7 +375,6 @@ public class ChatClient extends Client {
 		 * @return True if the the text should be displayed and sent to it's clients
 		 */
 		private boolean parseName(Scanner scan, NetworkObject data) {
-			scan.next(); // /name
 
 			// Check if we REALLY are assigning our name
 			if( scan.hasNext() && data.getIPAddress().equals(getIPAddress()) ){
@@ -391,7 +390,6 @@ public class ChatClient extends Client {
 		 * @return True if the the text should be displayed and sent to it's clients
 		 */
 		private boolean parseChatColor(Scanner scan, NetworkObject data){
-			scan.next(); // /chatcolor
 
 			if( scan.hasNextInt() ){
 				int red,green,blue;
@@ -439,9 +437,6 @@ public class ChatClient extends Client {
 		 * @return True if the the text should be displayed and sent to it's clients
 		 */
 		private boolean parsePing(Scanner scan, NetworkObject data) {
-
-			scan.next();
-
 			if( scan.hasNext("everyone") ){
 				return false;
 			}

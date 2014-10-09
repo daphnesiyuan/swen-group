@@ -45,8 +45,12 @@ public class ChatServer extends Server {
 
 							// Should we remove them?
 							if( failCount > maxFailPings ){
-								removeClient(client, false);
-								i--;
+								if( removeClient(client, false) ){
+									i--;
+								}
+								else{
+									System.out.println("NOT REMOVED");
+								}
 							}
 							else{
 								// Update their counter

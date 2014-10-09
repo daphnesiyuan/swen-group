@@ -17,8 +17,9 @@ public class GameClientTester {
 	private GameClient gc;
 
 	public GameClientTester(){
+		gc = new GameClient("James", null);
 		try {
-			gc = new GameClient("James", null, "130.195.7.76", 32768);
+			gc.connect("130.195.4.178", 32768);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -63,7 +64,7 @@ public class GameClientTester {
 				}
 			}
 		};
-		//historyListener.start();
+		historyListener.start();
 	}
 
 	/**

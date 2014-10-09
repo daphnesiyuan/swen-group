@@ -141,20 +141,30 @@ public abstract class Server implements Runnable{
 	 *            index to remove a client from
 	 * @param reconnecting
 	 */
-	public synchronized void removeClient(ClientThread client, boolean reconnecting) {
+	public synchronized boolean removeClient(ClientThread client, boolean reconnecting) {
 
-		int index = clients.indexOf(client);
-		ClientThread c = clients.remove(index);
-		c.stopClient();
+		//int index = clients.indexOf(client);
+		boolean removed = clients.remove(client);
+		if( !removed ){
+			System.out.println("Couldn't remove!");
+		}
+		else if( clients.contains(client) ){
+			System.out.println("STILL IN CLIENTSSSSSSSSS!");
+		}
+
+		// Stop the thread
+		client.stopClient();
 
 		// Check if this client has disconnected
 		if ( !reconnecting ) {
-			sendToAllClients(new ChatMessage("~Admin",c.getPlayerName() + " has Disconnected.", Color.black, true), client);
+			sendToAllClients(new ChatMessage("~Admin",client.getPlayerName() + " has Disconnected.", Color.black, true), client);
 
 			// Remove the clients name
-			clientNameToIP.remove(c.getPlayerName());
-			System.out.println(c.getPlayerName() + " has Disconnected.");
+			clientNameToIP.remove(client.getPlayerName());
+			System.out.println(client.getPlayerName() + " has Disconnected.");
+			return true;
 		}
+		return false;
 	}
 
 

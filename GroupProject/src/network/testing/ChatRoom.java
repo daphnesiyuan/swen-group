@@ -71,7 +71,7 @@ public class ChatRoom implements ActionListener{
 		frame.setSize(650,300);
 		frame.setLayout(new FlowLayout());
 
-		JLabel yourIP = new JLabel("Your IP: " + client.getClientIPAddress() );
+		JLabel yourIP = new JLabel("Your IP: " + client.getIPAddress() );
 		IPConnection = new JTextField(publicIP);
 		IPConnection.setPreferredSize(new Dimension(110,25));
 		IPConnection.addActionListener(this);
@@ -217,7 +217,7 @@ public class ChatRoom implements ActionListener{
 		else if( ae.getSource() == connectLocal || ae.getSource() == IPConnection ){
 
 			// Attempt to connect to the server
-			connectToServer(client.getClientIPAddress(), port);
+			connectToServer(client.getIPAddress(), port);
 		}
 	}
 
@@ -229,7 +229,7 @@ public class ChatRoom implements ActionListener{
 	public boolean connectToServer(String ip, int port){
 
 		try {
-			if( client.connect(ip, client.getName(), port) ){
+			if( client.connect(ip, port) ){
 				chatHistory.removeAll();
 				client.appendWarningMessage("Connected to " + IPConnection.getText() + ":" + port);
 
