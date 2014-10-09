@@ -130,9 +130,9 @@ public class GameServer extends ChatServer {
 	public String getNewPlayerName(String name, ClientThread client) {
 		String newName = super.getNewPlayerName(name, client);
 
-		if( !newName.equals(name)){
+		/*if( !newName.equals(name)){
 			gameServer.setPlayerName(name, newName);
-		}
+		}*/
 
 		return newName;
 	}
@@ -153,6 +153,7 @@ public class GameServer extends ChatServer {
 				// Get each of our clients, and the room they are in
 				ClientThread client = clients.get(i);
 				Room room = gameServer.getRoom(client.getPlayerName());
+				System.out.println("Updating: |" + client.getPlayerName() + "|");
 
 				// Send the new room to the player
 				client.sendData(new RoomUpdate(room));
@@ -221,8 +222,15 @@ public class GameServer extends ChatServer {
 	public void newClientConnection(ClientThread cl) {
 		super.newClientConnection(cl);
 
+
 		// Set new players current room
 		Room currentRoom = gameServer.addPlayer(cl.getPlayerName());
+
+
+		System.out.println("New Client: " + cl.getPlayerName());
+		System.out.println("Room: " + currentRoom);
+		System.out.println("Avatar: " + currentRoom.getAvatar(cl.getPlayerName()));
+		System.out.println("totalAvatars: " + gameServer.getActiveAvatars().size());
 
 		// Send the room back to the client
 		if( currentRoom != null ){

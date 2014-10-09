@@ -354,6 +354,7 @@ public class ChatServer extends Server {
 
 			// Send history back to the client
 			String commandList = "\nList of Possible Commands:\n"
+					+ "/ip -> Displays your ping on the screen\n"
 					+ "/ping -> Checks how fast your connection currently is\n"
 					+ "/get history -> Sends back the entire chat history\n"
 					+ "/get history 'number' -> Sends back the chat history up to 'number' of most recent messages\n"

@@ -97,13 +97,15 @@ public abstract class Server implements Runnable{
 				// Create a thread for each client
 				ClientThread cl = new ClientThread(clientSocket, new Player(clientIP, "Client(" + clients.size() + ")"));
 
+				// Send SocketIP To client
+				cl.sendData(new ChatMessage("~Admin",clientIP, Color.black, true));
+
 				// Wait for their public name to be sent through
 				ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
 				String name = getNewPlayerName((String) input.readObject(), cl);
 
 				// Change name of player
 				cl.setPlayerName(name);
-
 
 				// See if this is a new client
 				if (!clients.contains(cl)) {

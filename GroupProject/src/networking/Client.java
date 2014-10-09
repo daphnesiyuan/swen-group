@@ -98,7 +98,8 @@ public abstract class Client{
 		ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 		String newIP;
 		try {
-			newIP = (String)in.readObject();
+			NetworkObject data = (NetworkObject)in.readObject();
+			newIP = ((ChatMessage)data.getData()).message;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			return false;

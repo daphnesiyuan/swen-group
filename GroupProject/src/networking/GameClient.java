@@ -66,8 +66,19 @@ public class GameClient extends ChatClient {
 			return null;
 		}
 
+		Room room = clientRoom;
+		if( room != null ){
+			Avatar avatar = clientRoom.getAvatar(getName());
+			if( avatar == null ){
+				throw new RuntimeException("NO AVATAR FOR CLIENT: |" + getName() + "|");
+			}
+			else{
+				return avatar;
+			}
+		}
+
 		// Get avatar according to our name
-		return clientRoom.getAvatar(getName());
+		return null;
 	}
 
 	/**
