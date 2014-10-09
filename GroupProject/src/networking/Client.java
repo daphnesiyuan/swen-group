@@ -94,6 +94,17 @@ public abstract class Client{
 			return false;
 		}
 
+		// Wait for new IP
+		ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+		String newIP;
+		try {
+			newIP = (String)in.readObject();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		IPAddress = newIP;
+
 		// Give the server our name
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 		out.writeObject(playerName);
