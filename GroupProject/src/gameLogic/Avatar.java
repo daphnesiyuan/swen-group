@@ -59,6 +59,10 @@ public class Avatar implements Serializable {
 
 	// Avatars Home room object - where the avatar spawns and has access to during the game
 	private Room homeRoom;
+	
+	
+	//Is this Avatar object a Player, or an AI
+	private boolean isAI;
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
@@ -83,6 +87,12 @@ public class Avatar implements Serializable {
 		this.spriteIndex = 0;
 
 		this.color = Color.white;
+		
+		if(name.startsWith("ai")){
+			this.isAI=true;
+		}else{
+			this.isAI = false;
+		}
 
 	}
 
@@ -101,6 +111,16 @@ public class Avatar implements Serializable {
 	}
 
 
+
+
+	public boolean isAI() {
+		return isAI;
+	}
+
+
+	public void setAI(boolean isAI) {
+		this.isAI = isAI;
+	}
 
 
 	public void updateLocations(Tile2D tile, Room room) {
@@ -276,6 +296,7 @@ public class Avatar implements Serializable {
 
 	public Tile2D moveDoor(Tile2D tileDoor){
 		Door door = (Door) tileDoor;
+		
 		updateLocations(door.getToRoom().getDoors().get(0),door.getToRoom());
 		return tileDoor;
 	}

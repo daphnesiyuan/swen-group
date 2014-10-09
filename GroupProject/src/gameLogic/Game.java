@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import networking.Move;
+import networking.*;
 
 
 public class Game{
@@ -14,6 +14,7 @@ public class Game{
 	// correct implementation.
 	private List<Room> roomsInGame;
 	private List<Avatar> activeAvatars;
+	private List<AI> activeAI;
 
 
 	public enum Facing { North, South, East, West; }
@@ -27,6 +28,7 @@ public class Game{
 
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
+		activeAI = new ArrayList<AI>();
 		createNewGame();
 
 
@@ -114,11 +116,6 @@ public class Game{
 		return false;
 	}
 
-	/**
-	 *
-	 * @param roomIndex attached to the sought room
-	 * @return the Room with the associated RoomIndex - useful for finding the room that a door is attached to.
-	 */
 
 	public boolean removePlayerFromGame(String playerName){
 		Avatar leaving = null;
@@ -140,8 +137,25 @@ public class Game{
 
 		return activeAvatars.remove(leaving);
 	}
+	
+	public boolean addAI(AI ai){
+		return activeAI.add(ai);
+	}
+	public boolean removeAI(AI ai){
+		return activeAI.remove(ai);
+	}
+	
 
-
+	public int tickAllAI(){
+		int count = 0;
+		for(AI ai : activeAI){
+			if(ai instanceof Thinker){
+				ai.think(this);
+				count ++;
+			}
+		}	
+		return count;
+	}
 
 
 

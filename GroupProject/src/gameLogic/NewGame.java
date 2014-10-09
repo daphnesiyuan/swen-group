@@ -60,6 +60,8 @@ public class NewGame {
 		return (fromArena() && fromRooms());
 	}
 
+	
+	//TODO
 	private boolean fromArena(){
 		Room arena = roomsInGame.get(0);
 		for(int i = 1; i< roomsInGame.size()-1; i++){
