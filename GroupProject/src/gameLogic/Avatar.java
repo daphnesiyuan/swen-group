@@ -180,6 +180,7 @@ public class Avatar implements Serializable {
 		}
 
 		if(newPosition.getAvatar() != null) return false; // CANNOT move to a tile if there is another player on it
+		if(newPosition instanceof Column) return false; // CANNOT pass through columuns
 
 		if(newPosition instanceof Door){
 			newPosition = moveDoor(newPosition); // If Player is trying to pass through a door
@@ -187,15 +188,16 @@ public class Avatar implements Serializable {
 			animation();
 			return true;
 		}
+		else{
+			updateLocations(newPosition,currentRoom);
+			battery.iMoved();
+			animation();
+			return true;
+		}
 
-		if(newPosition instanceof Column) return false; // CANNOT pass through columuns
 
 
-		updateLocations(newPosition,currentRoom);
 
-		battery.iMoved();
-		animation();
-		return true;
 
 	}
 	/**
@@ -296,7 +298,16 @@ public class Avatar implements Serializable {
 
 	public Tile2D moveDoor(Tile2D tileDoor){
 		Door door = (Door) tileDoor;
-		
+//		if(!(currentRoom.getRoomPlace().equals("arena"))){	// If we are moving into arena
+//			if(!(currentRoom.getRoomPlace().equals("north"))) door = door.getToRoom().getDoors().get(0);
+//			else if(!(currentRoom.getRoomPlace().equals("south"))) door = door.getToRoom().getDoors().get(1);
+//			else if(!(currentRoom.getRoomPlace().equals("east"))) door = door.getToRoom().getDoors().get(2);
+//			else if(!(currentRoom.getRoomPlace().equals("west"))) door = door.getToRoom().getDoors().get(3);
+//		}
+//		else{
+//			door = door.getToRoom().getDoors().get(0);
+//		}
+//		
 		updateLocations(door.getToRoom().getDoors().get(0),door.getToRoom());
 		return tileDoor;
 	}

@@ -18,6 +18,8 @@ public class NewGame {
 	private Game game;
 
 	private List<Room> roomsInGame;
+	
+	private String roomPlace;
 
 
 	public NewGame(Game g){
@@ -28,6 +30,8 @@ public class NewGame {
 		if(linkRooms()== false) System.out.println("Error in Game Creation : NewGame - linkRooms(), could not link home rooms and arena");
 
 		game.setRoomsInGame(roomsInGame);
+		
+		roomPlace = "NULL";
 
 	}
 
@@ -61,7 +65,7 @@ public class NewGame {
 	}
 
 	
-	//TODO
+	//TODO maybe linking done in room creation? to utilize roomPlace string.
 	private boolean fromArena(){
 		Room arena = roomsInGame.get(0);
 		for(int i = 1; i< roomsInGame.size()-1; i++){
@@ -85,7 +89,7 @@ public class NewGame {
 	 * @param string
 	 * @return
 	 */
-	private static Room makeRoom(URL v){
+	private Room makeRoom(URL v){
 		//TODO inverse x and y for array ?????
 
 
@@ -99,6 +103,7 @@ public class NewGame {
 				int tileCols = 0;
 				int tileRowsFinal = 0;
 
+				roomPlace = scan.next();
 				while(scan.hasNext()){	// Initial loop to count tiles for 2d array construction
 					tile = scan.next();
 					if(tile == null) break;
@@ -119,6 +124,7 @@ public class NewGame {
 
 				Tile2D[][] tiles = new Tile2D[tileRowsFinal][tileCols];
 
+				roomPlace = scan.next();
 				while(scan.hasNext()){
 					tile = scan.next();
 					if(tile == null) break;
@@ -151,6 +157,7 @@ public class NewGame {
 
 
 				Room room = new Room(tiles,null);
+				room.setRoomPlace(roomPlace);
 				for(int i = 0; i < tiles.length; i++){
 					for(int j = 0; j < tiles[i].length; j++){
 						tiles[i][j].setRoom(room);

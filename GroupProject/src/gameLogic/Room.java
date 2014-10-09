@@ -11,15 +11,19 @@ public class Room implements Serializable {
 
 	private static final long serialVersionUID = -6429120453292131025L;
 
-	Tile2D[][] tiles;
-	List<Door> doors;
-	List<Floor> floors;
-	List<Wall> walls;
-	List<Column> columns;
+	private Tile2D[][] tiles;
+	private List<Door> doors;
+	private List<Floor> floors;
+	private List<Wall> walls;
+	private List<Column> columns;
 
 
-	List <Item> items;
-	List<Avatar> avatars;
+	private List <Item> items;
+	private List<Avatar> avatars;
+	
+	private String roomPlace;
+	
+	
 
 
 
@@ -32,13 +36,23 @@ public class Room implements Serializable {
 
 
 
-		doors = new ArrayList<Door>();
-		floors = new ArrayList<Floor>();
-		walls = new ArrayList<Wall>();
-		columns = new ArrayList<Column>();
+		this.doors = new ArrayList<Door>();
+		this.floors = new ArrayList<Floor>();
+		this.walls = new ArrayList<Wall>();
+		this.columns = new ArrayList<Column>();
 
-		avatars = new ArrayList<Avatar>();
+		this.avatars = new ArrayList<Avatar>();
+		
+		this.roomPlace = "NULL";
 
+	}
+
+	public String getRoomPlace() {
+		return roomPlace;
+	}
+
+	public void setRoomPlace(String roomPlace) {
+		this.roomPlace = roomPlace;
 	}
 
 	public Avatar getAvatar(String playerName){
