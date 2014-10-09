@@ -110,6 +110,13 @@ public class ChatClient extends Client {
 					}
 				}
 			}
+			else if( scan.hasNext("/newIP") ){
+				scan.next(); // newIP
+
+				if( scan.hasNext() ){
+					IPAddress = scan.next();
+				}
+			}
 
 			// Check if we have just gotten an acknowledgement
 			if( chatHistory.contains(chatMessage) ){
@@ -321,7 +328,9 @@ public class ChatClient extends Client {
 				return parseDisconnect(scan, data);
 			} else if (command.equals("/ping")) {
 				return parsePing(scan, data);
-			} else if (command.equals("/chatcolor")){
+			} else if (command.equals("/ip")) {
+				return parseIP(scan, data);
+			}else if (command.equals("/chatcolor")){
 				return parseChatColor(scan,data);
 			}
 			return true;
@@ -447,6 +456,17 @@ public class ChatClient extends Client {
 				return false;
 			}
 			return true;
+		}
+
+		/**
+		 * Displays the clients Ping on their screen
+		 * @param scan Scanner attached to a string/chat message
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
+		private boolean parseIP(Scanner scan, NetworkObject data) {
+			chatHistory.add(new ChatMessage("~Admin", "Your IP: " + IPAddress, Color.black, true));	// Record message
+			return false;
 		}
 	}
 }
