@@ -129,7 +129,7 @@ public class ChatClient extends Client {
 		try {
 			// Try and change it on the servers
 			sendData(new ChatMessage("/name " + name, chatMessageColor));
-			player.setName(name);
+			//player.setName(name);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

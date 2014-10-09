@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Stack;
 
+import networking.Server.ClientThread;
+
 public class ChatServer extends Server {
 
 	// Color of the chat messages sent from the server
@@ -13,7 +15,7 @@ public class ChatServer extends Server {
 	// Total chat history from all clients and the server
 	protected Stack<ChatMessage> chatHistory = new Stack<ChatMessage>();
 
-	// Pings from IP to how many times we haven't been able to ping them
+	// Pings from Name to how many times we haven't been able to ping them
 	private HashMap<String, Integer> failedPings = new HashMap<String, Integer>();
 
 	public ChatServer(){
@@ -34,7 +36,7 @@ public class ChatServer extends Server {
 
 						ClientThread client = clients.get(i);
 						NetworkObject ping = new NetworkObject(getIPAddress(), new ChatMessage("~Admin","/ping everyone",Color.black,true));
-						int failCount = failedPings.get(client.getIPAddress());
+						int failCount = failedPings.get(client.getPlayerName());
 						boolean pinged = pingClient(client.getPlayerName(), ping);
 
 						// Couldn't ping them
@@ -48,13 +50,13 @@ public class ChatServer extends Server {
 							}
 							else{
 								// Update their counter
-								failedPings.put(client.getIPAddress(),failCount+1);
+								failedPings.put(client.getPlayerName(),failCount+1);
 							}
 						}
 						else{
 							// Pinged correctly. Reset their fail count
 							if( failCount > 0 ){
-								failedPings.put(client.getIPAddress(),0);
+								failedPings.put(client.getPlayerName(),0);
 							}
 						}
 					}
@@ -214,14 +216,21 @@ public class ChatServer extends Server {
 				return true;
 			}
 
-			// Get the name they want to assign their name to
-			String newName = scan.nextLine().trim();
+			String givenName = scan.nextLine().trim();
 
-			// set "name" name worked
-			retrieveObject(new NetworkObject(getIPAddress(), new ChatMessage(client.getPlayerName()
-					+ " has changed their name to " + newName,chatMessageColor, true)));
+			// Check if the given name is
+			if( getClientFromName(givenName) != null ){
+				client.sendData(new ChatMessage("~Admin","You can not change your name to '" + givenName + "'",chatMessageColor));
+				return false;
+			}
+			else{
 
-			client.setPlayerName(newName);
+				// set "name" name worked
+				retrieveObject(new NetworkObject(getIPAddress(), new ChatMessage(client.getPlayerName()
+						+ " has changed their name to " + givenName,chatMessageColor, true)));
+
+				client.setPlayerName(givenName);
+			}
 
 			return true;
 		}
@@ -415,6 +424,26 @@ public class ChatServer extends Server {
 		return delay;
 	}
 
+	/**
+	 * Gets the name for the player. Also does a check if it's already contained, if it is then the name is given a suffix
+	 * @param name Name to be checked for in the server
+	 * @param clientIP
+	 * @return New Name to be assigned to the player
+	 */
+	public String getNewPlayerName(String name, String clientIP) {
+		String newName = super.getNewPlayerName(name, clientIP);
+
+		if( !newName.equals(name) ){
+			// Create a renaming command so the client will rename their client
+			ChatMessage renameClient = new ChatMessage(name, "/name " + newName, chatMessageColor, true);
+			NetworkObject resend = new NetworkObject(clientIP,renameClient);
+
+			// Tell the client to change their name
+			getClientFromName(name).sendData(resend);
+		}
+		return newName;
+	}
+
 	@Override
 	public void newClientConnection(ClientThread cl) {
 
@@ -428,7 +457,7 @@ public class ChatServer extends Server {
 		System.out.println(cl.getPlayerName() + " has Connected.");
 
 		// Add new failed Ping
-		failedPings.put(cl.getIPAddress(), 0);
+		failedPings.put(cl.getPlayerName(), 0);
 	}
 
 	@Override
@@ -441,6 +470,6 @@ public class ChatServer extends Server {
 		System.out.println(cl.getPlayerName() + " has Reconnected.");
 
 		// Reset current FailedPing
-		failedPings.put(cl.getIPAddress(), 0);
+		failedPings.put(cl.getPlayerName(), 0);
 	}
 }

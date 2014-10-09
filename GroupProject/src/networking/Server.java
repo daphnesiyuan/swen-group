@@ -6,18 +6,15 @@ import java.io.InvalidClassException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.io.StreamCorruptedException;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Scanner;
+import java.util.Map;
 
 /**
  *Basic abstract server class that contains the required features of a server alogn with features of admins, pinging and more.
@@ -28,6 +25,9 @@ public abstract class Server implements Runnable{
 
 	// Clients Currently listening in on the server
 	protected ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
+
+	// ArrayList of client names to check for duplicate names
+	protected Map<String, String> clientNameToIP = new HashMap<String, String>();
 
 	// List of admin IP addresses
 	protected ArrayList<String> admins = new ArrayList<String>();
@@ -91,12 +91,15 @@ public abstract class Server implements Runnable{
 				// Someone connects to the server
 				Socket clientSocket = serverSocket.accept();
 
+				// Joining clients IP
+				String clientIP = clientSocket.getInetAddress().getHostAddress();
+
 				// Wait for their public name to be sent through
 				ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
-				String name = (String) input.readObject();
+				String name = getNewPlayerName((String) input.readObject(), clientIP);
 
 				// Create a thread for each client
-				ClientThread cl = new ClientThread(clientSocket, new Player(clientSocket.getInetAddress().getHostAddress(), name));
+				ClientThread cl = new ClientThread(clientSocket, new Player(clientIP, name));
 
 				// See if this is a new client
 				if (!clients.contains(cl)) {
@@ -130,6 +133,36 @@ public abstract class Server implements Runnable{
 	}
 
 	/**
+	 * Gets the name for the player. Also does a check if it's already contained, if it is then the name is given a suffix
+	 * @param name Name to be checked for in the server
+	 * @param clientIP
+	 * @return New Name to be assigned to the player
+	 */
+	public String getNewPlayerName(String name, String clientIP) {
+
+		ClientThread client = getClientFromName(name);
+
+		// See if this name already exists
+		// Also if it's not a rejoining player
+		if( client != null && !clientNameToIP.get(name).equals(clientIP) ){
+
+			// Change the name a suffix
+			int i = 1;
+			while(clientNameToIP.keySet().contains(name + "(" + i + ")")){
+				i++;
+			}
+
+			name = (name + "(" + i + ")");
+		}
+
+		// Record new name
+		clientNameToIP.put(name, clientIP);
+
+		// Return new name for assigning it to the new Client
+		return name;
+	}
+
+	/**
 	 * Removes the client at the given location from our list of clients
 	 *
 	 * @param client
@@ -145,6 +178,9 @@ public abstract class Server implements Runnable{
 		// Check if this client has disconnected
 		if ( !reconnecting ) {
 			sendToAllClients(new ChatMessage("~Admin",c.getPlayerName() + " has Disconnected.", Color.black, true), client);
+
+			// Remove the clients name
+			clientNameToIP.remove(c.getPlayerName());
 			System.out.println(c.getPlayerName() + " has Disconnected.");
 		}
 	}

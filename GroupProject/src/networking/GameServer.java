@@ -3,14 +3,10 @@ package networking;
 import gameLogic.Game;
 import gameLogic.Room;
 
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Calendar;
-
-import networking.Server.ClientThread;
 import dataStorage.XMLLoader;
 import dataStorage.XMLSaver;
 
@@ -23,7 +19,6 @@ import dataStorage.XMLSaver;
 public class GameServer extends ChatServer {
 
 	// Game that all players are playing off
-	private Object serverLock = new Object();
 	private Game gameServer;
 
 	private Object gameModifiedLock = new Object();
@@ -39,7 +34,7 @@ public class GameServer extends ChatServer {
 		Thread serverTextBox = new Thread(new ServerTextListener());
 		serverTextBox.start();
 
-		Thread refreshThread = new Thread(){
+		Thread tickThread = new Thread(){
 			@Override
 			public void run(){
 				try {
@@ -49,6 +44,9 @@ public class GameServer extends ChatServer {
 						if( isGameModified() ){
 							updateAllClients();
 						}
+						else{
+							//gameServer.tick();
+						}
 
 						Thread.sleep(30);
 					}
@@ -57,7 +55,9 @@ public class GameServer extends ChatServer {
 				}
 			}
 		};
-		refreshThread.start();
+		tickThread.start();
+
+
 
 	}
 
@@ -121,6 +121,22 @@ public class GameServer extends ChatServer {
 	}
 
 	/**
+	 * Gets the name for the player. Also does a check if it's already contained, if it is then the name is given a suffix
+	 * @param name Name to be checked for in the server
+	 * @param clientIP
+	 * @return New Name to be assigned to the player
+	 */
+	public String getNewPlayerName(String name, String clientIP) {
+		String newName = super.getNewPlayerName(name, clientIP);
+
+		if( !newName.equals(name)){
+			gameServer.setPlayerName(name, newName);
+		}
+
+		return newName;
+	}
+
+	/**
 	 * Updates all clients with a new room according to the state of the game logic
 	 */
 	private synchronized void updateAllClients(){
@@ -130,7 +146,7 @@ public class GameServer extends ChatServer {
 				return;
 			}
 
-			// Sent the room of the lcient ot all it's clients
+			// Sent the room of the client to all it's clients
 			for (int i = 0; i < clients.size(); i++) {
 
 				// Get each of our clients, and the room they are in

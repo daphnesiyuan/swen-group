@@ -82,7 +82,7 @@ public abstract class Client{
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public boolean connect(String IPAddress, String playerName, int port) throws UnknownHostException, IOException{
+	protected boolean connect(String IPAddress, String playerName, int port) throws UnknownHostException, IOException{
 
 
 		// Disconnect from the server
@@ -162,12 +162,15 @@ public abstract class Client{
 
 	/**
 	 * Attempts to connect to the given IPAddress and port number of the
+	 * Remove Second String for the player name
+	 * @deprecated Remove Second String for the player name
 	 * @param server The server to connect to
 	 * @param ID Identification of this client
 	 * @return True if connection worked, otherwise a exception gets thrown
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
+	@Deprecated
 	public boolean connect(Server server, String ID) throws UnknownHostException, IOException{
 		return connect(server.getIPAddress(), ID, server.getPort());
 	}
