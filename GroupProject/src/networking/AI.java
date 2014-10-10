@@ -1,5 +1,8 @@
 package networking;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import gameLogic.Room;
 
 /**
@@ -12,9 +15,12 @@ public abstract class AI implements Thinker{
 	protected Room room;
 	protected Player player;
 
-	public AI(Room room, Player player){
+	public AI(Room room, String name){
 		this.room = room;
-		this.player = player;
+
+		String IPAddress = "Unknown";
+		try { IPAddress = InetAddress.getLocalHost().getHostAddress(); } catch (UnknownHostException e) {}
+		this.player = new Player(IPAddress, name);
 	}
 
 	/**
@@ -31,5 +37,14 @@ public abstract class AI implements Thinker{
 	 */
 	public Player getPlayer(){
 		return player;
+	}
+
+
+	/**
+	 *Gets the local IP of the AI
+	 * @return String of the AI's IP
+	 */
+	public String getIPAddress(){
+		return player.getIPAddress();
 	}
 }

@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 import dataStorage.XMLLoader;
 import dataStorage.XMLSaver;
 
@@ -24,6 +26,8 @@ public class GameServer extends ChatServer {
 	private Object gameModifiedLock = new Object();
 	private boolean gameModified = false;
 
+	private ArrayList<AI> gameAI = new ArrayList<AI>();
+
 	public GameServer() {
 		super();
 
@@ -40,12 +44,13 @@ public class GameServer extends ChatServer {
 				try {
 					while(true){
 
+						// Tell all AI to move
+						int ticked = gameServer.tickAllAI();
+						System.out.println("AI ticked: " + ticked);
+
 						// Update clients if the game has been modified
 						if( isGameModified() ){
 							updateAllClients();
-						}
-						else{
-							//gameServer.tick();
 						}
 
 						Thread.sleep(30);
@@ -73,6 +78,11 @@ public class GameServer extends ChatServer {
 			public void run(){
 				try {
 					while(true){
+
+						// Tell all AI to move
+						int ticked = gameServer.tickAllAI();
+
+						// Update clients if the game has been modified
 						updateAllClients();
 
 						Thread.sleep(30);
@@ -144,8 +154,45 @@ public class GameServer extends ChatServer {
 			setGameModified(false);
 	}
 
+	/**
+	 * Creates a new RandomAI and adds it to the game
+	 * @return True if the AI was added successfully
+	 */
+	public boolean createAI(){
+		// Max of 10 bots
+		if(gameAI.size() >= 10) return false;
+
+		String botName = "ai" + gameAI.size();
+		Room room = gameServer.addPlayer(botName);
+
+		if( room != null ){
+			AI ai = new RandomAI(room, botName);
+			gameAI.add(ai);
+			return gameServer.addAI(ai);
+		}
+		return false;
+	}
+
 	@Override
 	public synchronized void retrieveObject(NetworkObject data) {
+		if( data.getData() instanceof ChatMessage ){
+			ChatMessage cm = (ChatMessage)data.getData();
+
+			// Check for a command ONLY used by the GameServer
+			if( cm.message.startsWith("/addbot") ){
+
+				// Only admins can close the server
+				if( isAdmin(data.getIPAddress()) ){
+
+					if( !createAI() ){
+						System.out.println("Didn't add AI!");
+					}
+					return;
+				}
+			}
+		}
+
+		// Tell chatMessage
 		super.retrieveObject(data);
 
 		// Determine what to do with each of the different types of objects sent from clients

@@ -3,6 +3,8 @@ package networking;
 import gameLogic.Game;
 import gameLogic.Room;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Random;
 
 /**
@@ -12,13 +14,15 @@ import java.util.Random;
  */
 public class RandomAI extends AI {
 
-	public RandomAI(Room room, Player player) {
-		super(room, player);
+	public RandomAI(Room room, String name) {
+		super(room, name);
 	}
 
 	@Override
 	public void think(Game game) {
 		Random rand = new Random();
+
+		System.out.println("THINKING!");
 
 		// Get random direction
 		String direction;
@@ -40,7 +44,9 @@ public class RandomAI extends AI {
 		}
 
 		// Make the move
-		Move move = new Move(player, "W", direction);
+		Move move = new Move(getPlayer(), "W", direction);
+
+		System.out.println(move);
 
 		// Attempt to move
 		game.moveAvatar(move);

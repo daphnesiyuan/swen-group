@@ -370,7 +370,8 @@ public class ChatServer extends Server {
 					+ "/reconnect -> reconnects to the previous server was was successfully connected\n"
 					+ "/name 'string' -> changes your name\n\n"
 					+ "- ADMIN COMMANDS -\n"
-					+ "/close -> closes the server";
+					+ "/close -> closes the server\n"
+					+ "/addbot -> adds a random bot to the server\n";
 
 
 			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",commandList, chatMessageColor, true));
