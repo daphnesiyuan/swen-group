@@ -68,7 +68,8 @@ public class XMLLoadParser {
 		List floors = e.getChildren("floors");
 		List walls = e.getChildren("walls");
 		List doors = e.getChildren("doors");
-		Room room = new Room(roomNum,null,null);
+		Room room = new Room(tiles, doors);
+		//Room room = new Room(roomNum,null,null);
 
 		//floors
 		for(int i = 0; i<floors.size();i++){
@@ -120,7 +121,6 @@ public class XMLLoadParser {
 		 * xPos
 		 * yPos
 		 * roomnumber
-		 * isSpawn
 		 * type
 		 * items on tile
 		 * characters on tile
@@ -128,8 +128,6 @@ public class XMLLoadParser {
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
 		int roomNumber = Integer.parseInt(e.getChildText("roomNumber"));//maybe will not need?
-		boolean isSpawn = Boolean.parseBoolean(e.getChildText("isSpawn"));
-		String type = e.getChildText("type");
 		String characterOnTile = e.getChildText("characterOnTile");
 		List items = e.getChildren("itemsOnTile");
 		//bringing in the xml info
@@ -166,7 +164,6 @@ public class XMLLoadParser {
 
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
-		String type = e.getChildText("type");
 		int roomNumber = Integer.parseInt(e.getChildText("roomNumber"));//maybe will not need?
 		String characterOnTile = e.getChildText("characterOnTile");
 		List items = e.getChildren("itemsOnTile");
@@ -207,11 +204,9 @@ public class XMLLoadParser {
 		 */
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
-		String type = e.getChildText("type");
 		int roomNumber = Integer.parseInt(e.getChildText("roomNumber"));//maybe will not need?
 		String characterOnTile = e.getChildText("characterOnTile");
 		List items = e.getChildren("itemsOnTile");
-		int toRoomIndex = Integer.parseInt(e.getChildText("toRoomIndex"));
 		List colors = e.getChildren("color");
 		int red = (Integer) colors.get(0);
 		int green = (Integer) colors.get(1);
@@ -223,7 +218,6 @@ public class XMLLoadParser {
 		d.setRoom(r);
 		d.setAvatarOnTile(a);
 		//WAITING FOR ITEMS TO BE IMPLEMENTED
-		d.setToRoomIndex(toRoomIndex);
 		Color c = new Color(red,green,blue);
 		d.setColor(c);
 		//setting the floor tile

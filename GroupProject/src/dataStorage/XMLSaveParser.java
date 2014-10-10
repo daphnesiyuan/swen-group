@@ -5,12 +5,16 @@ import java.util.List;
 import org.jdom2.Element;
 
 import gameLogic.Avatar;
+import gameLogic.Cell;
+import gameLogic.Charger;
+import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Game;
 import gameLogic.Item;
 import gameLogic.Room;
 import gameLogic.Tile2D;
+import gameLogic.Tree;
 import gameLogic.Wall;
 
 /**
@@ -23,13 +27,6 @@ import gameLogic.Wall;
  *
  */
 
-/*
- * CODING NOTES
- * Not sure so far if I need to remove the duplicate parsings (items etc)
- * Will make a decision when writing loading
- *
- */
-
 public class XMLSaveParser {
 
 	XMLSaver saver;
@@ -39,39 +36,46 @@ public class XMLSaveParser {
 	}
 
 	/**
+	 * Parses a room and writes all the concerned details to an XML file
 	 *
-	int roomNumber;
-	Tile2D[][] tiles;
-	List <? extends Item> items;
-	List<Avatar> characters;
-	List<Door> doors;
-	List<Floor> floors;
-	List<Floor> spawns;
-	List<Wall> walls;
+	private Tile2D[][] tiles;
+	private List<Door> doors;
+	private List<Floor> floors;
+	private List<Wall> walls;
+	private List<Column> columns;
+
+
+	private List <Item> items;
+	private List<Avatar> avatars;
+
+	private String roomPlace;
 	 *
 	 * @param room
 	 * @return Element
 	 */
 
 	public Element parseRoom(Room room){
-		Element e = new Element("Room");
-		e.addContent(new Element("roomNumber").setText(Integer.toString(room.getRoomNumber())));	//ROOM NUMBER
-		//Element tiles = new Element("Tiles2D");//floors//maybe do need to parse 2d tiles D:
-		//Element items = new Element("items");//items
-		Element characters = new Element("characters");//characters
-		Element doors = new Element("doors");//doors
-		Element floors = new Element("floors");//floors
-		//Element spawns = new Element("spawn");//spawn		//dupe with floors
-		Element walls = new Element("walls");//walls
+		Element e = new Element("Room");		//room
+
+
+		Element doors = new Element("doors");		//doors			//
+		Element floors = new Element("floors");		//floors		//TILES
+		Element walls = new Element("walls");		//walls			//
+
+		Element avatars = new Element("avatars");		//characters
+		Element items = new Element("items");			//items
+		Element others = new Element("other_tiles");
+
+		e.addContent(new Element("roomPlace").setText(room.getRoomPlace()));		//room place
 
 		//CHARACTERS
 		if(! room.getAvatars().isEmpty()){
 			for(Avatar a: room.getAvatars()){
-				characters.addContent(parseAvatar(a));
+				avatars.addContent(parseAvatar(a));
 			}
-			e.addContent(characters);
+			e.addContent(avatars);
 		}
-		else{characters.addContent(new Element("NULL"));}//add a NULL string
+		else{avatars.addContent(new Element("NULL"));}//add a NULL string
 
 		//TILES
 		if(room.getTiles()!= null &&!(room.getTiles().length ==0)){
@@ -89,12 +93,16 @@ public class XMLSaveParser {
 						else if(thisTile instanceof Door){
 							doors.addContent(parseDoor((Door)thisTile));
 						}
+						else{
+							others.addContent(parseOtherTile2D(thisTile));
+						}
 					}
 
 				}
 				e.addContent(floors);
 				e.addContent(walls);
 				e.addContent(doors);
+				e.addContent(others);
 		}
 		else{return null;}//IMPOSSIBLE TO HAVE ROOM W.O. floor
 		return e;
@@ -104,13 +112,22 @@ public class XMLSaveParser {
 	 * Parses an avatar in this order and returns an element
 	 *
 	 *
-	 * Game.Facing facing;
-	 *
-	 * Room currentRoom;
-	 *   X excluded because parse avatar is called in parse tile                          Tile2D currentTile; // current Tile the character is standing on
-	 * String playerName;
-	 * List <Item> Inventory;
-	 *
+	private Game.Facing facing;
+	private List <Item> Inventory;
+
+
+	private Tile2D currentTile;
+	private Room currentRoom;
+
+	private String playerName;
+
+	private Cell battery;
+
+	// Avatars coordinates relative to the room - global.
+	private double globalXPos, globalYPos;
+
+	// Avatars coordinates relative to the tile - local.
+	private double tileXPos, tileYPos;
 	 * This is called in parseTile(Floor floor)
 	 *
 	 * @param avatar
@@ -119,12 +136,8 @@ public class XMLSaveParser {
 
 	public Element parseAvatar(Avatar avatar){
 		Element e = new Element("Avatar");
-		e.addContent(new Element("facing").setText(avatar.getFacing().name()));
-		e.addContent(new Element("currentRoom").setText(Integer.toString(avatar.getCurrentRoom().getRoomNumber())));		//ROOM NUMBER
-		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//add simple fields
-
-		Element inventory = new Element("inventory");		//creating new element for list of items on tile
-
+		e.addContent(new Element("facing").setText(avatar.getFacing().name()));			//Facing
+		Element inventory = new Element("inventory");		//Inventory
 		if(!avatar.getInventory().isEmpty()){
 			for(Item i: avatar.getInventory()){		//iterate through list
 				inventory.addContent(new Element("item").setText(i.getDescription()));//add item to inventory element
@@ -134,6 +147,14 @@ public class XMLSaveParser {
 			inventory.addContent(new Element("NULL"));//add a NULL string
 		}
 		e.addContent(inventory);
+
+		//Don't need to save the tile2D
+		//Don't need to save room
+
+		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//player name
+		Element cell = new Element("cell");
+		e.addContent(cell);
+
 
 		return e;
 	}
@@ -156,22 +177,15 @@ public class XMLSaveParser {
 		Element e = new Element("Floor");
 		e.addContent(new Element("xPos").setText(Integer.toString(floor.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(floor.getyPos())));
-		//e.addContent(new Element("type").setText(floor.getType()));
-		e.addContent(new Element("room").setText(Integer.toString(floor.getRoom().getRoomNumber()))); 		//ROOM NUMBER
-		//e.addContent(new Element("isSpawn").setText(Boolean.toString(floor.isSpawn())));		//Adding fields
+
 		if(!(floor.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(floor.getAvatar().getPlayerName()));
 		else e.addContent(new Element("characterOnTile").setText("NULL"));
+
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
-
 		if(!floor.getItems().isEmpty()){
-			for(Item i: floor.getItems()){		//iterate through list
-				itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
-
-			}
+			for(Item i: floor.getItems())itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
 		}
-		else{
-			itemsOnTile.addContent(new Element("NULL"));//add a NULL string
-		}
+		else itemsOnTile.addContent(new Element("NULL"));		//adds a string "NULL"
 		e.addContent(itemsOnTile);
 
 		return e;
@@ -190,7 +204,7 @@ public class XMLSaveParser {
 		e.addContent(new Element("xPos").setText(Integer.toString(wall.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(wall.getyPos())));
 		//e.addContent(new Element("type").setText(wall.getType()));
-		e.addContent(new Element("room").setText(Integer.toString(wall.getRoom().getRoomNumber()))); 		//ROOM NUMBER
+		//e.addContent(new Element("room").setText(Integer.toString(wall.getRoom().getRoomNumber()))); 		//ROOM NUMBER
 		if(!(wall.getAvatar() == null))e.addContent(new Element("characterOnTile").setText(wall.getAvatar().getPlayerName()));
 		else e.addContent(new Element("characterOnTile").setText("NULL"));
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
@@ -225,19 +239,14 @@ public class XMLSaveParser {
 		Element e = new Element("Door");
 		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
-		//e.addContent(new Element("type").setText(door.getType()));
-		e.addContent(new Element("room").setText(Integer.toString(door.getRoom().getRoomNumber())));			//JUST THE ROOM NUMBER
-		e.addContent(new Element("toRoomIndex").setText(Integer.toString(door.getToRoomIndex())));
-
+		e.addContent(new Element("toRoom").setText(door.getToRoom().getRoomPlace()));
 		Element color = new Element("color");
 		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
 		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
 		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
-
 		e.addContent(color);
-		//e.addContent(new Element("toRoomXPos").setText(Integer.toString(door.getToRoomXPos())));
-		//e.addContent(new Element("toRoomYPos").setText(Integer.toString(door.getToRoomYPos())));
-		//e.addContent(new Element("locked").setText(Boolean.toString(door.getLocked())));
+
+
 
 		if(!(door.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(door.getAvatar().getPlayerName()));
 		else e.addContent(new Element("characterOnTile").setText("NULL"));
@@ -256,6 +265,47 @@ public class XMLSaveParser {
 		e.addContent(itemsOnTile);
 
 		return e;
+	}
+
+	/**
+	 * Takes a passed Cell object and creates an xml element that represents it
+	 * 	private double batteryLife;
+		Avatar avatar;
+		boolean charging;
+	 *
+	 * @param cell
+	 * @return Element representing the parsed cell
+	 */
+	public Element parseCell(Cell cell){
+		Element e = new Element("cell");
+		e.addContent(new Element("batteryLife").setText(Double.toString(cell.getBatteryLife())));
+		e.addContent(new Element("charging").setText(Boolean.toString(cell.isCharging())));
+		return e;
+	}
+	/**
+	 * Takes either a charger, column, or tree as a parameter and creates an xml element that represents it
+	 * 	private int xPos;
+		private int yPos;
+		private Room room;
+	 * @param column
+	 * @return Element representing the parsed column
+	 */
+
+	public Element parseOtherTile2D(Tile2D tile){
+		Element e;
+		if(tile instanceof Charger){
+			e = new Element("Charger");
+		}
+		else if(tile instanceof Column){
+			e = new Element("Column");
+		}
+		else { e = new Element("Tree");}//instanceof tree
+		e.addContent(new Element("xPos").setText(Integer.toString(tile.getxPos())));
+		e.addContent(new Element("yPos").setText(Integer.toString(tile.getyPos())));
+
+
+		return e;
+
 	}
 
 }
