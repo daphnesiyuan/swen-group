@@ -61,20 +61,23 @@ public class NewGame {
 	
 	private void linkRooms(){
 		Room arena = roomsInGame.get(0);
-		for(int i = 0; i < arena.getDoors().size()-1; i++){
-			Door door = arena.getDoors().get(i);
-			door.setToRoom(roomsInGame.get(i+1));
+		Room n = null, s = null , e = null , w = null;
+		for(Room room : roomsInGame){
+			System.out.println(room.getRoomPlace());
+			if(room.getRoomPlace().equals("north")) n = room;
+			else if(room.getRoomPlace().equals("south")) s = room;
+			else if(room.getRoomPlace().equals("east")) e = room;
+			else if(room.getRoomPlace().equals("west")) w  = room;
 		}
+		n.getDoors().get(0).setToRoom(arena);
+		s.getDoors().get(0).setToRoom(arena);
+		e.getDoors().get(0).setToRoom(arena);
+		w.getDoors().get(0).setToRoom(arena);
 		
-		for(int i = 1; i < roomsInGame.size()-1; i++){
-			Room room = roomsInGame.get(i);
-			Door door = room.getDoors().get(0);
-			door.setToRoom(arena);
-		}
-		
-		
-		
-		
+		arena.getDoors().get(0).setToRoom(n);
+		arena.getDoors().get(1).setToRoom(s);
+		arena.getDoors().get(2).setToRoom(e);
+		arena.getDoors().get(3).setToRoom(w);		
 	}
 
 

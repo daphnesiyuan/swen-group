@@ -180,7 +180,7 @@ public class Avatar implements Serializable {
 
 		if(newPosition.getAvatar() != null) return false; // CANNOT move to a tile if there is another player on it
 		if(newPosition instanceof Column) return false; // CANNOT pass through columuns
-		if(newPosition instanceof Door) return moveDoor(newPosition);// If Player is trying to pass through a door
+		if(newPosition instanceof Door) return moveDoor((Door) newPosition);// If Player is trying to pass through a door
 		else{
 			updateLocations(newPosition,currentRoom);
 			cell.iMoved();
@@ -289,8 +289,22 @@ public class Avatar implements Serializable {
 		}
 	}
 
-	public boolean moveDoor(Tile2D oldPosition){
-		updateLocations(null,null);
+	public boolean moveDoor(Door oldPosition){	//oldposition is the door the avatar stepped onto
+		if(currentRoom.getRoomPlace().equals("arena")){	// if avatar is leaving arena
+			Room room  = oldPosition.getToRoom();
+			Door door = room.getDoors().get(0);
+			updateLocations(door, room);
+		}
+		else{											// avatar is going into arena
+			Room arena = oldPosition.getToRoom();
+			Door door = null;
+			if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(0);
+			else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(1);
+			else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(2);
+			else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(3);
+			updateLocations(door, arena);
+
+		}
 		cell.iMoved();
 		animation();
 		return true;
