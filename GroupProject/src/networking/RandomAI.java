@@ -46,8 +46,6 @@ public class RandomAI extends AI {
 		// Make the move
 		Move move = new Move(getPlayer(), "W", direction);
 
-		System.out.println(move);
-
 		// Attempt to move
 		game.moveAvatar(move);
 	}

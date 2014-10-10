@@ -46,7 +46,6 @@ public class GameServer extends ChatServer {
 
 						// Tell all AI to move
 						int ticked = gameServer.tickAllAI();
-						System.out.println("AI ticked: " + ticked);
 
 						// Update clients if the game has been modified
 						if( isGameModified() ){
