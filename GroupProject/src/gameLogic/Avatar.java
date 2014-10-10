@@ -25,12 +25,12 @@ public class Avatar implements Serializable {
 
 	private String playerName;
 
-	private Cell battery;
+	private Cell cell;
 
-	// Avatars coordinates relative to the room - global.
+	// Avatar's coordinates relative to the room - global.
 	private double globalXPos, globalYPos;
 
-	// Avatars coordinates relative to the tile - lovcal.
+	// Avatar's coordinates relative to the tile - local.
 	private double tileXPos, tileYPos;
 
 
@@ -43,11 +43,11 @@ public class Avatar implements Serializable {
 	private final double tileYCenter = tileHeight / 2;
 
 
-	//If avatar moves to adjacent tile their local tile coordinates are set with these fields
+	//If Avatar moves to adjacent tile their local tile coordinates are set with these fields
 	private final double tileMinPos = 1;
 	private final double tileMaxPos = 100;
 
-	// The amount the avatar moves with each key press
+	// The amount the Avatar moves with each key press
 	private int stepAmount = 50;
 
 
@@ -72,7 +72,7 @@ public class Avatar implements Serializable {
 		this.Inventory = new ArrayList<Item>();
 		this.facing = Facing.North;
 
-		this.battery = new Cell(this);
+		this.cell = new Cell(this);
 
 
 		// Avatar start coordinates initialized to the middle of its starting tile
@@ -175,22 +175,15 @@ public class Avatar implements Serializable {
 		// newPosition invalid or not found - ie if movement up is a wall
 		if(newPosition == null){
 			System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
-
 			return false;
 		}
 
 		if(newPosition.getAvatar() != null) return false; // CANNOT move to a tile if there is another player on it
 		if(newPosition instanceof Column) return false; // CANNOT pass through columuns
-
-		if(newPosition instanceof Door){
-			newPosition = moveDoor(newPosition); // If Player is trying to pass through a door
-			battery.iMoved();
-			animation();
-			return true;
-		}
+		if(newPosition instanceof Door) return moveDoor(newPosition);// If Player is trying to pass through a door
 		else{
 			updateLocations(newPosition,currentRoom);
-			battery.iMoved();
+			cell.iMoved();
 			animation();
 			return true;
 		}
@@ -296,20 +289,12 @@ public class Avatar implements Serializable {
 		}
 	}
 
-	public Tile2D moveDoor(Tile2D tileDoor){
-		Door door = (Door) tileDoor;
-//		if(!(currentRoom.getRoomPlace().equals("arena"))){	// If we are moving into arena
-//			if(!(currentRoom.getRoomPlace().equals("north"))) door = door.getToRoom().getDoors().get(0);
-//			else if(!(currentRoom.getRoomPlace().equals("south"))) door = door.getToRoom().getDoors().get(1);
-//			else if(!(currentRoom.getRoomPlace().equals("east"))) door = door.getToRoom().getDoors().get(2);
-//			else if(!(currentRoom.getRoomPlace().equals("west"))) door = door.getToRoom().getDoors().get(3);
-//		}
-//		else{
-//			door = door.getToRoom().getDoors().get(0);
-//		}
-//		
-		updateLocations(door.getToRoom().getDoors().get(0),door.getToRoom());
-		return tileDoor;
+	public boolean moveDoor(Tile2D oldPosition){
+		updateLocations(null,null);
+		cell.iMoved();
+		animation();
+		return true;
+	
 	}
 
 
@@ -394,11 +379,11 @@ public class Avatar implements Serializable {
 	}
 
 	public double getBatteryLife(){
-		return battery.getBatteryLife();
+		return cell.getBatteryLife();
 	}
 
 	public void setCharging(boolean charging){
-		this.battery.setCharging(charging);
+		this.cell.setCharging(charging);
 	}
 
 	public int getSpriteIndex(){

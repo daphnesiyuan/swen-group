@@ -62,15 +62,15 @@ public class Cell extends Thread implements Serializable {
 
 			if(charging){
 				if(batteryLife<100){
-
+					chargeBattery();
 				}
 				else{
-
+					
 				}
 			}
 
 			else{
-
+				useBattery();
 			}
 		}
 

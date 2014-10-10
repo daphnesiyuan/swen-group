@@ -26,8 +26,8 @@ public class NewGame {
 		game = g;
 
 		roomsInGame = createRooms();
-
-		if(linkRooms()== false) System.out.println("Error in Game Creation : NewGame - linkRooms(), could not link home rooms and arena");
+		
+		linkRooms();
 
 		game.setRoomsInGame(roomsInGame);
 		
@@ -58,30 +58,25 @@ public class NewGame {
 
 		return rooms;
 	}
-
-
-	private boolean linkRooms(){
-		return (fromArena() && fromRooms());
-	}
-
 	
-	//TODO maybe linking done in room creation? to utilize roomPlace string.
-	private boolean fromArena(){
+	private void linkRooms(){
 		Room arena = roomsInGame.get(0);
-		for(int i = 1; i< roomsInGame.size()-1; i++){
-			arena.getDoors().get(i).setToRoom(roomsInGame.get(i));
+		for(int i = 0; i < arena.getDoors().size()-1; i++){
+			Door door = arena.getDoors().get(i);
+			door.setToRoom(roomsInGame.get(i+1));
 		}
-		return true;
+		
+		for(int i = 1; i < roomsInGame.size()-1; i++){
+			Room room = roomsInGame.get(i);
+			Door door = room.getDoors().get(0);
+			door.setToRoom(arena);
+		}
+		
+		
+		
+		
 	}
 
-	private boolean fromRooms(){
-		Room arena = roomsInGame.get(0);
-
-		for(int i = 1; i< roomsInGame.size()-1; i++){
-			roomsInGame.get(i).getDoors().get(0).setToRoom(arena);
-		}
-		return true;
-	}
 
 
 	/**

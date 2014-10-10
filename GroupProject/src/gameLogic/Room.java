@@ -23,9 +23,6 @@ public class Room implements Serializable {
 	
 	private String roomPlace;
 	
-	
-
-
 
 
 
