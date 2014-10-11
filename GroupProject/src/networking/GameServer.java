@@ -28,6 +28,11 @@ public class GameServer extends ChatServer {
 
 	private ArrayList<AI> gameAI = new ArrayList<AI>();
 
+	/**
+	 * Creates a new Game Server that will load a map from the file given.
+	 * Waits for input from the console to run commands.
+	 * @param gameToLoad MapFile to load
+	 */
 	public GameServer() {
 		super();
 
@@ -38,33 +43,15 @@ public class GameServer extends ChatServer {
 		Thread serverTextBox = new Thread(new ServerTextListener());
 		serverTextBox.start();
 
-		Thread tickThread = new Thread(){
-			@Override
-			public void run(){
-				try {
-					while(true){
-
-						// Tell all AI to move
-						int ticked = gameServer.tickAllAI();
-
-						// Update clients if the game has been modified
-						if( isGameModified() ){
-							updateAllClients();
-						}
-
-						Thread.sleep(30);
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		};
+		Thread tickThread = new Thread(new TickThread());
 		tickThread.start();
-
-
-
 	}
 
+	/**
+	 * Creates a new Game Server that will load a map from the file given.
+	 * Waits for input from the console to run commands.
+	 * @param gameToLoad MapFile to load
+	 */
 	public GameServer(File gameToLoad) {
 		super();
 
@@ -72,35 +59,17 @@ public class GameServer extends ChatServer {
 		Thread serverTextBox = new Thread(new ServerTextListener());
 		serverTextBox.start();
 
-		Thread refreshThread = new Thread(){
-			@Override
-			public void run(){
-				try {
-					while(true){
-
-						// Tell all AI to move
-						int ticked = gameServer.tickAllAI();
-
-						// Update clients if the game has been modified
-						updateAllClients();
-
-						Thread.sleep(30);
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		refreshThread.start();
+		Thread tickThread = new Thread(new TickThread());
+		tickThread.start();
 
 		// Load the game from a file a file
 		loadGame(gameToLoad);
 	}
 
 	/**
-	 *
-	 * @param file
-	 * @return
+	 *Loads the file given creating a new gameworld
+	 * @param file Map to load into the game
+	 * @return True if successfully loaded
 	 */
 	public boolean loadGame(File file){
 		// Load a file
@@ -324,4 +293,21 @@ public class GameServer extends ChatServer {
 	public static void main(String[] args) {
 		new GameServer();
 	}
+
+	private class TickThread implements Runnable{
+
+		@Override
+		public void run(){
+			try {
+				while(true){
+					gameServer.tickAllAI();
+					updateAllClients();
+
+					Thread.sleep(30);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	};
 }
