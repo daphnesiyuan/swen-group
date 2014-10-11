@@ -16,13 +16,14 @@ public class Room implements Serializable {
 	private List<Floor> floors;
 	private List<Wall> walls;
 	private List<Column> columns;
+	private List<Tree> trees;
 
 
 	private List <Item> items;
 	private List<Avatar> avatars;
-	
+
 	private String roomPlace;
-	
+
 
 
 
@@ -31,15 +32,14 @@ public class Room implements Serializable {
 		this.items = items;
 
 
-
-
 		this.doors = new ArrayList<Door>();
 		this.floors = new ArrayList<Floor>();
 		this.walls = new ArrayList<Wall>();
 		this.columns = new ArrayList<Column>();
 
 		this.avatars = new ArrayList<Avatar>();
-		
+		this.trees = new ArrayList<Tree>();
+
 		this.roomPlace = "NULL";
 
 	}
@@ -179,5 +179,13 @@ public class Room implements Serializable {
 
 	public void setColumns(List<Column> columns) {
 		this.columns = columns;
+	}
+
+	public List<Tree> getTrees() {
+		return trees;
+	}
+
+	public void setTrees(List<Tree> trees) {
+		this.trees = trees;
 	}
 }

@@ -61,7 +61,6 @@ public class Game{
 		Room room = roomsInGame.get(roomNumber++);
 		Tile2D tile = room.getTiles()[3][3];
 		Avatar avatar = new Avatar(playerName,tile,room);
-		avatar.setHomeRoom(room);
 		activeAvatars.add(avatar);
 		return room;
 	}
@@ -137,14 +136,14 @@ public class Game{
 
 		return activeAvatars.remove(leaving);
 	}
-	
+
 	public boolean addAI(AI ai){
 		return activeAI.add(ai);
 	}
 	public boolean removeAI(AI ai){
 		return activeAI.remove(ai);
 	}
-	
+
 
 	public int tickAllAI(){
 		int count = 0;
@@ -153,7 +152,7 @@ public class Game{
 				ai.think(this);
 				count ++;
 			}
-		}	
+		}
 		return count;
 	}
 

@@ -17,7 +17,7 @@ public abstract boolean moveItemTo(Tile2D toTile);
 public abstract int getWeight();
 public abstract boolean interactWith(Avatar avatar);
 public abstract void returnToStartPos();
-public abstract boolean pickItemUp();
+public abstract boolean pickItemUp(Avatar avatar);
 
 
 

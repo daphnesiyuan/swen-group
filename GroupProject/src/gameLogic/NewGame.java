@@ -144,6 +144,10 @@ public class NewGame {
 						Tile2D column = new Column(x,y);
 						tiles[y][x] = column;
 					}
+					else if(tile.toUpperCase().equals("T")){
+						Tile2D tree = new Tree(x,y);
+						tiles[y][x] = tree;
+					}
 					x++;
 
 				}
@@ -158,6 +162,7 @@ public class NewGame {
 						if(tiles[i][j] instanceof Floor) room.getFloors().add((Floor) tiles[i][j]);
 						if(tiles[i][j] instanceof Wall) room.getWalls().add((Wall) tiles[i][j]);
 						if(tiles[i][j] instanceof Column) room.getColumns().add((Column) tiles[i][j]);
+						if(tiles[i][j] instanceof Tree) room.getTrees().add((Tree) tiles[i][j]);
 
 					}
 				}

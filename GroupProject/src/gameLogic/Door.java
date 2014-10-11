@@ -11,24 +11,10 @@ public class Door extends Tile2D{
 	private Room toRoom;
 
 
-	private Color color;
-
-
-
 	public Door(int xPos, int yPos) {
 		super(xPos, yPos);
 		toRoom = null;
 	}
-
-
-	public void setColor(Color color){
-		this.color = color;
-	}
-
-	public Color getColor(){
-		return color;
-	}
-
 
 	public Room getToRoom() {
 		return toRoom;

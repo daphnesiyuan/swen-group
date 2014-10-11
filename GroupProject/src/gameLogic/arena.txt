@@ -1,16 +1,16 @@
 arena
 W W W W W W W D W W W W W W W E
-W F F F F F F F F F F F F F W E
+W F F F F F T F T F F F F F W E
 W F F F F F F F F F F F F F W E
 W F F F C F F F F F C F F F W E
 W F F F F F F F F F F F F F W E
 W F F F F F F F F F F F F F W E
-W F F F F F F W F F F F F F W E
+W T F F F F F W F F F F F T W E
 D F F F F F W C W F F F F F D E
-W F F F F F F W F F F F F F W E
+W T F F F F F W F F F F F T W E
 W F F F F F F F F F F F F F W E
 W F F F F F F F F F F F F F W E
 W F F F C F F F F F C F F F W E
 W F F F F F F F F F F F F F W E
-W F F F F F F F F F F F F F W E
+W F F F F F T F T F F F F F W E
 W W W W W W W D W W W W W W W E

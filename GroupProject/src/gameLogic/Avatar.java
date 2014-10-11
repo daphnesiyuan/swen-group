@@ -54,13 +54,6 @@ public class Avatar implements Serializable {
 	// While the sprite is animating, spriteIndex will hold the index to the current frame to be displayed for the animation.
 	private int spriteIndex;
 
-	// Color the Avatar is painted currently
-	private Color color;
-
-	// Avatars Home room object - where the avatar spawns and has access to during the game
-	private Room homeRoom;
-
-
 	//Is this Avatar object a Player, or an AI
 	private boolean isAI;
 
@@ -86,8 +79,6 @@ public class Avatar implements Serializable {
 		// Avatars initial sprite image is the 0th element in the animation sequence
 		this.spriteIndex = 0;
 
-		this.color = Color.white;
-
 		if(name.startsWith("ai")){
 			this.isAI=true;
 		}else{
@@ -101,7 +92,7 @@ public class Avatar implements Serializable {
 	 * When called, the Avatars tileXPos and tileYPos are set to 50. The global coordinates are updated respectivley.
 	 * This method is used to center the avatar on a tile.
 	 */
-	public void centerAvatar(){
+	private void centerAvatar(){
 		double xChange = tileXCenter - tileXPos;
 		double yChange = tileYCenter - tileYPos;
 		tileXPos = tileXCenter;
@@ -109,9 +100,6 @@ public class Avatar implements Serializable {
 		globalXPos += xChange;
 		globalYPos += yChange;
 	}
-
-
-
 
 	public boolean isAI() {
 		return isAI;
@@ -128,14 +116,14 @@ public class Avatar implements Serializable {
 		updateRoom(room);
 	}
 
-	public void updateTile(Tile2D newTile){
+	private void updateTile(Tile2D newTile){
 		if(newTile.equals(currentTile)) return;
 		if(currentTile != null) currentTile.removeAvatar(this);
 		newTile.addAvatar(this);
 		currentTile = newTile;
 	}
 
-	public void updateRoom(Room newRoom){
+	private void updateRoom(Room newRoom){
 		if(newRoom.equals(currentRoom)) return;
 		if(currentRoom != null)	currentRoom.removeAvatar(this);
 		newRoom.addAvatar(this);
@@ -163,6 +151,8 @@ public class Avatar implements Serializable {
 			return false;
 		}
 
+		if(move.getInteraction().equals("O")) attack();
+
 		updateFacing(move.getInteraction());
 
 		int change = calcDirection(move);
@@ -184,6 +174,7 @@ public class Avatar implements Serializable {
 			updateLocations(newPosition,currentRoom);
 			cell.iMoved();
 			animation();
+			if(currentTile.getItems().size() != 0) interact(currentTile.getItems().get(0));
 			return true;
 		}
 
@@ -197,7 +188,7 @@ public class Avatar implements Serializable {
 	 * @param move object - holds information about key press and rendering direction
 	 * @return change - the direction the avatar will move with 0,1,2,3 representing North, East, South and West respectively
 	 */
-	public int calcDirection(Move move){
+	private int calcDirection(Move move){
 		int dir = Direction.get(move.getRenderDirection());
 		int key = Direction.getKeyDirection(move.getInteraction());
 		int change = dir + key;
@@ -205,7 +196,7 @@ public class Avatar implements Serializable {
 		return change;
 	}
 
-	public void animation(){
+	private void animation(){
 		spriteIndex++;
 		spriteIndex = spriteIndex % 4; // 4 images but 0 indexed.
 	}
@@ -215,7 +206,7 @@ public class Avatar implements Serializable {
 	 * @param tile2d = the Tile above the current tile
 	 * @return tile2d = returns the current tile if the movement made keeps the avatar on the same tile, else returns the tile above the current tile.
 	 */
-	public Tile2D moveUp(Tile2D tileUp){
+	private Tile2D moveUp(Tile2D tileUp){
 		globalYPos-=stepAmount;
 		tileYPos-=stepAmount;
 
@@ -234,7 +225,7 @@ public class Avatar implements Serializable {
 		}
 	}
 
-	public Tile2D moveDown(Tile2D tileDown){
+	private Tile2D moveDown(Tile2D tileDown){
 		globalYPos+=stepAmount;
 		tileYPos+=stepAmount;
 
@@ -252,7 +243,7 @@ public class Avatar implements Serializable {
 		}
 	}
 
-	public Tile2D moveLeft(Tile2D tileLeft){
+	private Tile2D moveLeft(Tile2D tileLeft){
 		globalXPos-=stepAmount;
 		tileXPos-=stepAmount;
 		if(tileXPos<tileMinPos){
@@ -270,7 +261,7 @@ public class Avatar implements Serializable {
 		}
 	}
 
-	public Tile2D moveRight(Tile2D tileRight){
+	private Tile2D moveRight(Tile2D tileRight){
 		globalXPos+=stepAmount;
 		tileXPos+=stepAmount;
 		if(tileXPos>tileWidth){
@@ -288,7 +279,7 @@ public class Avatar implements Serializable {
 		}
 	}
 
-	public boolean moveDoor(Door oldPosition){	//oldposition is the door the avatar stepped onto
+	private boolean moveDoor(Door oldPosition){	//oldposition is the door the avatar stepped onto
 		if(currentRoom.getRoomPlace().equals("arena")){	// if avatar is leaving arena
 			Room room  = oldPosition.getToRoom();
 			Door door = room.getDoors().get(0);
@@ -305,6 +296,7 @@ public class Avatar implements Serializable {
 
 		}
 		cell.iMoved();
+
 		animation();
 		return true;
 
@@ -317,12 +309,16 @@ public class Avatar implements Serializable {
 	 * 	Update the direction the avatar is facing based to what movement key was pressed.
 	 * @param dirKey - string representing the movement key that were pressed.
 	 */
-	public void updateFacing(String dirKey){
+	private void updateFacing(String dirKey){
 		if(dirKey.toLowerCase().equals("w")) facing = Facing.North;
 		else if(dirKey.toLowerCase().equals("d")) facing = Facing.East;
 		else if(dirKey.toLowerCase().equals("s")) facing = Facing.South;
 		else if(dirKey.toLowerCase().equals("a")) facing = Facing.West;
 		else System.out.println("Avatar - updateFacing() : facing direction calculation error after movement");
+	}
+
+	private void attack(){
+
 	}
 
 
@@ -403,19 +399,6 @@ public class Avatar implements Serializable {
 		return spriteIndex;
 	}
 
-	public void setColor(Color color){
-		this.color = color;
-	}
-
-	public Room getHomeRoom(){
-		return homeRoom;
-	}
-
-	public void setHomeRoom(Room room){
-		homeRoom = room;
-	}
-
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -441,6 +424,16 @@ public class Avatar implements Serializable {
 		} else if (!playerName.equals(other.playerName))
 			return false;
 		return true;
+	}
+
+
+	public Cell getCell() {
+		return cell;
+	}
+
+
+	public void setCell(Cell cell) {
+		this.cell = cell;
 	}
 
 
