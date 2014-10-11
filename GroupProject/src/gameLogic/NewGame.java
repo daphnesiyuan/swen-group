@@ -45,11 +45,11 @@ public class NewGame {
 		URL e = NewGame.class.getResource("/gameLogic/basic_room_west.txt");
 
 		Room arena = makeRoom(a);
-		Room start1 = makeRoom(b);
-		Room start2 = makeRoom(c);
-		Room start3 = makeRoom(d);
-		Room start4 = makeRoom(e);
-
+		Room start1 = makeRoom(d);
+		Room start2 = makeRoom(e);
+		Room start3 = makeRoom(c);
+		Room start4 = makeRoom(b);
+		
 		rooms.add(arena);
 		rooms.add(start1);
 		rooms.add(start2);
