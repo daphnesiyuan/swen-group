@@ -1,5 +1,6 @@
 package networking;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -14,9 +15,9 @@ public class ChatHistory extends NetworkData {
 	 *
 	 */
 	private static final long serialVersionUID = -5022978323415087568L;
-	public final Stack<ChatMessage> history;
+	public final ArrayList<ChatMessage> history;
 
-	public ChatHistory(Stack<ChatMessage> history, boolean acknowledged){
+	public ChatHistory(ArrayList<ChatMessage> history, boolean acknowledged){
 		this.history = history;
 		this.acknowledged = acknowledged;
 	}

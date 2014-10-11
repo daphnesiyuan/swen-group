@@ -211,12 +211,12 @@ public class ChatClient extends Client {
 	 * Size indicates how many of the most recent messages to claim
 	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
-	public Stack<ChatMessage> getChatHistory(int size) {
+	public ArrayList<ChatMessage> getChatHistory(int size) {
 
 		size = Math.min(size, chatHistory.size());
 
-		Stack<ChatMessage> history = new Stack<ChatMessage>();
-		for (int i = chatHistory.size()-1; i > (chatHistory.size() - size); i--) {
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = chatHistory.size()-size; i < chatHistory.size(); i++) {
 			history.add(chatHistory.get(i));
 		}
 
@@ -228,7 +228,7 @@ public class ChatClient extends Client {
 	 * Returns a new arrayList containing all the chatMessages up to "size" back
 	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
-	public Stack<ChatMessage> getChatHistory() {
+	public ArrayList<ChatMessage> getChatHistory() {
 		// Send a get ArrayList of the chat messages to the client
 		return getChatHistory(chatHistory.size());
 	}

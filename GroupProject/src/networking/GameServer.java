@@ -155,6 +155,9 @@ public class GameServer extends ChatServer {
 					if( !createAI() ){
 						System.out.println("Didn't add AI!");
 					}
+
+					// Confirmation
+					getClientFromIP(data.getIPAddress()).sendData(data);
 					return;
 				}
 			}

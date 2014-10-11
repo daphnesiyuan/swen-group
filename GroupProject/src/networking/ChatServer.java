@@ -1,6 +1,7 @@
 package networking;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Stack;
@@ -110,8 +111,8 @@ public class ChatServer extends Server {
 		// Make sure we don't get a size greater than the list
 		size = Math.min(size, chatHistory.size());
 
-		Stack<ChatMessage> history = new Stack<ChatMessage>();
-		for (int i = chatHistory.size()-1; i > (chatHistory.size() - size); i--) {
+		ArrayList<ChatMessage> history = new ArrayList<ChatMessage>();
+		for (int i = chatHistory.size()-size; i < chatHistory.size(); i++) {
 			history.add(chatHistory.get(i));
 		}
 
@@ -356,25 +357,28 @@ public class ChatServer extends Server {
 		 */
 		private boolean parseHelp(Scanner scan, NetworkObject data) {
 
-			// Send history back to the client
-			String commandList = "\nList of Possible Commands:\n"
-					+ "/ip -> Displays your ping on the screen\n"
-					+ "/ping -> Checks how fast your connection currently is\n"
-					+ "/get history -> Sends back the entire chat history\n"
-					+ "/get history 'number' -> Sends back the chat history up to 'number' of most recent messages\n"
-					+ "/admins -> lists the IP's of the admins\n"
-					+ "/players -> lists all the players in the game\n"
-					+ "/chatcolor r g b -> changes the color of your chat messages\n"
-					+ "/clear -> clears all messages off the screen\n"
-					+ "/disconnect -> disconnects from the server\n"
-					+ "/reconnect -> reconnects to the previous server was was successfully connected\n"
-					+ "/name 'string' -> changes your name\n\n"
-					+ "- ADMIN COMMANDS -\n"
-					+ "/close -> closes the server\n"
-					+ "/addbot -> adds a random bot to the server\n";
+			ArrayList<ChatMessage> commandList = new ArrayList<ChatMessage>();
+			commandList.add(new ChatMessage("~Admin","List of Possible Commands:", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/ip -> Displays your ping on the screen", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/ping -> Checks how fast your connection currently is", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/get history 'number' -> Sends back the chat history up to 'number' of most recent messages", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/admins -> lists the IP's of the admins", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/players -> lists all the players in the game", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/chatcolor r g b -> changes the color of your chat messages", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/clear -> clears all messages off the screen", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/disconnect -> disconnects from the server", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/reconnect -> reconnects to the previous server was was successfully connected", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/name 'string' -> changes your name", chatMessageColor,true));
+			commandList.add(new ChatMessage("","/disconnect -> disconnects from the server", chatMessageColor,true));
 
+			// Only admins can see these commands
+			if( isAdmin(data.getIPAddress()) ){
+				commandList.add(new ChatMessage("","- ADMIN COMMANDS -", chatMessageColor,true));
+				commandList.add(new ChatMessage("","/close -> closes the server", chatMessageColor,true));
+				commandList.add(new ChatMessage("","/addbot -> adds a random bot to the server", chatMessageColor,true));
+			}
 
-			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",commandList, chatMessageColor, true));
+			sendToClient(data.getIPAddress(), new ChatHistory(commandList, true));
 
 			return true;
 		}
