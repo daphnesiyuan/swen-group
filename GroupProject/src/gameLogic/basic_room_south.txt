@@ -1,4 +1,4 @@
-north
+south
 W W W D W W W E
 W F F F F F W E
 W F F F F F W E

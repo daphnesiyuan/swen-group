@@ -18,21 +18,16 @@ public class NewGame {
 	private Game game;
 
 	private List<Room> roomsInGame;
-	
+
 	private String roomPlace;
 
 
 	public NewGame(Game g){
 		game = g;
-
 		roomsInGame = createRooms();
-		
 		linkRooms();
-
 		game.setRoomsInGame(roomsInGame);
-		
 		roomPlace = "NULL";
-
 	}
 
 	private List<Room> createRooms(){
@@ -45,11 +40,11 @@ public class NewGame {
 		URL e = NewGame.class.getResource("/gameLogic/basic_room_west.txt");
 
 		Room arena = makeRoom(a);
-		Room start1 = makeRoom(d);
-		Room start2 = makeRoom(e);
-		Room start3 = makeRoom(c);
-		Room start4 = makeRoom(b);
-		
+		Room start1 = makeRoom(b);
+		Room start2 = makeRoom(c);
+		Room start3 = makeRoom(d);
+		Room start4 = makeRoom(e);
+
 		rooms.add(arena);
 		rooms.add(start1);
 		rooms.add(start2);
@@ -58,7 +53,7 @@ public class NewGame {
 
 		return rooms;
 	}
-	
+
 	private void linkRooms(){
 		Room arena = roomsInGame.get(0);
 		Room n = null, s = null , e = null , w = null;
@@ -73,11 +68,11 @@ public class NewGame {
 		s.getDoors().get(0).setToRoom(arena);
 		e.getDoors().get(0).setToRoom(arena);
 		w.getDoors().get(0).setToRoom(arena);
-		
+
 		arena.getDoors().get(0).setToRoom(n);
-		arena.getDoors().get(1).setToRoom(s);
+		arena.getDoors().get(3).setToRoom(s);
 		arena.getDoors().get(2).setToRoom(e);
-		arena.getDoors().get(3).setToRoom(w);		
+		arena.getDoors().get(1).setToRoom(w);
 	}
 
 

@@ -59,8 +59,8 @@ public class Avatar implements Serializable {
 
 	// Avatars Home room object - where the avatar spawns and has access to during the game
 	private Room homeRoom;
-	
-	
+
+
 	//Is this Avatar object a Player, or an AI
 	private boolean isAI;
 
@@ -87,7 +87,7 @@ public class Avatar implements Serializable {
 		this.spriteIndex = 0;
 
 		this.color = Color.white;
-		
+
 		if(name.startsWith("ai")){
 			this.isAI=true;
 		}else{
@@ -299,16 +299,16 @@ public class Avatar implements Serializable {
 			Room arena = oldPosition.getToRoom();
 			Door door = null;
 			if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(0);
-			else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(1);
+			else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(3);
 			else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(2);
-			else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(3);
+			else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(1);
 			updateLocations(door, arena);
 
 		}
 		cell.iMoved();
 		animation();
 		return true;
-	
+
 	}
 
 
