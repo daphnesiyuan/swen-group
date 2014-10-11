@@ -174,7 +174,6 @@ public class Avatar implements Serializable {
 
 		// newPosition invalid or not found - ie if movement up is a wall
 		if(newPosition == null){
-			System.out.println("Avatar: moveTo() - Problem locating move to Tile - newPostion not found");
 			return false;
 		}
 
@@ -221,12 +220,12 @@ public class Avatar implements Serializable {
 		tileYPos-=stepAmount;
 
 		if(tileYPos<tileMinPos){
-			tileYPos = tileMaxPos;
-			if(tileUp instanceof Wall){ // cant actually move here so undo changes to position and return null
+			if(!(( tileUp instanceof Floor ) || (tileUp instanceof Door ))){ // cant actually move here so undo changes to position and return null
 				globalYPos+=stepAmount;
 				tileYPos+=stepAmount;
 				return null;
 			}
+			tileYPos = tileMaxPos;
 			return tileUp;
 		}
 		else{
@@ -240,7 +239,7 @@ public class Avatar implements Serializable {
 		tileYPos+=stepAmount;
 
 		if(tileYPos>tileHeight){
-			if(tileDown instanceof Wall){ // cant actually move here so undo changes to position and return null
+			if(!((tileDown instanceof Floor ) || (tileDown instanceof Door ))){ // cant actually move here so undo changes to position and return null
 				globalYPos-=stepAmount;
 				tileYPos-=stepAmount;
 				return null;
@@ -258,7 +257,7 @@ public class Avatar implements Serializable {
 		tileXPos-=stepAmount;
 		if(tileXPos<tileMinPos){
 
-			if(tileLeft instanceof Wall){ // cant actually move here so undo changes to position and return null
+			if(!(( tileLeft instanceof Floor ) || (tileLeft instanceof Door ))){ // cant actually move here so undo changes to position and return null
 				globalXPos+=stepAmount;
 				tileXPos+=stepAmount;
 				return null;
@@ -276,7 +275,7 @@ public class Avatar implements Serializable {
 		tileXPos+=stepAmount;
 		if(tileXPos>tileWidth){
 
-			if(tileRight instanceof Wall){ // cant actually move here so undo changes to position and return null
+			if(!(( tileRight instanceof Floor ) || (tileRight instanceof Door ))){// cant actually move here so undo changes to position and return null
 				globalXPos-=stepAmount;
 				tileXPos-=stepAmount;
 				return null;

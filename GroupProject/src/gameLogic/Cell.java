@@ -6,7 +6,7 @@ public class Cell extends Thread implements Serializable {
 
 	private static final long serialVersionUID = 7833445205893995697L;
 
-	private double batteryLife;
+	private int batteryLife;
 
 	Avatar avatar;
 
@@ -19,9 +19,9 @@ public class Cell extends Thread implements Serializable {
 
 		batteryLife = 100;
 
-		//this.start();
+		charging = false;
 
-		charging = true;
+		this.start();
 
 	}
 
@@ -65,7 +65,7 @@ public class Cell extends Thread implements Serializable {
 					chargeBattery();
 				}
 				else{
-					
+
 				}
 			}
 
