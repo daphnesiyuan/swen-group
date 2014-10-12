@@ -114,9 +114,8 @@ public class JoinMenu extends JFrame{
 				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0 ) { //input is valid
 					//MUST ADD NWEN CONNECT STUFF
 
-					ipAddress = null;
-					textIP.setText("");
-
+					gc.connect( ipAddress );
+					gc.setName(name);
 
 				} else {
 					sendFailure();
