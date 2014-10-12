@@ -258,15 +258,10 @@ public class DrawWorld {
 		pt.x+=avatarOffset.x;
 		pt.y+=avatarOffset.y;
 
-		if( avatar.getCell().isCharging() ){
-			System.out.println("found is charging");
+		if(avatar.getCell().isCharging()){
 			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
 		}
-		else{
-			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
-		}
-
-		if (avatar.getPlayerName().startsWith("ai")){
+		else if (avatar.getPlayerName().startsWith("ai")){
 			drawObject(g,pt,images.get("AvatarB"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 		}
 		else drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
