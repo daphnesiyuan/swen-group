@@ -22,9 +22,6 @@ public class ScoreBoard {
 
 	public ScoreBoard(JPanel panel) {
 		this.panel = panel;
-
-
-
 	}
 
 	public void redraw(Graphics g, List<Avatar> avatars){
@@ -32,7 +29,7 @@ public class ScoreBoard {
 		width = ((panel.getWidth() / STARTWIDTH) * STARTSCOREHEIGHT);
 		height = width;
 		buffer = (width / STARTSCOREHEIGHT) * 10;
-		int x = (int) width * NUMCARDS + (int)buffer;
+		int x = (int) width * NUMCARDS + (int)(buffer*2);
 		int y = (int)(panel.getHeight() - height - (buffer/2));
 
 		g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
