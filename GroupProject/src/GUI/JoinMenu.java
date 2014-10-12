@@ -21,7 +21,7 @@ import networking.GameClient;
 public class JoinMenu extends JFrame{
 
 	private JPanel jpanel;
-	private JButton submit;
+	private JButton connectButton;
 	private theHandler handler;
 	private JTextField textIP;
 	private JTextField textName;
@@ -32,8 +32,8 @@ public class JoinMenu extends JFrame{
 	public JoinMenu(DrawingPanel panel, GameClient g) {
 		gc = g;
 		handler = new theHandler();
-		submit = new JButton("Submit");
-		submit.addActionListener(handler);
+		connectButton = new JButton("Connect");
+		connectButton.addActionListener(handler);
 	}
 
 	public void discard() {
@@ -41,15 +41,14 @@ public class JoinMenu extends JFrame{
 	}
 
 	public void setup() {
-
 		new JFrame("The set up menu");
 		this.setSize(400, 200);
-
+		setResizable(false); // prevent us from being resizeable
 		jpanel = new JPanel();
 		jpanel.setLayout(new FlowLayout()); // change later
 		jpanel.add(new JLabel("Please connect to a server and fill in an IP address"));
 
-		jpanel.add(Box.createHorizontalStrut(50)); // a spacer
+		jpanel.add(Box.createHorizontalStrut(28)); // a spacer
 
 		this.add(jpanel);
 		this.setAlwaysOnTop(true); // ensures it pops up in front
@@ -58,7 +57,7 @@ public class JoinMenu extends JFrame{
 
 		// user inputs
 		setTextField();
-		jpanel.add(submit);
+		jpanel.add(connectButton);
 	}
 
 	public void setTextField() {
@@ -72,6 +71,7 @@ public class JoinMenu extends JFrame{
 
 		jpanel.add(label1);
 		jpanel.add(textIP);
+		jpanel.add(Box.createHorizontalStrut(35)); // a spacer for alignment
 		jpanel.add(label2);
 		jpanel.add(textName);
 	}
@@ -110,7 +110,7 @@ public class JoinMenu extends JFrame{
 
 		public void actionPerformed(ActionEvent e) {
 
-			if (e.getSource() == submit) {
+			if (e.getSource() == connectButton) {
 				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0 ) { //input is valid
 
 					ipAddress = null;
