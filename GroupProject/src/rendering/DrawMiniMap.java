@@ -5,7 +5,6 @@ import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Room;
 import gameLogic.Tile2D;
-import gameLogic.Wall;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -26,6 +25,9 @@ public class DrawMiniMap {
 	double buffer;
 	double cellHeight;
 	double cellWidth;
+	public static final double STARTWIDTH = 1280;
+	public static final double STARTMAPHEIGHT = 135;
+	public static final int NUMCARDS = 5;
 
 	public DrawMiniMap(JPanel panel, Avatar charac) {
 		this.panel = panel;
@@ -33,54 +35,89 @@ public class DrawMiniMap {
 
 	}
 
+	/**
+	 * Draws a mini map on the panel object.
+	 * @param g
+	 * @param room
+	 * @param direction
+	 */
 	public void redraw(Graphics g, Room room, String direction){
-		width = ((panel.getWidth() / 1280.0) * 135.0);
+		width = ((panel.getWidth() / STARTWIDTH) * STARTMAPHEIGHT);
 		height = width;
-		buffer = (width / 135.0);
-		int x = (int) width*5;
-		int y = (int)(panel.getHeight() - height - (buffer * 5));
-		//g.setColor(new Color(0.5f,0.5f,0.5f,0.5f));
-		//g.fillRect(x, y, (int)width, (int)height);
+		buffer = (width / STARTMAPHEIGHT);
+		int x = (int) width * NUMCARDS;
+		int y = (int)(panel.getHeight() - height - (buffer * NUMCARDS));
+
 		cellHeight = (height / room.getTiles()[0].length);
 		cellWidth = (width / room.getTiles().length);
+
+		//clone the tiles so we don't modify the game logics tiles
 		Tile2D[][] tiles = room.getTiles().clone();
+
+		//rotate the tiles to up is facing the top right of the screen
 		for (int i = 0; i < Direction.get(direction)+3; i++){
 			tiles = rotate90(tiles);
 		}
+
+		//for each tile, set the color and draw it.
 		for (int i = 0; i < tiles.length; i++ ){
 			for(int j = 0; j < tiles[i].length; j++){
-
-				if (tiles[i][j] instanceof Floor) {
-					if (tiles[i][j].getAvatar() != null) {
-						if (tiles[i][j].getAvatar().equals(charac)) {
-							g.setColor(new Color(1.0f, 0.0f, 0.0f));
-						} else {
-							g.setColor(new Color(0.5f, 0.1f, 0.1f, 0.5f));
-						}
-					}
-					else {
-						g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
-					}
-				}
-				else if (tiles[i][j] instanceof Door){
-					g.setColor(new Color(0.0f, 0.0f, 1.0f, 0.5f));
-				}
-				else{
-					g.setColor(new Color(0.1f, 0.2f, 0.1f, 0.5f));
-				}
-
-//				else if (tiles[i][j] instanceof Wall){
-//					g.setColor(new Color(0.1f, 0.2f, 0.1f, 0.5f));
-//				}
-//				else if (tiles[i][j] instanceof Door){
-//					g.setColor(new Color(0.0f, 0.0f, 1.0f, 0.5f));
-//				}
+				g.setColor(chooseColor(tiles[i][j]));
 				g.fillRect((int)(x+(i*cellWidth)), (int)(y+(j*cellHeight)), (int)(cellWidth-buffer), (int)(cellHeight-buffer));
 			}
 		}
 	}
+
+	/**
+	 * Returns a color depending on the tile that it is given.
+	 * Doors get a special color.
+	 * Avatars are Red, solid red if they are the player too.
+	 * Floor tiles are drawn pale transparent.
+	 * Other tiles are a darker transparent.
+	 * @param tile
+	 * @return
+	 */
+	private Color chooseColor(Tile2D tile) {
+		Color color = null;
+
+		//Avatars are normally only on a floor tile.
+		//If the avatar = the players avater, draw it solid red,
+		//otherwise draw it transparent red.
+		if (tile instanceof Floor) {
+			if (tile.getAvatar() != null) {
+				if (tile.getAvatar().equals(charac)) {
+					color = new Color(1.0f, 0.0f, 0.0f);
+				} else {
+					color = new Color(0.5f, 0.1f, 0.1f, 0.5f);
+				}
+			}
+
+			//if the floor tile has no avatar just draw a normal color
+			else {
+				color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+			}
+		}
+
+		//doors get there own special color
+		else if (tile instanceof Door){
+			color = new Color(0.0f, 0.0f, 1.0f, 0.5f);
+		}
+
+		//other obstacles such as columns, trees, walls get drawn
+		//the same darker color
+		else{
+			color = new Color(0.1f, 0.2f, 0.1f, 0.5f);
+		}
+
+		return color;
+	}
+
+	/**
+	 * Takes a 2d array and rotates it around 90 degrees left.
+	 * @param tiles
+	 * @return
+	 */
 	private Tile2D[][] rotate90(Tile2D[][] tiles) {
-		// TODO Auto-generated method stub
 	    int width = tiles.length;
 	    int height = tiles[0].length;
 	    Tile2D[][] newTiles = new Tile2D[height][width];
