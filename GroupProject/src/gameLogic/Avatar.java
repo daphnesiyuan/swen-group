@@ -391,7 +391,9 @@ public class Avatar implements Serializable {
 	private void die(){
 		score--;
 		System.out.println(""+playerName+" died! Score is now: "+ score);
-		lastHit.addKill();
+		if(lastHit != null){
+			lastHit.addKill();
+		}
 		reset();
 	}
 
