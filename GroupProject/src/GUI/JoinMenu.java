@@ -1,5 +1,7 @@
 package GUI;
 
+import gameLogic.Room;
+
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -121,8 +123,18 @@ public class JoinMenu extends JFrame{
 
 					try {
 						System.out.println("testing");
-						gc.connect( ipAddress );
+						if( gc.connect( ipAddress ) ){
 
+							Room temp = gc.getRoom();
+							while( temp == null){
+								temp = gc.getRoom();
+							}
+							dispose();
+
+							panel.startDrawWorld();
+							panel.setGameMode();
+							panel.repaint();
+						}
 
 					} catch (UnknownHostException e1) {
 						// TODO Auto-generated catch block
@@ -132,9 +144,8 @@ public class JoinMenu extends JFrame{
 						e1.printStackTrace();
 					}
 
-					dispose();
-					panel.setGameMode();
-					panel.repaint();
+
+
 
 
 				} else {

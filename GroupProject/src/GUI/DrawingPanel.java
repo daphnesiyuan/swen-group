@@ -61,7 +61,6 @@ public class DrawingPanel extends JPanel {
 	private GameServer gs;
 	private GameClient gc;
 
-	private String direction;
 	private int directionI;
 	private DrawCompass compass;
 	private DrawInventory invo;
@@ -79,7 +78,7 @@ public class DrawingPanel extends JPanel {
 		startMenu = true; // by default
 		handler = new Handler();
 
-		direction = "North"; // hard coded now...NEED TO CHANGE
+		directionI = 0;
 
 		// set up mouse and key board stuff
 		setUpMouseKeys();
@@ -88,8 +87,8 @@ public class DrawingPanel extends JPanel {
 		chat = new DrawChat(this);
 
 		// networking setup stuff
-		//gs = new GameServer();
-		//setUpNWEN();
+		// gs = new GameServer();
+		// setUpNWEN();
 		gc = new GameClient("Daphne", this);
 
 		score = new ScoreBoard(this);
@@ -109,18 +108,24 @@ public class DrawingPanel extends JPanel {
 		}
 
 		else { // else it is in game
-			dw.redraw(g, gc.getRoom(), Direction.get(directionI), gc.getAvatar());
-			// potential changes later: flag for menu mode or play mode, and to
-			// have logic
-			compass.redraw(g, Direction.get(directionI));
-			invo.redraw(g, gc.getAvatar().getInventory(),
-					Direction.get(directionI));
-			map.redraw(g, gc.getRoom(), Direction.get(directionI));
-			score.redraw(g, gc.getScore());
-			health.redraw(g, gc.getAvatar());
+			if (gc.getRoom() != null && gc.getAvatar() != null) {
+				dw.redraw(g, gc.getRoom(), Direction.get(directionI),
+						gc.getAvatar());
+				// potential changes later: flag for menu mode or play mode, and
+				// to
+				// have logic
+				compass.redraw(g, Direction.get(directionI));
+				invo.redraw(g, gc.getAvatar().getInventory(),
+						Direction.get(directionI));
+				map.redraw(g, gc.getRoom(), Direction.get(directionI));
+				score.redraw(g, gc.getScore());
+				health.redraw(g, gc.getAvatar());
 
-			if (chatMode)
-				chat.redraw(g, gc.getChatHistory(10), currentMessage);
+				if (chatMode)
+					chat.redraw(g, gc.getChatHistory(10), currentMessage);
+
+			}
+
 		}
 	}
 
@@ -135,16 +140,18 @@ public class DrawingPanel extends JPanel {
 		this.addMouseMotionListener(mouseMotion);
 	}
 
-	public void setGameMode(){
-		startMenu=false;
+	public void setGameMode() {
+		startMenu = false;
 	}
 
 	/**
 	 * helper method used by the mouse classes to interact with the panel and
 	 * register clicks
 	 *
-	 * @param x the x coordinate of the click
-	 * @param y the y coordinate of the click
+	 * @param x
+	 *            the x coordinate of the click
+	 * @param y
+	 *            the y coordinate of the click
 	 */
 	public void sendClick(int x, int y) {
 		mouseX = x;
@@ -287,8 +294,7 @@ public class DrawingPanel extends JPanel {
 					invo = new DrawInventory(DrawingPanel.this);
 					map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
 					repaint();
-				}
-				else if (s.equals("join")) {
+				} else if (s.equals("join")) {
 					System.out.println("PRESSED JOIN BUTTON");
 					// open a pop up menu: String for IP address, connect button
 					// gc.connect(thestringtheyenter);
@@ -297,47 +303,45 @@ public class DrawingPanel extends JPanel {
 					joinMenu = new JoinMenu(DrawingPanel.this, gc);
 					joinMenu.setup();
 
-
-				}
-				else if (s.equals("load")) {
+				} else if (s.equals("load")) {
 					System.out.println("PRESSED LOAD BUTTON");
-					fileChooser = new XMLFile( wf );
+					fileChooser = new XMLFile(wf);
 
-				}
-				else if (s.equals("help")) {
+				} else if (s.equals("help")) {
 					System.out.println("PRESSED HELP BUTTON");
-				}
-				else {
+				} else {
 					System.out.println("no active button");
 				}
 			}
 
 			else { // not in start menu and in game.
 
-				int i=invo.findBox(mouseX, mouseY);
-				if(i==0){ //box 1
-					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(0))!=null ){
+				int i = invo.findBox(mouseX, mouseY);
+				if (i == 0) { // box 1
+					if (i <= (gc.getAvatar().getInventory().size())
+							&& (gc.getAvatar().getInventory().get(0)) != null) {
 						Item item = gc.getAvatar().getInventory().get(0);
 					}
-				}
-				else if(i==1){
-					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(1))!=null ){
+				} else if (i == 1) {
+					if (i <= (gc.getAvatar().getInventory().size())
+							&& (gc.getAvatar().getInventory().get(1)) != null) {
 						Item item = gc.getAvatar().getInventory().get(1);
 					}
-				}
-				else if (i==2){
-					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(2))!=null ){
+				} else if (i == 2) {
+					if (i <= (gc.getAvatar().getInventory().size())
+							&& (gc.getAvatar().getInventory().get(2)) != null) {
 						Item item = gc.getAvatar().getInventory().get(2);
 					}
 				}
 
-				else if (i==3){
-					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(3))!=null ){
+				else if (i == 3) {
+					if (i <= (gc.getAvatar().getInventory().size())
+							&& (gc.getAvatar().getInventory().get(3)) != null) {
 						Item item = gc.getAvatar().getInventory().get(3);
 					}
-				}
-				else if (i==4){
-					if( i<=(gc.getAvatar().getInventory().size()) && (gc.getAvatar().getInventory().get(4))!=null ){
+				} else if (i == 4) {
+					if (i <= (gc.getAvatar().getInventory().size())
+							&& (gc.getAvatar().getInventory().get(4)) != null) {
 						Item item = gc.getAvatar().getInventory().get(4);
 					}
 				}
@@ -391,6 +395,13 @@ public class DrawingPanel extends JPanel {
 
 	public ArrayList<Integer> getKeysDown() {
 		return keysDown;
+	}
+
+	public void startDrawWorld() {
+		dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
+		compass = new DrawCompass(DrawingPanel.this);
+		invo = new DrawInventory(DrawingPanel.this);
+		map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
 	}
 
 }
