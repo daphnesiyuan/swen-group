@@ -1,7 +1,6 @@
 package rendering;
 
 import gameLogic.Avatar;
-
 import gameLogic.Charger;
 import gameLogic.Column;
 import gameLogic.Door;
@@ -15,8 +14,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import GUI.DrawingPanel;
@@ -168,6 +170,36 @@ public class DrawWorld {
 				drawItems(g, point, tiles[i][j]);
 				drawCharacter(g, point, tiles[i][j]);
 			}
+		}
+		//BufferedImage img = new BufferedImage
+
+
+		drawNight(g);
+//		java.net.URL imageURL = DrawWorld.class.getResource("Night" + ".png");
+//
+//		BufferedImage img = null;
+//		try {
+//			img = ImageIO.read(imageURL);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		g.drawImage(images.get("Night"),0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
+
+	}
+
+	private void drawNight(Graphics g) {
+		long millis = System.currentTimeMillis();
+		int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(millis);
+		int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(millis);
+		int cycle = seconds % 2;
+
+		//if charac
+
+		if (cycle == 1){
+			g.drawImage(images.get("Night"),0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
+		}
+		if (cycle == 0){
+			g.drawImage(images.get("NightLight"),0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
 		}
 
 	}

@@ -76,6 +76,10 @@ public class MakeImageMap {
 			addToMap("Battery"+i);
 		}
 
+		//Night time
+		addToMap("Night");
+		addToMap("NightLight");
+
 		return images;
 	}
 
