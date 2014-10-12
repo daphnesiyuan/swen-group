@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.Document;
-
+import org.jdom2.Attribute;
+import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -29,7 +29,7 @@ public class XMLLoadParser {
 
 	File file;
 	Game game;
-	Tile2D[][] tiles;
+	Tile2D[][] tiles =new Tile2D[1000][1000];
 
 	public XMLLoadParser(File f){
 		file = f;
@@ -41,11 +41,13 @@ public class XMLLoadParser {
 		SAXBuilder builder = new SAXBuilder();
 		try{
 			Document doc = (Document) builder.build(file);
-			Element rootNode = (Element) doc.getDefaultRootElement();		//Should be "game"
+			Element rootNode = doc.getRootElement();		//Should be "game"
+			//System.out.println("A node of the root is: "+rootNode.toString());
 			List list = rootNode.getChildren();		//a list of rooms
-
+			System.out.println(list.toArray().toString());
 			for(int i = 0; i<list.size();i++){
 				Element node = (Element) list.get(i);		//room at i
+			//	System.out.println("A node of the root is: "+node.toString());
 				parseRoom(node);		//will proceed to go through all the rooms in a game and parse the deetz
 			}
 			int i = 0;
@@ -58,6 +60,7 @@ public class XMLLoadParser {
 			System.out.println(jdomex.getMessage());
 		  }
 
+		System.out.println("Finished saving???");
 		return game;
 	}
 
@@ -69,40 +72,63 @@ public class XMLLoadParser {
 	 * @param e
 	 */
 	public void parseRoom(Element e){
+		List avatarList = null;
+		List itemList = null;
+		List otherTilesList = null;
 
 		String roomPlace = e.getChildText("roomPlace");
-
-		List avatars = e.getChildren("characters");
-		List floors = e.getChildren("floors");
-		List walls = e.getChildren("walls");
-		List doors = e.getChildren("doors");
-		List items = e.getChildren("items");
-		List otherTiles = e.getChildren("other_tiles");
-		Room room = new Room(tiles, doors);
+		if(e.getChild("avatars")!= null){
+			Element avatars = e.getChild("avatars");
+			avatarList = avatars.getChildren();
+		}
+		Element floors = e.getChild("floors");
+		List floorList = floors.getChildren();
+		Element walls = e.getChild("walls");
+		List wallList = walls.getChildren();
+		Element doors = e.getChild("doors");
+		List doorList = doors.getChildren();
+		if(e.getChild("items")!= null){
+			Element items = e.getChild("items");
+			itemList = new ArrayList();
+			itemList = items.getChildren();
+		}
+		if(e.getChild("other_tiles")!=null){
+			Element otherTiles = e.getChild("other_tiles");
+			otherTilesList = otherTiles.getChildren();
+		}
+		Room room = new Room(tiles, null);
 
 		//floors
-		for(int i = 0; i<floors.size();i++){
-			parseFloor((Element)floors.get(i),room);
+		for(int i = 0; i<floorList.size();i++){
+			parseFloor((Element)floorList.get(i),room);
 		}
 		//walls
-		for(int i = 0; i<walls.size();i++){
-			parseWall((Element)walls.get(i),room);
+		for(int i = 0; i<wallList.size();i++){
+			parseWall((Element)wallList.get(i),room);
 		}
 		//doors
-		for(int i = 0; i<doors.size();i++){
-			parseDoor((Element)doors.get(i),room);
+		for(int i = 0; i<doorList.size();i++){
+			parseDoor((Element)doorList.get(i),room);
 		}
 		//characters
-		for(int i = 0; i<avatars.size();i++){
-			parseAvatar((Element)avatars.get(i),room);
+		if(avatarList!=null){
+		for(int i = 0; i<avatarList.size();i++){
+			parseAvatar((Element)avatarList.get(i),room);
+
+		}
 		}
 		//items
-		for(int i = 0; i<items.size();i++){
-			parseItem((Element)items.get(i),room);
+		if(itemList!=null){
+		for(int i = 0; i<itemList.size();i++){
+			parseItem((Element)itemList.get(i),room);
+
+		}
 		}
 		//other tiles
-		for(int i = 0; i<otherTiles.size();i++){
-			parseOtherTile((Element)otherTiles.get(i),room);
+		if(otherTilesList!=null){
+		for(int i = 0; i<otherTilesList.size();i++){
+			parseOtherTile((Element)otherTilesList.get(i),room);
+		}
 		}
 		room.setTiles(tiles);
 		game.addRoom(room);
@@ -127,11 +153,12 @@ public class XMLLoadParser {
 				//TODO: add item to player inventory
 			}
 		}
-		Cell cell = parseCell(e.getChild("cell"), r);
+		Element cellEle = e.getChild("cell");
+		Cell cell = parseCell(cellEle, r);
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
 		Avatar a = new Avatar(playerName, r.getTiles()[xPos][yPos], r);
-		a.setCell(cell);
+		//a.setCell(cell);
 		a.setInventory(playerInventory);
 	}
 
@@ -152,9 +179,15 @@ public class XMLLoadParser {
 		 * items on tile
 		 * characters on tile
 		 */
+
+
+//		for(Element ele: e.getChild("Floor").getChildren()){
+//			System.out.println(ele);
+//
+//		}
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
-		String characterOnTile = e.getChildText("characterOnTile");
+		//String characterOnTile = e.getChildText("characterOnTile");
 		Element inventory = e.getChild("itemsOnTile");//WAITING FOR ITEMS TO BE IMPLEMENTED
 		List<Item> items = new ArrayList<Item>();
 		if (inventory.getChildren().size() !=0) {
@@ -162,10 +195,11 @@ public class XMLLoadParser {
 				//TODO: add item to floor tile
 			}
 		}
-		Avatar a = game.getAvatar(characterOnTile);
 		Floor f = new Floor(xPos,yPos);
 		f.setRoom(r);
-		f.setAvatarOnTile(a);
+		//System.out.println(characterOnTile);
+		//if(characterOnTile!="NULL"){f.setAvatarOnTile(game.getAvatar(characterOnTile));}
+
 		//setting the floor tile
 		tiles[xPos][yPos] = f;
 
@@ -220,12 +254,12 @@ public class XMLLoadParser {
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
 		String roomPlace = e.getChildText("toRoom");//maybe will not need?
-		String characterOnTile = e.getChildText("characterOnTile");
-		Avatar a = game.getAvatar(characterOnTile);
+		//String characterOnTile = e.getChildText("characterOnTile");
+		//Avatar a = game.getAvatar(characterOnTile);
 		//making necessary adjustments and calculations
 		Door d = new Door(xPos,yPos);
 		d.setRoom(r);
-		d.setAvatarOnTile(a);
+		//d.setAvatarOnTile(a);
 		tiles[xPos][yPos] = d;
 	}
 

@@ -3,11 +3,13 @@ package dataStorage;
 import gameLogic.Avatar;
 import gameLogic.Door;
 import gameLogic.Floor;
+import gameLogic.Game;
 import gameLogic.Room;
 import gameLogic.Tile2D;
 import gameLogic.Wall;
 
 import java.awt.BorderLayout;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -43,7 +45,7 @@ public class TestSave extends javax.swing.JFrame {
 
 		gameClient = new GameClient("Ryan", null);
 		try {
-			gameClient.connect(InetAddress.getLocalHost().getHostAddress(), 32768);
+			gameClient.connect(InetAddress.getLocalHost().getHostAddress());
 			//gameClient.connect("130.195.7.84", "Ryan", 32768);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -54,35 +56,39 @@ public class TestSave extends javax.swing.JFrame {
 		}
 		this.gameClient = gameClient;
 
-		//System.out.println(gameClient.getChatHistory().get(0));
-		System.out.println(gameClient.getName());
+		////System.out.println(gameClient.getChatHistory().get(0));
+		////System.out.println(gameClient.getName());
 
 
 		Room room = gameClient.getRoom();
 		while (room == null){
 			room = gameClient.getRoom();
-			System.out.println("room check");
+			////System.out.println("room check");
 		}
 
 		Avatar avatar = gameClient.getAvatar();
 		while (avatar == null){
 			avatar = gameClient.getAvatar();
-			System.out.println("avatar check");
+			////System.out.println("avatar check");
 		}
 
 		Player player = gameClient.getPlayer();
 		while (player == null){
 			this.player = gameClient.getPlayer();
 		}
-		System.out.println(player);
+		////System.out.println(player);
 
 
 		if( gameServer.saveGame() ){
-			System.out.println("SAVED!!!!!!!!!!");
+			//System.out.println("SAVED!!!!!!!!!!");
 		}
 		else{
-			System.out.println("Not saved :(");
+			//System.out.println("Not saved :(");
 		}
+
+		 File xmlFile = new File("saved_at_1413081990882");
+		 XMLLoader x = new XMLLoader();
+		 Game g =x.loadGame(xmlFile);
 
 	}
 
