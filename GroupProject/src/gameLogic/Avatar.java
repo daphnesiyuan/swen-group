@@ -151,7 +151,10 @@ public class Avatar implements Serializable {
 			return false;
 		}
 
-		if(move.getInteraction().equals("O")) charge();
+		if(move.getInteraction().equals("O")){
+			charge();
+			cell.setCharging(false);
+		}
 
 		updateFacing(move.getInteraction());
 
@@ -314,7 +317,6 @@ public class Avatar implements Serializable {
 		else if(dirKey.toLowerCase().equals("d")) facing = Facing.East;
 		else if(dirKey.toLowerCase().equals("s")) facing = Facing.South;
 		else if(dirKey.toLowerCase().equals("a")) facing = Facing.West;
-		else System.out.println("Avatar - updateFacing() : facing direction calculation error after movement");
 	}
 
 	private void attack(){
@@ -322,7 +324,9 @@ public class Avatar implements Serializable {
 	}
 
 	private void charge(){
-
+		cell.setCharging(true);
+		cell.chargeBattery();
+		System.out.println(cell.getBatteryLife());
 	}
 
 
