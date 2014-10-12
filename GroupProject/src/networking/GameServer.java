@@ -2,6 +2,7 @@ package networking;
 
 import gameLogic.Game;
 import gameLogic.Room;
+import gameLogic.Score;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,9 +23,6 @@ public class GameServer extends ChatServer {
 
 	// Game that all players are playing off
 	private Game gameServer;
-
-	private Object gameModifiedLock = new Object();
-	private boolean gameModified = false;
 
 	private ArrayList<AI> gameAI = new ArrayList<AI>();
 
@@ -108,6 +106,8 @@ public class GameServer extends ChatServer {
 				return;
 			}
 
+			Score currentScore = gameServer.getScore();
+
 			// Sent the room of the client to all it's clients
 			for (int i = 0; i < clients.size(); i++) {
 
@@ -116,10 +116,8 @@ public class GameServer extends ChatServer {
 				Room room = gameServer.getRoom(client.getPlayerName());
 
 				// Send the new room to the player
-				client.sendData(new RoomUpdate(room));
+				client.sendData(new ClientUpdate(room, currentScore));
 			}
-
-			setGameModified(false);
 	}
 
 	/**
@@ -184,9 +182,7 @@ public class GameServer extends ChatServer {
 	private synchronized void processMove(Move move, NetworkObject data){
 
 		// Move the players Avatar
-		if( gameServer.moveAvatar(move) ){
-			setGameModified(true);
-		}
+		gameServer.moveAvatar(move);
 	}
 
 	/**
@@ -226,15 +222,9 @@ public class GameServer extends ChatServer {
 		// Set new players current room
 		Room currentRoom = gameServer.addPlayer(cl.getPlayerName());
 
-
-		System.out.println("New Client: " + cl.getPlayerName());
-		System.out.println("Room: " + currentRoom);
-		System.out.println("Avatar: " + currentRoom.getAvatar(cl.getPlayerName()));
-		System.out.println("totalAvatars: " + gameServer.getActiveAvatars().size());
-
 		// Send the room back to the client
 		if( currentRoom != null ){
-			cl.sendData(new RoomUpdate(currentRoom));
+			cl.sendData(new ClientUpdate(currentRoom, gameServer.getScore()));
 		}
 
 	}
@@ -245,28 +235,7 @@ public class GameServer extends ChatServer {
 
 		Room currentRoom = gameServer.getRoom(cl.getPlayerName());
 		if( currentRoom != null ){
-			cl.sendData(new RoomUpdate(currentRoom));
-		}
-	}
-
-	/**
-	 * Checks if the game has been modified so we are able to update our clients
-	 * @return True if modified
-	 */
-	public boolean isGameModified() {
-
-		synchronized(gameModifiedLock){
-			return gameModified;
-		}
-	}
-
-	/**
-	 * Assigns the game to be modified or not
-	 * @param gameModified What to change it to
-	 */
-	public void setGameModified(boolean gameModified) {
-		synchronized(gameModifiedLock){
-			this.gameModified = gameModified;
+			cl.sendData(new ClientUpdate(currentRoom, gameServer.getScore()));
 		}
 	}
 

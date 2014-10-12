@@ -2,10 +2,10 @@ package networking;
 
 import gameLogic.Avatar;
 import gameLogic.Room;
+import gameLogic.Score;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.Calendar;
 
 import javax.swing.JComponent;
 
@@ -18,6 +18,9 @@ public class GameClient extends ChatClient {
 
 	// Client side of the game
 	private Room clientRoom = null;
+
+	// Clients verision of the score
+	private Score clientScore = null;
 
 	/**
 	 * Constructor for a GameClient to specify what it's characteristics are. And how it will appear when being drawn
@@ -52,6 +55,19 @@ public class GameClient extends ChatClient {
 		}
 
 		return clientRoom;
+	}
+
+	/**
+	 * Gets the clients current up-to-date version of the score
+	 * @return Score object
+	 */
+	public synchronized Score getScore(){
+		if( !isConnected() ){
+			System.out.println("Not currently Connected to a server");
+			return null;
+		}
+
+		return clientScore;
 	}
 
 	/**
@@ -96,10 +112,10 @@ public class GameClient extends ChatClient {
 		super.retrieveObject(data);
 
 		// Check what type of data we were sent
-		if( data.getData() instanceof RoomUpdate ){
+		if( data.getData() instanceof ClientUpdate ){
 
 			// We were sent a move
-			retrievedUpdatedRoom((RoomUpdate)data.getData());
+			retrievedUpdate((ClientUpdate)data.getData());
 		}
 	}
 
@@ -108,8 +124,9 @@ public class GameClient extends ChatClient {
 	 * @param sendersIPAddress IP of the senders IP Address
 	 * @param chatMessage Message that was sent from the given IP
 	 */
-	public synchronized void retrievedUpdatedRoom(RoomUpdate room){
-		clientRoom = room.updatedRoom;
+	public synchronized void retrievedUpdate(ClientUpdate update){
+		clientRoom = update.updatedRoom;
+		clientScore = update.score;
 	}
 
 	@Override
