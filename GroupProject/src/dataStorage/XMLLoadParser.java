@@ -207,10 +207,10 @@ public class XMLLoadParser {
 		int roomNumber = Integer.parseInt(e.getChildText("roomNumber"));//maybe will not need?
 		String characterOnTile = e.getChildText("characterOnTile");
 		List items = e.getChildren("itemsOnTile");
-		List colors = e.getChildren("color");
-		int red = (Integer) colors.get(0);
-		int green = (Integer) colors.get(1);
-		int blue = (Integer) colors.get(2);
+//		List colors = e.getChildren("color");
+//		int red = (Integer) colors.get(0);
+//		int green = (Integer) colors.get(1);
+//		int blue = (Integer) colors.get(2);
 		//bringing in the xml info
 		Avatar a = game.getAvatar(characterOnTile);
 		//making necessary adjustments and calculations
@@ -218,8 +218,8 @@ public class XMLLoadParser {
 		d.setRoom(r);
 		d.setAvatarOnTile(a);
 		//WAITING FOR ITEMS TO BE IMPLEMENTED
-		Color c = new Color(red,green,blue);
-		d.setColor(c);
+//		Color c = new Color(red,green,blue);
+//		d.setColor(c);
 		//setting the floor tile
 		tiles[xPos][yPos] = d;
 	}

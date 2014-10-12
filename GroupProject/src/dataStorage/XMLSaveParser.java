@@ -240,11 +240,11 @@ public class XMLSaveParser {
 		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
 		e.addContent(new Element("toRoom").setText(door.getToRoom().getRoomPlace()));
-		Element color = new Element("color");
-		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
-		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
-		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
-		e.addContent(color);
+//		Element color = new Element("color");
+//		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
+//		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
+//		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
+//		e.addContent(color);
 
 
 
