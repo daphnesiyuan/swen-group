@@ -40,10 +40,7 @@ public class ScoreBoard {
 			for (int i = 0; i < avatars.size(); i++){
 				//String score = avatars.get(i).getPlayerName()+": "+avatars.get(i).getScore();
 				//g.drawString(score, x, y);
-
 			}
 		}
-
 	}
-
 }

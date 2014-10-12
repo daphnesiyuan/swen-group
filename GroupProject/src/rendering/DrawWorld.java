@@ -220,9 +220,9 @@ public class DrawWorld {
 		else if(tile instanceof Tree){
 			drawObject(g, pt, images.get("Tree"+tileNum));
 		}
-//		else if(tile instanceof Charger){
-//			drawObject(g, pt, images.get("Charger"+tileNum));
-//		}
+		else if(tile instanceof Charger){
+			drawObject(g, pt, images.get("Charger"+tileNum));
+		}
 	}
 
 	/**
