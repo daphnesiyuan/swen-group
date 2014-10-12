@@ -156,6 +156,9 @@ public class Avatar implements Serializable {
 			if(result == 0) cell.decExtraBattery();
 			else if(result == 1) cell.decBattery();
 		}
+		else{
+			cell.decBattery();
+		}
 
 		if(cell.getBatteryLife()<=0) die();
 
