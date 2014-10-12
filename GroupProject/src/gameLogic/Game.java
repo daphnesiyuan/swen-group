@@ -34,6 +34,8 @@ public class Game{
 
 	}
 
+	public Game(Boolean loaded){}		//ANTONIA: To be used when loading a file
+
 
 	public void addRoom(Room room){
 		roomsInGame.add(room);
