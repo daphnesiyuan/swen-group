@@ -48,6 +48,9 @@ public class XMLLoadParser {
 				Element node = (Element) list.get(i);		//room at i
 				parseRoom(node);		//will proceed to go through all the rooms in a game and parse the deetz
 			}
+			int i = 0;
+			for(Room room: game.getRoomsInGame()){
+			}
 
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
@@ -117,17 +120,13 @@ public class XMLLoadParser {
 	public void parseAvatar(Element e, Room r){
 		String faceString = e.getChildText("facing");
 		String playerName = e.getChildText("playerName");
-		Element inventory = e.getChild("inventory");//WAITING FOR ITEMS TO BE IMPLEMENTED
+		Element inventory = e.getChild("inventory");
 		List<Item> playerInventory = new ArrayList<Item>();
 		if (inventory.getChildren().size() !=0) {
 			for(int i = 0; i<inventory.getChildren().size();i++){
-				//add item to player inventory
+				//TODO: add item to player inventory
 			}
 		}
-//		double tileXPos = Double.parseDouble(e.getChildText("tileXPos"));
-//		double tileYPos = Double.parseDouble(e.getChildText("tileXPos"));
-//		double globalXPos = Double.parseDouble(e.getChildText("globalXPos"));
-//		double globalYPos = Double.parseDouble(e.getChildText("globalYPos"));
 		Cell cell = parseCell(e.getChild("cell"), r);
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
@@ -155,18 +154,18 @@ public class XMLLoadParser {
 		 */
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
-		int roomNumber = Integer.parseInt(e.getChildText("roomNumber"));//maybe will not need?
 		String characterOnTile = e.getChildText("characterOnTile");
-		List items = e.getChildren("itemsOnTile");
-		//bringing in the xml info
+		Element inventory = e.getChild("itemsOnTile");//WAITING FOR ITEMS TO BE IMPLEMENTED
+		List<Item> items = new ArrayList<Item>();
+		if (inventory.getChildren().size() !=0) {
+			for(int i = 0; i<inventory.getChildren().size();i++){
+				//TODO: add item to floor tile
+			}
+		}
 		Avatar a = game.getAvatar(characterOnTile);
-		//making necessary adjustments and calculations
 		Floor f = new Floor(xPos,yPos);
 		f.setRoom(r);
 		f.setAvatarOnTile(a);
-		//f.setType(type);
-		//WAITING FOR ITEMS TO BE IMPLEMENTED
-
 		//setting the floor tile
 		tiles[xPos][yPos] = f;
 
@@ -192,19 +191,10 @@ public class XMLLoadParser {
 
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
-		int roomNumber = Integer.parseInt(e.getChildText("roomNumber"));//maybe will not need?
-		String characterOnTile = e.getChildText("characterOnTile");
 		List items = e.getChildren("itemsOnTile");
 		//bringing in the xml info
-		Avatar a = game.getAvatar(characterOnTile);
-		//making necessary adjustments and calculations
 		Wall w = new Wall(xPos,yPos);
 		w.setRoom(r);
-		w.setAvatarOnTile(a);
-		//w.setType(type);
-		//WAITING FOR ITEMS TO BE IMPLEMENTED
-
-		//setting the floor tile
 		tiles[xPos][yPos] = w;
 	}
 
@@ -220,9 +210,6 @@ public class XMLLoadParser {
 	public void parseDoor(Element e, Room r){
 		/*
 		 *. roomNumber
-		 *. toRoomIndex
-		 *. toRoomXPos
-		 *. toRoomYPos
 		 * locked
 		 *. xPos
 		 *. yPos
@@ -232,23 +219,13 @@ public class XMLLoadParser {
 		 */
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
-		int roomNumber = Integer.parseInt(e.getChildText("roomNumber"));//maybe will not need?
+		String roomPlace = e.getChildText("toRoom");//maybe will not need?
 		String characterOnTile = e.getChildText("characterOnTile");
-		List items = e.getChildren("itemsOnTile");
-//		List colors = e.getChildren("color");
-//		int red = (Integer) colors.get(0);
-//		int green = (Integer) colors.get(1);
-//		int blue = (Integer) colors.get(2);
-		//bringing in the xml info
 		Avatar a = game.getAvatar(characterOnTile);
 		//making necessary adjustments and calculations
 		Door d = new Door(xPos,yPos);
 		d.setRoom(r);
 		d.setAvatarOnTile(a);
-		//WAITING FOR ITEMS TO BE IMPLEMENTED
-//		Color c = new Color(red,green,blue);
-//		d.setColor(c);
-		//setting the floor tile
 		tiles[xPos][yPos] = d;
 	}
 
@@ -289,10 +266,11 @@ public class XMLLoadParser {
 	}
 
 	public Cell parseCell(Element e, Room r){
-		Double batteryLife = Double.parseDouble(e.getChildText("batteryLife"));
+		int batteryLife = Integer.parseInt(e.getChildText("batteryLife"));
 		boolean charging = Boolean.parseBoolean(e.getChildText("charging"));
 		Cell c = new Cell(null);
 		c.setBatteryLife(batteryLife);
 		c.setCharging(charging);
+		return c;
 	}
 }
