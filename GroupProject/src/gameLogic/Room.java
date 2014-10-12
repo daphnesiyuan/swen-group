@@ -17,6 +17,7 @@ public class Room implements Serializable {
 	private List<Wall> walls;
 	private List<Column> columns;
 	private List<Tree> trees;
+	private List<Charger> chargers;
 
 
 	private List <Item> items;
@@ -39,6 +40,7 @@ public class Room implements Serializable {
 
 		this.avatars = new ArrayList<Avatar>();
 		this.trees = new ArrayList<Tree>();
+		this.chargers = new ArrayList<Charger>();
 
 		this.roomPlace = "NULL";
 
@@ -187,5 +189,13 @@ public class Room implements Serializable {
 
 	public void setTrees(List<Tree> trees) {
 		this.trees = trees;
+	}
+
+	public List<Charger> getChargers() {
+		return chargers;
+	}
+
+	public void setChargers(List<Charger> chargers) {
+		this.chargers = chargers;
 	}
 }

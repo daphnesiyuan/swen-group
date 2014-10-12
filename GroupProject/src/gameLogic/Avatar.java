@@ -57,6 +57,11 @@ public class Avatar implements Serializable {
 	//Is this Avatar object a Player, or an AI
 	private boolean isAI;
 
+	private int hitPoints;
+
+
+
+
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
 
@@ -84,6 +89,7 @@ public class Avatar implements Serializable {
 		}else{
 			this.isAI = false;
 		}
+
 
 	}
 
@@ -152,8 +158,7 @@ public class Avatar implements Serializable {
 		}
 
 		if(move.getInteraction().equals("O")){
-			charge();
-			cell.setCharging(!cell.isCharging());
+			charge(move);
 		}
 
 		updateFacing(move.getInteraction());
@@ -193,9 +198,13 @@ public class Avatar implements Serializable {
 	 */
 	private int calcDirection(Move move){
 		int dir = Direction.get(move.getRenderDirection());
+
 		int key = Direction.getKeyDirection(move.getInteraction());
+
 		int change = dir + key;
+
 		change = change % 4;
+
 		return change;
 	}
 
@@ -319,12 +328,39 @@ public class Avatar implements Serializable {
 		else if(dirKey.toLowerCase().equals("a")) facing = Facing.West;
 	}
 
-	private void attack(){
+	private void charge(Move move){
+		System.out.println(cell.isCharging());
+		if(cell.isCharging()){
+			cell.setCharging(false);
+			System.out.println(cell.isCharging());
+			return;
+		}
+
+		// Locate the tile next to the avatars current tile, and id its type
+		int change = Direction.get(facing.toString());
+		Tile2D target = null;
+		if(change == 0) target = currentTile.getTileUp();
+		else if(change == 1) target = currentTile.getTileRight();
+		else if(change == 2) target = currentTile.getTileDown();
+		else if(change == 3) target = currentTile.getTileLeft();
+
+		if(target instanceof Charger) useCharger();
+		else attack();
+
+
+
 
 	}
 
-	private void charge(){
+	private void useCharger(){
+		centerAvatar();
+		cell.setCharging(true);
+		System.out.println(cell.isCharging());
 		cell.chargeBattery();
+	}
+
+	private void attack(){
+
 	}
 
 
