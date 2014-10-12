@@ -21,6 +21,8 @@ public class Game{
 
 	private int roomNumber;
 
+	private Score score;
+
 
 	public Game(){
 		roomNumber = 0; // RE: 0th room is arena
@@ -30,8 +32,7 @@ public class Game{
 		activeAvatars = new ArrayList<Avatar>();
 		activeAI = new ArrayList<AI>();
 		createNewGame();
-
-
+		score = new Score();
 	}
 
 	public Game(Boolean loaded){}		//ANTONIA: To be used when loading a file
@@ -179,7 +180,10 @@ public class Game{
 		return activeAvatars;
 	}
 
-
+	public Score getScore(){
+		score.updateMap(activeAvatars);
+		return score;
+	}
 
 
 
