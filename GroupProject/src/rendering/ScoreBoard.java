@@ -6,6 +6,8 @@ import gameLogic.Score;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
@@ -37,11 +39,13 @@ public class ScoreBoard {
 		g.fillRoundRect(x, y, (int)width, (int)height, (int)buffer, (int)buffer);
 
 		g.setColor(Color.BLACK);
-//		if (avatars != null){
-//			for (int i = 0; i < avatars.size(); i++){
-//				//String score = avatars.get(i).getPlayerName()+": "+avatars.get(i).getScore();
-//				//g.drawString(score, x, y);
-//			}
-//		}
+		int i = 0;
+		if (score != null){
+			for (Entry<String, Integer> entry: score.getScore().entrySet()){
+				//String score = avatars.get(i).getPlayerName()+": "+avatars.get(i).getScore();
+				g.drawString(entry.getKey()+": "+entry.getValue(), x, y+(int)buffer +(int)(buffer * i));
+				i++;
+			}
+		}
 	}
 }
