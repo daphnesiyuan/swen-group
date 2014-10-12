@@ -3,6 +3,8 @@ package GUI;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -28,12 +30,14 @@ public class JoinMenu extends JFrame{
 	private String ipAddress = null; // for the creation of a new player
 	private String name = null;
 	private GameClient gc;
+	private DrawingPanel panel;
 
-	public JoinMenu(DrawingPanel panel, GameClient g) {
+	public JoinMenu(DrawingPanel p, GameClient g) {
 		gc = g;
 		handler = new theHandler();
 		connectButton = new JButton("Connect");
 		connectButton.addActionListener(handler);
+		panel = p;
 	}
 
 	public void discard() {
@@ -53,7 +57,7 @@ public class JoinMenu extends JFrame{
 		this.add(jpanel);
 		this.setAlwaysOnTop(true); // ensures it pops up in front
 		this.setVisible(true);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// user inputs
 		setTextField();
@@ -109,13 +113,29 @@ public class JoinMenu extends JFrame{
 	private class theHandler implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-
+			System.out.println("stuff");
 			if (e.getSource() == connectButton) {
 				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0 ) { //input is valid
 					//MUST ADD NWEN CONNECT STUFF
-
-					//gc.connect( ipAddress );
 					gc.setName(name);
+
+					try {
+						System.out.println("testing");
+						gc.connect( ipAddress );
+
+
+					} catch (UnknownHostException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+					dispose();
+					panel.setGameMode();
+					panel.repaint();
+
 
 				} else {
 					sendFailure();

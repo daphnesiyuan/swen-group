@@ -88,8 +88,9 @@ public class DrawingPanel extends JPanel {
 		chat = new DrawChat(this);
 
 		// networking setup stuff
-		gs = new GameServer();
-		setUpNWEN();
+		//gs = new GameServer();
+		//setUpNWEN();
+		gc = new GameClient("Daphne", this);
 
 		score = new ScoreBoard(this);
 		health = new DrawHealth(this);
@@ -115,7 +116,7 @@ public class DrawingPanel extends JPanel {
 			invo.redraw(g, gc.getAvatar().getInventory(),
 					Direction.get(directionI));
 			map.redraw(g, gc.getRoom(), Direction.get(directionI));
-			score.redraw(g, null);
+			score.redraw(g, gc.getScore());
 			health.redraw(g, gc.getAvatar());
 
 			if (chatMode)
@@ -134,6 +135,9 @@ public class DrawingPanel extends JPanel {
 		this.addMouseMotionListener(mouseMotion);
 	}
 
+	public void setGameMode(){
+		startMenu=false;
+	}
 
 	/**
 	 * helper method used by the mouse classes to interact with the panel and
