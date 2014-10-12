@@ -64,7 +64,7 @@ public class XMLSaveParser {
 
 		Element avatars = new Element("avatars");		//characters
 		Element items = new Element("items");			//items
-		Element others = new Element("other_tiles");
+		Element others = new Element("other_tiles");	//Other tiles (chargers, trees, etc.)
 
 		e.addContent(new Element("roomPlace").setText(room.getRoomPlace()));		//room place
 
@@ -75,7 +75,6 @@ public class XMLSaveParser {
 			}
 			e.addContent(avatars);
 		}
-		else{avatars.addContent(new Element("NULL"));}//add a NULL string
 
 		//TILES
 		if(room.getTiles()!= null &&!(room.getTiles().length ==0)){
@@ -143,18 +142,17 @@ public class XMLSaveParser {
 				inventory.addContent(new Element("item").setText(i.getDescription()));//add item to inventory element
 			}
 		}
-		else{
-			inventory.addContent(new Element("NULL"));//add a NULL string
-		}
 		e.addContent(inventory);
-
-		//Don't need to save the tile2D
-		//Don't need to save room
 
 		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//player name
 		Element cell = new Element("cell");
+		cell = parseCell(avatar.getCell());
 		e.addContent(cell);
 
+		e.addContent(new Element("globalXPos").setText(Double.toString(avatar.getGlobalXPos())));
+		e.addContent(new Element("globalYPos").setText(Double.toString(avatar.getGlobalYPos())));
+		e.addContent(new Element("tileXPos").setText(Double.toString(avatar.getTileXPos())));
+		e.addContent(new Element("tileYPos").setText(Double.toString(avatar.getTileYPos())));
 
 		return e;
 	}
@@ -179,13 +177,11 @@ public class XMLSaveParser {
 		e.addContent(new Element("yPos").setText(Integer.toString(floor.getyPos())));
 
 		if(!(floor.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(floor.getAvatar().getPlayerName()));
-		else e.addContent(new Element("characterOnTile").setText("NULL"));
 
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
 		if(!floor.getItems().isEmpty()){
 			for(Item i: floor.getItems())itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
 		}
-		else itemsOnTile.addContent(new Element("NULL"));		//adds a string "NULL"
 		e.addContent(itemsOnTile);
 
 		return e;
@@ -206,16 +202,11 @@ public class XMLSaveParser {
 		//e.addContent(new Element("type").setText(wall.getType()));
 		//e.addContent(new Element("room").setText(Integer.toString(wall.getRoom().getRoomNumber()))); 		//ROOM NUMBER
 		if(!(wall.getAvatar() == null))e.addContent(new Element("characterOnTile").setText(wall.getAvatar().getPlayerName()));
-		else e.addContent(new Element("characterOnTile").setText("NULL"));
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
 		if(!wall.getItems().isEmpty()){
 			for(Item i: wall.getItems()){		//iterate through list
 				itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
-
 			}
-		}
-		else{
-			itemsOnTile.addContent(new Element("NULL"));//add a NULL string
 		}
 		e.addContent(itemsOnTile);
 
@@ -249,7 +240,6 @@ public class XMLSaveParser {
 
 
 		if(!(door.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(door.getAvatar().getPlayerName()));
-		else e.addContent(new Element("characterOnTile").setText("NULL"));
 
 		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
 
@@ -258,9 +248,6 @@ public class XMLSaveParser {
 				itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
 
 			}
-		}
-		else{
-			itemsOnTile.addContent(new Element("NULL"));//add a NULL string
 		}
 		e.addContent(itemsOnTile);
 
