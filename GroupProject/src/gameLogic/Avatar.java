@@ -90,7 +90,7 @@ public class Avatar implements Serializable {
 			this.isAI = false;
 		}
 
-
+		this.hitPoints = 100;
 	}
 
 
@@ -158,7 +158,7 @@ public class Avatar implements Serializable {
 		}
 
 		if(move.getInteraction().equals("O")){
-			charge(move);
+			cell.setCharging(!cell.isCharging());
 		}
 
 		updateFacing(move.getInteraction());
@@ -183,6 +183,15 @@ public class Avatar implements Serializable {
 			cell.useBattery();
 			animation();
 			if(currentTile.getItems().size() != 0) interact(currentTile.getItems().get(0));
+			if(cell.isCharging()){
+					if(!charge()){
+						cell.useExtraBattery();
+					}
+					else{
+						cell.useBattery();
+					}
+					System.out.println("battery: "+ cell.getBatteryLife());
+			}
 			return true;
 		}
 
@@ -328,13 +337,7 @@ public class Avatar implements Serializable {
 		else if(dirKey.toLowerCase().equals("a")) facing = Facing.West;
 	}
 
-	private void charge(Move move){
-		System.out.println(cell.isCharging());
-		if(cell.isCharging()){
-			cell.setCharging(false);
-			System.out.println(cell.isCharging());
-			return;
-		}
+	private boolean charge(){
 
 		// Locate the tile next to the avatars current tile, and id its type
 		int change = Direction.get(facing.toString());
@@ -344,23 +347,34 @@ public class Avatar implements Serializable {
 		else if(change == 2) target = currentTile.getTileDown();
 		else if(change == 3) target = currentTile.getTileLeft();
 
-		if(target instanceof Charger) useCharger();
-		else attack();
-
-
-
+		if(target instanceof Charger) return useCharger();
+		else return attack(target);
 
 	}
 
-	private void useCharger(){
+	private boolean useCharger(){
 		centerAvatar();
-		cell.setCharging(true);
-		System.out.println(cell.isCharging());
 		cell.chargeBattery();
+		return true;
 	}
 
-	private void attack(){
+	private boolean  attack(Tile2D target){
+		if(target.getAvatar() == null) return false;
+		Avatar enemy = target.getAvatar();
+		enemy.takeDamage();
+		return true;
+	}
 
+	public void takeDamage(){
+		this.hitPoints-=20;
+		System.out.println("hitPoints:  "+ hitPoints);
+		if(hitPoints<=0){
+			die();
+		}
+	}
+
+	private void die(){
+		System.out.println("dead");
 	}
 
 
