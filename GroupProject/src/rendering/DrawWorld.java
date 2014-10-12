@@ -258,15 +258,18 @@ public class DrawWorld {
 		pt.x+=avatarOffset.x;
 		pt.y+=avatarOffset.y;
 
-//		if( avatar.isCharging() ){
-//			System.out.println("found is charging");
-//			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
-//		}
-//		else{
-//			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
-//		}
+		if( avatar.getCell().isCharging() ){
+			System.out.println("found is charging");
+			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
+		}
+		else{
+			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+		}
 
-		drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+		if (avatar.getPlayerName().startsWith("ai")){
+			drawObject(g,pt,images.get("AvatarB"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+		}
+		else drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 
 		if (tile.getAvatar().equals(character))
 			floatingPointer.reDraw(g, pt, width, height, offset);

@@ -79,9 +79,26 @@ public class KeyBoard implements KeyListener{
 			if((panel.getKeysDown()).contains(KeyEvent.VK_D)){
 				moveRight();
 			}
+			if((panel.getKeysDown()).contains(KeyEvent.VK_O)){
+				Charge();
+			}
 		}
 		(panel.getKeysDown()).clear();
 
+	}
+
+	/**
+	 * Author: Leon
+	 */
+	private void Charge() {
+		Move move = new Move((panel.getGameClient()).getPlayer(), "O", Direction.get( panel.getDirection() ));
+
+		try {
+			panel.getGameClient().sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void moveRight() {
