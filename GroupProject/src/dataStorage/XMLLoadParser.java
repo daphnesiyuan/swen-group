@@ -1,6 +1,7 @@
 package dataStorage;
 
 import gameLogic.Avatar;
+import gameLogic.Cell;
 import gameLogic.Charger;
 import gameLogic.Column;
 import gameLogic.Door;
@@ -114,7 +115,6 @@ public class XMLLoadParser {
 	 */
 
 	public void parseAvatar(Element e, Room r){
-		int roomNum = Integer.parseInt(e.getChildText("currentRoom"));
 		String faceString = e.getChildText("facing");
 		String playerName = e.getChildText("playerName");
 		Element inventory = e.getChild("inventory");//WAITING FOR ITEMS TO BE IMPLEMENTED
@@ -124,11 +124,16 @@ public class XMLLoadParser {
 				//add item to player inventory
 			}
 		}
-		double tileXPos = Double.parseDouble(e.getChildText("tileXPos"));
-		double tileYPos = Double.parseDouble(e.getChildText("tileXPos"));
-		double globalXPos = Double.parseDouble(e.getChildText("globalXPos"));
-		double globalYPos = Double.parseDouble(e.getChildText("globalYPos"));
-
+//		double tileXPos = Double.parseDouble(e.getChildText("tileXPos"));
+//		double tileYPos = Double.parseDouble(e.getChildText("tileXPos"));
+//		double globalXPos = Double.parseDouble(e.getChildText("globalXPos"));
+//		double globalYPos = Double.parseDouble(e.getChildText("globalYPos"));
+		Cell cell = parseCell(e.getChild("cell"), r);
+		int xPos = Integer.parseInt(e.getChildText("xPos"));
+		int yPos = Integer.parseInt(e.getChildText("yPos"));
+		Avatar a = new Avatar(playerName, r.getTiles()[xPos][yPos], r);
+		a.setCell(cell);
+		a.setInventory(playerInventory);
 	}
 
 	/**
@@ -254,9 +259,8 @@ public class XMLLoadParser {
 	 * @param r Roon that contains the item
 	 */
 
-	public void parseItem(Element e, Room r){
-
-
+	public Item parseItem(Element e, Room r){
+		return null;
 	}
 
 	/**
@@ -282,5 +286,13 @@ public class XMLLoadParser {
 			Charger c = new Charger(xPos, yPos);
 			System.out.println("Charger created but cannot add");
 		}
+	}
+
+	public Cell parseCell(Element e, Room r){
+		Double batteryLife = Double.parseDouble(e.getChildText("batteryLife"));
+		boolean charging = Boolean.parseBoolean(e.getChildText("charging"));
+		Cell c = new Cell(null);
+		c.setBatteryLife(batteryLife);
+		c.setCharging(charging);
 	}
 }
