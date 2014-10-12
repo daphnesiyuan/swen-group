@@ -258,6 +258,10 @@ public class DrawWorld {
 		pt.x+=avatarOffset.x;
 		pt.y+=avatarOffset.y;
 
+		//cases:
+		//avatar is ai
+		//avatar is charging
+		//avatar is player and is not charging
 		if(avatar.getCell().isCharging()){
 			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
 		}
@@ -266,6 +270,8 @@ public class DrawWorld {
 		}
 		else drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 
+		//either draw a floating pointer if avatar is current player
+		//or draw the name above the avatar
 		if (tile.getAvatar().equals(character))
 			floatingPointer.reDraw(g, pt, width, height, offset);
 		else{

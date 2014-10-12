@@ -1,6 +1,7 @@
 package rendering;
 
 import gameLogic.Avatar;
+import gameLogic.Score;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -24,7 +25,7 @@ public class ScoreBoard {
 		this.panel = panel;
 	}
 
-	public void redraw(Graphics g, List<Avatar> avatars){
+	public void redraw(Graphics g, Score score){
 
 		width = ((panel.getWidth() / STARTWIDTH) * STARTSCOREHEIGHT);
 		height = width;
@@ -36,11 +37,11 @@ public class ScoreBoard {
 		g.fillRoundRect(x, y, (int)width, (int)height, (int)buffer, (int)buffer);
 
 		g.setColor(Color.BLACK);
-		if (avatars != null){
-			for (int i = 0; i < avatars.size(); i++){
-				//String score = avatars.get(i).getPlayerName()+": "+avatars.get(i).getScore();
-				//g.drawString(score, x, y);
-			}
-		}
+//		if (avatars != null){
+//			for (int i = 0; i < avatars.size(); i++){
+//				//String score = avatars.get(i).getPlayerName()+": "+avatars.get(i).getScore();
+//				//g.drawString(score, x, y);
+//			}
+//		}
 	}
 }
