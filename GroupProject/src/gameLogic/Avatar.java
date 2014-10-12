@@ -151,7 +151,7 @@ public class Avatar implements Serializable {
 			return false;
 		}
 
-		if(move.getInteraction().equals("O")) attack();
+		if(move.getInteraction().equals("O")) charge();
 
 		updateFacing(move.getInteraction());
 
@@ -172,7 +172,7 @@ public class Avatar implements Serializable {
 		if(newPosition instanceof Door) return moveDoor((Door) newPosition);// If Player is trying to pass through a door
 		else{
 			updateLocations(newPosition,currentRoom);
-			cell.iMoved();
+			cell.useBattery();
 			animation();
 			if(currentTile.getItems().size() != 0) interact(currentTile.getItems().get(0));
 			return true;
@@ -295,7 +295,7 @@ public class Avatar implements Serializable {
 			updateLocations(door, arena);
 
 		}
-		cell.iMoved();
+		cell.useBattery();
 
 		animation();
 		return true;
@@ -318,6 +318,10 @@ public class Avatar implements Serializable {
 	}
 
 	private void attack(){
+
+	}
+
+	private void charge(){
 
 	}
 

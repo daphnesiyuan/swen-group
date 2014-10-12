@@ -2,7 +2,7 @@ package gameLogic;
 
 import java.io.Serializable;
 
-public class Cell extends Thread implements Serializable {
+public class Cell implements Serializable {
 
 	private static final long serialVersionUID = 7833445205893995697L;
 
@@ -21,25 +21,21 @@ public class Cell extends Thread implements Serializable {
 
 		charging = false;
 
-		this.start();
 
 	}
 
-	private void useBattery(){
+	public void useBattery(){
 		batteryLife--;
 
 	}
 
-	private void chargeBattery(){
+	public void chargeBattery(){
 		batteryLife++;
 
 	}
 
-	public void iMoved(){
-		if(!charging){
-			batteryLife--;
-		}
-
+	public double getBatteryLife(){
+		return batteryLife;
 	}
 
 	public boolean isCharging(){
@@ -51,29 +47,9 @@ public class Cell extends Thread implements Serializable {
 
 	}
 
-	public double getBatteryLife(){
-		return batteryLife;
+	public void setBatteryLife(int batteryLife) {
+		this.batteryLife = batteryLife;
 	}
 
-
-	@Override
-	public void run() {
-		while(true){
-
-			if(charging){
-				if(batteryLife<100){
-					chargeBattery();
-				}
-				else{
-
-				}
-			}
-
-			else{
-				useBattery();
-			}
-		}
-
-	}
 
 }
