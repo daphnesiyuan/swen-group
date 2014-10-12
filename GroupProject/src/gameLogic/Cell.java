@@ -8,41 +8,37 @@ public class Cell implements Serializable {
 
 	private int batteryLife;
 
-	Avatar avatar;
+	private Avatar avatar;
 
-	boolean charging;
+	private boolean charging;
 
 
 	public Cell(Avatar avatar){
 
 		this.avatar = avatar;
-
-		batteryLife = 100;
-
-		charging = false;
-
+		this.batteryLife = 300;
+		this.charging = false;
 
 	}
 
 	public Cell(Avatar avatar, int batteryLife){		//ANTONIA: For use when loading
 		this.avatar = avatar;
 		this.batteryLife = batteryLife;
-		charging = false;
+		this.charging = false;
 
 	}
 
-	public void useBattery(){
+	public void decBattery(){
 		batteryLife--;
 	}
 
-	public void useExtraBattery(){
+	public void decExtraBattery(){
 		batteryLife-=5;
 	}
 
 
-	public void chargeBattery(){
+	public void incBattery(){
 		batteryLife++;
-
 	}
 
 	public int getBatteryLife(){
