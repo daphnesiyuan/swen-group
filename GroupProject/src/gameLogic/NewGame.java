@@ -129,7 +129,6 @@ public class NewGame {
 					}
 					else if(tile.toUpperCase().equals("W")){
 						Tile2D wall = new Wall(x,y);
-						System.out.println(""+y+" , "+x);
 						tiles[y][x] = wall;
 
 					}

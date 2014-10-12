@@ -57,13 +57,21 @@ public class Avatar implements Serializable {
 	//Is this Avatar object a Player, or an AI
 	private boolean isAI;
 
-	private int hitPoints;
+	// Locations for when Avatar dies, can be returned to here.
+	private Tile2D startTile;
+	private Room startRoom;
 
+	// The avatars current kill score
+	private int score;
 
+	// To tell the avatar that killed you to increment their score, also if multiple people hitting you, the score goes to the person who hit you last.
+	private Avatar lastHit;
 
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
+		this.startTile = tile;
+		this.startRoom = room;
 
 		this.updateLocations(tile, room);
 
@@ -90,7 +98,8 @@ public class Avatar implements Serializable {
 			this.isAI = false;
 		}
 
-		this.hitPoints = 100;
+		this.score = 0;
+		this.lastHit = null;
 	}
 
 
@@ -190,7 +199,11 @@ public class Avatar implements Serializable {
 					else{
 						cell.useBattery();
 					}
-					System.out.println("battery: "+ cell.getBatteryLife());
+
+			}
+			if(this.cell.getBatteryLife()<=0){
+				System.out.println("getBatteryLife()<=0");
+				die();
 			}
 			return true;
 		}
@@ -362,19 +375,40 @@ public class Avatar implements Serializable {
 		if(target.getAvatar() == null) return false;
 		Avatar enemy = target.getAvatar();
 		enemy.takeDamage();
+		enemy.setLastHit(this);
 		return true;
 	}
 
 	public void takeDamage(){
-		this.hitPoints-=20;
-		System.out.println("hitPoints:  "+ hitPoints);
-		if(hitPoints<=0){
+		this.cell.useBattery();
+		System.out.println("batteryLife:  "+ this.cell.getBatteryLife());
+		if(this.cell.getBatteryLife()<=0){
+			System.out.println("getBatteryLife()<=0");
 			die();
 		}
 	}
 
 	private void die(){
-		System.out.println("dead");
+		score--;
+		System.out.println(""+playerName+" died! Score is now: "+ score);
+		if(lastHit != null){
+			lastHit.addKill();
+		}
+		reset();
+	}
+
+	private void reset(){
+		cell.setBatteryLife(100);
+		updateLocations(startTile,startRoom);
+	}
+
+	public void addKill(){
+		score++;
+		System.out.println(""+playerName+" got a kill! Score is now: "+ score);
+	}
+
+	public void setLastHit(Avatar lastHit){
+		this.lastHit = lastHit;
 	}
 
 
@@ -490,6 +524,16 @@ public class Avatar implements Serializable {
 
 	public void setCell(Cell cell) {
 		this.cell = cell;
+	}
+
+
+	public int getScore() {
+		return score;
+	}
+
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 
