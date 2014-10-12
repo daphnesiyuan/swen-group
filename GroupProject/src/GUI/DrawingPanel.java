@@ -28,7 +28,6 @@ import rendering.DrawCompass;
 import rendering.DrawInventory;
 import rendering.DrawMiniMap;
 import rendering.DrawWorld;
-import rendering.ScoreBoard;
 
 public class DrawingPanel extends JPanel {
 
@@ -63,7 +62,6 @@ public class DrawingPanel extends JPanel {
 	private DrawCompass compass;
 	private DrawInventory invo;
 	private DrawMiniMap map;
-	private ScoreBoard score;
 
 	// leon added
 	private DrawChat chat;
@@ -82,7 +80,6 @@ public class DrawingPanel extends JPanel {
 
 		// leon added:
 		chat = new DrawChat(this);
-		score = new ScoreBoard(this);
 
 		// networking setup stuff
 		gs = new GameServer();
@@ -109,7 +106,6 @@ public class DrawingPanel extends JPanel {
 			invo.redraw(g, gc.getAvatar().getInventory(),
 					Direction.get(directionI));
 			map.redraw(g, gc.getRoom(), Direction.get(directionI));
-			score.redraw(g, null);
 			if (chatMode)
 				chat.redraw(g, gc.getChatHistory(10), currentMessage);
 		}
@@ -204,7 +200,7 @@ public class DrawingPanel extends JPanel {
 
 		try {
 			// gc.connect("130.195.6.69",32768); //jimmy
-			gc.connect(gs, gc.getName()); // your own server
+			gc.connect(gs); // your own server
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
