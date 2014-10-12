@@ -143,7 +143,8 @@ public class XMLSaveParser {
 			}
 		}
 		e.addContent(inventory);
-
+		e.addContent(new Element("xPos").setText(Integer.toString(avatar.getCurrentTile().getxPos())));
+		e.addContent(new Element("yPos").setText(Integer.toString(avatar.getCurrentTile().getyPos())));
 		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//player name
 		Element cell = new Element("cell");
 		cell = parseCell(avatar.getCell());
@@ -265,7 +266,7 @@ public class XMLSaveParser {
 	 */
 	public Element parseCell(Cell cell){
 		Element e = new Element("cell");
-		e.addContent(new Element("batteryLife").setText(Double.toString(cell.getBatteryLife())));
+		e.addContent(new Element("batteryLife").setText(Integer.toString(cell.getBatteryLife())));
 		e.addContent(new Element("charging").setText(Boolean.toString(cell.isCharging())));
 		return e;
 	}

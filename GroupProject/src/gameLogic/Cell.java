@@ -41,7 +41,7 @@ public class Cell implements Serializable {
 
 	}
 
-	public double getBatteryLife(){
+	public int getBatteryLife(){	
 		return batteryLife;
 	}
 
