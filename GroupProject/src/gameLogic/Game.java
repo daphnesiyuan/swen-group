@@ -65,6 +65,9 @@ public class Game{
 		Tile2D tile = room.getTiles()[3][3];
 		Avatar avatar = new Avatar(playerName,tile,room);
 		activeAvatars.add(avatar);
+		if(avatar.getPlayerName().startsWith("ai")){
+			return roomsInGame.get(0);
+		}
 		return room;
 	}
 
