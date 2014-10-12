@@ -112,6 +112,7 @@ public class JoinMenu extends JFrame{
 
 			if (e.getSource() == connectButton) {
 				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0 ) { //input is valid
+					//MUST ADD NWEN CONNECT STUFF
 
 					ipAddress = null;
 					textIP.setText("");

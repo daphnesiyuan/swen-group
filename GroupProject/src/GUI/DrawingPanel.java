@@ -49,6 +49,8 @@ public class DrawingPanel extends JPanel {
 
 	private JoinMenu joinMenu;
 
+	private XMLFile fileChooser;
+
 	// Leons fields
 	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 	String currentMessage = "";
@@ -281,9 +283,12 @@ public class DrawingPanel extends JPanel {
 					joinMenu = new JoinMenu(DrawingPanel.this, gc);
 					joinMenu.setup();
 
+
 				}
 				else if (s.equals("load")) {
 					System.out.println("PRESSED LOAD BUTTON");
+					fileChooser = new XMLFile( wf );
+
 				}
 				else if (s.equals("help")) {
 					System.out.println("PRESSED HELP BUTTON");
