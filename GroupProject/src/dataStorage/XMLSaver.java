@@ -31,7 +31,8 @@ public class XMLSaver {
 	}
 
 	public boolean saveGame(){
-		String fileName = "saved_at_" + System.currentTimeMillis();
+		//String fileName = "saved_at_" + System.currentTimeMillis();
+		String fileName = "file.xml";
 		XMLSaveParser parser = new XMLSaveParser(this);
 
 

@@ -37,7 +37,7 @@ public class Room implements Serializable {
 		this.floors = new ArrayList<Floor>();
 		this.walls = new ArrayList<Wall>();
 		this.columns = new ArrayList<Column>();
-
+		this.items = new ArrayList<Item>();
 		this.avatars = new ArrayList<Avatar>();
 		this.trees = new ArrayList<Tree>();
 		this.chargers = new ArrayList<Charger>();

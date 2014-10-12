@@ -16,19 +16,10 @@ public class Avatar implements Serializable {
 
 	private static final long serialVersionUID = 4723069455200795911L;
 
-	private Game.Facing facing;
-	private List <Item> Inventory;
-
-
-	private Tile2D currentTile;
-	private Room currentRoom;
-
 	private String playerName;
-
-	private Cell cell;
-
-	// Avatar's coordinates relative to the room - global.
-	private double globalXPos, globalYPos;
+	private Tile2D tile;
+	private Room room;
+	private Game.Facing facing;
 
 	// Avatar's coordinates relative to the tile - local.
 	private double tileXPos, tileYPos;
@@ -67,23 +58,22 @@ public class Avatar implements Serializable {
 	// To tell the avatar that killed you to increment their score, also if multiple people hitting you, the score goes to the person who hit you last.
 	private Avatar lastHit;
 
+	private Cell cell;
+
+
+	private List <Item> Inventory;
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
 		this.startTile = tile;
 		this.startRoom = room;
 
-		this.updateLocations(tile, room);
+		updateLocations(tile, room);
 
 		this.Inventory = new ArrayList<Item>();
 		this.facing = Facing.North;
 
 		this.cell = new Cell(this);
-
-
-		// Avatar start coordinates initialized to the middle of its starting tile
-		this.globalXPos = currentTile.getxPos()+(tileWidth/2);
-		this.globalYPos = currentTile.getyPos()+(tileHeight/2);
 
 		// Avatars relative tile coordinates are initalized to the center of the tile
 		this.tileXPos = (tileWidth/2);
@@ -92,39 +82,12 @@ public class Avatar implements Serializable {
 		// Avatars initial sprite image is the 0th element in the animation sequence
 		this.spriteIndex = 0;
 
-		if(name.startsWith("ai")){
-			this.isAI=true;
-		}else{
-			this.isAI = false;
-		}
+		if(name.startsWith("ai")) this.isAI=true;
+		else this.isAI = false;
 
 		this.score = 0;
 		this.lastHit = null;
 	}
-
-
-	/**
-	 * When called, the Avatars tileXPos and tileYPos are set to 50. The global coordinates are updated respectivley.
-	 * This method is used to center the avatar on a tile.
-	 */
-	private void centerAvatar(){
-		double xChange = tileXCenter - tileXPos;
-		double yChange = tileYCenter - tileYPos;
-		tileXPos = tileXCenter;
-		tileYPos = tileYCenter;
-		globalXPos += xChange;
-		globalYPos += yChange;
-	}
-
-	public boolean isAI() {
-		return isAI;
-	}
-
-
-	public void setAI(boolean isAI) {
-		this.isAI = isAI;
-	}
-
 
 	public void updateLocations(Tile2D tile, Room room) {
 		updateTile(tile);
@@ -132,258 +95,104 @@ public class Avatar implements Serializable {
 	}
 
 	private void updateTile(Tile2D newTile){
-		if(newTile.equals(currentTile)) return;
-		if(currentTile != null) currentTile.removeAvatar(this);
+		if(newTile.equals(tile)) return;
+		if(tile != null) tile.removeAvatar(this);
 		newTile.addAvatar(this);
-		currentTile = newTile;
+		tile = newTile;
 	}
 
 	private void updateRoom(Room newRoom){
-		if(newRoom.equals(currentRoom)) return;
-		if(currentRoom != null)	currentRoom.removeAvatar(this);
+		if(newRoom.equals(room)) return;
+		if(room != null)	room.removeAvatar(this);
 		newRoom.addAvatar(this);
-		currentRoom = newRoom;
+		room = newRoom;
 	}
 
-
-
 	public boolean interact(Item item){
-		// check item within range before interacting -> (absolute value of the difference between location coordiantes)
-		if(Math.abs(item.getTile().getxPos()-currentTile.getxPos())>1) return false;
-		if(Math.abs(item.getTile().getyPos()-currentTile.getyPos())>1) return false;
+		if(Math.abs(item.getTile().getxPos()-tile.getxPos())>1) return false;
+		if(Math.abs(item.getTile().getyPos()-tile.getyPos())>1) return false;
 		return item.interactWith(this);
 	}
 
 
 	public boolean moveTo(Move move){
-
-		if(move.getRenderDirection() == null){
-			System.out.println("Avatar: moveTo() - RenderDirection in provided move object is null");
-			return false;
-		}
-		if(move.getInteraction() == null){
-			System.out.println("Avatar: moveTo() - Interaction in provided move object is null");
-			return false;
-		}
-
-		if(move.getInteraction().equals("O")){
-			cell.setCharging(!cell.isCharging());
-		}
+		if(move.getRenderDirection() == null) return false;
+		if(move.getInteraction() == null) return false;
 
 		updateFacing(move.getInteraction());
 
-		int change = calcDirection(move);
-		Tile2D newPosition = null;
-		if(change == 0) newPosition = moveUp(currentTile.getTileUp());
-		else if(change == 1) newPosition = moveRight(currentTile.getTileRight());
-		else if(change == 2) newPosition = moveDown(currentTile.getTileDown());
-		else if(change == 3) newPosition = moveLeft(currentTile.getTileLeft());
-
-		// newPosition invalid or not found - ie if movement up is a wall
-		if(newPosition == null){
+		if(move.getInteraction().equals("O")){
+			cell.setCharging(!cell.isCharging());
 			return false;
 		}
 
-		if(newPosition.getAvatar() != null) return false; // CANNOT move to a tile if there is another player on it
-		if(newPosition instanceof Column) return false; // CANNOT pass through columuns
-		if(newPosition instanceof Door) return moveDoor((Door) newPosition);// If Player is trying to pass through a door
-		else{
-			updateLocations(newPosition,currentRoom);
-			cell.useBattery();
-			animation();
-			if(currentTile.getItems().size() != 0) interact(currentTile.getItems().get(0));
-			if(cell.isCharging()){
-					if(!charge()){
-						cell.useExtraBattery();
-					}
-					else{
-						cell.useBattery();
-					}
+		Tile2D newPosition = findTile(move);
+		if(!((newPosition instanceof Door)||(newPosition instanceof Floor))) return false;
+		if(newPosition.getAvatar() != null) return false;
 
+		if(newPosition instanceof Door){
+			Door oldPosition = (Door) newPosition;
+			if(room.getRoomPlace().equals("arena")){
+				Room room  = oldPosition.getToRoom();
+				Door door = room.getDoors().get(0);
+				updateLocations(door, room);
 			}
-			if(this.cell.getBatteryLife()<=0){
-				System.out.println("getBatteryLife()<=0");
-				die();
+			else{
+				Room arena = oldPosition.getToRoom();
+				Door door = null;
+				if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(0);
+				else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(3);
+				else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(2);
+				else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(1);
+				updateLocations(door, arena);
 			}
-			return true;
+		}
+		else updateLocations(newPosition,room);
+
+		if(tile.getItems().size() != 0) interact(tile.getItems().get(0));
+
+		if(cell.isCharging()){
+			int result = charge();
+			if(result == 0) cell.decExtraBattery();
+			else if(result == 1) cell.decBattery();
 		}
 
-
-
-
-
-	}
-	/**
-	 *  Calculate direction to be moved
-	 * @param move object - holds information about key press and rendering direction
-	 * @return change - the direction the avatar will move with 0,1,2,3 representing North, East, South and West respectively
-	 */
-	private int calcDirection(Move move){
-		int dir = Direction.get(move.getRenderDirection());
-
-		int key = Direction.getKeyDirection(move.getInteraction());
-
-		int change = dir + key;
-
-		change = change % 4;
-
-		return change;
-	}
-
-	private void animation(){
-		spriteIndex++;
-		spriteIndex = spriteIndex % 4; // 4 images but 0 indexed.
-	}
-
-	/**
-	 *
-	 * @param tile2d = the Tile above the current tile
-	 * @return tile2d = returns the current tile if the movement made keeps the avatar on the same tile, else returns the tile above the current tile.
-	 */
-	private Tile2D moveUp(Tile2D tileUp){
-		globalYPos-=stepAmount;
-		tileYPos-=stepAmount;
-
-		if(tileYPos<tileMinPos){
-			if(!(( tileUp instanceof Floor ) || (tileUp instanceof Door ))){ // cant actually move here so undo changes to position and return null
-				globalYPos+=stepAmount;
-				tileYPos+=stepAmount;
-				return null;
-			}
-			tileYPos = tileMaxPos;
-			return tileUp;
-		}
-		else{
-			return currentTile;
-
-		}
-	}
-
-	private Tile2D moveDown(Tile2D tileDown){
-		globalYPos+=stepAmount;
-		tileYPos+=stepAmount;
-
-		if(tileYPos>tileHeight){
-			if(!((tileDown instanceof Floor ) || (tileDown instanceof Door ))){ // cant actually move here so undo changes to position and return null
-				globalYPos-=stepAmount;
-				tileYPos-=stepAmount;
-				return null;
-			}
-			tileYPos = tileMinPos;
-			return tileDown;
-		}
-		else{
-			return currentTile;
-		}
-	}
-
-	private Tile2D moveLeft(Tile2D tileLeft){
-		globalXPos-=stepAmount;
-		tileXPos-=stepAmount;
-		if(tileXPos<tileMinPos){
-
-			if(!(( tileLeft instanceof Floor ) || (tileLeft instanceof Door ))){ // cant actually move here so undo changes to position and return null
-				globalXPos+=stepAmount;
-				tileXPos+=stepAmount;
-				return null;
-			}
-			tileXPos = tileMaxPos;
-			return tileLeft;
-		}
-		else{
-			return currentTile;
-		}
-	}
-
-	private Tile2D moveRight(Tile2D tileRight){
-		globalXPos+=stepAmount;
-		tileXPos+=stepAmount;
-		if(tileXPos>tileWidth){
-
-			if(!(( tileRight instanceof Floor ) || (tileRight instanceof Door ))){// cant actually move here so undo changes to position and return null
-				globalXPos-=stepAmount;
-				tileXPos-=stepAmount;
-				return null;
-			}
-			tileXPos = tileMinPos;
-			return tileRight;
-		}
-		else{
-			return currentTile;
-		}
-	}
-
-	private boolean moveDoor(Door oldPosition){	//oldposition is the door the avatar stepped onto
-		if(currentRoom.getRoomPlace().equals("arena")){	// if avatar is leaving arena
-			Room room  = oldPosition.getToRoom();
-			Door door = room.getDoors().get(0);
-			updateLocations(door, room);
-		}
-		else{											// avatar is going into arena
-			Room arena = oldPosition.getToRoom();
-			Door door = null;
-			if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(0);
-			else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(3);
-			else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(2);
-			else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(1);
-			updateLocations(door, arena);
-
-		}
-		cell.useBattery();
+		if(cell.getBatteryLife()<=0) die();
 
 		animation();
 		return true;
-
 	}
 
 
-
-
-	/**
-	 * 	Update the direction the avatar is facing based to what movement key was pressed.
-	 * @param dirKey - string representing the movement key that were pressed.
-	 */
-	private void updateFacing(String dirKey){
-		if(dirKey.toLowerCase().equals("w")) facing = Facing.North;
-		else if(dirKey.toLowerCase().equals("d")) facing = Facing.East;
-		else if(dirKey.toLowerCase().equals("s")) facing = Facing.South;
-		else if(dirKey.toLowerCase().equals("a")) facing = Facing.West;
-	}
-
-	private boolean charge(){
-
-		// Locate the tile next to the avatars current tile, and id its type
-		int change = Direction.get(facing.toString());
-		Tile2D target = null;
-		if(change == 0) target = currentTile.getTileUp();
-		else if(change == 1) target = currentTile.getTileRight();
-		else if(change == 2) target = currentTile.getTileDown();
-		else if(change == 3) target = currentTile.getTileLeft();
-
+	private int charge(){
+		Tile2D target = findTile();
+		System.out.println(target);
 		if(target instanceof Charger) return useCharger();
 		else return attack(target);
 
 	}
 
-	private boolean useCharger(){
+	private int useCharger(){
 		centerAvatar();
-		cell.chargeBattery();
-		return true;
+		while(cell.getBatteryLife()<=300 && cell.isCharging()){
+			cell.incBattery();
+		}
+		return 2;
 	}
 
-	private boolean  attack(Tile2D target){
-		if(target.getAvatar() == null) return false;
+	private int attack(Tile2D target){
+		if(target.getAvatar() == null){
+			return 0;
+		}
 		Avatar enemy = target.getAvatar();
 		enemy.takeDamage();
 		enemy.setLastHit(this);
-		return true;
+		return 1;
 	}
 
 	public void takeDamage(){
-		this.cell.useBattery();
-		System.out.println("batteryLife:  "+ this.cell.getBatteryLife());
-		if(this.cell.getBatteryLife()<=0){
-			System.out.println("getBatteryLife()<=0");
+		cell.decExtraBattery();
+		if(cell.getBatteryLife()<=0){
 			die();
 		}
 	}
@@ -398,8 +207,9 @@ public class Avatar implements Serializable {
 	}
 
 	private void reset(){
-		cell.setBatteryLife(100);
+		cell.setBatteryLife(300);
 		updateLocations(startTile,startRoom);
+		lastHit = null;
 	}
 
 	public void addKill(){
@@ -407,10 +217,142 @@ public class Avatar implements Serializable {
 		System.out.println(""+playerName+" got a kill! Score is now: "+ score);
 	}
 
+
+
+
+	private Tile2D findTile(){
+		int change = Direction.get(facing.toString());
+		Tile2D target = null;
+		if(change == 0) target = tile.getTileUp();
+		else if(change == 1) target = tile.getTileRight();
+		else if(change == 2) target = tile.getTileDown();
+		else if(change == 3) target = tile.getTileLeft();
+		return target;
+	}
+
+
+	private Tile2D findTile(Move move){
+		int change = calcDirection(move);
+		Tile2D newPosition = null;
+		if(change == 0) newPosition = moveUp(tile.getTileUp());
+		else if(change == 1) newPosition = moveRight(tile.getTileRight());
+		else if(change == 2) newPosition = moveDown(tile.getTileDown());
+		else if(change == 3) newPosition = moveLeft(tile.getTileLeft());
+		return newPosition;
+	}
+
+
+	private int calcDirection(Move move){
+		int dir = Direction.get(move.getRenderDirection());
+		int key = Direction.getKeyDirection(move.getInteraction());
+		int change = dir + key;
+		change = change % 4;
+		return change;
+	}
+
+	private void animation(){
+		spriteIndex++;
+		spriteIndex = spriteIndex % 4;
+	}
+
+
+	private Tile2D moveUp(Tile2D tileUp){
+		tileYPos-=stepAmount;
+
+		if(tileYPos<tileMinPos){
+			if(!(( tileUp instanceof Floor ) || (tileUp instanceof Door ))){
+				tileYPos+=stepAmount;
+				return null;
+			}
+			tileYPos = tileMaxPos;
+			return tileUp;
+		}
+		else{
+			return tile;
+
+		}
+	}
+
+	private Tile2D moveDown(Tile2D tileDown){
+		tileYPos+=stepAmount;
+
+		if(tileYPos>tileHeight){
+			if(!((tileDown instanceof Floor ) || (tileDown instanceof Door ))){
+				tileYPos-=stepAmount;
+				return null;
+			}
+			tileYPos = tileMinPos;
+			return tileDown;
+		}
+		else{
+			return tile;
+		}
+	}
+
+	private Tile2D moveLeft(Tile2D tileLeft){
+		tileXPos-=stepAmount;
+		if(tileXPos<tileMinPos){
+
+			if(!(( tileLeft instanceof Floor ) || (tileLeft instanceof Door ))){
+				tileXPos+=stepAmount;
+				return null;
+			}
+			tileXPos = tileMaxPos;
+			return tileLeft;
+		}
+		else{
+			return tile;
+		}
+	}
+
+	private Tile2D moveRight(Tile2D tileRight){
+		tileXPos+=stepAmount;
+		if(tileXPos>tileWidth){
+
+			if(!(( tileRight instanceof Floor ) || (tileRight instanceof Door ))){
+				tileXPos-=stepAmount;
+				return null;
+			}
+			tileXPos = tileMinPos;
+			return tileRight;
+		}
+		else{
+			return tile;
+		}
+	}
+
+
+	private void updateFacing(String dirKey){
+		if(dirKey.toLowerCase().equals("w")) facing = Facing.North;
+		else if(dirKey.toLowerCase().equals("d")) facing = Facing.East;
+		else if(dirKey.toLowerCase().equals("s")) facing = Facing.South;
+		else if(dirKey.toLowerCase().equals("a")) facing = Facing.West;
+	}
+
+	private void centerAvatar(){
+		double xChange = tileXCenter - tileXPos;
+		double yChange = tileYCenter - tileYPos;
+		tileXPos = tileXCenter;
+		tileYPos = tileYCenter;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	public void setLastHit(Avatar lastHit){
 		this.lastHit = lastHit;
 	}
-
 
 	public void setPlayerName(String name) {
 		this.playerName = name;
@@ -421,11 +363,11 @@ public class Avatar implements Serializable {
 	}
 
 	public Tile2D getCurrentTile() {
-		return currentTile;
+		return tile;
 	}
 
 	public Room getCurrentRoom() {
-		return currentRoom;
+		return room;
 	}
 
 	public List<Item> getInventory() {
@@ -437,7 +379,7 @@ public class Avatar implements Serializable {
 	}
 
 	public void setCurrentRoom(Room currentRoom) {
-		this.currentRoom = currentRoom;
+		this.room = currentRoom;
 	}
 
 	public Game.Facing getDirectionFacing(){
@@ -448,7 +390,6 @@ public class Avatar implements Serializable {
 		facing = f;
 	}
 
-
 	public Game.Facing getFacing() {
 		return facing;
 	}
@@ -458,7 +399,7 @@ public class Avatar implements Serializable {
 	}
 
 	public void setCurrentTile(Tile2D currentTile) {
-		this.currentTile = currentTile;
+		this.tile = currentTile;
 	}
 
 	public double getTileXPos(){
@@ -467,14 +408,6 @@ public class Avatar implements Serializable {
 
 	public double getTileYPos(){
 		return tileYPos;
-	}
-
-	public double getGlobalXPos(){
-		return globalXPos;
-	}
-
-	public double getGlobalYPos(){
-		return globalYPos;
 	}
 
 	public double getBatteryLife(){
@@ -489,6 +422,35 @@ public class Avatar implements Serializable {
 		return spriteIndex;
 	}
 
+	public Cell getCell() {
+		return cell;
+	}
+
+	public void setCell(Cell cell) {
+		this.cell = cell;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public boolean getAI() {
+		return isAI;
+	}
+
+	public void setAI(boolean isAI) {
+		this.isAI = isAI;
+	}
+
+
+
+
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -497,7 +459,6 @@ public class Avatar implements Serializable {
 				+ ((playerName == null) ? 0 : playerName.hashCode());
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -515,26 +476,5 @@ public class Avatar implements Serializable {
 			return false;
 		return true;
 	}
-
-
-	public Cell getCell() {
-		return cell;
-	}
-
-
-	public void setCell(Cell cell) {
-		this.cell = cell;
-	}
-
-
-	public int getScore() {
-		return score;
-	}
-
-
-	public void setScore(int score) {
-		this.score = score;
-	}
-
 
 }

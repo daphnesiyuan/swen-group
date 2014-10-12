@@ -28,6 +28,10 @@ public class NewGame {
 		linkRooms();
 		game.setRoomsInGame(roomsInGame);
 		roomPlace = "NULL";
+
+		Item key = new Key(roomsInGame.get(0).getTiles()[2][2]);
+		roomsInGame.get(0).getItems().add(key);
+
 	}
 
 	private List<Room> createRooms(){
@@ -38,7 +42,6 @@ public class NewGame {
 		URL c = NewGame.class.getResource("/gameLogic/basic_room_south.txt");
 		URL d = NewGame.class.getResource("/gameLogic/basic_room_east.txt");
 		URL e = NewGame.class.getResource("/gameLogic/basic_room_west.txt");
-
 		Room arena = makeRoom(a);
 		Room start1 = makeRoom(b);
 		Room start2 = makeRoom(c);
@@ -58,7 +61,6 @@ public class NewGame {
 		Room arena = roomsInGame.get(0);
 		Room n = null, s = null , e = null , w = null;
 		for(Room room : roomsInGame){
-			System.out.println(room.getRoomPlace());
 			if(room.getRoomPlace().equals("north")) n = room;
 			else if(room.getRoomPlace().equals("south")) s = room;
 			else if(room.getRoomPlace().equals("east")) e = room;
