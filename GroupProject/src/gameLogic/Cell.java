@@ -17,7 +17,7 @@ public class Cell implements Serializable {
 
 		this.avatar = avatar;
 
-		batteryLife = 100;
+		batteryLife = 500;
 
 		charging = false;
 
@@ -41,7 +41,7 @@ public class Cell implements Serializable {
 
 	}
 
-	public int getBatteryLife(){	
+	public int getBatteryLife(){
 		return batteryLife;
 	}
 

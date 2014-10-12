@@ -129,6 +129,7 @@ public class NewGame {
 					}
 					else if(tile.toUpperCase().equals("W")){
 						Tile2D wall = new Wall(x,y);
+						System.out.println(""+y+" , "+x);
 						tiles[y][x] = wall;
 
 					}
@@ -148,6 +149,10 @@ public class NewGame {
 						Tile2D tree = new Tree(x,y);
 						tiles[y][x] = tree;
 					}
+					else if(tile.toUpperCase().equals("Z")){
+						Tile2D charger = new Charger(x,y);
+						tiles[y][x] = charger;
+					}
 					x++;
 
 				}
@@ -163,7 +168,7 @@ public class NewGame {
 						if(tiles[i][j] instanceof Wall) room.getWalls().add((Wall) tiles[i][j]);
 						if(tiles[i][j] instanceof Column) room.getColumns().add((Column) tiles[i][j]);
 						if(tiles[i][j] instanceof Tree) room.getTrees().add((Tree) tiles[i][j]);
-
+						if(tiles[i][j] instanceof Charger) room.getChargers().add((Charger) tiles[i][j]);
 					}
 				}
 
