@@ -158,7 +158,7 @@ public class NewGame {
 
 				}
 
-
+				tiles[1][1].addItem(new Light());
 				Room room = new Room(tiles,null);
 				room.setRoomPlace(roomPlace);
 				for(int i = 0; i < tiles.length; i++){
@@ -172,6 +172,7 @@ public class NewGame {
 						if(tiles[i][j] instanceof Charger) room.getChargers().add((Charger) tiles[i][j]);
 					}
 				}
+
 
 			return room;
 

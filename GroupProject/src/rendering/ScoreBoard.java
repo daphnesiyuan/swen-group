@@ -39,11 +39,11 @@ public class ScoreBoard {
 		g.fillRoundRect(x, y, (int)width, (int)height, (int)buffer, (int)buffer);
 
 		g.setColor(Color.BLACK);
-		int i = 0;
+		int i = 1;
 		if (score != null){
 			for (Entry<String, Integer> entry: score.getScore().entrySet()){
 				//String score = avatars.get(i).getPlayerName()+": "+avatars.get(i).getScore();
-				g.drawString(entry.getKey()+": "+entry.getValue(), x, y+(int)buffer +(int)(buffer * i));
+				g.drawString(entry.getKey()+": "+entry.getValue(), (int)(x+buffer), (int)(y + i*(buffer*2)));
 				i++;
 			}
 		}

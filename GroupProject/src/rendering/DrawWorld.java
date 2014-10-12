@@ -5,16 +5,22 @@ import gameLogic.Charger;
 import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
+import gameLogic.Item;
+import gameLogic.Light;
 import gameLogic.Room;
 import gameLogic.Tile2D;
 import gameLogic.Tree;
 import gameLogic.Wall;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -160,7 +166,6 @@ public class DrawWorld {
 		 rotated90 = false;
 		 }
 
-
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
 				int x = i * width;
@@ -171,37 +176,48 @@ public class DrawWorld {
 				drawCharacter(g, point, tiles[i][j]);
 			}
 		}
-		//BufferedImage img = new BufferedImage
-
-
 		drawNight(g);
-//		java.net.URL imageURL = DrawWorld.class.getResource("Night" + ".png");
-//
-//		BufferedImage img = null;
-//		try {
-//			img = ImageIO.read(imageURL);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		g.drawImage(images.get("Night"),0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
-
 	}
 
 	private void drawNight(Graphics g) {
 		long millis = System.currentTimeMillis();
-		int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(millis);
-		int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(millis);
-		int cycle = seconds % 2;
+		int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
+		int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
+		int secondsCycle = seconds % 2;
+		int minuteCycle = minutes % 2;
 
-		//if charac
+		Graphics2D g2d = (Graphics2D)g;
 
-		if (cycle == 1){
-			g.drawImage(images.get("Night"),0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
+//		testing code for light
+//		List<Item> items = new ArrayList<Item>();
+//		items.add(new Light());
+//
+//		character.setInventory(items);
+
+
+		BufferedImage img = images.get("Night");;
+		for(int i = 0; i < character.getInventory().size(); i++){
+			if(character.getInventory().get(i) instanceof Light){
+				img = images.get("NightLight");
+				break;
+			}
 		}
-		if (cycle == 0){
-			g.drawImage(images.get("NightLight"),0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
-		}
 
+		//make image transparent varying to the time of day (in meatspace)
+		float alpha = 0F;
+		if (minuteCycle == 1){
+			if (seconds == 0){alpha = (millis %1000)/1000F;}
+			else{alpha = 1.0F;}
+		}
+		else if (minuteCycle == 0){
+			if (seconds == 0){alpha = 1.0F -(millis %1000)/1000F;}
+			else{alpha = 0.0F;}
+		}
+		int rule = AlphaComposite.SRC_OVER;
+		AlphaComposite ac = java.awt.AlphaComposite.getInstance(rule, alpha);
+		g2d.setComposite(ac);
+		g2d.drawImage(img,0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
+		g2d.setComposite(java.awt.AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 	}
 
 	/**
@@ -308,7 +324,7 @@ public class DrawWorld {
 			floatingPointer.reDraw(g, pt, width, height, offset);
 		else{
 			g.setColor(Color.BLUE);
-			g.drawString(avatar.getPlayerName(), pt.x+offset.x, pt.y+offset.y-4);
+			g.drawString(avatar.getPlayerName(), pt.x+offset.x-(width/2), pt.y+offset.y-(height*2));
 		}
 	}
 
@@ -351,6 +367,9 @@ public class DrawWorld {
 //				if (tile.getItems().get(i) instanceof Batery){
 //					drawObject(g,pt,images.get("Battery"+tileNum));
 //				}
+				if (tile.getItems().get(i) instanceof Light){
+				drawObject(g,pt,images.get("Light"+tileNum));
+			}
 			}
 
 	}
