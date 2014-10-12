@@ -25,7 +25,8 @@ public class JoinMenu extends JFrame{
 	private theHandler handler;
 	private JTextField textIP;
 	private JTextField textName;
-	private String name = null; // for the creation of a new player
+	private String ipAddress = null; // for the creation of a new player
+	private String name = null;
 	private GameClient gc;
 
 	public JoinMenu(DrawingPanel panel, GameClient g) {
@@ -62,31 +63,34 @@ public class JoinMenu extends JFrame{
 
 	public void setTextField() {
 		JLabel label1 = new JLabel("\nIP Address:");
-		label1.setToolTipText("hit enter to finalise ip address input");
+		//label1.setToolTipText("hit enter to finalise ip address input");
 		textIP = new JTextField(20);
 		textIP.getDocument().addDocumentListener(new MyDocumentListener());
-
-		JLabel label2 = new JLabel("\nIn game name:");
+		JLabel label2 = new JLabel("\nUsername");
 		textName = new JTextField(20);
 		textName.getDocument().addDocumentListener(new MyDocumentListener());
 
 		jpanel.add(label1);
-		jpanel.add(label2);
 		jpanel.add(textIP);
+		jpanel.add(label2);
 		jpanel.add(textName);
 	}
 
 	/**
 	 * This is an inner class which handles changes made in the text box for
-	 * player name
+	 * player name and IP address
 	 */
 	private class MyDocumentListener implements DocumentListener {
 		public void insertUpdate(DocumentEvent e) {
-			name = textIP.getText();
+			ipAddress = textIP.getText();
+			name = textName.getText();
+
 		}
 
 		public void removeUpdate(DocumentEvent e) {
-			name = textIP.getText();
+			ipAddress = textIP.getText();
+			name = textName.getText();
+			System.out.println("ip address="+ipAddress+" name="+name);
 		}
 
 		public void changedUpdate(DocumentEvent e) {
@@ -106,20 +110,10 @@ public class JoinMenu extends JFrame{
 
 		public void actionPerformed(ActionEvent e) {
 
-			//System.out.println("action listener");
+			if (e.getSource() == submit) {
+				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0 ) { //input is valid
 
-			// responds to radiobuttons
-			if ("ColonelMustard".equals(e.getActionCommand())) {
-
-			}
-
-			// responds to the final submit, and forwards new player info onto
-			// the board
-			else if (e.getSource() == submit) {
-				if (name != null && name.length() > 0) { // valid
-																			// inputs
-					// reset
-					name = null;
+					ipAddress = null;
 					textIP.setText("");
 
 
