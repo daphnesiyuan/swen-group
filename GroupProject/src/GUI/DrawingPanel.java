@@ -122,7 +122,7 @@ public class DrawingPanel extends JPanel {
 				health.redraw(g, gc.getAvatar());
 
 				if (chatMode)
-					chat.redraw(g, gc.getChatHistory(10), currentMessage);
+					chat.redraw(g, gc.getChatHistory(20), currentMessage);
 
 			}
 
