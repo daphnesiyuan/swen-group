@@ -66,7 +66,6 @@ public class Tile2D implements Serializable{
 	}
 
 	public Tile2D getTileUp(){
-		System.out.println(this.yPos + " getTileUp() y");
 		if(this.yPos <= 0) return null;
 		Tile2D newTile = null;
 		newTile = room.getTiles()[yPos-1][xPos];

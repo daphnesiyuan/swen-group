@@ -17,7 +17,7 @@ public class Cell implements Serializable {
 
 		this.avatar = avatar;
 
-		batteryLife = 500;
+		batteryLife = 100;
 
 		charging = false;
 
