@@ -153,7 +153,7 @@ public class Avatar implements Serializable {
 
 		if(move.getInteraction().equals("O")){
 			charge();
-			cell.setCharging(false);
+			cell.setCharging(!cell.isCharging());
 		}
 
 		updateFacing(move.getInteraction());
@@ -324,9 +324,7 @@ public class Avatar implements Serializable {
 	}
 
 	private void charge(){
-		cell.setCharging(true);
 		cell.chargeBattery();
-		System.out.println(cell.getBatteryLife());
 	}
 
 
