@@ -269,8 +269,8 @@ public class DrawWorld {
 		if (tile.getAvatar().equals(character))
 			floatingPointer.reDraw(g, pt, width, height, offset);
 		else{
-			g.setColor(Color.RED);
-			g.drawString(avatar.getPlayerName(), pt.x, pt.y-4);
+			g.setColor(Color.BLUE);
+			g.drawString(avatar.getPlayerName(), pt.x+offset.x, pt.y+offset.y-4);
 		}
 	}
 
