@@ -33,8 +33,12 @@ public class Cell implements Serializable {
 
 	public void useBattery(){
 		batteryLife--;
-
 	}
+
+	public void useExtraBattery(){
+		batteryLife-=5;
+	}
+
 
 	public void chargeBattery(){
 		batteryLife++;
