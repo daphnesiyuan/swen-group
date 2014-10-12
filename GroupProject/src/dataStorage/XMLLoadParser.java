@@ -1,17 +1,21 @@
 package dataStorage;
 
 import gameLogic.Avatar;
+import gameLogic.Charger;
+import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Game;
 import gameLogic.Item;
 import gameLogic.Room;
 import gameLogic.Tile2D;
+import gameLogic.Tree;
 import gameLogic.Wall;
 
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.text.Document;
@@ -29,7 +33,7 @@ public class XMLLoadParser {
 	public XMLLoadParser(File f){
 		file = f;
 
-		game = new Game();
+		game = new Game(true);
 	}
 
 	public Game loadGame(){
@@ -62,14 +66,15 @@ public class XMLLoadParser {
 	 */
 	public void parseRoom(Element e){
 
+		String roomPlace = e.getChildText("roomPlace");
 
-		int roomNum = Integer.parseInt(e.getChildText("roomNumber"));
 		List avatars = e.getChildren("characters");
 		List floors = e.getChildren("floors");
 		List walls = e.getChildren("walls");
 		List doors = e.getChildren("doors");
+		List items = e.getChildren("items");
+		List otherTiles = e.getChildren("other_tiles");
 		Room room = new Room(tiles, doors);
-		//Room room = new Room(roomNum,null,null);
 
 		//floors
 		for(int i = 0; i<floors.size();i++){
@@ -87,6 +92,14 @@ public class XMLLoadParser {
 		for(int i = 0; i<avatars.size();i++){
 			parseAvatar((Element)avatars.get(i),room);
 		}
+		//items
+		for(int i = 0; i<items.size();i++){
+			parseItem((Element)items.get(i),room);
+		}
+		//other tiles
+		for(int i = 0; i<otherTiles.size();i++){
+			parseOtherTile((Element)otherTiles.get(i),room);
+		}
 		room.setTiles(tiles);
 		game.addRoom(room);
 
@@ -102,9 +115,19 @@ public class XMLLoadParser {
 
 	public void parseAvatar(Element e, Room r){
 		int roomNum = Integer.parseInt(e.getChildText("currentRoom"));
+		String faceString = e.getChildText("facing");
 		String playerName = e.getChildText("playerName");
-		//WAITING FOR ITEMS TO BE IMPLEMENTED
-
+		Element inventory = e.getChild("inventory");//WAITING FOR ITEMS TO BE IMPLEMENTED
+		List<Item> playerInventory = new ArrayList<Item>();
+		if (inventory.getChildren().size() !=0) {
+			for(int i = 0; i<inventory.getChildren().size();i++){
+				//add item to player inventory
+			}
+		}
+		double tileXPos = Double.parseDouble(e.getChildText("tileXPos"));
+		double tileYPos = Double.parseDouble(e.getChildText("tileXPos"));
+		double globalXPos = Double.parseDouble(e.getChildText("globalXPos"));
+		double globalYPos = Double.parseDouble(e.getChildText("globalYPos"));
 
 	}
 
@@ -224,5 +247,40 @@ public class XMLLoadParser {
 		tiles[xPos][yPos] = d;
 	}
 
+	/**
+	 *
+	 *
+	 * @param e Element that represents the item
+	 * @param r Roon that contains the item
+	 */
 
+	public void parseItem(Element e, Room r){
+
+
+	}
+
+	/**
+	 *
+	 *
+	 * @param e Element that represents the other tile
+	 * @param r Roon that contains the other tile
+	 */
+
+	public void parseOtherTile(Element e, Room r){
+		String type = e.getName();
+		int xPos = Integer.parseInt(e.getChildText("xPos"));
+		int yPos = Integer.parseInt(e.getChildText("yPos"));
+		if(type.equals("Tree")){
+			Tree t = new Tree(xPos, yPos);
+			r.getTrees().add(t);
+		}
+		else if(type.equals("Column")){
+			Column c = new Column(xPos, yPos);
+			r.getColumns().add(c);
+		}
+		else if(type.equals("Charger")){
+			Charger c = new Charger(xPos, yPos);
+			System.out.println("Charger created but cannot add");
+		}
+	}
 }
