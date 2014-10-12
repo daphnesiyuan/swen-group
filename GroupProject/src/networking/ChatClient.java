@@ -129,13 +129,20 @@ public class ChatClient extends Client {
 	public void setName(String name){
 		name.trim(); // Remove spaces
 
-		// Tell the server to update this clients name as well!
-		try {
-			// Try and change it on the servers
-			sendData(new ChatMessage("/name " + name, chatMessageColor));
-			//player.setName(name);
-		} catch (IOException e) {
-			e.printStackTrace();
+		// Only change name if we are not connectged, otherwise we need permission from the server
+		if( isConnected() ){
+
+			// Tell the server to update this clients name as well!
+			try {
+				// Try and change it on the servers
+				sendData(new ChatMessage("/name " + name, chatMessageColor));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else{
+			// Set name directly
+			player.setName(name);
 		}
 	}
 
@@ -191,8 +198,8 @@ public class ChatClient extends Client {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public boolean connect(String IPAddress, int port) throws UnknownHostException, IOException{
-		return connect(IPAddress, player.getName(), port);
+	public boolean connect(String IPAddress) throws UnknownHostException, IOException{
+		return connect(IPAddress, player.getName(), getPort());
 	}
 
 	/**
@@ -203,7 +210,7 @@ public class ChatClient extends Client {
 	 * @throws IOException
 	 */
 	public boolean connect(ChatServer server) throws UnknownHostException, IOException{
-		return connect(server, player.getName());
+		return connect(server.getIPAddress(), this.getName(), server.getPort());
 	}
 
 	/**

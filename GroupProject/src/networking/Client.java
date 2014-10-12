@@ -37,6 +37,8 @@ public abstract class Client{
 
 	private InputWaiter myThread;
 
+	private final int port = 32768;
+
 	/**
 	 * Creates a new Client object with a link to who is waiting for information from the server
 	 * @param listener Who is waiting for information from the server
@@ -179,21 +181,6 @@ public abstract class Client{
 	}
 
 	/**
-	 * Attempts to connect to the given IPAddress and port number of the
-	 * Remove Second String for the player name
-	 * @deprecated Remove Second String for the player name
-	 * @param server The server to connect to
-	 * @param ID Identification of this client
-	 * @return True if connection worked, otherwise a exception gets thrown
-	 * @throws UnknownHostException
-	 * @throws IOException
-	 */
-	@Deprecated
-	public boolean connect(Server server, String ID) throws UnknownHostException, IOException{
-		return connect(server.getIPAddress(), ID, server.getPort());
-	}
-
-	/**
 	 * Stores the given packet in a queue for sending once we have a socket
 	 * @param data Object to sent to the server for processing
 	 */
@@ -308,4 +295,8 @@ public abstract class Client{
 	 * @param playerName name of our player that we are connecting with
 	 */
 	public abstract void successfullyConnected(String playerName);
+
+	public int getPort() {
+		return port;
+	}
 }

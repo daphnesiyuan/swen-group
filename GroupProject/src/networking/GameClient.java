@@ -35,9 +35,9 @@ public class GameClient extends ChatClient {
 	 * @param serverIP IP Of the server to join
 	 * @param serverPort Port of the server to join
 	 */
-	public GameClient(String playerName, JComponent clientImage, String serverIP, int serverPort) throws UnknownHostException, IOException{
+	public GameClient(String playerName, JComponent clientImage, String serverIP) throws UnknownHostException, IOException{
 		this(playerName, clientImage);
-		connect(serverIP, serverPort);
+		connect(serverIP);
 	}
 
 	/**
