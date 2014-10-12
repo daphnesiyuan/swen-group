@@ -24,6 +24,13 @@ public class Cell implements Serializable {
 
 	}
 
+	public Cell(Avatar avatar, int batteryLife){		//ANTONIA: For use when loading
+		this.avatar = avatar;
+		this.batteryLife = batteryLife;
+		charging = false;
+
+	}
+
 	public void useBattery(){
 		batteryLife--;
 
