@@ -25,9 +25,11 @@ import networking.Move;
 import rendering.Direction;
 import rendering.DrawChat;
 import rendering.DrawCompass;
+import rendering.DrawHealth;
 import rendering.DrawInventory;
 import rendering.DrawMiniMap;
 import rendering.DrawWorld;
+import rendering.ScoreBoard;
 
 public class DrawingPanel extends JPanel {
 
@@ -64,6 +66,8 @@ public class DrawingPanel extends JPanel {
 	private DrawCompass compass;
 	private DrawInventory invo;
 	private DrawMiniMap map;
+	private ScoreBoard score;
+	private DrawHealth health;
 
 	// leon added
 	private DrawChat chat;
@@ -86,6 +90,9 @@ public class DrawingPanel extends JPanel {
 		// networking setup stuff
 		gs = new GameServer();
 		setUpNWEN();
+
+		score = new ScoreBoard(this);
+		health = new DrawHealth(this);
 	}
 
 	/**
@@ -108,6 +115,9 @@ public class DrawingPanel extends JPanel {
 			invo.redraw(g, gc.getAvatar().getInventory(),
 					Direction.get(directionI));
 			map.redraw(g, gc.getRoom(), Direction.get(directionI));
+			score.redraw(g, null);
+			health.redraw(g, gc.getAvatar());
+
 			if (chatMode)
 				chat.redraw(g, gc.getChatHistory(10), currentMessage);
 		}
