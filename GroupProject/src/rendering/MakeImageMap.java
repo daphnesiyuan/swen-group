@@ -62,8 +62,20 @@ public class MakeImageMap {
 			//Column
 			addToMap("Column"+i);
 
-			//door
+			//doors
 			addToMap("Door"+i);
+
+			//red door
+			addToMap("RedDoor"+i);
+
+			//yellow door
+			addToMap("YellowDoor"+i);
+
+			//green door
+			addToMap("GreenDoor"+i);
+
+			//purple door
+			addToMap("PurpleDoor"+i);
 
 			//tree
 			addToMap("Tree"+i);
@@ -86,6 +98,9 @@ public class MakeImageMap {
 
 			//Light
 			addToMap("Light"+i);
+
+			//Shoes
+			addToMap("Shoes"+i);
 		}
 
 		//Night time

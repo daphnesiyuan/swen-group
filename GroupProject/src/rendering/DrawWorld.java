@@ -118,8 +118,9 @@ public class DrawWorld {
 
 		tile.x = tile.x + avatarOffset.x;
 		tile.y = tile.y + avatarOffset.y;
+
 		tile.x = panel.getWidth() - (tile.x + (panel.getWidth() / 2));
-		tile.y = (panel.getHeight()/3) - (tile.y - (panel.getHeight() / 4));
+		tile.y = (panel.getHeight()/3) - (tile.y - (panel.getHeight() / 5));
 
 		offset = tile;
 	}
@@ -246,24 +247,35 @@ public class DrawWorld {
 			tileNum = 1;
 		}
 
-		if (tile instanceof Wall){
-			drawObject(g, pt, images.get("Wall"+tileNum));
+		String tileName = tile.getClass().getName();
+		//remove the gamelogic.
+		tileName = tileName.substring(10);
+
+
+
+		if(tile instanceof Floor){
+			return;
 		}
-		else if(tile instanceof Floor){
-			//drawObject(g, pt, images.get("Floor"+tileNum));
-		}
-		else if(tile instanceof Door){
-			drawObject(g, pt, images.get("Door"+tileNum));
-		}
-		else if(tile instanceof Column){
-			drawObject(g, pt, images.get("Column"+tileNum));
-		}
-		else if(tile instanceof Tree){
-			drawObject(g, pt, images.get("Tree"+tileNum));
-		}
-		else if(tile instanceof Charger){
-			drawObject(g, pt, images.get("Charger"+tileNum));
-		}
+		drawObject(g, pt, images.get(tileName+tileNum));
+
+//		if (tile instanceof Wall){
+//			drawObject(g, pt, images.get("Wall"+tileNum));
+//		}
+//		else if(tile instanceof Floor){
+//			//drawObject(g, pt, images.get("Floor"+tileNum));
+//		}
+//		else if(tile instanceof Door){
+//			drawObject(g, pt, images.get("Door"+tileNum));
+//		}
+//		else if(tile instanceof Column){
+//			drawObject(g, pt, images.get("Column"+tileNum));
+//		}
+//		else if(tile instanceof Tree){
+//			drawObject(g, pt, images.get("Tree"+tileNum));
+//		}
+//		else if(tile instanceof Charger){
+//			drawObject(g, pt, images.get("Charger"+tileNum));
+//		}
 	}
 
 	/**
@@ -360,16 +372,16 @@ public class DrawWorld {
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
 		if (tile.getItems() == null) return;
 
-			int tileNum = 0;
-			if (rotated90){
-				tileNum = 1;
-			}
+		int tileNum = 0;
+		if (rotated90){
+			tileNum = 1;
+		}
 
-			for (int i = 0; i < tile.getItems().size(); i++){
-				if (tile.getItems().get(i) instanceof Light){
-				drawObject(g,pt,images.get("Light"+tileNum));
-				}
-			}
+		for (int i = 0; i < tile.getItems().size(); i++){
+			String itemName = tile.getItems().get(i).getClass().getName().substring(10);
+			drawObject(g,pt,images.get(itemName+tileNum));
+		}
+
 	}
 
 	/**

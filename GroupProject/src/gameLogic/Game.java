@@ -42,7 +42,7 @@ public class Game{
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
 		activeAI = new ArrayList<AI>();
-		
+
 	}		//ANTONIA: To be used when loading a file
 
 
@@ -195,6 +195,16 @@ public class Game{
 		score.updateMap(activeAvatars);
 		return score;
 	}
+
+	public List<AI> getActiveAI() {
+		return activeAI;
+	}
+
+	public void setActiveAI(List<AI> activeAI) {
+		this.activeAI = activeAI;
+	}
+
+
 
 
 

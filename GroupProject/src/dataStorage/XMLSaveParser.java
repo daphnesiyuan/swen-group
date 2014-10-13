@@ -1,6 +1,11 @@
 package dataStorage;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.jdom2.Element;
 
@@ -12,7 +17,10 @@ import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Game;
 import gameLogic.Item;
+import gameLogic.Key;
+import gameLogic.Light;
 import gameLogic.Room;
+import gameLogic.Score;
 import gameLogic.Tile2D;
 import gameLogic.Tree;
 import gameLogic.Wall;
@@ -23,7 +31,7 @@ import gameLogic.Wall;
  * of the current game state and return an element whether the
  * parser was successful or not.
  *
- * @author caskeyanto
+ * @author Antonia Caskey
  *
  */
 
@@ -65,7 +73,6 @@ public class XMLSaveParser {
 		Element avatars = new Element("avatars");		//characters
 		Element items = new Element("items");			//items
 		Element others = new Element("other_tiles");	//Other tiles (chargers, trees, etc.)
-
 		e.addContent(new Element("roomPlace").setText(room.getRoomPlace()));		//room place
 
 		//CHARACTERS
@@ -230,7 +237,7 @@ public class XMLSaveParser {
 		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
 		e.addContent(new Element("toRoom").setText(door.getToRoom().getRoomPlace()));
-//		Element color = new Element("color");
+		Element color = new Element("color");
 //		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
 //		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
 //		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
@@ -292,6 +299,57 @@ public class XMLSaveParser {
 
 		return e;
 
+	}
+
+	/**
+	 * Takes a Score object that stores a map of all the players
+	 * and their scores, and converts it to an XML element.
+	 *
+	 * @param score the score of the current game
+	 * @return an element representing the map of scores
+	 */
+
+	public Element parseScore(Score score){
+		Element e = new Element("score");
+		Set<Entry<String,Integer>> scoreSet = score.getScore().entrySet();
+		for(Entry<String, Integer> entry : scoreSet){
+			Element sc = new Element(entry.getKey()).setText(Integer.toString(entry.getValue()));
+			e.addContent(sc);
+		}
+		return e;
+	}
+
+	/**
+	 * Takes any object that extends the abstract class Item and
+	 * discerns what type of Item it is, then returns an appropriately named
+	 * element.
+	 *
+	 * @param item Item object from game
+	 * @return Element representing the Item in XML
+	 */
+	public Element parseItem(Item item){
+		Element e;
+		if(item instanceof Key){
+			e = new Element("key");
+			Element color = new Element("color");
+			color.addContent(new Element("Red").setText(Integer.toString((((Key)item).getColor().getRed()))));
+			color.addContent(new Element("Green").setText(Integer.toString((((Key)item).getColor().getGreen()))));
+			color.addContent(new Element("Blue").setText(Integer.toString((((Key)item).getColor().getBlue()))));
+			e.addContent(color);
+		}
+		else{
+			e = new Element("light");
+		}
+		Element tile = new Element("tile");
+		tile.addContent(new Element("xPos")).setText(Integer.toString((item.getTile().getxPos())));
+		tile.addContent(new Element("yPos")).setText(Integer.toString((item.getTile().getyPos())));
+		e.addContent(tile);
+		Element startTile = new Element("startTile");
+		tile.addContent(new Element("xPos")).setText(Integer.toString(((Key)item).getStartTile().getxPos()));
+		tile.addContent(new Element("yPos")).setText(Integer.toString(((Key)item).getStartTile().getyPos()));
+		e.addContent(startTile);
+
+		return e;
 	}
 
 }

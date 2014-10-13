@@ -3,6 +3,8 @@ package dataStorage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import networking.AI;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
@@ -31,8 +33,7 @@ public class XMLSaver {
 	}
 
 	public boolean saveGame(){
-		//String fileName = "saved_at_" + System.currentTimeMillis();
-		String fileName = "file.xml";
+		String fileName = "saved_at_" + System.currentTimeMillis();
 		XMLSaveParser parser = new XMLSaveParser(this);
 
 
@@ -42,6 +43,13 @@ public class XMLSaver {
 			if(e == null)return false;
 			root.addContent(e);
 		}
+
+		Element score = parser.parseScore(game.getScore());
+		if(score == null)return false;
+		root.addContent(score);
+
+		Element activeAI = new Element("activeAI");
+		for(AI ai : game.getActiveAI()){}
 
 	    Document doc = new Document();
 	    doc.setRootElement(root);
