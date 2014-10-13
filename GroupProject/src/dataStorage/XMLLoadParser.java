@@ -44,7 +44,7 @@ public class XMLLoadParser {
 			Element rootNode = doc.getRootElement(); // Should be "game"
 			List roomList = rootNode.getChildren(); // a list of rooms
 			parseRooms(roomList);
-
+			
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
 		} catch (JDOMException jdomex) {
@@ -67,16 +67,57 @@ public class XMLLoadParser {
 		} // Iterates through all the room elements, creates rooms with their
 			// place name, and all the walls and floors
 		for (Object e : roomList) {
-			Tile2D[][] tiles = new Tile2D[1000][1000];
-			Room r = new Room(tiles, null);
-			Element ele = (Element) e;
-			String roomPlace = ele.getChildText("roomPlace");
-			Room room = parseBasicTile(ele, r);
-			roomsInGame.add(room);
+
 		} // Iterates through all the room elements, creates door tiles and
 			// other tiles
 
 	}
+	
+	/**
+	 * Goes through the xml representation element (e) of a wall and floor tile
+	 * and creates a new wall object, adding to the game
+	 *
+	 *
+	 * @param e
+	 */
+
+	public Room parseBasicTile(Element e, Room r) {
+
+		Element floors = e.getChild("floors");
+		List floorList = floors.getChildren();
+
+		Element walls = e.getChild("walls");
+		List wallList = walls.getChildren();
+
+		List basicTiles = new ArrayList();
+		basicTiles.addAll(floorList);
+		basicTiles.addAll(wallList);
+
+		Tile2D tile = new Tile2D(-9999, 0);
+		for (Object t : basicTiles) {
+			Element ele = (Element) t;
+			int xPos = Integer.parseInt(ele.getChildText("xPos"));
+			int yPos = Integer.parseInt(ele.getChildText("yPos"));
+
+			if (ele.getName().equals("Wall")) {
+				tile = new Wall(xPos, yPos);
+			} else if (ele.getName().equals("Floor")) {
+				tile = new Floor(xPos, yPos);
+			}
+			if (tile.getxPos() != -1000) {
+				tile.setRoom(r);
+				r.getTiles()[xPos][yPos] = tile;
+			}
+			else {
+				System.out.println("Error in parse basic tile");
+				return null;
+			}
+		}
+
+		return r;
+	}
+
+	public void 
 
 	/**
 	 * goes through the xml representation element (e) and creates a new room
@@ -173,49 +214,6 @@ public class XMLLoadParser {
 		a.setInventory(playerInventory);
 	}
 
-	/**
-	 * Goes through the xml representation element (e) of a wall and floor tile
-	 * and creates a new wall object, adding to the game
-	 *
-	 *
-	 * @param e
-	 */
-
-	public Room parseBasicTile(Element e, Room r) {
-
-		Element floors = e.getChild("floors");
-		List floorList = floors.getChildren();
-
-		Element walls = e.getChild("walls");
-		List wallList = walls.getChildren();
-
-		List basicTiles = new ArrayList();
-		basicTiles.addAll(floorList);
-		basicTiles.addAll(wallList);
-
-		Tile2D tile = new Tile2D(-9999, 0);
-		for (Object t : basicTiles) {
-			Element ele = (Element) t;
-			int xPos = Integer.parseInt(ele.getChildText("xPos"));
-			int yPos = Integer.parseInt(ele.getChildText("yPos"));
-
-			if (ele.getName().equals("Wall")) {
-				tile = new Wall(xPos, yPos);
-			} else if (ele.getName().equals("Floor")) {
-				tile = new Floor(xPos, yPos);
-			}
-			if (tile.getxPos() != -1000) {
-				tile.setRoom(r);
-				r.getTiles()[xPos][yPos] = tile;
-			}
-			else {
-				System.out.println("Error in parse basic tile");
-				return null;
-			}
-		}
-
-		return r;
-	}
 
 	/**
 	 * Goes through the xml representation element (e) of a door tile and
