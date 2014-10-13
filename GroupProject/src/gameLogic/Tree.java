@@ -1,8 +1,8 @@
 package gameLogic;
 
 /**
- * 
- * @author northleon
+ *
+ * @author Leon North
  *
  */
 public class Tree extends Tile2D{

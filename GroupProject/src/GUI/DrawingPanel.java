@@ -3,14 +3,10 @@ package GUI;
 import gameLogic.Item;
 import gameLogic.Room;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -21,7 +17,6 @@ import javax.swing.JPanel;
 import networking.ChatMessage;
 import networking.GameClient;
 import networking.GameServer;
-import networking.Move;
 import rendering.Direction;
 import rendering.DrawChat;
 import rendering.DrawCompass;
@@ -31,6 +26,11 @@ import rendering.DrawMiniMap;
 import rendering.DrawWorld;
 import rendering.ScoreBoard;
 
+/**
+ *
+ * @author Daphne Wang and Leon North
+ *
+ */
 public class DrawingPanel extends JPanel {
 
 	private DrawWorld dw; // this draws all the game-stuff: locations chars
@@ -53,7 +53,7 @@ public class DrawingPanel extends JPanel {
 
 	private XMLFile fileChooser;
 
-	// Leons fields
+
 	private List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 	private String currentMessage = "";
 	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
@@ -72,6 +72,11 @@ public class DrawingPanel extends JPanel {
 	private DrawChat chat;
 	private boolean chatMode; // from rendering
 
+	/**
+	 *
+	 * @param win
+	 * @author Daphne Wang and Leon North
+	 */
 	public DrawingPanel(WindowFrame win) {
 		wf = win;
 		sm = new StartMenu(this);
@@ -100,6 +105,9 @@ public class DrawingPanel extends JPanel {
 	 * redrawing for the in game.
 	 */
 
+	/**
+	 * @author Daphne Wang and Leon North
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 
@@ -350,6 +358,9 @@ public class DrawingPanel extends JPanel {
 	}
 
 	// //////////////getters and setters
+	/**
+	 * @author Daphne Wang and Leon North
+	 */
 	@Override
 	public Dimension getPreferredSize() {
 		Dimension dimension = new Dimension(1280, 720);

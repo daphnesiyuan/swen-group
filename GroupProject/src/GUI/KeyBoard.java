@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import rendering.Direction;
 import networking.ChatMessage;
 import networking.Move;
-
+/**
+ *
+ * @author Daphne Wang and Leon North
+ *
+ */
 public class KeyBoard implements KeyListener{
 
 	private DrawingPanel panel;
@@ -41,6 +45,9 @@ public class KeyBoard implements KeyListener{
 	}
 
 
+	/**
+	 * @author Daphne Wang and Leon North
+	 */
 	private void actionKeys() {
 
 		if ((panel.getKeysDown()).contains(KeyEvent.VK_ALT)){
@@ -88,7 +95,7 @@ public class KeyBoard implements KeyListener{
 	}
 
 	/**
-	 * Author: Leon
+	 * @author Leon North
 	 */
 	private void Charge() {
 		Move move = new Move((panel.getGameClient()).getPlayer(), "O", Direction.get( panel.getDirection() ));
@@ -101,6 +108,9 @@ public class KeyBoard implements KeyListener{
 		}
 	}
 
+	/**
+	 * @author Daphne Wang and Leon North
+	 */
 	private void moveRight() {
 		Move move = new Move((panel.getGameClient()).getPlayer(), "D", Direction.get( panel.getDirection() ));
 
@@ -114,6 +124,9 @@ public class KeyBoard implements KeyListener{
 
 	}
 
+	/**
+	 * @author Daphne Wang and Leon North
+	 */
 	private void moveBack() {
 		Move move = new Move(panel.getGameClient().getPlayer(), "S", Direction.get(panel.getDirection()));
 
@@ -127,6 +140,9 @@ public class KeyBoard implements KeyListener{
 
 	}
 
+	/**
+	 * @author Daphne Wang and Leon North
+	 */
 	private void moveLeft() {
 		Move move = new Move(panel.getGameClient().getPlayer(), "A", Direction.get( panel.getDirection() ));
 
@@ -139,6 +155,9 @@ public class KeyBoard implements KeyListener{
 
 	}
 
+	/**
+	 * @author Daphne Wang and Leon North
+	 */
 	private void moveForward() {
 		Move move = new Move(panel.getGameClient().getPlayer(), "W", Direction.get(panel.getDirection()));
 

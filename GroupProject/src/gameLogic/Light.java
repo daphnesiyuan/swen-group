@@ -1,5 +1,10 @@
 package gameLogic;
 
+/**
+ *
+ * @author Ryan Griffin and Leon North
+ *
+ */
 public class Light extends Item{
 
 	public Light() {

@@ -1,21 +1,9 @@
 package GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import networking.GameClient;
 import networking.Player;
@@ -43,6 +31,9 @@ public class WindowFrame extends JFrame {
 		this.addKeyListener(panel.getKeyB());
 	}
 
+	/**
+	 * @author Daphne Wang and Leon North
+	 */
 	public void JFrameSetUp() {
 		topMenu = new TopMenu(this);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,6 +46,9 @@ public class WindowFrame extends JFrame {
 	 * public void refreshGraphics(){ //render.redraw(graphics, room, character,
 	 * direction); //TO BE FILLED LATER: we get room and char from client: jimmy
 	 * }
+	 */
+	/**
+	 * @author Daphne Wang and Leon North
 	 */
 	public void JPanelStuff() {
 		System.out.println("In JPanel setups");
