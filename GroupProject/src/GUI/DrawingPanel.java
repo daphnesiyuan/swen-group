@@ -24,7 +24,6 @@ import rendering.DrawHealth;
 import rendering.DrawInventory;
 import rendering.DrawMiniMap;
 import rendering.DrawWorld;
-import rendering.InvoPopup;
 import rendering.ScoreBoard;
 
 /**

@@ -68,7 +68,7 @@ public class MyMouseListener implements MouseListener {
 	 * @param e
 	 */
 	private void doPop(MouseEvent e) {
-		InvoPopup menu = new InvoPopup();
+		InvoPopup menu = new InvoPopup(panel);
 		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
 
