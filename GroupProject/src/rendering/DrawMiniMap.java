@@ -12,22 +12,23 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 /**
+ * Draws a minimap on the panel
  *
- * @author northleon
+ * @author Leon North
  *
  */
 public class DrawMiniMap {
 
-	JPanel panel;
-	Avatar charac;
-	double width;
-	double height;
-	double buffer;
-	double cellHeight;
-	double cellWidth;
-	public static final double STARTWIDTH = 1280;
-	public static final double STARTMAPHEIGHT = 135;
-	public static final int NUMCARDS = 5;
+	private JPanel panel;
+	private Avatar charac;
+	private double width;
+	private double height;
+	private double buffer;
+	private double cellHeight;
+	private double cellWidth;
+	private static final double STARTWIDTH = 1280;
+	private static final double STARTMAPHEIGHT = 135;
+	private static final int NUMCARDS = 5;
 
 	public DrawMiniMap(JPanel panel, Avatar charac) {
 		this.panel = panel;
@@ -91,31 +92,28 @@ public class DrawMiniMap {
 					color = new Color(0.5f, 0.1f, 0.1f, 0.5f);
 				}
 			}
-
 			//if the floor tile has no avatar just draw a normal color
 			else {
 				color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 			}
 		}
-
 		//doors get there own special color
 		else if (tile instanceof Door){
 			color = new Color(0.0f, 0.0f, 1.0f, 0.5f);
 		}
-
 		//other obstacles such as columns, trees, walls get drawn
 		//the same darker color
 		else{
 			color = new Color(0.1f, 0.2f, 0.1f, 0.5f);
 		}
-
 		return color;
 	}
 
 	/**
-	 * Takes a 2d array and rotates it around 90 degrees left.
-	 * @param tiles
-	 * @return
+	 * Takes a 2d array and returns a new 2d array rotated 90 degrees left.
+	 * @param tiles: 2d array of tile2d objects
+	 * @return 2d array of tile2d objects
+	 * @author Leon North
 	 */
 	private Tile2D[][] rotate90(Tile2D[][] tiles) {
 	    int width = tiles.length;

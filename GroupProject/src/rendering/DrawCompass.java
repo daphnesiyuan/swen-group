@@ -7,16 +7,28 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+/**
+ * Draws the compass on the panel.
+ *
+ * @author Leon North
+ *
+ */
 public class DrawCompass {
 
-	JPanel panel;
+	private JPanel panel;
 
 	public DrawCompass(JPanel panel) {
 		this.panel = panel;
 	}
 
+	/**
+	 * Draws the compass to the panel
+	 *
+	 * @param g: Graphics object
+	 * @param direction: Direction to draw the compass in.
+	 * @author Leon North
+	 */
 	public void redraw(Graphics g, String direction){
-
 
 		if (direction.toLowerCase().equals("east")){
 			direction = "West";
@@ -36,5 +48,4 @@ public class DrawCompass {
 		int buffer = (int) ((panel.getWidth() / 1280.0) * 10);
 		g.drawImage(img, panel.getWidth() - size - buffer, panel.getHeight() - size - buffer, size, size, null);
 	}
-
 }

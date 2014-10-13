@@ -5,7 +5,6 @@ import gameLogic.Charger;
 import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
-import gameLogic.Item;
 import gameLogic.Light;
 import gameLogic.Room;
 import gameLogic.Tile2D;
@@ -18,13 +17,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import GUI.DrawingPanel;
@@ -32,26 +27,24 @@ import GUI.DrawingPanel;
 /**
  * This class will draw the location and everything in it.
  *
- * @author northleon
+ * @author Leon North
  *
  */
 public class DrawWorld {
 
-	FloatingPointer floatingPointer;
+	private FloatingPointer floatingPointer;
 
-	Avatar character; // the main player
+	private Avatar character; // the main player
 
-	double scale;
-	int width;
-	int height;
-	Point offset = new Point(690, 220);
-	JPanel panel;
-	boolean rotated90 = false; // used as a cheap way to show room rotation by
-								// flipping the images horizontally.
-	boolean back = true;
-	Point relativeOffset;
-	Map<String, BufferedImage> images;
-	String direction;
+	private double scale;
+	private int width;
+	private int height;
+	private Point offset = new Point(690, 220);
+	private JPanel panel;
+	private boolean rotated90 = false; // used as a cheap way to show room rotation by
+							           // flipping the images horizontally.
+	private Map<String, BufferedImage> images;
+	private String direction;
 
 	public DrawWorld(Avatar character, DrawingPanel rendering) {
 
@@ -59,11 +52,7 @@ public class DrawWorld {
 		this.character = character;
 		this.panel = rendering;
 
-		relativeOffset = new Point(character.getCurrentTile().getxPos(),
-				character.getCurrentTile().getxPos());
-
 		images = MakeImageMap.makeMap();
-
 	}
 
 	/**
@@ -94,6 +83,14 @@ public class DrawWorld {
 
 	}
 
+	/**
+	 * Makes the offset that everything needs to be drawn by to put the current
+	 * players avatar in the centre of the screen.
+	 *
+	 * @param direction
+	 * @param room
+	 * @author Leon North
+	 */
 	private void calibrateOffset(String direction, Room room) {
 
 		Point tile = null;
@@ -113,16 +110,6 @@ public class DrawWorld {
 			}
 		}
 
-//		if(tile == null){
-//			System.out.println("\n\n\nDrawWorld.calibrateOffset - tile == null");
-//			try {
-//				Thread.sleep(10000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-
 		Point avatarOffset = avatarTilePos(tiles[tile.x][tile.y]);
 
 		tile.x = (tile.x * width);
@@ -135,8 +122,6 @@ public class DrawWorld {
 		tile.y = (panel.getHeight()/3) - (tile.y - (panel.getHeight() / 4));
 
 		offset = tile;
-
-
 	}
 
 	/**
@@ -147,6 +132,7 @@ public class DrawWorld {
 	 * @param Graphics g
 	 * @param Room room
 	 * @param String direction
+	 * @author Leon North
 	 */
 	private void drawLocation(Graphics g, Room room, String direction) {
 		// TODO Auto-generated method stub
@@ -179,6 +165,12 @@ public class DrawWorld {
 		drawNight(g);
 	}
 
+	/**
+	 * Draws a night time mask over the map depending on system time.
+	 *
+	 * @param g: Graphics object
+	 * @author Leon North
+	 */
 	private void drawNight(Graphics g) {
 		long millis = System.currentTimeMillis();
 		int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
@@ -193,7 +185,6 @@ public class DrawWorld {
 //		items.add(new Light());
 //
 //		character.setInventory(items);
-
 
 		BufferedImage img = images.get("Night");;
 		for(int i = 0; i < character.getInventory().size(); i++){
@@ -225,6 +216,7 @@ public class DrawWorld {
 	 *
 	 * @param Tile2D [][] tiles
 	 * @return Tile2D[][] newTiles
+	 * @author Leon North
 	 */
 	private Tile2D[][] rotate90(Tile2D[][] tiles) {
 		// TODO Auto-generated method stub
@@ -245,6 +237,7 @@ public class DrawWorld {
 	 * @param Point pt
 	 * @param String tileName
 	 * @param Graphics g
+	 * @author Leon North
 	 */
 	private void drawTile(Point pt, Tile2D tile, Graphics g) {
 
@@ -275,11 +268,12 @@ public class DrawWorld {
 
 	/**
 	 * Generic drawing method that gets called to draw Tile2D, GameCharacter,
-	 * Item
+	 * Item. It will draw the image given to it at the point given to the graphics given.
 	 *
 	 * @param Graphics g
 	 * @param Point pt
 	 * @param java.net.URL imageURL
+	 * @author Leon North
 	 */
 	private void drawObject(Graphics g, Point pt, BufferedImage img) {
 		int imgHeight = ((int) img.getHeight(null) / 250);
@@ -294,6 +288,7 @@ public class DrawWorld {
 	 * @param Point pt
 	 * @param Tile2D tile
 	 * @param Graphics g
+	 * @author Leon North
 	 */
 	private void drawCharacter(Graphics g, Point pt, Tile2D tile) {
 		if (tile.getAvatar() == null) return;
@@ -328,6 +323,12 @@ public class DrawWorld {
 		}
 	}
 
+	/**
+	 * Returns the point within the tile that the avatar is standing
+	 * @param tile: The tile the avatar is standing on
+	 * @return Point: position the avatar is standing on within the tile
+	 * @author Leon North
+	 */
 	public Point avatarTilePos(Tile2D tile){
 
 		double stepSize = width/100.0;
@@ -354,6 +355,7 @@ public class DrawWorld {
 	 * @param Point pt
 	 * @param Tile2D tile
 	 * @param Graphics g
+	 * @author Leon North
 	 */
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
 		if (tile.getItems() == null) return;
@@ -364,21 +366,18 @@ public class DrawWorld {
 			}
 
 			for (int i = 0; i < tile.getItems().size(); i++){
-//				if (tile.getItems().get(i) instanceof Batery){
-//					drawObject(g,pt,images.get("Battery"+tileNum));
-//				}
 				if (tile.getItems().get(i) instanceof Light){
 				drawObject(g,pt,images.get("Light"+tileNum));
+				}
 			}
-			}
-
 	}
 
 	/**
-	 * converts the coordinates of a 2d array to isometric
+	 * converts the coordinates to isometric
 	 *
 	 * @param Point point
 	 * @return Point tempPt
+	 * @author Leon North
 	 */
 	private Point twoDToIso(Point point) {
 		Point tempPt = new Point(0, 0);

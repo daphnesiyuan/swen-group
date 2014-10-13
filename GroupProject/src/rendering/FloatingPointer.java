@@ -10,8 +10,9 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
- * 
- * @author northleon
+ * Draws a floating animated pointer above the avatars head.
+ *
+ * @author Leon North
  *
  */
 public class FloatingPointer {
@@ -25,6 +26,16 @@ public class FloatingPointer {
 		images = MakeImageMap.makeMap();
 	}
 
+	/**
+	 * Draws a floating animated pointer above the avatars head.
+	 *
+	 * @param g
+	 * @param pt
+	 * @param width
+	 * @param height
+	 * @param offset :
+	 * @author Leon North
+	 */
 	public void reDraw(Graphics g, Point pt, int width, int height, Point offset) {
 
 		BufferedImage img = images.get("FloatingPointer" + animationNum);

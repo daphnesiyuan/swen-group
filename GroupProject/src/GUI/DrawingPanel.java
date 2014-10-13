@@ -54,8 +54,8 @@ public class DrawingPanel extends JPanel {
 	private XMLFile fileChooser;
 
 	// Leons fields
-	List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
-	String currentMessage = "";
+	private List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
+	private String currentMessage = "";
 	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
 
 	private GameServer gs;
@@ -115,8 +115,7 @@ public class DrawingPanel extends JPanel {
 				// to
 				// have logic
 				compass.redraw(g, Direction.get(directionI));
-				invo.redraw(g, gc.getAvatar().getInventory(),
-						Direction.get(directionI));
+				invo.redraw(g, gc.getAvatar().getInventory());
 				map.redraw(g, gc.getRoom(), Direction.get(directionI));
 				score.redraw(g, gc.getScore());
 				health.redraw(g, gc.getAvatar());

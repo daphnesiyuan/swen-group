@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+
 /**
+ * Makes a map of all the images in the game String -> Buffered image
  *
- * @author northleon
+ * @author Leon North
  *
  */
 public class MakeImageMap {
@@ -26,6 +28,13 @@ public class MakeImageMap {
 
 	}
 
+	/**
+	 * Makes a map of all the images in the game String -> Buffered image
+	 * and returns it
+	 *
+	 * @return map of String -> BufferedImage
+	 * @author Leon North
+	 */
 	public static Map<String, BufferedImage> makeMap(){
 		//Avatars
 		for(int j = 0; j < directions; j++){
@@ -86,6 +95,13 @@ public class MakeImageMap {
 		return images;
 	}
 
+	/**
+	 * Takes a string and adds an entry to the map by finding the corresponding
+	 * file on disk
+	 *
+	 * @param name
+	 * @author Leon North
+	 */
 	private static void addToMap(String name){
 
 		//System.out.println(name);

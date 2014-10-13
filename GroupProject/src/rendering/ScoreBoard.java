@@ -1,16 +1,19 @@
 package rendering;
 
-import gameLogic.Avatar;
 import gameLogic.Score;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
+/**
+ * Draws the scoreBoard to the Panel
+ *
+ * @author Leon North
+ *
+ */
 public class ScoreBoard {
 
 	JPanel panel;
@@ -27,6 +30,12 @@ public class ScoreBoard {
 		this.panel = panel;
 	}
 
+	/**
+	 * Draws the scoreBoard to the Panel
+	 * @param g : Graphics object
+	 * @param score : score object with a map of all scores in it
+	 * @author Leon North
+	 */
 	public void redraw(Graphics g, Score score){
 
 		width = ((panel.getWidth() / STARTWIDTH) * STARTSCOREHEIGHT);

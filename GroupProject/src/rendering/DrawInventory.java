@@ -11,11 +11,17 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+/**
+ * Draws the inventory (Max 5 Items) onto the bottom of the panel.
+ *
+ * @author Leon North
+ *
+ */
 public class DrawInventory {
-	JPanel panel;
-	int width;
-	int height;
-	int buffer;
+	private JPanel panel;
+	private int width;
+	private int height;
+	private int buffer;
 	private int firstBoxEdge;
 	private int yBot;
 	private int yTop;
@@ -25,7 +31,14 @@ public class DrawInventory {
 		this.panel = panel;
 	}
 
-	public void redraw(Graphics g, List<Item> inventory, String direction){
+	/**
+	 *
+	 * @param g: Graphics object
+	 * @param inventory: list of inventory objects
+	 * @param direction: String of the direction
+	 * @author Leon North
+	 */
+	public void redraw(Graphics g, List<Item> inventory){
 		width = (int) ((panel.getWidth() / 1280.0) * 100);
 		height = (int) (width * 1.15);
 		buffer = (int) (width / 10.0);
@@ -46,6 +59,13 @@ public class DrawInventory {
 		}
 	}
 
+	/**
+	 * Draws items in the appropriate boxes.
+	 * @param g: Graphics
+	 * @param i: Position in the inventory
+	 * @param inventory: List of inventory objects
+	 * @author Leon North
+	 */
 	private void drawInvItem(Graphics g, int i, List<Item> inventory) {
 		if (i >= inventory.size()){return;}
 		String itemName = inventory.get(i).getClass().getName().substring(10);
