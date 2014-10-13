@@ -127,6 +127,16 @@ public class Avatar implements Serializable {
 
 		if(move.getInteraction().equals("O")){
 			cell.setCharging(!cell.isCharging());
+			charge(findTile());
+			return false;
+		}
+
+		//change direction without moving
+		if (move.getInteraction().equals("")){
+			if (move.getRenderDirection().toLowerCase().equals("north")){ facing = Game.Facing.North;}
+			else if (move.getRenderDirection().toLowerCase().equals("south")){ facing = Game.Facing.South;}
+			else if (move.getRenderDirection().toLowerCase().equals("east")){ facing = Game.Facing.East;}
+			else if (move.getRenderDirection().toLowerCase().equals("west")){ facing = Game.Facing.West;}
 			return false;
 		}
 
@@ -156,7 +166,7 @@ public class Avatar implements Serializable {
 		if(tile.getItems().size() != 0) interact(tile.getItems().get(0));
 
 		if(cell.isCharging()){
-			int result = charge();
+			int result = charge(newPosition);
 			if(result == 0) cell.decExtraBattery();
 			else if(result == 1) cell.decBattery();
 		}
@@ -175,11 +185,11 @@ public class Avatar implements Serializable {
 	 * @author Ryan Griffin and Leon North
 	 * @return
 	 */
-	private int charge(){
-		Tile2D target = findTile();
-		System.out.println(target);
-		if(target instanceof Charger) return useCharger();
-		else return attack(target);
+	private int charge(Tile2D target1){
+		Tile2D target2 = findTile();
+		//System.out.println(target);
+		if(target1 instanceof Charger || target2 instanceof Charger) return useCharger();
+		else return attack(target1, target2);
 
 	}
 
@@ -200,13 +210,25 @@ public class Avatar implements Serializable {
 	 * @param target
 	 * @return
 	 */
-	private int attack(Tile2D target){
-		if(target.getAvatar() == null){
+	private int attack(Tile2D target1, Tile2D target2){
+		if(target1.getAvatar() == null && target1.getAvatar() == null){
 			return 0;
 		}
-		Avatar enemy = target.getAvatar();
-		enemy.takeDamage(damage);
-		enemy.setLastHit(this);
+
+		Avatar enemy2 = target2.getAvatar();
+		if(enemy2 != null && !enemy2.equals(this)){// && enemy1 != null && enemy2.equals(enemy1)){
+			System.out.println(enemy2);
+			enemy2.takeDamage(damage);
+			enemy2.setLastHit(this);
+			return 1;
+		}
+		Avatar enemy1 = target1.getAvatar();
+		if(enemy1 != null && !enemy1.equals(this)){
+			System.out.println(enemy1);
+			enemy1.takeDamage(damage);
+			enemy1.setLastHit(this);
+			return 1;
+		}
 		return 1;
 	}
 
@@ -235,7 +257,9 @@ public class Avatar implements Serializable {
 		cell.setBatteryLife(maxCharge);
 		updateLocations(startTile,startRoom);
 		lastHit = null;
-		Inventory = new ArrayList<Item>();
+		for(Item item: Inventory){
+			item.returnToStartPos();
+		}
 	}
 
 	public void addKill(){
