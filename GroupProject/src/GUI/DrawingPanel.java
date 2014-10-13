@@ -1,5 +1,7 @@
 package GUI;
 
+import gameLogic.Item;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -79,7 +81,6 @@ public class DrawingPanel extends JPanel {
 
 		directionI = 0;
 
-		// set up mouse and key board stuff
 		setUpMouseKeys();
 
 		// leon added:
@@ -123,9 +124,6 @@ public class DrawingPanel extends JPanel {
 		}
 
 	}
-
-	//threads for checking if disconnected
-
 
 	/**
 	 * Helper method for setting up the mouse and key listeners
@@ -182,9 +180,7 @@ public class DrawingPanel extends JPanel {
 			}
 			System.out.println("disconnected");
 			startMenu=true;
-
 		}
-
 	}
 
 
@@ -218,6 +214,51 @@ public class DrawingPanel extends JPanel {
 					sm.resetUnHoverButton(hoveredButton);
 					// sends through the button which was last hovered on
 					hoveredButton = "";
+				}
+			}
+
+			else{ //must be in game play mode
+				int i=invo.findBox(hoverX, hoverY);
+				if(i==0){
+					if (i <= (getGameClient().getAvatar().getInventory().size())
+							&& (getGameClient().getAvatar().getInventory().get(0)) != null) {
+						System.out.println("hovered on space 0");
+						String d = getGameClient().getAvatar().getInventory().get(0).getDescription();
+						setToolTipText(d);
+					}
+				}
+				else if(i==1){
+					if (i < (getGameClient().getAvatar().getInventory().size())
+							&& (getGameClient().getAvatar().getInventory().get(1)) != null) {
+						System.out.println("hovered on space 1");
+						String d = getGameClient().getAvatar().getInventory().get(1).getDescription();
+						setToolTipText(d);
+					}
+				}
+				else if(i==2){
+					if (i < (getGameClient().getAvatar().getInventory().size())
+							&& (getGameClient().getAvatar().getInventory().get(2)) != null) {
+						String d = getGameClient().getAvatar().getInventory().get(2).getDescription();
+						setToolTipText(d);
+					}
+				}
+				else if(i==3){
+					if (i < (getGameClient().getAvatar().getInventory().size())
+							&& (getGameClient().getAvatar().getInventory().get(3)) != null) {
+						String d = getGameClient().getAvatar().getInventory().get(3).getDescription();
+						setToolTipText(d);
+					}
+				}
+				else if(i==4){
+					if (i < (getGameClient().getAvatar().getInventory().size())
+							&& (getGameClient().getAvatar().getInventory().get(4)) != null) {
+						String d = getGameClient().getAvatar().getInventory().get(4).getDescription();
+						setToolTipText(d);
+					}
+				}
+
+				else{
+					setToolTipText(null);
 				}
 			}
 		}
@@ -254,10 +295,6 @@ public class DrawingPanel extends JPanel {
 
 	}
 
-	/**
-	 * author: Jimmy Veug
-	 */
-
 	public void startDrawWorld(){
 		dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
 		compass = new DrawCompass(DrawingPanel.this);
@@ -265,7 +302,7 @@ public class DrawingPanel extends JPanel {
 		map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
 		repaint();
 
-		Thread th = new Thread( new GameCheckThread() );
+		Thread th = new Thread( new GameCheckThread() ); //Jimmy's stuff
 		th.start();
 	}
 
@@ -288,7 +325,7 @@ public class DrawingPanel extends JPanel {
 		return keyboard; }
 
 	public DrawInventory getInvo(){
-		return invo; }
+		return invo;}
 
 	public int getDirection() {
 		return directionI; }

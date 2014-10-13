@@ -16,6 +16,7 @@ public class Light extends Item{
 
 	@Override
 	public String getDescription() {
+		System.out.println("in description fetcher");
 		String desc = "";
 		return desc + "Light object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
 	}
