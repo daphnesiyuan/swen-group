@@ -17,6 +17,8 @@ import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Game;
 import gameLogic.Item;
+import gameLogic.Key;
+import gameLogic.Light;
 import gameLogic.Room;
 import gameLogic.Score;
 import gameLogic.Tile2D;
@@ -235,7 +237,7 @@ public class XMLSaveParser {
 		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
 		e.addContent(new Element("toRoom").setText(door.getToRoom().getRoomPlace()));
-//		Element color = new Element("color");
+		Element color = new Element("color");
 //		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
 //		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
 //		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
@@ -314,6 +316,39 @@ public class XMLSaveParser {
 			Element sc = new Element(entry.getKey()).setText(Integer.toString(entry.getValue()));
 			e.addContent(sc);
 		}
+		return e;
+	}
+
+	/**
+	 * Takes any object that extends the abstract class Item and
+	 * discerns what type of Item it is, then returns an appropriately named
+	 * element.
+	 *
+	 * @param item Item object from game
+	 * @return Element representing the Item in XML
+	 */
+	public Element parseItem(Item item){
+		Element e;
+		if(item instanceof Key){
+			e = new Element("key");
+			Element color = new Element("color");
+			color.addContent(new Element("Red").setText(Integer.toString((((Key)item).getColor().getRed()))));
+			color.addContent(new Element("Green").setText(Integer.toString((((Key)item).getColor().getGreen()))));
+			color.addContent(new Element("Blue").setText(Integer.toString((((Key)item).getColor().getBlue()))));
+			e.addContent(color);
+		}
+		else{
+			e = new Element("light");
+		}
+		Element tile = new Element("tile");
+		tile.addContent(new Element("xPos")).setText(Integer.toString((item.getTile().getxPos())));
+		tile.addContent(new Element("yPos")).setText(Integer.toString((item.getTile().getyPos())));
+		e.addContent(tile);
+		Element startTile = new Element("startTile");
+		tile.addContent(new Element("xPos")).setText(Integer.toString(((Key)item).getStartTile().getxPos()));
+		tile.addContent(new Element("yPos")).setText(Integer.toString(((Key)item).getStartTile().getyPos()));
+		e.addContent(startTile);
+
 		return e;
 	}
 
