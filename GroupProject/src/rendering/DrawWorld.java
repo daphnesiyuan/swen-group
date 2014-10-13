@@ -181,7 +181,22 @@ public class DrawWorld {
 
 		Graphics2D g2d = (Graphics2D)g;
 
-		BufferedImage img = images.get("Night");;
+		BufferedImage img = images.get("Night");
+		if (character == null){System.out.println(character == null);
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+		if (character.getInventory() == null){System.out.println("character.getInventory() == null");
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}}
 		for(int i = 0; i < character.getInventory().size(); i++){
 			if(character.getInventory().get(i) instanceof Light){
 				img = images.get("NightLight");

@@ -118,20 +118,20 @@ public class Avatar implements Serializable {
 	public boolean interact(Item item){
 		return item.interactWith(this);
 	}
-	
+
 	public void useItem(Item item){
 		//TODO
 	}
-	
+
 	public void dropItem(){
-		
+
 	}
-	
+
 	public void emptyInventory(){
 		for(Item item : Inventory){
 			item.returnToStartPos();
 		}
-		this.Inventory = null;
+		this.Inventory = new ArrayList<Item>();
 	}
 
 
@@ -286,7 +286,7 @@ public class Avatar implements Serializable {
 
 
 	private Tile2D findTile(){
-		int change = Direction.get(facing.toString());
+		int change = (Direction.get(facing.toString()) + Direction.get(renderDirection))%4;
 		Tile2D target = null;
 		if(change == 0) target = tile.getTileUp();
 		else if(change == 1) target = tile.getTileRight();
