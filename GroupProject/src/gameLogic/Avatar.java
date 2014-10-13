@@ -134,7 +134,6 @@ public class Avatar implements Serializable {
 		this.Inventory = new ArrayList<Item>();
 	}
 
-
 	public boolean moveTo(Move move){
 		if(move.getRenderDirection() == null) return false;
 		if(move.getInteraction() == null) return false;
