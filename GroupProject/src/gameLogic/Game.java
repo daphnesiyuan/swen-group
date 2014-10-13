@@ -35,7 +35,15 @@ public class Game{
 		score = new Score();
 	}
 
-	public Game(Boolean loaded){}		//ANTONIA: To be used when loading a file
+	public Game(Boolean loaded){
+		roomNumber = 0; // RE: 0th room is arena
+
+
+		roomsInGame = new ArrayList<Room>();
+		activeAvatars = new ArrayList<Avatar>();
+		activeAI = new ArrayList<AI>();
+		
+	}		//ANTONIA: To be used when loading a file
 
 
 	public void addRoom(Room room){

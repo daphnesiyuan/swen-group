@@ -150,8 +150,6 @@ public class XMLSaveParser {
 		cell = parseCell(avatar.getCell());
 		e.addContent(cell);
 
-		e.addContent(new Element("globalXPos").setText(Double.toString(avatar.getGlobalXPos())));
-		e.addContent(new Element("globalYPos").setText(Double.toString(avatar.getGlobalYPos())));
 		e.addContent(new Element("tileXPos").setText(Double.toString(avatar.getTileXPos())));
 		e.addContent(new Element("tileYPos").setText(Double.toString(avatar.getTileYPos())));
 
