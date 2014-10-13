@@ -19,6 +19,11 @@ public abstract boolean interactWith(Avatar avatar);
 public abstract void returnToStartPos();
 public abstract boolean pickItemUp(Avatar avatar);
 
-
+public Tile2D getStartTile() {
+	return startTile;
+}
+public void setStartTile(Tile2D startTile) {
+	this.startTile = startTile;
+}
 
 }
