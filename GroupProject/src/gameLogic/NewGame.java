@@ -156,7 +156,7 @@ public class NewGame {
 
 				}
 
-				tiles[1][1].addItem(new Light());
+				tiles[1][1].addItem(new Light(tiles[1][1]));
 				Room room = new Room(tiles,null);
 				room.setRoomPlace(roomPlace);
 				for(int i = 0; i < tiles.length; i++){

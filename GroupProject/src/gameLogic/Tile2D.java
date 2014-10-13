@@ -81,6 +81,10 @@ public class Tile2D implements Serializable{
 		else return newTile;
 	}
 
+	public void removeItem(Item item){
+		itemsOnTile.remove(item);
+	}
+
 	public Item getTopItem(){
 		if(itemsOnTile.size()==0) return null;
 		return itemsOnTile.get(0);

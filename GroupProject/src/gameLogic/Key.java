@@ -4,31 +4,19 @@ import java.awt.Color;
 
 public class Key extends Item {
 
-	private Tile2D tile;
-
-	private Tile2D startTile;
-
 	private Color color;
-
-	private int xPos;
-	private int yPos;
-
 
 	public Key(Tile2D tile){
 		this.tile = tile;
-		this.xPos = tile.getxPos();
-		this.yPos = tile.getyPos();
-
 		this.startTile = tile;
 		this.movable = true;
-
 
 	}
 
 	@Override
 	public String getDescription() {
 		String desc = "";
-		return desc + this.color.toString()+" Key object, at X,Y: ("+xPos+","+yPos+")";
+		return desc + this.color.toString()+" Key object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
 	}
 
 	@Override
@@ -61,6 +49,7 @@ public class Key extends Item {
 
 	@Override
 	public boolean pickItemUp(Avatar avatar) {
+		tile.removeItem(this);
 		return this.interactWith(avatar);
 	}
 
