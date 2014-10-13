@@ -13,9 +13,6 @@ import networking.Player;
 public class WindowFrame extends JFrame {
 	private TopMenu topMenu;
 	private DrawingPanel panel;
-	private Graphics2D graphics; // for leon later?
-	// private Rendering render=new Rendering(); //Leon's object
-	// private Direction: n s e w
 
 
 	public static DrawingPanel canvas;
@@ -24,16 +21,15 @@ public class WindowFrame extends JFrame {
 
 
 	public WindowFrame() {
-		super("Game title");
+		super("An Adventure Game");
 		JFrameSetUp();
 		JPanelStuff();
 
-		//
 		this.addKeyListener(panel.getKeyB());
 	}
 
 	/**
-	 * @author Daphne Wang and Leon North
+	 * @author Daphne Wang
 	 */
 	public void JFrameSetUp() {
 		topMenu = new TopMenu(this);
@@ -44,16 +40,10 @@ public class WindowFrame extends JFrame {
 		setVisible(true); // make sure we are visible!
 	}
 
-	/*
-	 * public void refreshGraphics(){ //render.redraw(graphics, room, character,
-	 * direction); //TO BE FILLED LATER: we get room and char from client: jimmy
-	 * }
-	 */
 	/**
-	 * @author Daphne Wang and Leon North
+	 * @author Daphne Wang
 	 */
 	public void JPanelStuff() {
-		System.out.println("In JPanel setups");
 		panel = new DrawingPanel(this);
 		add(panel, BorderLayout.CENTER); // add canvas
 		setVisible(true); // make sure we are visible!

@@ -19,23 +19,24 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import networking.GameClient;
+import networking.GameServer;
 
 
 
-public class JoinMenu extends JFrame{
+public class StartGUI extends JFrame{
 
 	private JPanel jpanel;
 	private JButton connectButton;
 	private theHandler handler;
-	private JTextField textIP;
 	private JTextField textName;
-	private String ipAddress = null; // for the creation of a new player
 	private String name = null;
 	private GameClient gc;
+	private GameServer gs;
 	private DrawingPanel panel;
 
-	public JoinMenu(DrawingPanel p, GameClient g) {
-		gc = g;
+	public StartGUI(DrawingPanel p, GameClient c, GameServer s) {
+		gc = c;
+		gs=s;
 		handler = new theHandler();
 		connectButton = new JButton("Connect");
 		connectButton.addActionListener(handler);
@@ -48,30 +49,26 @@ public class JoinMenu extends JFrame{
 		setResizable(false); // prevent us from being resizeable
 		jpanel = new JPanel();
 		jpanel.setLayout(new FlowLayout()); // change later
-		jpanel.add(new JLabel("Please connect to a server and fill in an IP address"));
-
 		jpanel.add(Box.createHorizontalStrut(28)); // a spacer
+		jpanel.add(new JLabel("Please fill in a username"));
+
+
 
 		this.add(jpanel);
 		this.setAlwaysOnTop(true); // ensures it pops up in front
 		this.setVisible(true);
+		//this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// user inputs
 		setTextField();
 		jpanel.add(connectButton);
+
 	}
 
 	public void setTextField() {
-		JLabel label1 = new JLabel("\nIP Address:");
-		//label1.setToolTipText("hit enter to finalise ip address input");
-		textIP = new JTextField(20);
-		textIP.getDocument().addDocumentListener(new MyDocumentListener());
 		JLabel label2 = new JLabel("\nUsername");
 		textName = new JTextField(20);
 		textName.getDocument().addDocumentListener(new MyDocumentListener());
-
-		jpanel.add(label1);
-		jpanel.add(textIP);
 		jpanel.add(Box.createHorizontalStrut(35)); // a spacer for alignment
 		jpanel.add(label2);
 		jpanel.add(textName);
@@ -83,15 +80,13 @@ public class JoinMenu extends JFrame{
 	 */
 	private class MyDocumentListener implements DocumentListener {
 		public void insertUpdate(DocumentEvent e) {
-			ipAddress = textIP.getText();
 			name = textName.getText();
 
 		}
 
 		public void removeUpdate(DocumentEvent e) {
-			ipAddress = textIP.getText();
 			name = textName.getText();
-			System.out.println("ip address="+ipAddress+" name="+name);
+			System.out.println("name="+name);
 		}
 
 		public void changedUpdate(DocumentEvent e) {
@@ -112,24 +107,24 @@ public class JoinMenu extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 
 			if (e.getSource() == connectButton) {
-				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0 ) { //input is valid
-					//MUST ADD NWEN CONNECT STUFF
+				if ( name != null && name.length() > 0 ) { //input is valid
+
 					gc.setName(name);
-
 					try {
-						System.out.println("testing");
-						if( gc.connect( ipAddress ) ){
+						gc.connect(gs);
 
-							Room temp = gc.getRoom();
-							while( temp == null){
-								temp = gc.getRoom();
-							}
-							dispose();
-
-							panel.startDrawWorld();
+						Room temp = gc.getRoom();
+						while( temp == null){
 							panel.setGameMode();
-							panel.repaint();
+							temp = gc.getRoom();
 						}
+
+
+						dispose();
+						panel.testMethod();
+						panel.setGameMode();
+						System.out.println("clicked connect");
+
 
 					} catch (UnknownHostException e1) {
 						// TODO Auto-generated catch block
@@ -138,10 +133,6 @@ public class JoinMenu extends JFrame{
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-
-
-
-
 
 				} else {
 					sendFailure();

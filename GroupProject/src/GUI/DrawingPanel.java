@@ -72,11 +72,7 @@ public class DrawingPanel extends JPanel {
 	private DrawChat chat;
 	private boolean chatMode; // from rendering
 
-	/**
-	 *
-	 * @param win
-	 * @author Daphne Wang and Leon North
-	 */
+
 	public DrawingPanel(WindowFrame win) {
 		wf = win;
 		sm = new StartMenu(this);
@@ -102,10 +98,7 @@ public class DrawingPanel extends JPanel {
 
 	/**
 	 * Paint Component: has two cases, redrawing for the start menu and
-	 * redrawing for the in game.
-	 */
-
-	/**
+	 * redrawing for the in game - uses redraw methods from Leon's rendering classes
 	 * @author Daphne Wang and Leon North
 	 */
 	@Override
@@ -119,9 +112,6 @@ public class DrawingPanel extends JPanel {
 			if (gc.getRoom() != null && gc.getAvatar() != null) {
 				dw.redraw(g, gc.getRoom(), Direction.get(directionI),
 						gc.getAvatar());
-				// potential changes later: flag for menu mode or play mode, and
-				// to
-				// have logic
 				compass.redraw(g, Direction.get(directionI));
 				invo.redraw(g, gc.getAvatar().getInventory());
 				map.redraw(g, gc.getRoom(), Direction.get(directionI));
@@ -130,14 +120,12 @@ public class DrawingPanel extends JPanel {
 
 				if (chatMode)
 					chat.redraw(g, gc.getChatHistory(20), currentMessage);
-
 			}
-
 		}
 	}
 
 	/**
-	 * Helper menu for setting up the mouse and key listeners
+	 * Helper method for setting up the mouse and key listeners
 	 */
 	public void setUpMouseKeys() {
 		keyboard = new KeyBoard(this);
@@ -147,18 +135,12 @@ public class DrawingPanel extends JPanel {
 		this.addMouseMotionListener(mouseMotion);
 	}
 
-	public void setGameMode() {
-		startMenu = false;
-	}
-
 	/**
 	 * helper method used by the mouse classes to interact with the panel and
 	 * register clicks
 	 *
-	 * @param x
-	 *            the x coordinate of the click
-	 * @param y
-	 *            the y coordinate of the click
+	 * @param x the x coordinate of the click
+	 * @param y the y coordinate of the click
 	 */
 	public void sendClick(int x, int y) {
 		mouseX = x;
@@ -170,10 +152,8 @@ public class DrawingPanel extends JPanel {
 	 * helper method used by the mouse classes to interact with the panel and
 	 * register when the curser has moved
 	 *
-	 * @param x
-	 *            : the x coordinate of the move position
-	 * @param y
-	 *            : the y coordinate of the move position
+	 * @param x  the x coordinate of the move position
+	 * @param y  the y coordinate of the move position
 	 */
 	public void sendHover(int x, int y) {
 		hoverX = x;
@@ -186,11 +166,9 @@ public class DrawingPanel extends JPanel {
 	 * those If no matching button is found on the mouse click then it will
 	 * return an empty string
 	 *
-	 * @param x
-	 *            : the x coordinate of the click
-	 * @param y
-	 *            : the y coordinate of the click
-	 * @return: the string name associated with the appropriate button
+	 * @param x the x coordinate of the click
+	 * @param y the y coordinate of the click
+	 * @return the string name associated with the appropriate button
 	 */
 	public String findButton(int x, int y) {
 
@@ -225,8 +203,8 @@ public class DrawingPanel extends JPanel {
 	 * A helper method which sets up the client/server tools required to play
 	 * the game
 	 */
-	public void setUpNWEN() {
-		gc = new GameClient("Daphne", this);
+	public boolean setUpNWEN() {
+		//gc = new GameClient("Daphne", this);
 
 		try {
 			// gc.connect("130.195.6.69",32768); //jimmy
@@ -252,6 +230,7 @@ public class DrawingPanel extends JPanel {
 			System.out.println(room);
 			System.out.println(gc.isConnected());
 		}
+		return true;
 	}
 
 	/**
@@ -281,41 +260,42 @@ public class DrawingPanel extends JPanel {
 				}
 
 				else if (hoveredButton != "") {
-					sm.resetUnHoverButton(hoveredButton); // sends through the
-															// button which was
-															// last hovered on
+					sm.resetUnHoverButton(hoveredButton);
+					// sends through the button which was last hovered on
 					hoveredButton = "";
 				}
 			}
 		}
 
-		// handles mouse clicking
+		/**
+		 * Handles the mouse clicking of the start menu buttons
+		 */
 		public void mouseListener() {
 			String s = findButton(mouseX, mouseY);
 			if (startMenu) {
 				if (s.equals("start")) {
-					System.out.println("clicked start button");
-					startMenu = false; // no longer in the start menu mode
-					dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
+					gs = new GameServer(); //might remove later
+					//setUpNWEN();
+
+					StartGUI startG = new StartGUI(DrawingPanel.this, gc, gs);
+					startG.setup();
+
+					/*dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
 					compass = new DrawCompass(DrawingPanel.this);
 					invo = new DrawInventory(DrawingPanel.this);
 					map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
-					repaint();
+					repaint();*/
+
+
 				} else if (s.equals("join")) {
-					System.out.println("PRESSED JOIN BUTTON");
-					// open a pop up menu: String for IP address, connect button
-					// gc.connect(thestringtheyenter);
-					// so we need to cherck for a catch error: if it fails then
-					// invalid try again etc
 					joinMenu = new JoinMenu(DrawingPanel.this, gc);
 					joinMenu.setup();
 
 				} else if (s.equals("load")) {
-					System.out.println("PRESSED LOAD BUTTON");
 					fileChooser = new XMLFile(wf);
 
 				} else if (s.equals("help")) {
-					System.out.println("PRESSED HELP BUTTON");
+
 				} else {
 					System.out.println("no active button");
 				}
@@ -357,61 +337,65 @@ public class DrawingPanel extends JPanel {
 
 	}
 
-	// //////////////getters and setters
+	public void testMethod(){
+
+		System.out.println(">>>>>>>>>> IN TEST METHOD");
+
+		dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
+		compass = new DrawCompass(DrawingPanel.this);
+		invo = new DrawInventory(DrawingPanel.this);
+		map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
+		repaint();
+	}
+
+	////////////////getters and setters
 	/**
-	 * @author Daphne Wang and Leon North
+	 * @author Daphne Wang
 	 */
 	@Override
 	public Dimension getPreferredSize() {
 		Dimension dimension = new Dimension(1280, 720);
-		return dimension;
-	}
+		return dimension; }
+
+	public void setGameMode() {
+		startMenu = false; }
 
 	public KeyBoard getKeyB() {
-		return keyboard;
-	}
-
-	public boolean isChatMode() {
-		return chatMode;
-	}
-
-	public void setChatMode(boolean b) {
-		chatMode = b;
-	}
-
-	public void addToCurrentMessage(String s) {
-		currentMessage += s;
-	}
-
-	public void setCurrentMessage(String s) {
-		currentMessage = s;
-	}
-
-	public String getCurrentMessage() {
-		return currentMessage;
-	}
+		return keyboard; }
 
 	public int getDirection() {
-		return directionI;
-	}
+		return directionI; }
 
 	public void setDirection(int d) {
-		directionI = d;
-	}
+		directionI = d; }
 
 	public GameClient getGameClient() {
-		return gc;
-	}
+		return gc; }
 
 	public ArrayList<Integer> getKeysDown() {
-		return keysDown;
-	}
+		return keysDown; }
 
-	public void startDrawWorld() {
+	public void startDrawWorld() { //uses constructors of leon's constructors
 		dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
 		compass = new DrawCompass(DrawingPanel.this);
 		invo = new DrawInventory(DrawingPanel.this);
 		map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
 	}
+
+	//helper methods for leon and jimmy's chat stuff
+	public boolean isChatMode() {
+		return chatMode; }
+
+	public void setChatMode(boolean b) {
+		chatMode = b; }
+
+	public void addToCurrentMessage(String s) {
+		currentMessage += s; }
+
+	public void setCurrentMessage(String s) {
+		currentMessage = s; }
+
+	public String getCurrentMessage() {
+		return currentMessage; }
 
 }
