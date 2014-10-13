@@ -49,7 +49,9 @@ public class XMLSaver {
 		root.addContent(score);
 
 		Element activeAI = new Element("activeAI");
-		for(AI ai : game.getActiveAI()){}
+		for(AI ai : game.getActiveAI()){
+			activeAI.addContent(parser.parseAI(ai));
+		}
 
 	    Document doc = new Document();
 	    doc.setRootElement(root);

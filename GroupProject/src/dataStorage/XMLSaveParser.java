@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import networking.AI;
+
 import org.jdom2.Element;
 
 import gameLogic.Avatar;
@@ -142,6 +144,9 @@ public class XMLSaveParser {
 
 	public Element parseAvatar(Avatar avatar){
 		Element e = new Element("Avatar");
+		Element cell = new Element("cell");
+		Element startTile = new Element("startTile");
+		Element tile = new Element("Tile");
 		e.addContent(new Element("facing").setText(avatar.getFacing().name()));			//Facing
 		Element inventory = new Element("inventory");		//Inventory
 		if(!avatar.getInventory().isEmpty()){
@@ -150,15 +155,13 @@ public class XMLSaveParser {
 			}
 		}
 		e.addContent(inventory);
-		e.addContent(new Element("xPos").setText(Integer.toString(avatar.getCurrentTile().getxPos())));
-		e.addContent(new Element("yPos").setText(Integer.toString(avatar.getCurrentTile().getyPos())));
+		tile.addContent(new Element("xPos").setText(Integer.toString(avatar.getCurrentTile().getxPos())));
+		tile.addContent(new Element("yPos").setText(Integer.toString(avatar.getCurrentTile().getyPos())));
 		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//player name
-		Element cell = new Element("cell");
+		startTile.addContent(new Element("startTileXPos").setText(Double.toString(avatar.getStartTile().getxPos())));
+
 		cell = parseCell(avatar.getCell());
 		e.addContent(cell);
-
-		e.addContent(new Element("tileXPos").setText(Double.toString(avatar.getTileXPos())));
-		e.addContent(new Element("tileYPos").setText(Double.toString(avatar.getTileYPos())));
 
 		return e;
 	}
@@ -348,6 +351,12 @@ public class XMLSaveParser {
 		tile.addContent(new Element("xPos")).setText(Integer.toString(((Key)item).getStartTile().getxPos()));
 		tile.addContent(new Element("yPos")).setText(Integer.toString(((Key)item).getStartTile().getyPos()));
 		e.addContent(startTile);
+
+		return e;
+	}
+
+	public Element parseAI(AI ai){
+		Element e;
 
 		return e;
 	}
