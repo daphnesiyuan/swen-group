@@ -29,8 +29,6 @@ public class NewGame {
 		game.setRoomsInGame(roomsInGame);
 		roomPlace = "NULL";
 
-		Item key = new Key(roomsInGame.get(0).getTiles()[2][2]);
-		roomsInGame.get(0).getItems().add(key);
 
 	}
 
