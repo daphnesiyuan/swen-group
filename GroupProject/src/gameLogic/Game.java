@@ -26,7 +26,7 @@ public class Game{
 	//tiles[1][1].addItem(new Light(tiles[1][1]));
 	
 	public Game(){
-		this.roomNumber = 0; // RE: 0th room is arena
+		this.roomNumber = 1; // RE: 0th room is arena
 
 
 		this.roomsInGame = new ArrayList<Room>();
@@ -81,12 +81,28 @@ public class Game{
 				return null;
 			}
 			Room room = roomsInGame.get(roomNumber++);
-			Tile2D tile = room.getTiles()[3][3];
-			Avatar avatar = new Avatar(playerName,tile,room);
-			activeAvatars.add(avatar);
-			if(avatar.getPlayerName().startsWith("ai")){
-				return roomsInGame.get(0);
+			Game.Facing startFace = null;
+			Tile2D tile = null;
+			// The Avatars start position will be infront of the charger, facing toward the arena.
+			if(room.getRoomPlace().equals("north")){
+				tile = room.getTiles()[4][3];
+				startFace = Game.Facing.South;
 			}
+			else if(room.getRoomPlace().equals("south")){
+				tile = room.getTiles()[2][3];
+				startFace = Game.Facing.North;
+			}
+			else if(room.getRoomPlace().equals("east")){
+				tile = room.getTiles()[3][2];
+				startFace = Game.Facing.West;
+			}
+			else if(room.getRoomPlace().equals("west")){
+				tile = room.getTiles()[3][4];
+				startFace = Game.Facing.East;
+			}
+			Avatar avatar = new Avatar(playerName,tile,room);
+			avatar.setFacing(startFace);
+			activeAvatars.add(avatar);
 			return room;
 		}
 	}
