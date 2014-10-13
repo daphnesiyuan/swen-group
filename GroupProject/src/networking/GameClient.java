@@ -48,12 +48,6 @@ public class GameClient extends ChatClient {
 	 * @return Room containing the player and al lthe rooms contents
 	 */
 	public synchronized Room getRoom(){
-		// Check if we are connected first
-		if( !isConnected() ){
-			System.out.println("Not currently Connected to a server");
-			return null;
-		}
-
 		return clientRoom;
 	}
 
@@ -62,11 +56,6 @@ public class GameClient extends ChatClient {
 	 * @return Score object
 	 */
 	public synchronized Score getScore(){
-		if( !isConnected() ){
-			System.out.println("Not currently Connected to a server");
-			return null;
-		}
-
 		return clientScore;
 	}
 

@@ -69,7 +69,7 @@ public class ChatServer extends Server {
 							System.out.println("Could not ping: " + client.getPlayerName());
 
 							// Should we remove them?
-							if( failCount > maxFailPings ){
+							if( failCount >= maxFailPings ){
 								if( removeClient(client, false) ){
 									i--;
 								}

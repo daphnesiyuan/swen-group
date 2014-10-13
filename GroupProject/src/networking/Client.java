@@ -142,10 +142,17 @@ public abstract class Client{
 	public boolean disconnect(){
 
 		// Check if we have a current Socket, close if we do
-		if( socket != null && !socket.isClosed()){
-			try {
-				socket.close();
-			} catch (IOException e) { return false;}
+		if( socket != null ){
+
+			// Close socket first
+			if( !socket.isClosed() ){
+				try {
+					socket.close();
+				} catch (IOException e) { return false;}
+			}
+
+			// Don't have a socket to use now
+			socket = null;
 		}
 
 		//Wait for us to stop listening to the current socket
@@ -181,12 +188,16 @@ public abstract class Client{
 	 * Stores the given packet in a queue for sending once we have a socket
 	 * @param data Object to sent to the server for processing
 	 */
-	protected boolean sendData(NetworkData data) throws IOException{
+	protected boolean sendData(NetworkData data){
 
 		// Data stored successfully
 		return sendData(new NetworkObject(getIPAddress(), data));
 	}
 
+	/**
+	 * Stores the given packet in a queue for sending once we have a socket
+	 * @param data Object to sent to the server for processing
+	 */
 	protected boolean sendData(NetworkObject data){
 
 
@@ -278,15 +289,7 @@ public abstract class Client{
 	public boolean isConnected(){
 
 		// Check for valid socket
-		if( socket == null || socket.isClosed() ){
-			return false;
-		}
-
-		// Check for a broken socket
-		//try{
-			//messageServer(/
-		//}
-		return true;
+		return socket != null && !socket.isClosed();
 	}
 
 	/**

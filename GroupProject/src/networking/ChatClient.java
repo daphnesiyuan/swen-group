@@ -28,6 +28,12 @@ public class ChatClient extends Client {
 	// Where to draw
 	private JComponent clientImage;
 
+	// Thread to check if the server is functionsl
+	private ServerCheckerThread serverChecker = null;
+
+	// When pinging the server, we want to coutn the amoutn of times we have pinged it
+	private int failedPings = 0;
+
 	/**
 	 * Creates a new GameClient to connect to a server
 	 * @param playerName Name of the client
@@ -45,9 +51,7 @@ public class ChatClient extends Client {
 				while( true ){
 
 					// Tell the component to repaint
-					if( isConnected() ){
-						repaintImage();
-					}
+					repaintImage();
 
 					try {
 						Thread.sleep(30);
@@ -69,6 +73,79 @@ public class ChatClient extends Client {
 		this.clientImage = component;
 	}
 
+	/**
+	 * Starts a thread that will constantly ping the server to see if the socket is still valid
+	 */
+	public class ServerCheckerThread extends Thread{
+
+			public static final int maxFailPings = 5;
+			public static final int pingTime = 3000;
+			private boolean running = true;
+
+			@Override
+			public void run(){
+				while( running ){
+
+					// Sleep 5s
+					try { Thread.sleep(pingTime);} catch (InterruptedException e) {}
+
+						ChatMessage ping = new ChatMessage(player.getName(),"/ping everyone",chatMessageColor,true);
+						boolean pinged = sendData(ping);
+
+						// Couldn't ping them
+						if( !pinged ){
+							System.out.println("Could not ping server!");
+							failedPings++;
+
+							// Should we disconnect?
+							if( failedPings == maxFailPings ){
+
+								// Try and reconnect
+								reconnect(player.getName());
+
+							}
+							else if( failedPings > maxFailPings ){
+
+								// Can't connect to the server
+								disconnect();
+								break;
+							}
+						}
+						else{
+							// Pinged correctly. Reset their fail count
+							failedPings = 0;
+						}
+					}
+			}
+
+			/**
+			 * Stops the thread from thinking
+			 */
+			public void stopRunning(){
+				running = false;
+			}
+	}
+
+	@Override
+	public boolean disconnect(){
+		if( !super.disconnect() ) return false;
+
+		// Check if we still have a thread checking for a failed server
+		// Stop the thread
+		if( serverChecker != null ){
+			serverChecker.stopRunning();
+
+			try {
+				serverChecker.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return true;
+	}
+
 	@Override
 	public synchronized void retrieveObject(NetworkObject data) {
 
@@ -88,10 +165,7 @@ public class ChatClient extends Client {
 
 					// Someone Pinged me
 					long delay = (System.currentTimeMillis() - data.getTimeInMillis());
-
-					try {
-						sendData(new ChatMessage(chatMessage.sendersName + " pinged " + getName() + " at " + delay + "ms",chatMessage.color,true));
-					} catch (IOException e) {}
+					sendData(new ChatMessage(chatMessage.sendersName + " pinged " + getName() + " at " + delay + "ms",chatMessage.color,true));
 				}
 				else if( scan.hasNext("everyone") ){
 					return;
@@ -300,6 +374,9 @@ public class ChatClient extends Client {
 
 		// Change the name of the player
 		player.setName(playerName);
+
+		// Start checking the server
+		serverChecker = new ServerCheckerThread();
 	}
 
 	/**
