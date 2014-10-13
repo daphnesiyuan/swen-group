@@ -1,8 +1,11 @@
 package GUI;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -16,6 +19,8 @@ public class StartMenu {
 	private ArrayList<Image> buttonsDEF = new ArrayList<Image>(); //array of un hovered images
 	private ArrayList<Image> buttonsHOV = new ArrayList<Image>(); //array of hover images
 
+	private BufferedImage splash;
+
 	private int buttonWidth = 205;
 	private int buttonHeight = 85;
 
@@ -24,7 +29,7 @@ public class StartMenu {
 
 		try {
 
-			loadButtonImages();
+			loadImages();
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -39,12 +44,26 @@ public class StartMenu {
 	 */
 	public void redraw(Graphics g) {
 		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
+
+		drawSplashArt(g);
 
 		for (int i = 0; i < buttons.size(); i++) {
 			drawButton(g, i, buttons.get(i));
 		}
 
+	}
+
+	public void drawSplashArt(Graphics g){
+		Graphics2D g2d = (Graphics2D)g;
+
+		float alpha = 1F;
+
+		int rule = AlphaComposite.SRC_OVER;
+		AlphaComposite ac = java.awt.AlphaComposite.getInstance(rule, alpha);
+		g2d.setComposite(ac);
+
+		g2d.drawImage(splash,0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
+		g2d.setComposite(java.awt.AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 	}
 
 	public int getButtonWidth(){
@@ -82,9 +101,17 @@ public class StartMenu {
 	 * Helper buttons for loading image resources, and populating the 3 arraylists: default buttons, hover buttons, and buttons appeared
 	 * @throws IOException
 	 */
-	public void loadButtonImages() throws IOException {
+	public void loadImages() throws IOException {
 
 		System.out.println("images being loaded from StartMenu");
+
+		java.net.URL imageURL = WindowFrame.class.getResource("startMenuImages/splash.png");
+
+		try {
+			splash = ImageIO.read(imageURL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		//default buttons
 		java.net.URL startURL = WindowFrame.class.getResource("startMenuImages/start.png");

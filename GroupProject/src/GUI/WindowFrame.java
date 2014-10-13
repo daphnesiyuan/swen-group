@@ -27,7 +27,7 @@ public class WindowFrame extends JFrame {
 	}
 
 	public void JFrameSetUp() {
-		topMenu = new TopMenu(this, panel );
+		topMenu = new TopMenu(this, panel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setSize(1280, 720);

@@ -1,14 +1,9 @@
 package GUI;
 
-import gameLogic.Item;
-import gameLogic.Room;
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,7 +166,6 @@ public class DrawingPanel extends JPanel {
 	}
 
 
-
 	/**
 	 * @author Jimmy Veug
 	 */
@@ -292,9 +286,9 @@ public class DrawingPanel extends JPanel {
 
 	public KeyBoard getKeyB() {
 		return keyboard; }
+
 	public DrawInventory getInvo(){
-		return invo;
-	}
+		return invo; }
 
 	public int getDirection() {
 		return directionI; }

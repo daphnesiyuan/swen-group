@@ -49,7 +49,6 @@ public class HelpMenu {
 
 		Graphics2D g2d = (Graphics2D)g;
 
-		//make image transparent varying to the time of day (in meatspace)
 		float alpha = 0.8F;
 
 		int rule = AlphaComposite.SRC_OVER;
