@@ -43,7 +43,7 @@ public class Avatar implements Serializable {
 	private final double tileMaxPos = 100;
 
 	// The amount the Avatar moves with each key press
-	private int stepAmount = 50;
+	private int stepAmount = 32;
 
 
 	// While the sprite is animating, spriteIndex will hold the index to the current frame to be displayed for the animation.
@@ -62,8 +62,10 @@ public class Avatar implements Serializable {
 	// To tell the avatar that killed you to increment their score, also if multiple people hitting you, the score goes to the person who hit you last.
 	private Avatar lastHit;
 
-	private Cell cell;
+	private int maxCharge = 500;
+	private int damage = 125;
 
+	private Cell cell;
 
 	private List <Item> Inventory;
 
@@ -187,24 +189,34 @@ public class Avatar implements Serializable {
 	 */
 	private int useCharger(){
 		centerAvatar();
-		while(cell.getBatteryLife()<=300 && cell.isCharging()){
+		while(cell.getBatteryLife()<=maxCharge && cell.isCharging()){
 			cell.incBattery();
 		}
 		return 2;
 	}
 
+	/**
+	 * @author Ryan Griffin and Leon North
+	 * @param target
+	 * @return
+	 */
 	private int attack(Tile2D target){
 		if(target.getAvatar() == null){
 			return 0;
 		}
 		Avatar enemy = target.getAvatar();
-		enemy.takeDamage();
+		enemy.takeDamage(damage);
 		enemy.setLastHit(this);
 		return 1;
 	}
 
-	public void takeDamage(){
-		cell.decExtraBattery();
+	/**
+	 * @author Ryan Griffin and Leon North
+	 * @param damage
+	 */
+	public void takeDamage(int damage){
+		cell.takeHit(damage);
+		//cell.decExtraBattery();
 		if(cell.getBatteryLife()<=0){
 			die();
 		}
@@ -220,9 +232,10 @@ public class Avatar implements Serializable {
 	}
 
 	private void reset(){
-		cell.setBatteryLife(300);
+		cell.setBatteryLife(maxCharge);
 		updateLocations(startTile,startRoom);
 		lastHit = null;
+		Inventory = new ArrayList<Item>();
 	}
 
 	public void addKill(){

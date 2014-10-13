@@ -126,11 +126,8 @@ public abstract class Client{
 			// Perform our setup since we connected to a server
 			successfullyConnected(playerName);
 
-
 			// Successful connection
 			return true;
-
-
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -212,9 +209,10 @@ public abstract class Client{
 			return true;
 		} catch(NotSerializableException e){
 			System.out.println("Client: Something is not Serializable, and can not be sent in object:\n" + data);
-			e.printStackTrace();
+		}catch(SocketException e){
+			return false;
 		}catch (IOException e) {
-			e.printStackTrace();
+			return false;
 		}
 
 		return false;

@@ -268,7 +268,7 @@ public class ChatClient extends Client {
 	public synchronized void appendWarningMessage(String warning){
 
 		// Save the message
-		chatHistory.add(new ChatMessage("WARNING",warning, Color.black, true));
+		chatHistory.add(new ChatMessage("WARNING",warning, Color.red, true));
 	}
 
 	/**
@@ -431,15 +431,6 @@ public class ChatClient extends Client {
 				chatMessageColor = new Color(red,green,blue);
 				return true;
 			}
-			else if( scan.hasNext() ){
-
-				// Using a color name
-				Color color = Color.getColor(scan.next());
-				if( color != null ){
-					chatMessageColor = color;
-					return true;
-				}
-			}
 			return true;
 		}
 
@@ -463,7 +454,7 @@ public class ChatClient extends Client {
 		 * @return True if the the text should be displayed and sent to it's clients
 		 */
 		private boolean parseIP(Scanner scan, NetworkObject data) {
-			chatHistory.add(new ChatMessage("~Admin", "Your IP: " + getIPAddress(), Color.black, true));	// Record message
+			chatHistory.add(new ChatMessage("~Admin", "Your IP: " + getIPAddress(), chatMessageColor, true));	// Record message
 			return false;
 		}
 	}

@@ -184,7 +184,7 @@ public class ChatServer extends Server {
 			// Set something
 			if (command.equals("/name")) {
 
-				return parseName(scan, data);
+				return false;//parseName(scan, data);
 			} else if (command.equals("/get")) {
 				return parseGet(scan, data);
 			} else if (command.equals("/ping")) {
@@ -343,15 +343,17 @@ public class ChatServer extends Server {
 		 */
 		private boolean parseAdmins(Scanner scan, NetworkObject data) {
 
-			// Send history back to the client
-			String adminList = "List of Admins:\n";
-			for(String admin : getAdmins()){
-				adminList = adminList + admin + "\n";
+			ArrayList<ChatMessage> adminList = new ArrayList<ChatMessage>();
+			adminList.add(new ChatMessage("~Admin","List of active Admins", chatMessageColor, true));
+
+			for( int i = 0; i < clients.size(); i++ ){
+				ClientThread t = clients.get(i);
+				if( isAdmin(t.getIPAddress()) ){
+					adminList.add(new ChatMessage("\t\t",t.getPlayerName(), chatMessageColor, true));
+				}
 			}
 
-			sendToClient(data.getIPAddress(), new ChatMessage("~Admin",adminList, chatMessageColor, true));
-
-			return false;
+			return sendToClient( data.getIPAddress(), new ChatHistory(adminList, true) );
 		}
 
 		/**
