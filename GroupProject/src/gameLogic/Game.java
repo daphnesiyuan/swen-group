@@ -10,11 +10,11 @@ import networking.*;
 public class Game{
 
 
-	// TODO ryan: tidy room and door and movement between code,
+// TODO ryan: tidy room and door and movement between code,
 	// correct implementation.
 	private List<Room> roomsInGame;
 	private List<Avatar> activeAvatars;
-	private List<Avatar> activeAI;
+	private List<AI> activeAI;
 
 
 	public enum Facing { North, South, East, West; }
@@ -30,7 +30,7 @@ public class Game{
 
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
-		activeAI = new ArrayList<Avatar>();
+		activeAI = new ArrayList<AI>();
 		createNewGame();
 		score = new Score();
 	}
@@ -41,7 +41,7 @@ public class Game{
 
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
-		activeAI = new ArrayList<Avatar>();
+		activeAI = new ArrayList<AI>();
 
 	}		//ANTONIA: To be used when loading a file
 
@@ -68,9 +68,7 @@ public class Game{
 		if(playerName.startsWith("ai")){
 			Room room = roomsInGame.get(0);
 			Tile2D tile = room.getTiles()[3][3];
-			Avatar avatar = new Avatar(playerName,tile,room);
-			activeAI.add(avatar);
-			avatar.setAI(true);
+			new Avatar(playerName,tile,room);
 			return room;
 		}
 		else{
@@ -79,10 +77,12 @@ public class Game{
 				return null;
 			}
 			Room room = roomsInGame.get(roomNumber++);
-			Tile2D tile = room.getTiles()[3][1];
+			Tile2D tile = room.getTiles()[3][3];
 			Avatar avatar = new Avatar(playerName,tile,room);
 			activeAvatars.add(avatar);
-			avatar.setAI(false);
+			if(avatar.getPlayerName().startsWith("ai")){
+				return roomsInGame.get(0);
+			}
 			return room;
 		}
 	}
@@ -159,12 +159,19 @@ public class Game{
 		return activeAvatars.remove(leaving);
 	}
 
+	public boolean addAI(AI ai){
+		return activeAI.add(ai);
+	}
+	public boolean removeAI(AI ai){
+		return activeAI.remove(ai);
+	}
+
 
 	public int tickAllAI(){
 		int count = 0;
-		for(Avatar ai : activeAI){
+		for(AI ai : activeAI){
 			if(ai instanceof Thinker){
-				((Thinker) ai).think(this);
+				ai.think(this);
 				count ++;
 			}
 		}
@@ -197,11 +204,11 @@ public class Game{
 		return score;
 	}
 
-	public List<Avatar> getActiveAI() {
+	public List<AI> getActiveAI() {
 		return activeAI;
 	}
 
-	public void setActiveAI(List<Avatar> activeAI) {
+	public void setActiveAI(List<AI> activeAI) {
 		this.activeAI = activeAI;
 	}
 
