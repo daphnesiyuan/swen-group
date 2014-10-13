@@ -181,12 +181,6 @@ public class DrawWorld {
 
 		Graphics2D g2d = (Graphics2D)g;
 
-//		testing code for light
-//		List<Item> items = new ArrayList<Item>();
-//		items.add(new Light());
-//
-//		character.setInventory(items);
-
 		BufferedImage img = images.get("Night");;
 		for(int i = 0; i < character.getInventory().size(); i++){
 			if(character.getInventory().get(i) instanceof Light){
@@ -250,8 +244,6 @@ public class DrawWorld {
 		String tileName = tile.getClass().getName();
 		//remove the gamelogic.
 		tileName = tileName.substring(10);
-
-
 
 		if(tile instanceof Floor){
 			return;
@@ -323,7 +315,11 @@ public class DrawWorld {
 		else if (avatar.getPlayerName().startsWith("ai")){
 			drawObject(g,pt,images.get("AvatarB"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 		}
-		else drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+		else if(avatar.equals(character)) drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+
+//		else{
+//			String dir =
+//			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));}
 
 		//either draw a floating pointer if avatar is current player
 		//or draw the name above the avatar

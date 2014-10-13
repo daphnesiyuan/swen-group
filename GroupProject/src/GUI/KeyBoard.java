@@ -78,6 +78,7 @@ public class KeyBoard implements KeyListener{
 			if ((panel.getKeysDown()).contains(KeyEvent.VK_CONTROL)) {
 				int d = panel.getDirection();
 				panel.setDirection( (d+1)%4 );
+				sendDirection();
 			}
 			if((panel.getKeysDown()).contains(KeyEvent.VK_W)){
 				moveForward();
@@ -108,6 +109,19 @@ public class KeyBoard implements KeyListener{
 		}
 		(panel.getKeysDown()).clear();
 
+	}
+
+	private void sendDirection() {
+		String dir = Direction.get( panel.getDirection() );
+		if (dir.toLowerCase().equals("east")){ dir = "West";}
+		else if (dir.toLowerCase().equals("west")){ dir = "East";}
+		Move move = new Move((panel.getGameClient()).getPlayer(), "", dir);
+		try {
+			panel.getGameClient().sendMoveToServer(move);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
