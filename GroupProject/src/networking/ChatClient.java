@@ -45,7 +45,10 @@ public class ChatClient extends Client {
 				while( true ){
 
 					// Tell the component to repaint
-					repaintImage();
+					if( isConnected() ){
+						repaintImage();
+					}
+
 					try {
 						Thread.sleep(30);
 					} catch (InterruptedException e) {

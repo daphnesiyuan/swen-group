@@ -10,7 +10,7 @@ import java.util.Random;
 import rendering.Direction;
 
 /**
- * Random AI that will walk around In a random direction everytime it's told to think
+ * Random AI that will walk around In a random direction every time it's told to think
  * @author veugeljame
  *
  */
@@ -85,19 +85,4 @@ public class RandomAI extends AI {
 
 		return "A";
 	}
-
-	/**
-	 * Returns the opposite direction of any outcome from getRandomDirection
-	 * @param direction What to get the inverse of
-	 * @return Inverse of direction
-	 */
-	public String getOppositeDirection(String direction){
-		if( direction.equals("West") ){ return "East"; }
-		if( direction.equals("East") ){ return "West"; }
-		if( direction.equals("South") ){ return "North"; }
-		if( direction.equals("North") ){ return "South"; }
-
-		return "Center";
-	}
-
 }

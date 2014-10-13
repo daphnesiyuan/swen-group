@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Stack;
 
 import javax.swing.BoxLayout;
@@ -97,11 +98,11 @@ public class ChatRoom implements ActionListener{
 				super.paintComponent(g);
 
 				// Get the chat history
-				Stack<ChatMessage> history = client.getChatHistory(10);
+				ArrayList<ChatMessage> history = client.getChatHistory(10);
 				int maxMessages = Math.min(history.size(), 20);
 
 				// Display
-				for(int i = history.size()-1; i > (history.size()-maxMessages); i--){
+				for(int i = history.size()-maxMessages; i < history.size(); i++){
 					ChatMessage cm = history.get(i);
 					g.setColor(cm.color);
 					g.drawString(cm.toString(), 0, (history.size()-i)*10);
@@ -229,7 +230,7 @@ public class ChatRoom implements ActionListener{
 	public boolean connectToServer(String ip, int port){
 
 		try {
-			if( client.connect(ip, port) ){
+			if( client.connect(ip) ){
 				chatHistory.removeAll();
 				client.appendWarningMessage("Connected to " + IPConnection.getText() + ":" + port);
 

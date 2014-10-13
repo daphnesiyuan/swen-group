@@ -19,7 +19,7 @@ public class GameClientTester {
 	public GameClientTester(){
 		gc = new GameClient("James", null);
 		try {
-			gc.connect("130.195.4.178", 32768);
+			gc.connect("130.195.4.178");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -163,6 +163,17 @@ public class GameClientTester {
 								System.out.println(cm.toString());
 							}
 							continue;
+						}
+						else if( scan.hasNext("!connect") ){
+							scan.next();
+
+							String next= scan.next();
+							if( next.equals("local") ){
+								gc.connect(gc.getIPAddress());
+							}
+							else{
+								gc.connect(next);
+							}
 						}
 
 

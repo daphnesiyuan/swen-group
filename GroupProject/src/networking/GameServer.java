@@ -148,10 +148,10 @@ public class GameServer extends ChatServer {
 		}
 
 		// Tell everyone a bot has joined the game
-		messageAllClients(botName + " has Connected.");
+		messageAllClients(botName + " has Joined the Game.");
 
 		// Tell console
-		System.out.println(botName + " has Connected.");
+		System.out.println(botName + " has Joined the Game.");
 
 		return true;
 	}
