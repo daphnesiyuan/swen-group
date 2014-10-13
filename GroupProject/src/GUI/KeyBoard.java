@@ -33,10 +33,11 @@ public class KeyBoard implements KeyListener{
 	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
-
+		if (e.getKeyCode() == KeyEvent.VK_SHIFT){ return;}
 		if (!(panel.getKeysDown()).contains(e.getKeyCode()))
 			(panel.getKeysDown()).add(new Integer(e.getKeyCode()));
 		if(panel.isChatMode()){
+
 			panel.addToCurrentMessage( Character.toString(e.getKeyChar()) );
 
 		}
@@ -53,25 +54,27 @@ public class KeyBoard implements KeyListener{
 		if ((panel.getKeysDown()).contains(KeyEvent.VK_ALT)){
 			boolean b = panel.isChatMode();
 			panel.setChatMode(!b);
+			panel.setCurrentMessage("");
 		}
 		if ( panel.isChatMode() ){
+
 			if ((panel.getKeysDown()).contains(KeyEvent.VK_ENTER)){
-				//chatMessages.add(new ChatMessage("Ryan", currentMessage, Color.RED));
 				try {
 					(panel.getGameClient()).sendChatMessageToServer( panel.getCurrentMessage() );
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				panel.setCurrentMessage("");
-			} else {
-
+			} else if ((panel.getKeysDown()).contains(KeyEvent.VK_BACK_SPACE)){
+				String message = panel.getCurrentMessage();
+				if (message.length() > 1){panel.setCurrentMessage(message.substring(0, message.length()-2));}
+				else if (message.length() == 1){panel.setCurrentMessage("");}
 			}
+
 		}
 		else{
 			if ((panel.getKeysDown()).contains(KeyEvent.VK_CONTROL)) {
 				int d = panel.getDirection();
-				//directionI = (directionI + 1) % 4;
 				panel.setDirection( (d+1)%4 );
 			}
 			if((panel.getKeysDown()).contains(KeyEvent.VK_W)){
