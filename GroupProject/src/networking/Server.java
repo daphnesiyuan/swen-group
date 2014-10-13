@@ -157,7 +157,7 @@ public abstract class Server implements Runnable{
 
 		// Check if this client has disconnected
 		if ( !reconnecting ) {
-			sendToAllClients(new ChatMessage("~Admin",client.getPlayerName() + " has Disconnected.", Color.black, true), client);
+			messageAllClients(client.getPlayerName() + " has Disconnected.", client);
 
 			// Remove the clients name
 			clientNameToIP.remove(client.getPlayerName());
@@ -654,4 +654,17 @@ public abstract class Server implements Runnable{
 	 * @param client Client that has rejoined
 	 */
 	public abstract void clientRejoins(ClientThread client);
+
+	/**
+	 * The server wants to message all clients
+	 * @param message MEssage to sent tp clients
+	 */
+	public abstract void messageAllClients(String message, ClientThread... exceptions);
+
+	/**
+	 * Servers wants to message a single client with the given message
+	 * @param message Message to sent to client
+	 * @param client Who to sent the message to
+	 */
+	public abstract void messageClient(String message, ClientThread client);
 }

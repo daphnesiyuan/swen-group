@@ -24,8 +24,6 @@ public class GameServer extends ChatServer {
 	// Game that all players are playing off
 	private Game gameServer;
 
-	private ArrayList<AI> gameAI = new ArrayList<AI>();
-
 	/**
 	 * Creates a new Game Server that will load a map from the file given.
 	 * Waits for input from the console to run commands.
@@ -125,18 +123,34 @@ public class GameServer extends ChatServer {
 	 * @return True if the AI was added successfully
 	 */
 	public boolean createAI(){
-		// Max of 10 bots
-		if(gameAI.size() >= 10) return false;
+		int activeAI = gameServer.getActiveAI().size();
 
-		String botName = "ai" + gameAI.size();
+		// Max of 10 bots
+		if(activeAI >= 10){
+			return false;
+		}
+
+		// Create a new ai Player
+		String botName = "ai" + activeAI;
 		Room room = gameServer.addPlayer(botName);
 
-		if( room != null ){
-			AI ai = new RandomAI(room, botName);
-			gameAI.add(ai);
-			return gameServer.addAI(ai);
+		// Get if the AI was given a room
+		if( room == null ){
+			return false;
 		}
-		return false;
+
+		// Create a random AI
+		AI ai = new RandomAI(room, botName);
+
+		// Attempt to add it to the gamelogic
+		if( !gameServer.addAI(ai) ){
+			return false;
+		}
+
+		// Tell everyone a bot has joined the game
+		messageAllClients(botName + " has Connected.");
+
+		return true;
 	}
 
 	@Override

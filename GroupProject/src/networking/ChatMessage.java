@@ -77,7 +77,8 @@ public class ChatMessage extends NetworkData{
 		if( !message.equals(other.message) ) return false;
 		if( hours != other.hours ) return false;
 		if( minutes != other.minutes ) return false;
+		if( seconds != other.seconds ) return false;
 
-		return seconds == other.seconds;
+		return timeInMillis == other.timeInMillis;
 	}
 }
