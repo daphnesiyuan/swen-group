@@ -17,8 +17,10 @@ import networking.Move;
 public class KeyBoard implements KeyListener{
 
 	private DrawingPanel panel;
+	private HelpMenu help;
 
-	public KeyBoard(DrawingPanel d){
+	public KeyBoard(DrawingPanel d, HelpMenu h){
+		help = h;
 		panel = d;
 	}
 
@@ -92,6 +94,17 @@ public class KeyBoard implements KeyListener{
 			if((panel.getKeysDown()).contains(KeyEvent.VK_O)){
 				Charge();
 			}
+			if((panel.getKeysDown()).contains(KeyEvent.VK_ESCAPE)){
+				if(help.isHelpMode()){
+					help.helpOff();
+					panel.repaint();
+				}
+				else{
+					help.helpOn();
+					panel.repaint();
+				}
+			}
+
 		}
 		(panel.getKeysDown()).clear();
 

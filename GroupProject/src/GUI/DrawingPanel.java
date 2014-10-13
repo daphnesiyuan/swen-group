@@ -134,7 +134,7 @@ public class DrawingPanel extends JPanel {
 	 * Helper method for setting up the mouse and key listeners
 	 */
 	public void setUpMouseKeys() {
-		keyboard = new KeyBoard(this);
+		keyboard = new KeyBoard(this, help);
 		mouse = new MyMouseListener(this);
 		this.addMouseListener(mouse);
 		mouseMotion = new MouseMotion(this);
