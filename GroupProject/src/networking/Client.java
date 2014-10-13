@@ -276,7 +276,17 @@ public abstract class Client{
 	 * @return True if socket is valid
 	 */
 	public boolean isConnected(){
-		return socket != null && !socket.isClosed();
+
+		// Check for valid socket
+		if( socket == null || socket.isClosed() ){
+			return false;
+		}
+
+		// Check for a broken socket
+		//try{
+			//messageServer(/
+		//}
+		return true;
 	}
 
 	/**
