@@ -75,50 +75,43 @@ public class MyMouseListener implements MouseListener {
 	public boolean checkInventory(int i){
 
 		if (i == 0) { // box 1
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(0)) != null) {
+			if (i <= (panel.getGameClient().getAvatar().getInventory().size())
+					&& (panel.getGameClient().getAvatar().getInventory().get(0)) != null) {
+
+				System.out.println("IN BOX 1; size of inventory="+panel.getGameClient().getAvatar().getInventory().size());
+
 				System.out.println("IN BOX 0");
 				item = panel.getGameClient().getAvatar()
 						.getInventory().get(0);
 				return true;
 			}
 		} else if (i == 1) {
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(1)) != null) {
-				System.out.println("IN BOX 1");
+			if (i < (panel.getGameClient().getAvatar().getInventory().size())
+					&& (panel.getGameClient().getAvatar().getInventory().get(1)) != null) {
+				System.out.println("IN BOX 1; size of inventory="+panel.getGameClient().getAvatar().getInventory().size());
 				item = panel.getGameClient().getAvatar()
 						.getInventory().get(1);
 				return true;
 			}
 		} else if (i == 2) {
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(2)) != null) {
+			if (i < (panel.getGameClient().getAvatar().getInventory().size())
+					&& (panel.getGameClient().getAvatar().getInventory().get(2)) != null) {
 				System.out.println("IN BOX 2");
 				item = panel.getGameClient().getAvatar()
 						.getInventory().get(2);
 				return true;
 			}
 		} else if (i == 3) {
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(3)) != null) {
+			if (i < (panel.getGameClient().getAvatar().getInventory().size())
+					&& (panel.getGameClient().getAvatar().getInventory().get(3)) != null) {
 				System.out.println("IN BOX 3");
 				item = panel.getGameClient().getAvatar()
 						.getInventory().get(3);
 				return true;
 			}
 		} else if (i == 4) {
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(4)) != null) {
+			if (i < (panel.getGameClient().getAvatar().getInventory().size())
+					&& (panel.getGameClient().getAvatar().getInventory().get(4)) != null) {
 				System.out.println("IN BOX 4");
 				item = panel.getGameClient().getAvatar()
 						.getInventory().get(4);
