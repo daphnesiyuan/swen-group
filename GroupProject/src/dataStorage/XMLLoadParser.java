@@ -42,9 +42,15 @@ public class XMLLoadParser {
 		try {
 			Document doc = (Document) builder.build(file);
 			Element rootNode = doc.getRootElement(); // Should be "game"
-			List roomList = rootNode.getChildren(); // a list of rooms
+			List fullList = rootNode.getChildren();
+			List roomList = fullList.subList(0, fullList.size()-2); //The rooms go from 0-number of values -2 (being score and ais)
+			Element scoresElement = (Element) fullList.get(fullList.size()-2);		// scores is the second to last element in the list
+			Element aiElement = (Element) fullList.get(fullList.size()-1);		//AI is the last element in the list
+
 			parseRooms(roomList);
-			
+			parseScores(scoresElement);
+			parseAI(aiElement);
+
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
 		} catch (JDOMException jdomex) {
@@ -56,7 +62,7 @@ public class XMLLoadParser {
 	}
 
 	public void parseRooms(List roomList) {
-		
+
 		for (Object e : roomList) {
 			Tile2D[][] tiles = new Tile2D[1000][1000];
 			Room r = new Room(tiles, null);
@@ -72,7 +78,7 @@ public class XMLLoadParser {
 			// other tiles
 
 	}
-	
+
 	/**
 	 * Goes through the xml representation element (e) of a wall and floor tile
 	 * and creates a new wall object, adding to the game
@@ -117,76 +123,23 @@ public class XMLLoadParser {
 		return r;
 	}
 
-	public void 
+	/**
+	 * Takes an element and parses this information converting it to
+	 * Score objects and adding it to the game.
+	 *
+	 * @param scores an Element representing the score in the game
+	 */
+
+	public void parseScores(Element scores){}
 
 	/**
-	 * goes through the xml representation element (e) and creates a new room
-	 * object and calls the correct methods to delegate the parsing of the
-	 * information held inside the rooms
+	 * Takes an element that represents the AIs in the loaded game, and
+	 * then creates AIs according to this information.
 	 *
-	 * @param e
+	 * @param ai an Element that stores information about the AI in the game
 	 */
-	public void parseRoom(Element e) {
-		List avatarList = null;
-		List itemList = null;
-		List otherTilesList = null;
 
-		if (e.getChild("avatars") != null) {
-			Element avatars = e.getChild("avatars");
-			avatarList = avatars.getChildren();
-		}
-		Element floors = e.getChild("floors");
-		List floorList = floors.getChildren();
-
-		Element walls = e.getChild("walls");
-		List wallList = walls.getChildren();
-
-		List basicTiles = new ArrayList();
-		basicTiles.addAll(floorList);
-		basicTiles.addAll(wallList);
-
-		Element doors = e.getChild("doors");
-		List doorList = doors.getChildren();
-
-		if (e.getChild("items") != null) {
-			Element items = e.getChild("items");
-			itemList = new ArrayList();
-			itemList = items.getChildren();
-		}
-		if (e.getChild("other_tiles") != null) {
-			Element otherTiles = e.getChild("other_tiles");
-			otherTilesList = otherTiles.getChildren();
-		}
-		Room room = new Room(tiles, null);
-
-		// doors
-		for (int i = 0; i < doorList.size(); i++) {
-			parseDoor((Element) doorList.get(i), room);
-		}
-		// characters
-		if (avatarList != null) {
-			for (int i = 0; i < avatarList.size(); i++) {
-				parseAvatar((Element) avatarList.get(i), room);
-
-			}
-		}
-		// items
-		if (itemList != null) {
-			for (int i = 0; i < itemList.size(); i++) {
-				parseItem((Element) itemList.get(i), room);
-
-			}
-		}
-		// other tiles
-		if (otherTilesList != null) {
-			for (int i = 0; i < otherTilesList.size(); i++) {
-				parseOtherTile((Element) otherTilesList.get(i), room);
-			}
-		}
-
-		game.addRoom(room);
-
-	}
+	public void parseAI(Element ai){}
 
 	/**
 	 * goes through the xml representation element (e) of an avatar and creates
@@ -206,37 +159,12 @@ public class XMLLoadParser {
 			}
 		}
 		Element cellEle = e.getChild("cell");
-		Cell cell = parseCell(cellEle, r);
+		Cell cell = parseCell(cellEle);
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
 		Avatar a = new Avatar(playerName, r.getTiles()[xPos][yPos], r);
 		// a.setCell(cell);
 		a.setInventory(playerInventory);
-	}
-
-
-	/**
-	 * Goes through the xml representation element (e) of a door tile and
-	 * creates a new door object, adding to the game
-	 *
-	 *
-	 * @param e
-	 */
-
-	public void parseDoor(Element e, Room r) {
-		/*
-		 * . roomNumber locked. xPos. yPos. type. itemsOnTile. avatarOnTile
-		 */
-		int xPos = Integer.parseInt(e.getChildText("xPos"));
-		int yPos = Integer.parseInt(e.getChildText("yPos"));
-		String roomPlace = e.getChildText("toRoom");// maybe will not need?
-		// String characterOnTile = e.getChildText("characterOnTile");
-		// Avatar a = game.getAvatar(characterOnTile);
-		// making necessary adjustments and calculations
-		Door d = new Door(xPos, yPos);
-		d.setRoom(r);
-		// d.setAvatarOnTile(a);
-		tiles[xPos][yPos] = d;
 	}
 
 	/**
@@ -253,12 +181,13 @@ public class XMLLoadParser {
 	}
 
 	/**
-	 *
+	 * A method that is given a Element and a Room object. It figures out
+	 * which type of "other" tile to make and then creates and puts the item in the room
 	 *
 	 * @param e
 	 *            Element that represents the other tile
 	 * @param r
-	 *            Roon that contains the other tile
+	 *            Room that contains the other tile
 	 */
 
 	public void parseOtherTile(Element e, Room r) {
@@ -273,11 +202,20 @@ public class XMLLoadParser {
 			r.getColumns().add(c);
 		} else if (type.equals("Charger")) {
 			Charger c = new Charger(xPos, yPos);
-			System.out.println("Charger created but cannot add");
+			r.getChargers().add(c);
 		}
 	}
 
-	public Cell parseCell(Element e, Room r) {
+	/**
+	 * A helper method only called in parse avatar that creates
+	 * a cell object based on an Element representing this cell.
+	 * It then returns this object.
+	 *
+	 * @param e Element representing the cell
+	 * @return a Cell object
+	 */
+
+	public Cell parseCell(Element e) {
 		int batteryLife = Integer.parseInt(e.getChildText("batteryLife"));
 		boolean charging = Boolean.parseBoolean(e.getChildText("charging"));
 		Cell c = new Cell(null);
