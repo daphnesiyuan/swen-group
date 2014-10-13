@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Random;
 
+import rendering.Direction;
+
 /**
  * Random AI that will walk around In a random direction everytime it's told to think
  * @author veugeljame
@@ -29,35 +31,59 @@ public class RandomAI extends AI {
 			return;
 		}
 
-		// Get random direction
-		String direction = getRandomDirection();
+		int nextMoveDirection = getRandomDirection();
+		String direction = "";
+		for(int counter = 0; counter < 4; counter++ ){
 
-		// Make the move
-		Move move = new Move(getPlayer(), String.valueOf(getOppositeDirection(direction).charAt(0)), direction);
+			// First letter of the string to move
+			direction = getMovementKey(nextMoveDirection);
 
-		// Attempt to move
-		game.moveAvatar(move);
+			// Attempt to move
+			if( game.moveAvatar(new Move(getPlayer(), direction, Direction.get(0))) ){
+				game.moveAvatar(new Move(getPlayer(), direction, Direction.get(0)));
+				break;
+			}
+
+			// Rotate clockwise
+			nextMoveDirection = getRotatedDirection(nextMoveDirection);
+		}
 
 		// Remember when we need to think next
 		NEXTTHINK = System.currentTimeMillis() + THINKDELAY;
+	}
+
+	public int getRotatedDirection(int direction){
+		return (direction+1)%4;
 	}
 
 	/**
 	 * Gets a random direction
 	 * @return String containing a direction
 	 */
-	public String getRandomDirection(){
+	public int getRandomDirection(){
 		Random rand = new Random();
-		int randomMove = rand.nextInt(4);
 
-		// Get random direction
-		switch(randomMove){
-			case 0: return "East";
-			case 1: return "West";
-			case 2: return "North";
-			case 3: return "South";
+
+		int randomMove = rand.nextInt(4);
+		return randomMove;
+	}
+
+	/**
+	 * Returns the opposite direction of any outcome from getRandomDirection
+	 * @param direction What to get the inverse of
+	 * @return Inverse of direction
+	 */
+	public String getMovementKey(int direction){
+		switch(direction){
+		case 0:
+			return "W";
+		case 1:
+			return "D";
+		case 2:
+			return "S";
 		}
-		return "Center";
+
+		return "A";
 	}
 
 	/**

@@ -622,19 +622,8 @@ public abstract class Server implements Runnable{
 	 * @param IP IPAddress to check if the server has registered them as an admin
 	 * @return True if the IP is an admin
 	 */
-	public synchronized boolean isAdmin(String IP){
+	public boolean isAdmin(String IP){
 		return admins.contains(IP);
-	}
-
-	/**
-	 * Returns a list of the admins IP's in the server
-	 * @return ArrayList containing a list of IP's
-	 */
-	public ArrayList<String> getAdmins(){
-		ArrayList<String> adminList = new ArrayList<String>();
-		adminList.addAll(admins);
-
-		return adminList;
 	}
 
 	/**

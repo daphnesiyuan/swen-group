@@ -131,7 +131,7 @@ public class GameClient extends ChatClient {
 
 	@Override
 	public void successfullyConnected(String playerName) {
-
+		System.out.println("Connected to: " + connectedIP);
 
 	}
 }

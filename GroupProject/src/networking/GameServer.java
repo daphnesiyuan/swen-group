@@ -131,7 +131,7 @@ public class GameServer extends ChatServer {
 		}
 
 		// Create a new ai Player
-		String botName = "ai" + activeAI;
+		String botName = ("ai" + activeAI).trim();
 		Room room = gameServer.addPlayer(botName);
 
 		// Get if the AI was given a room
@@ -149,6 +149,9 @@ public class GameServer extends ChatServer {
 
 		// Tell everyone a bot has joined the game
 		messageAllClients(botName + " has Connected.");
+
+		// Tell console
+		System.out.println(botName + " has Connected.");
 
 		return true;
 	}
