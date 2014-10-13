@@ -1,6 +1,11 @@
 package dataStorage;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.jdom2.Element;
 
@@ -13,6 +18,7 @@ import gameLogic.Floor;
 import gameLogic.Game;
 import gameLogic.Item;
 import gameLogic.Room;
+import gameLogic.Score;
 import gameLogic.Tile2D;
 import gameLogic.Tree;
 import gameLogic.Wall;
@@ -23,7 +29,7 @@ import gameLogic.Wall;
  * of the current game state and return an element whether the
  * parser was successful or not.
  *
- * @author caskeyanto
+ * @author Antonia Caskey
  *
  */
 
@@ -65,7 +71,6 @@ public class XMLSaveParser {
 		Element avatars = new Element("avatars");		//characters
 		Element items = new Element("items");			//items
 		Element others = new Element("other_tiles");	//Other tiles (chargers, trees, etc.)
-
 		e.addContent(new Element("roomPlace").setText(room.getRoomPlace()));		//room place
 
 		//CHARACTERS
@@ -292,6 +297,24 @@ public class XMLSaveParser {
 
 		return e;
 
+	}
+
+	/**
+	 * Takes a Score object that stores a map of all the players
+	 * and their scores, and converts it to an XML element.
+	 *
+	 * @param score the score of the current game
+	 * @return an element representing the map of scores
+	 */
+
+	public Element parseScore(Score score){
+		Element e = new Element("score");
+		Set<Entry<String,Integer>> scoreSet = score.getScore().entrySet();
+		for(Entry<String, Integer> entry : scoreSet){
+			Element sc = new Element(entry.getKey()).setText(Integer.toString(entry.getValue()));
+			e.addContent(sc);
+		}
+		return e;
 	}
 
 }

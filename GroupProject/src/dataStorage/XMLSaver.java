@@ -42,7 +42,11 @@ public class XMLSaver {
 			if(e == null)return false;
 			root.addContent(e);
 		}
-
+		
+		Element score = parser.parseScore(game.getScore());
+		if(score == null)return false;
+		root.addContent(score);
+		
 	    Document doc = new Document();
 	    doc.setRootElement(root);
 	    try {
