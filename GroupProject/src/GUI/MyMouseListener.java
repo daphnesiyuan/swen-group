@@ -9,6 +9,8 @@ import rendering.InvoPopup;
 
 public class MyMouseListener implements MouseListener {
 
+	Item item;
+
 	private DrawingPanel panel;
 	InvoPopup pop;
 
@@ -26,71 +28,37 @@ public class MyMouseListener implements MouseListener {
 		if (!panel.isStartMode()) { // must be in game mode for this to work
 
 			int i = panel.getInvo().findBox(e.getX(), e.getY());
-			checkInventory(i);
-		}
 
-	}
-
-	public void checkInventory(int i){
-
-		if (i == 0) { // box 1
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(0)) != null) {
-				System.out.println("IN BOX 0");
-				Item item = panel.getGameClient().getAvatar()
-						.getInventory().get(0);
-			}
-		} else if (i == 1) {
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(1)) != null) {
-				System.out.println("IN BOX 1");
-				Item item = panel.getGameClient().getAvatar()
-						.getInventory().get(1);
-			}
-		} else if (i == 2) {
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(2)) != null) {
-				System.out.println("IN BOX 2");
-				Item item = panel.getGameClient().getAvatar()
-						.getInventory().get(2);
-			}
-		} else if (i == 3) {
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(3)) != null) {
-				System.out.println("IN BOX 3");
-				Item item = panel.getGameClient().getAvatar()
-						.getInventory().get(3);
-			}
-		} else if (i == 4) {
-			if (i <= (panel.getGameClient().getAvatar().getInventory()
-					.size())
-					&& (panel.getGameClient().getAvatar().getInventory()
-							.get(4)) != null) {
-				System.out.println("IN BOX 4");
-				Item item = panel.getGameClient().getAvatar()
-						.getInventory().get(4);
+			if(checkInventory(i)==true){ //something is here
+				if (e.isPopupTrigger()) // for inventory interactions
+					doPop(e);
 			}
 		}
-
 
 	}
 
 	public void mousePressed(MouseEvent e) {
-		if (e.isPopupTrigger()) // for inventory interactions
-			doPop(e);
+		if (!panel.isStartMode()) { // must be in game mode for this to work
+
+			int i = panel.getInvo().findBox(e.getX(), e.getY());
+
+			if(checkInventory(i)==true){ //something is here
+				if (e.isPopupTrigger()) // for inventory interactions
+					doPop(e);
+			}
+		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		if (e.isPopupTrigger())
-			doPop(e);
+		if (!panel.isStartMode()) { // must be in game mode for this to work
+
+			int i = panel.getInvo().findBox(e.getX(), e.getY());
+
+			if(checkInventory(i)==true){ //something is here
+				if (e.isPopupTrigger()) // for inventory interactions
+					doPop(e);
+			}
+		}
 	}
 
 	/**
@@ -103,6 +71,64 @@ public class MyMouseListener implements MouseListener {
 		InvoPopup menu = new InvoPopup();
 		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
+
+	public boolean checkInventory(int i){
+
+		if (i == 0) { // box 1
+			if (i <= (panel.getGameClient().getAvatar().getInventory()
+					.size())
+					&& (panel.getGameClient().getAvatar().getInventory()
+							.get(0)) != null) {
+				System.out.println("IN BOX 0");
+				item = panel.getGameClient().getAvatar()
+						.getInventory().get(0);
+				return true;
+			}
+		} else if (i == 1) {
+			if (i <= (panel.getGameClient().getAvatar().getInventory()
+					.size())
+					&& (panel.getGameClient().getAvatar().getInventory()
+							.get(1)) != null) {
+				System.out.println("IN BOX 1");
+				item = panel.getGameClient().getAvatar()
+						.getInventory().get(1);
+				return true;
+			}
+		} else if (i == 2) {
+			if (i <= (panel.getGameClient().getAvatar().getInventory()
+					.size())
+					&& (panel.getGameClient().getAvatar().getInventory()
+							.get(2)) != null) {
+				System.out.println("IN BOX 2");
+				item = panel.getGameClient().getAvatar()
+						.getInventory().get(2);
+				return true;
+			}
+		} else if (i == 3) {
+			if (i <= (panel.getGameClient().getAvatar().getInventory()
+					.size())
+					&& (panel.getGameClient().getAvatar().getInventory()
+							.get(3)) != null) {
+				System.out.println("IN BOX 3");
+				item = panel.getGameClient().getAvatar()
+						.getInventory().get(3);
+				return true;
+			}
+		} else if (i == 4) {
+			if (i <= (panel.getGameClient().getAvatar().getInventory()
+					.size())
+					&& (panel.getGameClient().getAvatar().getInventory()
+							.get(4)) != null) {
+				System.out.println("IN BOX 4");
+				item = panel.getGameClient().getAvatar()
+						.getInventory().get(4);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 
 	public void mouseEntered(MouseEvent e) {
 		// System.out.println("Mouse entered at " + e.getX() + ", " + e.getY());
