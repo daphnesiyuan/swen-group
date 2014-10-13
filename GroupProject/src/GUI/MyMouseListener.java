@@ -81,40 +81,35 @@ public class MyMouseListener implements MouseListener {
 				System.out.println("IN BOX 1; size of inventory="+panel.getGameClient().getAvatar().getInventory().size());
 
 				System.out.println("IN BOX 0");
-				item = panel.getGameClient().getAvatar()
-						.getInventory().get(0);
+				item = panel.getGameClient().getAvatar().getInventory().get(0);
 				return true;
 			}
 		} else if (i == 1) {
 			if (i < (panel.getGameClient().getAvatar().getInventory().size())
 					&& (panel.getGameClient().getAvatar().getInventory().get(1)) != null) {
 				System.out.println("IN BOX 1; size of inventory="+panel.getGameClient().getAvatar().getInventory().size());
-				item = panel.getGameClient().getAvatar()
-						.getInventory().get(1);
+				item = panel.getGameClient().getAvatar().getInventory().get(1);
 				return true;
 			}
 		} else if (i == 2) {
 			if (i < (panel.getGameClient().getAvatar().getInventory().size())
 					&& (panel.getGameClient().getAvatar().getInventory().get(2)) != null) {
 				System.out.println("IN BOX 2");
-				item = panel.getGameClient().getAvatar()
-						.getInventory().get(2);
+				item = panel.getGameClient().getAvatar().getInventory().get(2);
 				return true;
 			}
 		} else if (i == 3) {
 			if (i < (panel.getGameClient().getAvatar().getInventory().size())
 					&& (panel.getGameClient().getAvatar().getInventory().get(3)) != null) {
 				System.out.println("IN BOX 3");
-				item = panel.getGameClient().getAvatar()
-						.getInventory().get(3);
+				item = panel.getGameClient().getAvatar().getInventory().get(3);
 				return true;
 			}
 		} else if (i == 4) {
 			if (i < (panel.getGameClient().getAvatar().getInventory().size())
 					&& (panel.getGameClient().getAvatar().getInventory().get(4)) != null) {
 				System.out.println("IN BOX 4");
-				item = panel.getGameClient().getAvatar()
-						.getInventory().get(4);
+				item = panel.getGameClient().getAvatar().getInventory().get(4);
 				return true;
 			}
 		}

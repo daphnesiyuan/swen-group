@@ -49,7 +49,7 @@ public class StartGUI extends JFrame{
 		setResizable(false); // prevent us from being resizeable
 		jpanel = new JPanel();
 		jpanel.setLayout(new FlowLayout()); // change later
-		jpanel.add(Box.createHorizontalStrut(28)); // a spacer
+		jpanel.add(Box.createHorizontalStrut(30)); // a spacer
 		jpanel.add(new JLabel("Please fill in a username"));
 
 
@@ -66,10 +66,10 @@ public class StartGUI extends JFrame{
 	}
 
 	public void setTextField() {
-		JLabel label2 = new JLabel("\nUsername");
+		JLabel label2 = new JLabel("\n\nUsername");
 		textName = new JTextField(20);
 		textName.getDocument().addDocumentListener(new MyDocumentListener());
-		jpanel.add(Box.createHorizontalStrut(35)); // a spacer for alignment
+		jpanel.add(Box.createHorizontalStrut(150)); // a spacer for alignment
 		jpanel.add(label2);
 		jpanel.add(textName);
 	}
