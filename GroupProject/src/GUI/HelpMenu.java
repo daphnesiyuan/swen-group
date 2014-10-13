@@ -47,8 +47,6 @@ public class HelpMenu {
 	 */
 	public void drawHelp(Graphics g){
 
-		System.out.println("paint help");
-
 		Graphics2D g2d = (Graphics2D)g;
 
 		//make image transparent varying to the time of day (in meatspace)

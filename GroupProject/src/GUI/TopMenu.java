@@ -13,6 +13,7 @@ public class TopMenu implements ActionListener{
 	boolean mouse = false;
 	private JMenuBar menuBar;
 	private WindowFrame Window;
+	private DrawingPanel panel;
 
 
 	private JMenuItem mainDropDown;
@@ -24,9 +25,9 @@ public class TopMenu implements ActionListener{
 	private JMenuItem option1b;
 
 
-	public TopMenu(WindowFrame w){
+	public TopMenu(WindowFrame w, DrawingPanel p){
 		Window = w;
-
+		panel = p;
 		menuBar = new JMenuBar();
 
 		setupMenuBar();
@@ -38,8 +39,15 @@ public class TopMenu implements ActionListener{
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-	    if ((e.getActionCommand()).equals("Do this")) {
+	    if ((e.getActionCommand()).equals("Save")) {
 	    	System.out.println("do this ok");
+	    	if(panel.getGameServer().saveGame()){
+	    		System.out.println("game successfully saved");
+	    	}
+	    	else{
+	    		System.out.println("YOU FUCKED UP THE SAVING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+	    	}
+
 	    	mouse = true;
 	    }
 	    else if ( (e.getActionCommand()).equals("Do that") ){
@@ -52,10 +60,10 @@ public class TopMenu implements ActionListener{
 	 * Method to make any setups necessary for the top menu, such as options and inner menus
 	 */
 	public void setupMenuBar() {
-		mainDropDown = new JMenu("Main");
+		mainDropDown = new JMenu("File");
 		option = new JMenu("Some option");
 
-		option1a = new JMenuItem("Do this");
+		option1a = new JMenuItem("Save");
 		option1b = new JMenuItem("Do that");
 
 		mainDropDown.add(option);

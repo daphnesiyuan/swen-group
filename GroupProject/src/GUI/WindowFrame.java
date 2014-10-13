@@ -14,8 +14,6 @@ public class WindowFrame extends JFrame {
 	private TopMenu topMenu;
 	private DrawingPanel panel;
 
-
-	public static DrawingPanel canvas;
 	public static GameClient gameClient;
 	public static Player player;
 
@@ -29,7 +27,7 @@ public class WindowFrame extends JFrame {
 	}
 
 	public void JFrameSetUp() {
-		topMenu = new TopMenu(this);
+		topMenu = new TopMenu(this, panel );
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setSize(1280, 720);

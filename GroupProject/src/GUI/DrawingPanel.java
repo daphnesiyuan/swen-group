@@ -33,8 +33,7 @@ import rendering.ScoreBoard;
  */
 public class DrawingPanel extends JPanel {
 
-	private DrawWorld dw; // this draws all the game-stuff: locations chars
-							// items etc
+	private DrawWorld dw; // this draws all the game-stuff: avatars items etc
 	private StartMenu sm;
 	private WindowFrame wf;
 	public static boolean startMenu; // play or menu mode flag
@@ -125,11 +124,13 @@ public class DrawingPanel extends JPanel {
 
 				if (chatMode)
 					chat.redraw(g, gc.getChatHistory(20), currentMessage);
-
 			}
 		}
 
 	}
+
+	//threads for checking if disconnected
+
 
 	/**
 	 * Helper method for setting up the mouse and key listeners
@@ -169,6 +170,28 @@ public class DrawingPanel extends JPanel {
 		handler.mouseMoved();
 	}
 
+
+
+	/**
+	 * @author Jimmy Veug
+	 */
+	private class GameCheckThread implements Runnable{
+		@Override
+		public void run() {
+			while( gc.isConnected() ){
+
+				try {
+					Thread.sleep(30);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			System.out.println("disconnected");
+			startMenu=true;
+
+		}
+
+	}
 
 
 	/**
@@ -237,15 +260,19 @@ public class DrawingPanel extends JPanel {
 
 	}
 
+	/**
+	 * author: Jimmy Veug
+	 */
+
 	public void startDrawWorld(){
-
-		System.out.println(">>>>>>>>>> IN TEST METHOD");
-
 		dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
 		compass = new DrawCompass(DrawingPanel.this);
 		invo = new DrawInventory(DrawingPanel.this);
 		map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
 		repaint();
+
+		Thread th = new Thread( new GameCheckThread() );
+		th.start();
 	}
 
 	////////////////getters and setters
@@ -277,16 +304,11 @@ public class DrawingPanel extends JPanel {
 
 	public GameClient getGameClient() {
 		return gc; }
+	public GameServer getGameServer(){
+		return gs; }
 
 	public ArrayList<Integer> getKeysDown() {
 		return keysDown; }
-
-	public void joinDrawWorld() { //uses constructors of leon's constructors
-		dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
-		compass = new DrawCompass(DrawingPanel.this);
-		invo = new DrawInventory(DrawingPanel.this);
-		map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
-	}
 
 	//helper methods for leon and jimmy's chat stuff
 	public boolean isChatMode() {

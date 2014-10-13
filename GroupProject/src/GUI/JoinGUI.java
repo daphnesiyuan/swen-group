@@ -126,9 +126,8 @@ public class JoinGUI extends JFrame{
 							}
 							dispose();
 
-							panel.joinDrawWorld();
+							panel.startDrawWorld();
 							panel.setGameMode();
-							panel.repaint();
 						}
 
 					} catch (UnknownHostException e1) {
