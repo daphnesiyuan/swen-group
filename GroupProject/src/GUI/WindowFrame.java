@@ -28,21 +28,15 @@ public class WindowFrame extends JFrame {
 		this.addKeyListener(panel.getKeyB());
 	}
 
-	/**
-	 * @author Daphne Wang
-	 */
 	public void JFrameSetUp() {
 		topMenu = new TopMenu(this);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setSize(1280, 720);
-		setMinimumSize(new Dimension(924, 520));
+		setMinimumSize(new Dimension(800, 530));
 		setVisible(true); // make sure we are visible!
 	}
 
-	/**
-	 * @author Daphne Wang
-	 */
 	public void JPanelStuff() {
 		panel = new DrawingPanel(this);
 		add(panel, BorderLayout.CENTER); // add canvas

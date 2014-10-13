@@ -121,7 +121,7 @@ public class StartGUI extends JFrame{
 
 
 						dispose();
-						panel.testMethod();
+						panel.startDrawWorld();
 						panel.setGameMode();
 						System.out.println("clicked connect");
 

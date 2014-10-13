@@ -49,7 +49,9 @@ public class DrawingPanel extends JPanel {
 	private MouseMotion mouseMotion;
 	private String hoveredButton = "";
 
-	private JoinMenu joinMenu;
+	private JoinGUI joinG;
+	private StartGUI startG;
+	private HelpMenu help;
 
 	private XMLFile fileChooser;
 
@@ -78,6 +80,7 @@ public class DrawingPanel extends JPanel {
 		sm = new StartMenu(this);
 		startMenu = true; // by default
 		handler = new Handler();
+		help = new HelpMenu(DrawingPanel.this);
 
 		directionI = 0;
 
@@ -88,8 +91,6 @@ public class DrawingPanel extends JPanel {
 		chat = new DrawChat(this);
 
 		// networking setup stuff
-		// gs = new GameServer();
-		// setUpNWEN();
 		gc = new GameClient("Daphne", this);
 
 		score = new ScoreBoard(this);
@@ -104,11 +105,14 @@ public class DrawingPanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 
-		if (startMenu) {
-			sm.redraw(g);
+		if(help.isHelpMode()){
+			help.drawHelp(g);
 		}
 
-		else { // else it is in game
+		else if (startMenu)
+			sm.redraw(g);
+
+		else if(!startMenu){ // else it is in game
 			if (gc.getRoom() != null && gc.getAvatar() != null) {
 				dw.redraw(g, gc.getRoom(), Direction.get(directionI),
 						gc.getAvatar());
@@ -120,8 +124,10 @@ public class DrawingPanel extends JPanel {
 
 				if (chatMode)
 					chat.redraw(g, gc.getChatHistory(20), currentMessage);
+
 			}
 		}
+
 	}
 
 	/**
@@ -274,27 +280,21 @@ public class DrawingPanel extends JPanel {
 			String s = findButton(mouseX, mouseY);
 			if (startMenu) {
 				if (s.equals("start")) {
-					gs = new GameServer(); //might remove later
-					//setUpNWEN();
-
-					StartGUI startG = new StartGUI(DrawingPanel.this, gc, gs);
+					gs = new GameServer();
+					startG = new StartGUI(DrawingPanel.this, gc, gs);
 					startG.setup();
 
-					/*dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
-					compass = new DrawCompass(DrawingPanel.this);
-					invo = new DrawInventory(DrawingPanel.this);
-					map = new DrawMiniMap(DrawingPanel.this, gc.getAvatar());
-					repaint();*/
-
-
 				} else if (s.equals("join")) {
-					joinMenu = new JoinMenu(DrawingPanel.this, gc);
-					joinMenu.setup();
+					joinG = new JoinGUI(DrawingPanel.this, gc);
+					joinG.setup();
 
 				} else if (s.equals("load")) {
 					fileChooser = new XMLFile(wf);
 
 				} else if (s.equals("help")) {
+					System.out.println("pressed help button");
+					help.helpOn();
+					repaint();
 
 				} else {
 					System.out.println("no active button");
@@ -337,7 +337,7 @@ public class DrawingPanel extends JPanel {
 
 	}
 
-	public void testMethod(){
+	public void startDrawWorld(){
 
 		System.out.println(">>>>>>>>>> IN TEST METHOD");
 
@@ -375,7 +375,7 @@ public class DrawingPanel extends JPanel {
 	public ArrayList<Integer> getKeysDown() {
 		return keysDown; }
 
-	public void startDrawWorld() { //uses constructors of leon's constructors
+	public void joinDrawWorld() { //uses constructors of leon's constructors
 		dw = new DrawWorld(gc.getAvatar(), DrawingPanel.this);
 		compass = new DrawCompass(DrawingPanel.this);
 		invo = new DrawInventory(DrawingPanel.this);

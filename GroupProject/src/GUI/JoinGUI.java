@@ -22,7 +22,7 @@ import networking.GameClient;
 
 
 
-public class JoinMenu extends JFrame{
+public class JoinGUI extends JFrame{
 
 	private JPanel jpanel;
 	private JButton connectButton;
@@ -34,7 +34,7 @@ public class JoinMenu extends JFrame{
 	private GameClient gc;
 	private DrawingPanel panel;
 
-	public JoinMenu(DrawingPanel p, GameClient g) {
+	public JoinGUI(DrawingPanel p, GameClient g) {
 		gc = g;
 		handler = new theHandler();
 		connectButton = new JButton("Connect");
@@ -126,7 +126,7 @@ public class JoinMenu extends JFrame{
 							}
 							dispose();
 
-							panel.startDrawWorld();
+							panel.joinDrawWorld();
 							panel.setGameMode();
 							panel.repaint();
 						}
