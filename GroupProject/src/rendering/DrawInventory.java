@@ -87,7 +87,7 @@ public class DrawInventory {
 	 * @param x: x coordinate of the mouse
 	 * @param y: y coordinate of the mouse
 	 * @return: int for the i'th box that the mouse interacted with
-	 * @author wangdaph
+	 * @author Daphne Wang
 	 */
 	public int findBox(int x, int y){
 
@@ -107,6 +107,6 @@ public class DrawInventory {
 			return 4;
 		}
 
-		return 50; //random number which indicates no box was clicked on
+		return 50; //failure number which indicates NO box was clicked on
 	}
 }

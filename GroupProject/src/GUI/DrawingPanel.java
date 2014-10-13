@@ -24,6 +24,7 @@ import rendering.DrawHealth;
 import rendering.DrawInventory;
 import rendering.DrawMiniMap;
 import rendering.DrawWorld;
+import rendering.InvoPopup;
 import rendering.ScoreBoard;
 
 /**
@@ -52,6 +53,7 @@ public class DrawingPanel extends JPanel {
 	private JoinGUI joinG;
 	private StartGUI startG;
 	private HelpMenu help;
+
 
 	private XMLFile fileChooser;
 
@@ -137,6 +139,7 @@ public class DrawingPanel extends JPanel {
 		keyboard = new KeyBoard(this, help);
 		mouse = new MyMouseListener(this);
 		this.addMouseListener(mouse);
+
 		mouseMotion = new MouseMotion(this);
 		this.addMouseMotionListener(mouseMotion);
 	}
@@ -206,40 +209,6 @@ public class DrawingPanel extends JPanel {
 	}
 
 	/**
-	 * A helper method which sets up the client/server tools required to play
-	 * the game
-	 */
-	public boolean setUpNWEN() {
-		//gc = new GameClient("Daphne", this);
-
-		try {
-			// gc.connect("130.195.6.69",32768); //jimmy
-			gc.connect(gs); // your own server
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		Room room = gc.getRoom();
-		while (room == null) {
-			room = gc.getRoom();
-			System.out.println(room);
-			System.out.println(gc.isConnected());
-		}
-		return true;
-	}
-
-	/**
 	 * A private inner class to take care of the actions associated with mouse
 	 * hovering and clicking
 	 */
@@ -303,32 +272,38 @@ public class DrawingPanel extends JPanel {
 
 			else { // not in start menu and in game.
 
+
+
 				int i = invo.findBox(mouseX, mouseY);
 				if (i == 0) { // box 1
 					if (i <= (gc.getAvatar().getInventory().size())
 							&& (gc.getAvatar().getInventory().get(0)) != null) {
+						System.out.println("IN BOX 0");
 						Item item = gc.getAvatar().getInventory().get(0);
 					}
 				} else if (i == 1) {
 					if (i <= (gc.getAvatar().getInventory().size())
 							&& (gc.getAvatar().getInventory().get(1)) != null) {
+						System.out.println("IN BOX 1");
 						Item item = gc.getAvatar().getInventory().get(1);
 					}
 				} else if (i == 2) {
 					if (i <= (gc.getAvatar().getInventory().size())
 							&& (gc.getAvatar().getInventory().get(2)) != null) {
+						System.out.println("IN BOX 2");
 						Item item = gc.getAvatar().getInventory().get(2);
 					}
 				}
-
 				else if (i == 3) {
 					if (i <= (gc.getAvatar().getInventory().size())
 							&& (gc.getAvatar().getInventory().get(3)) != null) {
+						System.out.println("IN BOX 3");
 						Item item = gc.getAvatar().getInventory().get(3);
 					}
 				} else if (i == 4) {
 					if (i <= (gc.getAvatar().getInventory().size())
 							&& (gc.getAvatar().getInventory().get(4)) != null) {
+						System.out.println("IN BOX 4");
 						Item item = gc.getAvatar().getInventory().get(4);
 					}
 				}
