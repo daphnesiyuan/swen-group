@@ -74,7 +74,6 @@ public class XMLSaveParser {
 		Element others = new Element("other_tiles");	//Other tiles
 		Element avatars = new Element("avatars");		//characters
 		Element items = new Element("items");			//items
-
 		e.addContent(new Element("roomPlace").setText(room.getRoomPlace()));		//room place
 
 		//CHARACTERS
@@ -88,8 +87,7 @@ public class XMLSaveParser {
 			for(Item i: room.getItems()){
 				items.addContent(parseItem(i));
 			}
-			e.addContent(avatars);
-			e.addContent(items);
+
 		}
 		//TILES
 		if(room.getTiles()!= null &&!(room.getTiles().length ==0)){
@@ -113,6 +111,8 @@ public class XMLSaveParser {
 					}
 
 				}
+				e.addContent(avatars);
+				e.addContent(items);
 				e.addContent(floors);
 				e.addContent(walls);
 				e.addContent(doors);
@@ -155,7 +155,6 @@ public class XMLSaveParser {
 		e.addContent(tile);
 		e.addContent(startTile);
 		e.addContent(inventory);
-
 		return e;
 	}
 
@@ -179,8 +178,6 @@ public class XMLSaveParser {
 
 		e.addContent(new Element("xPos").setText(Integer.toString(floor.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(floor.getyPos())));
-
-		if(!(floor.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(floor.getAvatar().getPlayerName()));
 
 		return e;
 	}
@@ -223,12 +220,13 @@ public class XMLSaveParser {
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
 		e.addContent(new Element("toRoom").setText(door.getToRoom().getRoomPlace()));
 
+		if(door.getColor()!=null){
 		Element color = new Element("color");
 		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
 		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
 		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
 		e.addContent(color);
-
+		}
 		if(!(door.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(door.getAvatar().getPlayerName()));
 
 		return e;
@@ -342,8 +340,8 @@ public class XMLSaveParser {
 	}
 
 	public Element parseAI(AI ai){
-		Element e;
-
+		Element e = new Element("AI");
+			e.addContent(new Element("room").setText(ai.getRoom().getRoomPlace()));
 		return e;
 	}
 
