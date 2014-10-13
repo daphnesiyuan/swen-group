@@ -2,7 +2,7 @@ west
 W W W W W W W E
 W F F F F F W E
 W F F F F F W E
-W F F F F F D E
+W F F Z F F D E
 W F F F F F W E
 W F F F F F W E
 W W W W W W W E
