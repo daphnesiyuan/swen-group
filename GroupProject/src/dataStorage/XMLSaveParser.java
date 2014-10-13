@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import networking.AI;
+
 import org.jdom2.Element;
 
 import gameLogic.Avatar;
@@ -66,13 +68,13 @@ public class XMLSaveParser {
 		Element e = new Element("Room");		//room
 
 
-		Element doors = new Element("doors");		//doors			//
-		Element floors = new Element("floors");		//floors		//TILES
-		Element walls = new Element("walls");		//walls			//
-
+		Element doors = new Element("doors");		//doors
+		Element floors = new Element("floors");		//floors
+		Element walls = new Element("walls");		//walls
+		Element others = new Element("other_tiles");	//Other tiles
 		Element avatars = new Element("avatars");		//characters
 		Element items = new Element("items");			//items
-		Element others = new Element("other_tiles");	//Other tiles (chargers, trees, etc.)
+
 		e.addContent(new Element("roomPlace").setText(room.getRoomPlace()));		//room place
 
 		//CHARACTERS
@@ -80,9 +82,15 @@ public class XMLSaveParser {
 			for(Avatar a: room.getAvatars()){
 				avatars.addContent(parseAvatar(a));
 			}
-			e.addContent(avatars);
 		}
 
+		if(! room.getItems().isEmpty()){
+			for(Item i: room.getItems()){
+				items.addContent(parseItem(i));
+			}
+			e.addContent(avatars);
+			e.addContent(items);
+		}
 		//TILES
 		if(room.getTiles()!= null &&!(room.getTiles().length ==0)){
 				Tile2D[][] t = room.getTiles();
@@ -115,26 +123,8 @@ public class XMLSaveParser {
 	}
 
 	/**
-	 * Parses an avatar in this order and returns an element
-	 *
-	 *
-	private Game.Facing facing;
-	private List <Item> Inventory;
-
-
-	private Tile2D currentTile;
-	private Room currentRoom;
-
-	private String playerName;
-
-	private Cell battery;
-
-	// Avatars coordinates relative to the room - global.
-	private double globalXPos, globalYPos;
-
-	// Avatars coordinates relative to the tile - local.
-	private double tileXPos, tileYPos;
-	 * This is called in parseTile(Floor floor)
+	 * Is given an Avatar object and parses all the vital information
+	 * from the object into an XML element. Then the Element is returned.
 	 *
 	 * @param avatar
 	 * @return Element
@@ -142,23 +132,29 @@ public class XMLSaveParser {
 
 	public Element parseAvatar(Avatar avatar){
 		Element e = new Element("Avatar");
-		e.addContent(new Element("facing").setText(avatar.getFacing().name()));			//Facing
+		Element cell = new Element("cell");
+		Element startTile = new Element("startTile");
+		Element tile = new Element("tile");
 		Element inventory = new Element("inventory");		//Inventory
+
+		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//player name
+		e.addContent(new Element("facing").setText(avatar.getFacing().name()));			//Facing
 		if(!avatar.getInventory().isEmpty()){
 			for(Item i: avatar.getInventory()){		//iterate through list
 				inventory.addContent(new Element("item").setText(i.getDescription()));//add item to inventory element
 			}
 		}
-		e.addContent(inventory);
-		e.addContent(new Element("xPos").setText(Integer.toString(avatar.getCurrentTile().getxPos())));
-		e.addContent(new Element("yPos").setText(Integer.toString(avatar.getCurrentTile().getyPos())));
-		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//player name
-		Element cell = new Element("cell");
-		cell = parseCell(avatar.getCell());
-		e.addContent(cell);
 
-		e.addContent(new Element("tileXPos").setText(Double.toString(avatar.getTileXPos())));
-		e.addContent(new Element("tileYPos").setText(Double.toString(avatar.getTileYPos())));
+		tile.addContent(new Element("xPos").setText(Integer.toString(avatar.getCurrentTile().getxPos())));
+		tile.addContent(new Element("yPos").setText(Integer.toString(avatar.getCurrentTile().getyPos())));
+		startTile.addContent(new Element("startTileXPos").setText(Double.toString(avatar.getStartTile().getxPos())));
+		startTile.addContent(new Element("startTileYPos").setText(Double.toString(avatar.getStartTile().getyPos())));
+		cell = parseCell(avatar.getCell());
+
+		e.addContent(cell);
+		e.addContent(tile);
+		e.addContent(startTile);
+		e.addContent(inventory);
 
 		return e;
 	}
@@ -178,23 +174,22 @@ public class XMLSaveParser {
  */
 
 	public Element parseFloor(Floor floor){
+
 		Element e = new Element("Floor");
+
 		e.addContent(new Element("xPos").setText(Integer.toString(floor.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(floor.getyPos())));
 
 		if(!(floor.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(floor.getAvatar().getPlayerName()));
 
-		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
-		if(!floor.getItems().isEmpty()){
-			for(Item i: floor.getItems())itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
-		}
-		e.addContent(itemsOnTile);
-
 		return e;
 	}
 
 	/**
-	 * 	 * Parse the details of a wall
+	 * Parse the details of a wall that is given as a parameter and
+	 * returns a xml Element that represents the wall
+	 *
+	 * Does not record the items on the tile
 	 * very similar to parseTiles
 	 *
 	 * @param wall
@@ -202,60 +197,39 @@ public class XMLSaveParser {
 	 */
 
 	public Element parseWall(Wall wall){
+
 		Element e = new Element("Wall");
 		e.addContent(new Element("xPos").setText(Integer.toString(wall.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(wall.getyPos())));
-		//e.addContent(new Element("type").setText(wall.getType()));
-		//e.addContent(new Element("room").setText(Integer.toString(wall.getRoom().getRoomNumber()))); 		//ROOM NUMBER
-		if(!(wall.getAvatar() == null))e.addContent(new Element("characterOnTile").setText(wall.getAvatar().getPlayerName()));
-		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
-		if(!wall.getItems().isEmpty()){
-			for(Item i: wall.getItems()){		//iterate through list
-				itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
-			}
-		}
-		e.addContent(itemsOnTile);
-
 		return e;
 	}
 
 	/**
-	 * 	private Room room;
-		private int toRoomIndex;
-		private int toRoomXPos;
-		private int toRoomYPos;
-		private boolean locked;
-		//private List<Key> unlockKeys;		//WILL BE IMPLEMENTED LATER
+	 * Takes a Door object as a parameter and returns an XML Element
+	 * representing this door.
 	 *
+	 * NOTE TO BE REMOVED: Does not parse a full Avatar object when an avatar is on it.
+	 * Must look through all tiles and see if there is an avatar created with a matching name
 	 *
 	 * @param door
 	 * @return Element
 	 */
 
 	public Element parseDoor(Door door){
+
 		Element e = new Element("Door");
+
 		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
 		e.addContent(new Element("toRoom").setText(door.getToRoom().getRoomPlace()));
+
 		Element color = new Element("color");
-//		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
-//		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
-//		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
-//		e.addContent(color);
-
-
+		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
+		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
+		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
+		e.addContent(color);
 
 		if(!(door.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(door.getAvatar().getPlayerName()));
-
-		Element itemsOnTile = new Element("itemsOnTile");		//creating new element for list of items on tile
-
-		if(!door.getItems().isEmpty()){
-			for(Item i: door.getItems()){		//iterate through list
-				itemsOnTile.addContent(new Element("item").setText(i.getDescription()));//add item to itemsOnTile element
-
-			}
-		}
-		e.addContent(itemsOnTile);
 
 		return e;
 	}
@@ -270,9 +244,11 @@ public class XMLSaveParser {
 	 * @return Element representing the parsed cell
 	 */
 	public Element parseCell(Cell cell){
+
 		Element e = new Element("cell");
 		e.addContent(new Element("batteryLife").setText(Integer.toString(cell.getBatteryLife())));
 		e.addContent(new Element("charging").setText(Boolean.toString(cell.isCharging())));
+
 		return e;
 	}
 	/**
@@ -286,19 +262,21 @@ public class XMLSaveParser {
 
 	public Element parseOtherTile2D(Tile2D tile){
 		Element e;
+
 		if(tile instanceof Charger){
 			e = new Element("Charger");
 		}
 		else if(tile instanceof Column){
 			e = new Element("Column");
 		}
-		else { e = new Element("Tree");}//instanceof tree
+		else {
+			e = new Element("Tree");
+			}
+
 		e.addContent(new Element("xPos").setText(Integer.toString(tile.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(tile.getyPos())));
 
-
 		return e;
-
 	}
 
 	/**
@@ -310,12 +288,16 @@ public class XMLSaveParser {
 	 */
 
 	public Element parseScore(Score score){
+
 		Element e = new Element("score");
+
 		Set<Entry<String,Integer>> scoreSet = score.getScore().entrySet();
+
 		for(Entry<String, Integer> entry : scoreSet){
 			Element sc = new Element(entry.getKey()).setText(Integer.toString(entry.getValue()));
 			e.addContent(sc);
 		}
+
 		return e;
 	}
 
@@ -328,26 +310,39 @@ public class XMLSaveParser {
 	 * @return Element representing the Item in XML
 	 */
 	public Element parseItem(Item item){
+
 		Element e;
+
 		if(item instanceof Key){
 			e = new Element("key");
+
 			Element color = new Element("color");
 			color.addContent(new Element("Red").setText(Integer.toString((((Key)item).getColor().getRed()))));
 			color.addContent(new Element("Green").setText(Integer.toString((((Key)item).getColor().getGreen()))));
 			color.addContent(new Element("Blue").setText(Integer.toString((((Key)item).getColor().getBlue()))));
+
 			e.addContent(color);
 		}
 		else{
 			e = new Element("light");
 		}
+
 		Element tile = new Element("tile");
+		Element startTile = new Element("startTile");
+
 		tile.addContent(new Element("xPos")).setText(Integer.toString((item.getTile().getxPos())));
 		tile.addContent(new Element("yPos")).setText(Integer.toString((item.getTile().getyPos())));
-		e.addContent(tile);
-		Element startTile = new Element("startTile");
+
 		tile.addContent(new Element("xPos")).setText(Integer.toString(((Key)item).getStartTile().getxPos()));
 		tile.addContent(new Element("yPos")).setText(Integer.toString(((Key)item).getStartTile().getyPos()));
 		e.addContent(startTile);
+		e.addContent(tile);
+
+		return e;
+	}
+
+	public Element parseAI(AI ai){
+		Element e;
 
 		return e;
 	}

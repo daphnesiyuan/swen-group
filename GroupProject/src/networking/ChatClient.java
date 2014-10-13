@@ -132,13 +132,19 @@ public class ChatClient extends Client {
 		// Only change name if we are not connectged, otherwise we need permission from the server
 		if( isConnected() ){
 
+			// Not fast enough
+			// Not fast enough so now removed
+			// Not fast enough
+			System.out.println("You must be connected to change your name!");
+
 			// Tell the server to update this clients name as well!
-			try {
+
+			/*try {
 				// Try and change it on the servers
 				sendData(new ChatMessage("/name " + name, chatMessageColor));
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 		}
 		else{
 			// Set name directly

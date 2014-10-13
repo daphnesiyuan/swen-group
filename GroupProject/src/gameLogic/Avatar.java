@@ -464,6 +464,14 @@ public class Avatar implements Serializable {
 
 
 
+	public Tile2D getStartTile() {
+		return startTile;
+	}
+
+	public void setStartTile(Tile2D startTile) {
+		this.startTile = startTile;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

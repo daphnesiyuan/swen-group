@@ -31,7 +31,7 @@ public class DrawChat {
 	 * @param currentMessage : the current message being created
 	 */
 	public void redraw(Graphics g, List<ChatMessage> chatMessages, String currentMessage){
-		g.setColor(new Color(0f, 0f, 0f, 0.5f));
+		g.setColor(new Color(0f, 0f, 0f, 0.7f));
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
 
 		int offset = 30;
@@ -50,7 +50,7 @@ public class DrawChat {
 		int x = offset;
 		int y = panel.getHeight() - offset - fontSize;
 
-		g.setColor(Color.BLUE);
+		g.setColor(Color.WHITE);
 		g.drawString(currentMessage, x, y);
 	}
 }

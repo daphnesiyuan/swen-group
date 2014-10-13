@@ -11,13 +11,37 @@ import networking.Server.ClientThread;
 public class ChatServer extends Server {
 
 	// Color of the chat messages sent from the server
-	protected Color chatMessageColor = Color.black;
+	protected static final Color chatMessageColor = Color.red;
 
 	// Total chat history from all clients and the server
 	protected Stack<ChatMessage> chatHistory = new Stack<ChatMessage>();
 
 	// Pings from Name to how many times we haven't been able to ping them
 	private HashMap<String, Integer> failedPings = new HashMap<String, Integer>();
+
+	// All commands for every client to use
+	private static final ArrayList<ChatMessage> clientCommandList = new ArrayList<ChatMessage>(){{
+		add(new ChatMessage("~Admin","List of Possible Commands:", chatMessageColor,true));
+		add(new ChatMessage("","/ip -> Displays your ping on the screen", chatMessageColor,true));
+		add(new ChatMessage("","/ping -> Checks how fast your connection currently is", chatMessageColor,true));
+		add(new ChatMessage("","/get history 'number' -> Sends back the chat history up to 'number' of most recent messages", chatMessageColor,true));
+		add(new ChatMessage("","/admins -> lists the IP's of the admins", chatMessageColor,true));
+		add(new ChatMessage("","/players -> lists all the players in the game", chatMessageColor,true));
+		add(new ChatMessage("","/chatcolor r g b -> changes the color of your chat messages", chatMessageColor,true));
+		add(new ChatMessage("","/clear -> clears all messages off the screen", chatMessageColor,true));
+		add(new ChatMessage("","/disconnect -> disconnects from the server", chatMessageColor,true));
+		add(new ChatMessage("","/reconnect -> reconnects to the previous server was was successfully connected", chatMessageColor,true));
+
+		// Removed due to being too slow
+		//commandList.add(new ChatMessage("","/name 'string' -> changes your name", chatMessageColor,true));
+	}};
+
+	// Commands for admins
+	private static final ArrayList<ChatMessage> adminCommandList = new ArrayList<ChatMessage>(){{
+		add(new ChatMessage("","- ADMIN COMMANDS -", chatMessageColor,true));
+		add(new ChatMessage("","/close -> closes the server", chatMessageColor,true));
+		add(new ChatMessage("","/addbot -> adds a random bot to the server", chatMessageColor,true));
+	}};
 
 	public ChatServer(){
 		Thread clientChecker = new Thread(){
@@ -36,8 +60,8 @@ public class ChatServer extends Server {
 					for (int i = 0; i < clients.size(); i++) {
 
 						ClientThread client = clients.get(i);
-						NetworkObject ping = new NetworkObject(getIPAddress(), new ChatMessage("~Admin","/ping everyone",Color.black,true));
-						int failCount = failedPings.get(client.getPlayerName());
+						NetworkObject ping = new NetworkObject(getIPAddress(), new ChatMessage("~Admin","/ping everyone",chatMessageColor,true));
+						int failCount = failedPings.containsKey(client.getPlayerName()) ? failedPings.get(client.getPlayerName()) : 0;
 						boolean pinged = pingClient(client.getPlayerName(), ping);
 
 						// Couldn't ping them
@@ -353,33 +377,28 @@ public class ChatServer extends Server {
 		 * Displays all the possible commands that can be send form a client to the server
 		 * @param scan Scanner attached to a string/chat message
 		 * @param data Information sent with the text
-		 * @return True if the the text should be displayed and sent to it's clients
+		 * @return True if commands were sent to the client
 		 */
 		private boolean parseHelp(Scanner scan, NetworkObject data) {
 
-			ArrayList<ChatMessage> commandList = new ArrayList<ChatMessage>();
-			commandList.add(new ChatMessage("~Admin","List of Possible Commands:", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/ip -> Displays your ping on the screen", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/ping -> Checks how fast your connection currently is", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/get history 'number' -> Sends back the chat history up to 'number' of most recent messages", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/admins -> lists the IP's of the admins", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/players -> lists all the players in the game", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/chatcolor r g b -> changes the color of your chat messages", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/clear -> clears all messages off the screen", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/disconnect -> disconnects from the server", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/reconnect -> reconnects to the previous server was was successfully connected", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/name 'string' -> changes your name", chatMessageColor,true));
-			commandList.add(new ChatMessage("","/disconnect -> disconnects from the server", chatMessageColor,true));
+			// Sent client commands
+			if( !sendToClient(data.getIPAddress(), new ChatHistory(clientCommandList, true)) ){
 
-			// Only admins can see these commands
-			if( isAdmin(data.getIPAddress()) ){
-				commandList.add(new ChatMessage("","- ADMIN COMMANDS -", chatMessageColor,true));
-				commandList.add(new ChatMessage("","/close -> closes the server", chatMessageColor,true));
-				commandList.add(new ChatMessage("","/addbot -> adds a random bot to the server", chatMessageColor,true));
+				// Didn't send
+				return false;
 			}
 
-			sendToClient(data.getIPAddress(), new ChatHistory(commandList, true));
+			// Sent admin commands if the requester is an admin
+			if( isAdmin(data.getIPAddress()) ){
 
+				if( !sendToClient(data.getIPAddress(), new ChatHistory(adminCommandList, true)) ){
+
+					// Didn't send
+					return false;
+				}
+			}
+
+			// Sent successfully
 			return true;
 		}
 	}
@@ -413,6 +432,12 @@ public class ChatServer extends Server {
 		return pingServer(data.getIPAddress(), data.getTimeInMillis());
 	}
 
+	/**
+	 * Try and ping a client with the given IP or Name
+	 * @param whoToPing Name or IP of the client
+	 * @param data
+	 * @return
+	 */
 	protected synchronized boolean pingClient(String whoToPing, NetworkObject data){
 
 		// Get who pinged the server
@@ -450,7 +475,7 @@ public class ChatServer extends Server {
 		}
 		else{
 			// Send the ping back to the client
-			client.sendData(new NetworkObject(getIPAddress(), new ChatMessage("~Admin", "Ping: " + delay + "ms", Color.black, true)));
+			client.sendData(new NetworkObject(getIPAddress(), new ChatMessage("~Admin", "Ping: " + delay + "ms", chatMessageColor, true)));
 		}
 
 		return delay;
@@ -460,10 +485,10 @@ public class ChatServer extends Server {
 	public void newClientConnection(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Connected.", chatMessageColor, true),cl);
+		messageAllClients(cl.getPlayerName() + " has Connected.", cl);
 
 		// Display welcome message for the new client
-		cl.sendData(new ChatMessage("","Welcome Message::" + "\nType /help for commands", chatMessageColor, true));
+		messageClient("Welcome Message::" + "\nType /help for commands", cl);
 
 		// Tell console this client connected
 		System.out.println(cl.getPlayerName() + " has Connected.");
@@ -476,12 +501,22 @@ public class ChatServer extends Server {
 	public void clientRejoins(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
-		sendToAllClients(new ChatMessage("~Admin",cl.getPlayerName() + " has Reconnected.", chatMessageColor, true),cl);
+		messageAllClients(cl.getPlayerName() + " has Reconnected.", cl);
 
 		// Tell console this client connected
 		System.out.println(cl.getPlayerName() + " has Reconnected.");
 
 		// Reset current FailedPing
 		failedPings.put(cl.getPlayerName(), 0);
+	}
+
+	@Override
+	public void messageAllClients(String message, ClientThread... exceptions) {
+		sendToAllClients(new ChatMessage("~Admin",message, this.chatMessageColor, true), exceptions);
+	}
+
+	@Override
+	public void messageClient(String message, ClientThread client) {
+		client.sendData(new ChatMessage("~Admin",message, chatMessageColor, true));
 	}
 }
