@@ -315,11 +315,32 @@ public class DrawWorld {
 		else if (avatar.getPlayerName().startsWith("ai")){
 			drawObject(g,pt,images.get("AvatarB"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 		}
-		else if(avatar.equals(character)) drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+		else if(avatar.equals(character)){ drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+//		System.out.println("this player.facing"+ avatar.getFacing().toString());
+		}
+		else{
+//			Direction.get(avatar.getFacing().toString());
+			int avatarFacing = Direction.get(avatar.getFacing().toString());
+			int otherRenderingDirection = Direction.get(avatar.getRenderDirection());
+			int myRenderingDirection = Direction.get(direction);
+			if(myRenderingDirection == 1 ||myRenderingDirection == 3){
+				myRenderingDirection = (myRenderingDirection+2)%4;
+			}
+			int combinedDirection = (otherRenderingDirection + avatarFacing + myRenderingDirection) % 4;
 
-//		else{
-//			String dir =
-//			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));}
+//
+			String facing = Direction.get(combinedDirection);
+			//System.out.println(dir);
+			//System.out.println("other player.facing"+ avatar.getFacing().toString());
+			drawObject(g,pt,images.get("AvatarA"+facing+""+avatar.getSpriteIndex()));}
+		//else if(avatar.equals(character)) drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+
+
+
+
+
+
+
 
 		//either draw a floating pointer if avatar is current player
 		//or draw the name above the avatar

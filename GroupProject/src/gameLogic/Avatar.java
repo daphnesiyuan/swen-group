@@ -24,6 +24,7 @@ public class Avatar implements Serializable {
 	private Tile2D tile;
 	private Room room;
 	private Game.Facing facing;
+	private String renderDirection = "North";
 
 	// Avatar's coordinates relative to the tile - local.
 	private double tileXPos, tileYPos;
@@ -130,6 +131,7 @@ public class Avatar implements Serializable {
 			charge(findTile());
 			return false;
 		}
+		this.renderDirection = move.getRenderDirection();
 
 		//change direction without moving
 		if (move.getInteraction().equals("")){
@@ -496,7 +498,9 @@ public class Avatar implements Serializable {
 		this.isAI = isAI;
 	}
 
-
+	public String getRenderDirection(){
+		return renderDirection;
+	}
 
 
 
