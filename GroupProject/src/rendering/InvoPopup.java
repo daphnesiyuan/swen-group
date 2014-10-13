@@ -1,9 +1,12 @@
 package rendering;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-public class InvoPopup extends JPopupMenu{
+public class InvoPopup extends JPopupMenu implements ActionListener{
 
 	JMenuItem Use;
 	JMenuItem Drop;
@@ -14,6 +17,18 @@ public class InvoPopup extends JPopupMenu{
         add(Use);
         add(Drop);
     }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		if ((e.getActionCommand()).equals("Use")) {
+			
+	    }
+
+	    else if ( (e.getActionCommand()).equals("Drop") ){
+
+	    }
+	}
 }
 
 

@@ -170,43 +170,7 @@ public class DrawingPanel extends JPanel {
 		handler.mouseMoved();
 	}
 
-	/**
-	 * A helper method which takes cordinates and finds the button that match
-	 * those If no matching button is found on the mouse click then it will
-	 * return an empty string
-	 *
-	 * @param x the x coordinate of the click
-	 * @param y the y coordinate of the click
-	 * @return the string name associated with the appropriate button
-	 */
-	public String findButton(int x, int y) {
 
-		int startW = (getWidth() / 2 - (sm.getButtonWidth() / 2));
-		int startH1 = getHeight() / 3 - sm.getButtonHeight() / 2
-				+ (-1 * (getHeight() / 3) / 2);
-		int startH2 = getHeight() / 3 - sm.getButtonHeight() / 2
-				+ (0 * (getHeight() / 3) / 2);
-		int startH3 = getHeight() / 3 - sm.getButtonHeight() / 2
-				+ (1 * (getHeight() / 3) / 2);
-		int startH4 = getHeight() / 3 - sm.getButtonHeight() / 2
-				+ (2 * (getHeight() / 3) / 2);
-
-		if (x >= startW && x <= startW + sm.getButtonWidth() && y > startH1
-				&& y < startH1 + sm.getButtonHeight()) {
-			return "start";
-		} else if (x >= startW && x <= startW + sm.getButtonWidth()
-				&& y > startH2 && y < startH2 + sm.getButtonHeight()) {
-			return "join";
-		} else if (x >= startW && x <= startW + sm.getButtonWidth()
-				&& y > startH3 && y < startH3 + sm.getButtonHeight()) {
-			return "load";
-		} else if (x >= startW && x <= startW + sm.getButtonWidth()
-				&& y > startH4 && y < startH4 + sm.getButtonHeight()) {
-			return "help";
-		}
-
-		return "";
-	}
 
 	/**
 	 * A private inner class to take care of the actions associated with mouse
@@ -220,16 +184,16 @@ public class DrawingPanel extends JPanel {
 		// handles hovering
 		public void mouseMoved() {
 			if (startMenu) {
-				if (findButton(hoverX, hoverY).equals("start")) {
+				if (sm.findButton(hoverX, hoverY).equals("start")) {
 					hoveredButton = "start";
 					sm.loadHoverButton("start");
-				} else if (findButton(hoverX, hoverY).equals("join")) {
+				} else if (sm.findButton(hoverX, hoverY).equals("join")) {
 					hoveredButton = "join";
 					sm.loadHoverButton("join");
-				} else if (findButton(hoverX, hoverY).equals("load")) {
+				} else if (sm.findButton(hoverX, hoverY).equals("load")) {
 					hoveredButton = "load";
 					sm.loadHoverButton("load");
-				} else if (findButton(hoverX, hoverY).equals("help")) {
+				} else if (sm.findButton(hoverX, hoverY).equals("help")) {
 					hoveredButton = "help";
 					sm.loadHoverButton("help");
 				}
@@ -246,7 +210,7 @@ public class DrawingPanel extends JPanel {
 		 * Handles the mouse clicking of the start menu buttons
 		 */
 		public void mouseListener() {
-			String s = findButton(mouseX, mouseY);
+			String s = sm.findButton(mouseX, mouseY);
 			if (startMenu) {
 				if (s.equals("start")) {
 					gs = new GameServer();
@@ -270,44 +234,6 @@ public class DrawingPanel extends JPanel {
 				}
 			}
 
-			else { // not in start menu and in game.
-
-
-
-				int i = invo.findBox(mouseX, mouseY);
-				if (i == 0) { // box 1
-					if (i <= (gc.getAvatar().getInventory().size())
-							&& (gc.getAvatar().getInventory().get(0)) != null) {
-						System.out.println("IN BOX 0");
-						Item item = gc.getAvatar().getInventory().get(0);
-					}
-				} else if (i == 1) {
-					if (i <= (gc.getAvatar().getInventory().size())
-							&& (gc.getAvatar().getInventory().get(1)) != null) {
-						System.out.println("IN BOX 1");
-						Item item = gc.getAvatar().getInventory().get(1);
-					}
-				} else if (i == 2) {
-					if (i <= (gc.getAvatar().getInventory().size())
-							&& (gc.getAvatar().getInventory().get(2)) != null) {
-						System.out.println("IN BOX 2");
-						Item item = gc.getAvatar().getInventory().get(2);
-					}
-				}
-				else if (i == 3) {
-					if (i <= (gc.getAvatar().getInventory().size())
-							&& (gc.getAvatar().getInventory().get(3)) != null) {
-						System.out.println("IN BOX 3");
-						Item item = gc.getAvatar().getInventory().get(3);
-					}
-				} else if (i == 4) {
-					if (i <= (gc.getAvatar().getInventory().size())
-							&& (gc.getAvatar().getInventory().get(4)) != null) {
-						System.out.println("IN BOX 4");
-						Item item = gc.getAvatar().getInventory().get(4);
-					}
-				}
-			}
 		}
 
 	}
@@ -332,11 +258,17 @@ public class DrawingPanel extends JPanel {
 		Dimension dimension = new Dimension(1280, 720);
 		return dimension; }
 
+	public boolean isStartMode(){
+		return startMenu; }
+
 	public void setGameMode() {
 		startMenu = false; }
 
 	public KeyBoard getKeyB() {
 		return keyboard; }
+	public DrawInventory getInvo(){
+		return invo;
+	}
 
 	public int getDirection() {
 		return directionI; }

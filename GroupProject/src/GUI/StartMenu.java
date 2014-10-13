@@ -185,4 +185,43 @@ public class StartMenu {
 		}
 	}
 
+
+	/**
+	 * A helper method which takes cordinates and finds the button that match
+	 * those If no matching button is found on the mouse click then it will
+	 * return an empty string
+	 *
+	 * @param x the x coordinate of the click
+	 * @param y the y coordinate of the click
+	 * @return the string name associated with the appropriate button
+	 */
+	public String findButton(int x, int y) {
+
+		int startW = (panel.getWidth() / 2 - (getButtonWidth() / 2));
+		int startH1 = panel.getHeight() / 3 - getButtonHeight() / 2
+				+ (-1 * (panel.getHeight() / 3) / 2);
+		int startH2 = panel.getHeight() / 3 - getButtonHeight() / 2
+				+ (0 * (panel.getHeight() / 3) / 2);
+		int startH3 = panel.getHeight() / 3 - getButtonHeight() / 2
+				+ (1 * (panel.getHeight() / 3) / 2);
+		int startH4 = panel.getHeight() / 3 - getButtonHeight() / 2
+				+ (2 * (panel.getHeight() / 3) / 2);
+
+		if (x >= startW && x <= startW + getButtonWidth() && y > startH1
+				&& y < startH1 + getButtonHeight()) {
+			return "start";
+		} else if (x >= startW && x <= startW + getButtonWidth()
+				&& y > startH2 && y < startH2 + getButtonHeight()) {
+			return "join";
+		} else if (x >= startW && x <= startW + getButtonWidth()
+				&& y > startH3 && y < startH3 + getButtonHeight()) {
+			return "load";
+		} else if (x >= startW && x <= startW + getButtonWidth()
+				&& y > startH4 && y < startH4 + getButtonHeight()) {
+			return "help";
+		}
+
+		return "";
+	}
+
 }
