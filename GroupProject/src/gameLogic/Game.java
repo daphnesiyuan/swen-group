@@ -23,16 +23,20 @@ public class Game{
 
 	private Score score;
 
-
+	//tiles[1][1].addItem(new Light(tiles[1][1]));
+	
 	public Game(){
-		roomNumber = 0; // RE: 0th room is arena
+		this.roomNumber = 0; // RE: 0th room is arena
 
 
-		roomsInGame = new ArrayList<Room>();
-		activeAvatars = new ArrayList<Avatar>();
-		activeAI = new ArrayList<AI>();
+		this.roomsInGame = new ArrayList<Room>();
+		this.activeAvatars = new ArrayList<Avatar>();
+		this.activeAI = new ArrayList<AI>();
 		createNewGame();
-		score = new Score();
+		this.score = new Score();
+		
+		Thread environment = new Environment(this);
+		environment.start();
 	}
 
 	public Game(Boolean loaded){
@@ -178,6 +182,22 @@ public class Game{
 		return count;
 	}
 
+	private class Environment extends Thread{
+		
+		Game game;
+		
+		public Environment(Game game){
+			this.game = game;
+		}
+		
+		@Override
+		public void run(){
+			while(true){
+				
+			}
+		}
+	}
+	
 
 
 

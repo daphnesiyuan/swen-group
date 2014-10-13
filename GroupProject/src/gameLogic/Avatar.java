@@ -118,6 +118,21 @@ public class Avatar implements Serializable {
 	public boolean interact(Item item){
 		return item.interactWith(this);
 	}
+	
+	public void useItem(Item item){
+		//TODO
+	}
+	
+	public void dropItem(){
+		
+	}
+	
+	public void emptyInventory(){
+		for(Item item : Inventory){
+			item.returnToStartPos();
+		}
+		this.Inventory = null;
+	}
 
 
 	public boolean moveTo(Move move){
@@ -259,9 +274,7 @@ public class Avatar implements Serializable {
 		cell.setBatteryLife(maxCharge);
 		updateLocations(startTile,startRoom);
 		lastHit = null;
-		for(Item item: Inventory){
-			item.returnToStartPos();
-		}
+		emptyInventory();
 	}
 
 	public void addKill(){
