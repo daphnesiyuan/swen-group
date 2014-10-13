@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import javax.swing.JFrame;
@@ -39,6 +40,7 @@ public class WindowFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setSize(1280, 720);
+		setMinimumSize(new Dimension(924, 520));
 		setVisible(true); // make sure we are visible!
 	}
 
