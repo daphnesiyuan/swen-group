@@ -109,8 +109,6 @@ public class Avatar implements Serializable {
 	}
 
 	public boolean interact(Item item){
-		if(Math.abs(item.getTile().getxPos()-tile.getxPos())>1) return false;
-		if(Math.abs(item.getTile().getyPos()-tile.getyPos())>1) return false;
 		return item.interactWith(this);
 	}
 
