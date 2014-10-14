@@ -95,10 +95,6 @@ public class Avatar implements Serializable {
 		this.score = 0;
 		this.lastHit = null;
 
-		inventory.add(new RedKey(null));
-		inventory.add(new GreenKey(null));
-		inventory.add(new YellowKey(null));
-		inventory.add(new PurpleKey(null));
 	}
 
 	public void updateLocations(Tile2D tile, Room room) {
@@ -132,11 +128,19 @@ public class Avatar implements Serializable {
 	}
 
 	public boolean dropItem(Move move){
+
+		Tile2D dropTile = null;
+		if(tile.getTileUp() != tile ) dropTile = tile.getTileUp();
+		else if(tile.getTileLeft() != tile) dropTile = tile.getTileLeft();
+		else if(tile.getTileRight() != tile) dropTile = tile.getTileRight();
+		else if (tile.getTileDown() != tile) dropTile = tile.getTileDown();
+		else return false;
+
 		int remove = move.getIndex();
 		Item item = inventory.get(remove);
 		inventory.remove(item);
-		//item.returnToStartPos();
-		item = null;
+
+		item.moveItemTo(dropTile);
 		return true;
 	}
 

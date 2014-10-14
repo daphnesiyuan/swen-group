@@ -101,6 +101,18 @@ public class MakeImageMap {
 
 			//Shoes
 			addToMap("Shoes"+i);
+
+			//RedKey
+			addToMap("RedKey"+i);
+
+			//GreenKey
+			addToMap("GreenKey"+i);
+
+			//PurpleKey
+			addToMap("PurpleKey"+i);
+
+			//GreenKey
+			addToMap("GreenKey"+i);
 		}
 
 		//Night time

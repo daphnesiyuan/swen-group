@@ -24,7 +24,6 @@ public class Environment extends Thread implements Serializable{
 		this.game = game;
 		this.itemID = 0;
 
-		this.doorColors = new ArrayList<String>();
 		this.keyColors = new ArrayList<String>();
 
 		keyColors.add("R");
@@ -32,10 +31,6 @@ public class Environment extends Thread implements Serializable{
 		keyColors.add("Y");
 		keyColors.add("P");
 
-		doorColors.add("R");
-		doorColors.add("G");
-		doorColors.add("Y");
-		doorColors.add("P");
 
 
 	}
@@ -46,7 +41,7 @@ public class Environment extends Thread implements Serializable{
 			if(count == 0){		// initial environment item generation
 				for(int i = 1; i < 5; i++){		// at start - put lights in all rooms but arena.
 					genLight(i);
-					//genKey(i);
+					genKey(i);
 				}
 
 
@@ -57,6 +52,7 @@ public class Environment extends Thread implements Serializable{
 	}
 	private void genKey(int i){
 		Room room = game.getRoomsInGame().get(i);
+
 		if(keyColors.get(0).equals("R")){
 			RedKey key  = new RedKey(room.getTiles()[1][5]);
 			key.setItemID(itemID++);
