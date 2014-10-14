@@ -28,14 +28,10 @@ public abstract class Client{
 	// Which player the gameclient is controlling
 	protected Player player;
 
-	// Everyone to be sent to the server
-	//private Object outGoingPacketLock = new Object();
-	private ArrayDeque<NetworkObject> outgoingPackets = new ArrayDeque<NetworkObject>(200);
-
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
 
-	private InputWaiter myThread;
+	private InputWaiter inputThread;
 
 	private final int port = 32768;
 
@@ -70,6 +66,28 @@ public abstract class Client{
 		return player.getIPAddress();
 	}
 
+	/**
+	 * Attempts to connect to the given Server
+	 * @param IPAddress IPAddress of the connection to connect as
+	 * @return True if connection worked, otherwise a exception gets thrown
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
+	public boolean connect(Server server) throws UnknownHostException, IOException{
+		return connect(server.getIPAddress(), getName(), server.getPort());
+	}
+
+	/**
+	 * Attempts to connect to the given IPAddress and port number of the server using the Clients name
+	 * @param IPAddress IPAddress of the connection to connect as
+	 * @param port Default: 32768
+	 * @return True if connection worked, otherwise a exception gets thrown
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
+	public boolean connect(String IPAddress) throws UnknownHostException, IOException{
+		return connect(IPAddress, player.getName(), getPort());
+	}
 
 	/**
 	 * Attempts to connect to the given IPAddress and port number of the
@@ -80,7 +98,7 @@ public abstract class Client{
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	protected boolean connect(String IPAddress, String playerName, int port) throws UnknownHostException, IOException{
+	public boolean connect(String IPAddress, String playerName, int port) throws UnknownHostException, IOException{
 
 		// Disconnect from the server
 		disconnect();
@@ -110,11 +128,8 @@ public abstract class Client{
 			player.setName((String)in.readObject());
 
 			// Start our new socket
-			myThread = new InputWaiter();
-			myThread.start();
-
-			// Clear all packets that were pending
-			outgoingPackets.clear();
+			inputThread = new InputWaiter();
+			inputThread.start();
 
 			// Record server
 			connectedIP = IPAddress;
@@ -156,9 +171,9 @@ public abstract class Client{
 		}
 
 		//Wait for us to stop listening to the current socket
-		if( myThread != null ){
+		if( inputThread != null ){
 			try {
-				myThread.join();
+				inputThread.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -234,6 +249,8 @@ public abstract class Client{
 		public void run() {
 			try{
 
+				NetworkObject data = null;
+
 				while( socket != null && !socket.isClosed() ){
 
 					// Wait for text
@@ -241,22 +258,20 @@ public abstract class Client{
 						inputStream = new ObjectInputStream(socket.getInputStream());
 					}catch(IOException e ){ continue; }
 					catch(NullPointerException e ){ continue; }
-
-					// Get data sent to us
-					NetworkObject data;
 					try{
+
+						// Get data sent to us
 						data = (NetworkObject)inputStream.readObject();
+
+						// Send object to client that is waiting for data
+						retrieveObject(data);
+
 					}catch(SocketException e){
 						continue;
 					}catch(StreamCorruptedException e){
 						continue;
 					}
-
-					// Send object to client that is waiting for data
-					retrieveObject(data);
 				}
-
-
 			}
 			catch(SocketException e){
 				e.printStackTrace();
@@ -291,6 +306,38 @@ public abstract class Client{
 		// Check for valid socket
 		return socket != null && !socket.isClosed();
 	}
+	/**
+	 * Returns the name placed as this client
+	 * @return
+	 */
+	public String getName() {
+		return player.getName();
+	}
+
+	/**
+	 * Returns the player accociated with this client
+	 * @return Player object containing name and IP
+	 */
+	public Player getPlayer(){
+		return player;
+	}
+
+	/**
+	 * Gets the port that will be connecting to a server
+	 * @return int of the port
+	 */
+	public int getPort() {
+		return port;
+	}
+
+	/**
+	 * What's called once we successfully connect to a server
+	 * @param playerName name of our player that we are connecting with
+	 */
+	public void successfullyConnected(String playerName){
+		System.out.println("Connected to: " + connectedIP);
+	}
+
 
 	/**
 	 * Servers send out objects as data to all their clients.
@@ -300,14 +347,4 @@ public abstract class Client{
 	 * @return
 	 */
 	public abstract void retrieveObject(NetworkObject data);
-
-	/**
-	 * What's called once we successfully connect to a server
-	 * @param playerName name of our player that we are connecting with
-	 */
-	public abstract void successfullyConnected(String playerName);
-
-	public int getPort() {
-		return port;
-	}
 }

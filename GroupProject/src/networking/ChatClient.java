@@ -28,7 +28,7 @@ public class ChatClient extends Client {
 	// Where to draw
 	private JComponent clientImage;
 
-	// Thread to check if the server is functionsl
+	// Thread to check if the server is functional
 	private ServerCheckerThread serverChecker = null;
 
 	// When pinging the server, we want to coutn the amoutn of times we have pinged it
@@ -63,14 +63,6 @@ public class ChatClient extends Client {
 			}
 		};
 		drawThread.start();
-	}
-
-	/**
-	 * Assigns the component to call when anything ischanged
-	 * @param component
-	 */
-	public void setPaintComponent(JComponent component){
-		this.clientImage = component;
 	}
 
 	/**
@@ -179,8 +171,8 @@ public class ChatClient extends Client {
 					if( scan.hasNext() ){
 
 						// Trim the new name, removing white spaces
-						String newName = scan.nextLine().trim();
-						player.setName(newName);
+						//String newName = scan.nextLine().trim();
+						//player.setName(newName);
 					}
 				}
 			}
@@ -207,42 +199,11 @@ public class ChatClient extends Client {
 		name.trim(); // Remove spaces
 
 		// Only change name if we are not connectged, otherwise we need permission from the server
-		if( isConnected() ){
+		if( !isConnected() ){
 
-			// Not fast enough
-			// Not fast enough so now removed
-			// Not fast enough
-			System.out.println("You must be connected to change your name!");
-
-			// Tell the server to update this clients name as well!
-
-			/*try {
-				// Try and change it on the servers
-				sendData(new ChatMessage("/name " + name, chatMessageColor));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}*/
-		}
-		else{
 			// Set name directly
 			player.setName(name);
 		}
-	}
-
-	/**
-	 * Returns the name placed as this client
-	 * @return
-	 */
-	public String getName() {
-		return player.getName();
-	}
-
-	/**
-	 * Returns the player accociated with this client
-	 * @return Player object containing name and IP
-	 */
-	public Player getPlayer(){
-		return player;
 	}
 
 	/**
@@ -273,28 +234,7 @@ public class ChatClient extends Client {
 		return sendData(chat);
 	}
 
-	/**
-	 * Attempts to connect to the given IPAddress and port number of the server using the Clients name
-	 * @param IPAddress IPAddress of the connection to connect as
-	 * @param port Default: 32768
-	 * @return True if connection worked, otherwise a exception gets thrown
-	 * @throws UnknownHostException
-	 * @throws IOException
-	 */
-	public boolean connect(String IPAddress) throws UnknownHostException, IOException{
-		return connect(IPAddress, player.getName(), getPort());
-	}
 
-	/**
-	 * Attempts to connect to the given Server
-	 * @param IPAddress IPAddress of the connection to connect as
-	 * @return True if connection worked, otherwise a exception gets thrown
-	 * @throws UnknownHostException
-	 * @throws IOException
-	 */
-	public boolean connect(ChatServer server) throws UnknownHostException, IOException{
-		return connect(server.getIPAddress(), this.getName(), server.getPort());
-	}
 
 	/**
 	 * Returns a new arrayList containing all the chatMessages up to "size" back
@@ -331,14 +271,6 @@ public class ChatClient extends Client {
 	}
 
 	/**
-	 * Adds the given message to our current history
-	 * @param chat Chat Message to add to our history
-	 */
-	protected void addChatMessage(ChatMessage chat) {
-		chatHistory.add(chat);
-	}
-
-	/**
 	 * Gets the chat history that has been sent to this client
 	 * @return String containing chat history
 	 */
@@ -355,7 +287,10 @@ public class ChatClient extends Client {
 		return chatMessageColor;
 	}
 
-	public void repaintImage(){
+	/**
+	 * Calls repaint on the given Component
+	 */
+	protected void repaintImage(){
 
 		if( clientImage != null ){
 			clientImage.repaint();
@@ -377,6 +312,14 @@ public class ChatClient extends Client {
 
 		// Start checking the server
 		serverChecker = new ServerCheckerThread();
+	}
+
+	/**
+	 * Assigns the component to call repaint on when anything ischanged
+	 * @param component What to repaint on
+	 */
+	public void setPaintComponent(JComponent component){
+		this.clientImage = component;
 	}
 
 	/**
@@ -537,5 +480,7 @@ public class ChatClient extends Client {
 			chatHistory.add(new ChatMessage("~Admin", "Your IP: " + getIPAddress(), chatMessageColor, true));	// Record message
 			return false;
 		}
+
+
 	}
 }

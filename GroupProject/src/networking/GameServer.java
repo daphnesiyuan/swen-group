@@ -122,7 +122,7 @@ public class GameServer extends ChatServer {
 	 * Creates a new RandomAI and adds it to the game
 	 * @return True if the AI was added successfully
 	 */
-	public boolean createAI(){
+	private boolean createAI(){
 		int activeAI = gameServer.getActiveAI().size();
 
 		// Max of 10 bots

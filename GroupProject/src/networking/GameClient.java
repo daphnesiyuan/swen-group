@@ -117,10 +117,4 @@ public class GameClient extends ChatClient {
 		clientRoom = update.updatedRoom;
 		clientScore = update.score;
 	}
-
-	@Override
-	public void successfullyConnected(String playerName) {
-		System.out.println("Connected to: " + connectedIP);
-
-	}
 }
