@@ -102,6 +102,10 @@ public class MakeImageMap {
 			//Shoes
 			addToMap("Shoes"+i);
 
+			//Box
+			addToMap("Box"+i);
+
+			//------Keys------
 			//RedKey
 			addToMap("RedKey"+i);
 
