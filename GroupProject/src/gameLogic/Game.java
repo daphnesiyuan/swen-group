@@ -21,7 +21,7 @@ public class Game{
 
 	private Score score;
 
-	
+
 	public Game(){
 		this.roomNumber = 1; // RE: 0th room is arena
 
@@ -31,7 +31,7 @@ public class Game{
 		this.activeAI = new ArrayList<AI>();
 		createNewGame();
 		this.score = new Score();
-		
+
 		Thread environment = new Environment(this);
 		environment.start();
 	}
@@ -78,27 +78,21 @@ public class Game{
 				return null;
 			}
 			Room room = roomsInGame.get(roomNumber++);
-			Game.Facing startFace = null;
 			Tile2D tile = null;
 			// The Avatars start position will be infront of the charger, facing toward the arena.
 			if(room.getRoomPlace().equals("north")){
 				tile = room.getTiles()[4][3];
-				startFace = Game.Facing.South;
 			}
 			else if(room.getRoomPlace().equals("south")){
 				tile = room.getTiles()[2][3];
-				startFace = Game.Facing.North;
 			}
 			else if(room.getRoomPlace().equals("east")){
 				tile = room.getTiles()[3][2];
-				startFace = Game.Facing.West;
 			}
 			else if(room.getRoomPlace().equals("west")){
 				tile = room.getTiles()[3][4];
-				startFace = Game.Facing.East;
 			}
 			Avatar avatar = new Avatar(playerName,tile,room);
-			avatar.setFacing(startFace);
 			activeAvatars.add(avatar);
 			return room;
 		}
@@ -196,20 +190,20 @@ public class Game{
 	}
 
 	private class Environment extends Thread{
-		
+
 		private Game game;
 		private List<Light> lights;
 		private List<Key> keys;
-		
+
 		private int count = 0;
-		
-		
+
+
 		public Environment(Game game){
 			this.game = game;
 			this.lights = new ArrayList<Light>();
 			this.keys = new ArrayList<Key>();
 		}
-		
+
 		@Override
 		public void run(){
 			while(true){
@@ -222,12 +216,12 @@ public class Game{
 				}
 			}
 		}
-		
-		
+
+
 		private Key genKey(){
 			return null;
 		}
-		
+
 		private Light genLight(){
 			List<Room> rooms = game.getRoomsInGame();
 			boolean lightInRoom = false;
@@ -238,14 +232,14 @@ public class Game{
 				if(!lightInRoom){
 					Light light = new Light(room.getTiles()[1][1]);
 					room.getTiles()[1][1].addItem(light);
-					return light;	
+					return light;
 				}
 			}
 			return null;
 		}
-		
+
 	}
-	
+
 
 
 
