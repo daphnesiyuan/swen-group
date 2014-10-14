@@ -14,6 +14,7 @@ import gameLogic.Light;
 import gameLogic.PurpleKey;
 import gameLogic.RedKey;
 import gameLogic.Room;
+import gameLogic.Score;
 import gameLogic.Shoes;
 import gameLogic.Tile2D;
 import gameLogic.Tree;
@@ -262,11 +263,22 @@ public class XMLLoadParser {
 				parseItem(inventory.getChildren().get(i), null,a);
 			}
 		}
-		// a.setCell(cell);
+		a.setCell(cell);
 		a.setInventory(playerInventory);
 	}
 
-	public void parseScores(Element scores){}
+	public void parseScores(Element scores){
+		Score score = new Score();
+		Map<String, Integer> scoreMap = new HashMap<String,Integer>();
+		List allScores = scores.getChildren();
+		for(int i = 0; i<allScores.size();i++){
+			Element current = (Element)allScores.get(i);
+			String name = current.getName();
+			int value = Integer.parseInt(current.getText());
+			scoreMap.put(name, value);
+		}
+		game
+	}
 
 	/**
 	 * Takes an element that represents the AIs in the loaded game, and
