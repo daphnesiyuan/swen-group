@@ -43,13 +43,20 @@ public class Environment extends Thread implements Serializable{
 					genLight(i);
 					genKey(i);
 				}
-
-
-
-				count++;
 			}
+			count++;
+			try { this.sleep(30000); } catch (InterruptedException e) { e.printStackTrace(); }
+			genBox();
 		}
 	}
+
+	private void genBox(){
+		Room room = game.getRoomsInGame().get(0);
+		// 7 7
+	}
+
+
+
 	private void genKey(int i){
 		Room room = game.getRoomsInGame().get(i);
 
