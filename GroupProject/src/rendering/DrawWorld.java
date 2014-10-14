@@ -303,12 +303,16 @@ public class DrawWorld {
 		pt.y+=avatarOffset.y;
 
 		//cases:
+		//avatar is ai and charging
 		//avatar is ai
-		//avatar is other player
 		//avatar is other player and charging
-		//avatar is current player
+		//avatar is other player
 		//avatar is current player and charging
-		if (avatar.getPlayerName().startsWith("ai")){ //AI
+		//avatar is current player
+		if (avatar.getPlayerName().startsWith("ai") && avatar.getCell().isCharging()){ //AI && charging
+			drawObject(g,pt,images.get("AvatarB"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
+		}
+		else if (avatar.getPlayerName().startsWith("ai")){ //AI
 			drawObject(g,pt,images.get("AvatarB"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 		}
 		else if(avatar.equals(character) && avatar.getCell().isCharging()){ //Avatar = current player and is charging
