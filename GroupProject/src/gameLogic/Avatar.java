@@ -121,7 +121,6 @@ public class Avatar implements Serializable {
 
 	public boolean useItem(Item item){
 		if((item == null)||(!(inventory.contains(null)))) return false;
-
 		return true;
 
 
@@ -129,10 +128,7 @@ public class Avatar implements Serializable {
 
 	public boolean dropItem(Item item){
 		if((item == null)||(!(inventory.contains(null)))) return false;
-
-		return true;
-
-
+		return inventory.remove(item);
 	}
 
 	public void emptyInventory(){
