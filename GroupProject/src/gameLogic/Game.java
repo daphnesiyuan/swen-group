@@ -118,6 +118,7 @@ public class Game{
 		return mover.moveTo(move);
 	}
 
+
 	public boolean avatarInteractWithItem(String playerName, Item item){
 		for(Avatar avatar : activeAvatars){
 			if(avatar.getPlayerName().equals(playerName)){
@@ -128,10 +129,10 @@ public class Game{
 	}
 
 	/**
-	 *
-	 * @param playerName - player identidied with their name string
+	 * @param playerName - player identified with their name string
 	 * @return the Room the given player is in
 	 */
+
 	public Room getRoom(String playerName){
 		for(Room room : roomsInGame){
 			for(Avatar player : room.getAvatars()){

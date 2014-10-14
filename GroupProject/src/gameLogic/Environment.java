@@ -47,6 +47,7 @@ public class Environment extends Thread implements Serializable{
 			count++;
 			try { this.sleep(10000); } catch (InterruptedException e) { e.printStackTrace(); }
 			genBox();
+			try { this.sleep(30000); } catch (InterruptedException e) { e.printStackTrace(); }
 		}
 	}
 

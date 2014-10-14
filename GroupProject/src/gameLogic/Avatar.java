@@ -453,19 +453,6 @@ public class Avatar implements Serializable {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	public void setLastHit(Avatar lastHit){
 		this.lastHit = lastHit;
 	}
@@ -528,10 +515,6 @@ public class Avatar implements Serializable {
 
 	public double getBatteryLife(){
 		return cell.getBatteryLife();
-	}
-
-	public void setCharging(boolean charging){
-		this.cell.setCharging(charging);
 	}
 
 	public int getSpriteIndex(){
