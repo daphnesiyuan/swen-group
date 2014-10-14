@@ -27,7 +27,6 @@ public class Room implements Serializable {
 
 
 
-
 	public Room(Tile2D[][] tiles, List<Item> items) {
 		this.tiles = tiles;
 		this.items = items;

@@ -147,13 +147,14 @@ public class XMLSaveParser {
 		Element tile = new Element("tile");
 		Element inventory = new Element("inventory");		//Inventory
 
+		Element score = new Element("score").setText(Integer.toString(avatar.getScore()));
+		Element startRoom = new Element("startRoom").setText(avatar.getStartTile().getRoom().getRoomPlace());
+		//doesn't need last hit becasuse cannot load a game with other avatars.
 		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//player name
 		e.addContent(new Element("facing").setText(avatar.getFacing().name()));			//Facing
 		if(!avatar.getInventory().isEmpty()){
-			Element items = new Element("items");
 			for(Item i: avatar.getInventory()){		//iterate through list
-				items.addContent(parseItem(i));
-				inventory.addContent(items);//add item to inventory element
+				inventory.addContent(parseItem(i));
 			}
 		}
 
@@ -321,7 +322,6 @@ public class XMLSaveParser {
 	 * @return Element representing the Item in XML
 	 */
 	public Element parseItem(Item item){
-
 		Element e = null;
 
 		if(item instanceof Key){
@@ -341,6 +341,7 @@ public class XMLSaveParser {
 
 		}
 		else if(item instanceof Light){
+			System.out.println("Here2");
 			e = new Element("light");
 		}
 		else if(item instanceof Shoes){
