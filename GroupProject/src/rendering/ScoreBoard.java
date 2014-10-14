@@ -47,7 +47,7 @@ public class ScoreBoard {
 		g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
 		g.fillRoundRect(x, y, (int)width, (int)height, (int)buffer, (int)buffer);
 
-		g.setColor(Color.BLACK);
+		g.setColor(Color.WHITE);
 		int i = 1;
 		if (score != null){
 			for (Entry<String, Integer> entry: score.getScore().entrySet()){
