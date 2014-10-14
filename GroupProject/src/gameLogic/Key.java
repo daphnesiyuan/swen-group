@@ -4,7 +4,6 @@ import java.awt.Color;
 
 public class Key extends Item {
 
-	private Color color;
 
 	public Key(Tile2D tile){
 		this.tile = tile;
@@ -16,7 +15,7 @@ public class Key extends Item {
 	@Override
 	public String getDescription() {
 		String desc = "";
-		return desc + this.color.toString()+" Key object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
+		return desc+ " Key object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
 	}
 
 	@Override
@@ -54,12 +53,5 @@ public class Key extends Item {
 		return this.interactWith(avatar);
 	}
 
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
 
 }

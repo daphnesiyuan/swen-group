@@ -116,7 +116,6 @@ public class NewGame {
 				int y = 0;
 
 				Tile2D[][] tiles = new Tile2D[tileRowsFinal][tileCols];
-
 				roomPlace = scan.next();
 				while(scan.hasNext()){
 					tile = scan.next();
