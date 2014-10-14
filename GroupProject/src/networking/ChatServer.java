@@ -130,7 +130,7 @@ public class ChatServer extends Server {
 	 * @param clientIP Who we should send the history to
 	 * @param size how many messages we should get from our history from the furthest back to the last message
 	 */
-	private synchronized void sendHistoryToClient(String clientIP, int size) {
+	private synchronized boolean sendHistoryToClient(String clientIP, int size) {
 
 		// Make sure we don't get a size greater than the list
 		size = Math.min(size, chatHistory.size());
@@ -141,7 +141,7 @@ public class ChatServer extends Server {
 		}
 
 		// Send a new ArrayList of the chat messages to the client
-		sendToClient(clientIP, new ChatHistory(history,true));
+		return sendToClient(clientIP, new ChatHistory(history,true));
 	}
 
 	/**

@@ -30,7 +30,7 @@ public abstract class Server implements Runnable{
 	protected Map<String, String> clientNameToIP = new HashMap<String, String>();
 
 	// List of admin IP addresses
-	protected ArrayList<String> admins = new ArrayList<String>();
+	protected ArrayList<String> adminIPs = new ArrayList<String>();
 
 	private final int port = 32768;
 	private ServerSocket serverSocket;
@@ -46,7 +46,7 @@ public abstract class Server implements Runnable{
 			IPAddress = InetAddress.getLocalHost().getHostAddress();
 
 			// Save the localhost as an admin
-			admins.add(IPAddress);
+			adminIPs.add(IPAddress);
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -112,7 +112,7 @@ public abstract class Server implements Runnable{
 	 * @param clientIP
 	 * @return New Name to be assigned to the player
 	 */
-	public String getNewPlayerName(String name, ClientThread client) {
+	private String getNewPlayerName(String name, ClientThread client) {
 
 		// See if this name already exists
 		// Also if it's not a rejoining player
@@ -274,6 +274,91 @@ public abstract class Server implements Runnable{
 		// Don't have one
 		return null;
 	}
+
+	/**
+	 * Gets the IPAddress of the server for others to connect to
+	 * @return String containing IPAddress
+	 */
+	public String getIPAddress() {
+		return IPAddress;
+	}
+
+	/**
+	 * Gets the port that the server is currently running off
+	 * @return int containing the Port that the server is running off
+	 */
+	public int getPort() {
+		return port;
+	}
+
+	/**
+	 * Stops the server and all clientsThreads from running
+	 */
+	public boolean stopServer() {
+
+		if( serverSocket != null && !serverSocket.isClosed() ){
+			try {
+				serverSocket.close();
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Shuts down the sever by closing all sockets associated with all clients, then closing all threads
+	 */
+	private void shutDownServer(){
+
+		// Close our clients
+		while( !clients.isEmpty() ){
+			removeClient(clients.get(0),false);
+		}
+
+		System.out.print("WARNING: The Server has closed\n");
+	}
+
+	/**
+	 * Checks if the given IP is an admin for the server or not
+	 * @param IP IPAddress to check if the server has registered them as an admin
+	 * @return True if the IP is an admin
+	 */
+	protected boolean isAdmin(String IP){
+		return adminIPs.contains(IP);
+	}
+
+	/**
+	 * How we are going to process the object received from a client.
+	 * @param data Information sent from the client
+	 */
+	public abstract void retrieveObject(NetworkObject data);
+
+	/**
+	 * What to do when a new client that has never joined the server before, joins the server
+	 * @param client Client that has joined the thread
+	 */
+	public abstract void newClientConnection(ClientThread client);
+
+	/**
+	 * The client that has rejoined the server
+	 * @param client Client that has rejoined
+	 */
+	public abstract void clientRejoins(ClientThread client);
+
+	/**
+	 * The server wants to message all clients
+	 * @param message MEssage to sent tp clients
+	 */
+	public abstract void messageAllClients(String message, ClientThread... exceptions);
+
+	/**
+	 * Servers wants to message a single client with the given message
+	 * @param message Message to sent to client
+	 * @param client Who to sent the message to
+	 */
+	public abstract void messageClient(String message, ClientThread client);
 
 	/**
 	 * A Thread relating to a specific client. Acts as a listener for incoming data, and allows sending to the client with this Thread
@@ -573,87 +658,4 @@ public abstract class Server implements Runnable{
 			player.setName(name);
 		}
 	}
-
-	/**
-	 * Gets the IPAddress of the server for others to connect to
-	 * @return String containing IPAddress
-	 */
-	public String getIPAddress() {
-		return IPAddress;
-	}
-
-	/**
-	 * Gets the port that the server is currently running off
-	 * @return int containing the Port that the server is running off
-	 */
-	public int getPort() {
-		return port;
-	}
-
-	/**
-	 * Stops the server and all clientsThreads from running
-	 */
-	public void stopServer() {
-
-		if( serverSocket != null && !serverSocket.isClosed() ){
-			try {
-				serverSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Shuts down the sever by closing all sockets associated with all clients, then closing all threads
-	 */
-	private void shutDownServer(){
-
-		// Close our clients
-		while( !clients.isEmpty() ){
-			removeClient(clients.get(0),false);
-		}
-
-		System.out.print("WARNING: The Server has closed\n");
-	}
-
-	/**
-	 * Checks if the given IP is an admin for the server or not
-	 * @param IP IPAddress to check if the server has registered them as an admin
-	 * @return True if the IP is an admin
-	 */
-	public boolean isAdmin(String IP){
-		return admins.contains(IP);
-	}
-
-	/**
-	 * How we are going to process the object received from a client.
-	 * @param data Information sent from the client
-	 */
-	public abstract void retrieveObject(NetworkObject data);
-
-	/**
-	 * What to do when a new client that has never joined the server before, joins the server
-	 * @param client Client that has joined the thread
-	 */
-	public abstract void newClientConnection(ClientThread client);
-
-	/**
-	 * The client that has rejoined the server
-	 * @param client Client that has rejoined
-	 */
-	public abstract void clientRejoins(ClientThread client);
-
-	/**
-	 * The server wants to message all clients
-	 * @param message MEssage to sent tp clients
-	 */
-	public abstract void messageAllClients(String message, ClientThread... exceptions);
-
-	/**
-	 * Servers wants to message a single client with the given message
-	 * @param message Message to sent to client
-	 * @param client Who to sent the message to
-	 */
-	public abstract void messageClient(String message, ClientThread client);
 }
