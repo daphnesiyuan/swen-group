@@ -21,6 +21,7 @@ public class Game{
 
 	private Score score;
 
+	private Thread environment;
 
 	public Game(){
 		this.roomNumber = 1; // RE: 0th room is arena
@@ -32,7 +33,7 @@ public class Game{
 		createNewGame();
 		this.score = new Score();
 
-		Thread environment = new Environment(this);
+		this.environment = new Environment(this);
 		environment.start();
 	}
 
@@ -189,56 +190,7 @@ public class Game{
 		return count;
 	}
 
-	private class Environment extends Thread{
 
-		private Game game;
-		private List<Light> lights;
-		private List<Key> keys;
-
-		private int count = 0;
-
-
-		public Environment(Game game){
-			this.game = game;
-			this.lights = new ArrayList<Light>();
-			this.keys = new ArrayList<Key>();
-		}
-
-		@Override
-		public void run(){
-			while(true){
-				if(count == 0){		// initial environment item generation
-					for(int i = 0; i < 4; i++){
-						Light light = genLight();
-						if(light != null) lights.add(light);
-					}
-					count++;
-				}
-			}
-		}
-
-
-		private Key genKey(){
-			return null;
-		}
-
-		private Light genLight(){
-			List<Room> rooms = game.getRoomsInGame();
-			boolean lightInRoom = false;
-			for(Room room: rooms){
-				for(Item item : room.getItems()){
-					if(item instanceof Light) lightInRoom = true;
-				}
-				if(!lightInRoom){
-					Light light = new Light(room.getTiles()[1][1]);
-					room.getTiles()[1][1].addItem(light);
-					return light;
-				}
-			}
-			return null;
-		}
-
-	}
 
 
 
