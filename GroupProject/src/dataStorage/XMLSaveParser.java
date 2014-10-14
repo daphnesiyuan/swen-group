@@ -358,8 +358,8 @@ public class XMLSaveParser {
 		tile.addContent(new Element("xPos")).setText(Integer.toString((item.getTile().getxPos())));
 		tile.addContent(new Element("yPos")).setText(Integer.toString((item.getTile().getyPos())));
 
-		tile.addContent(new Element("xPos")).setText(Integer.toString(((Key)item).getStartTile().getxPos()));
-		tile.addContent(new Element("yPos")).setText(Integer.toString(((Key)item).getStartTile().getyPos()));
+		tile.addContent(new Element("xPos")).setText(Integer.toString((item).getStartTile().getxPos()));
+		tile.addContent(new Element("yPos")).setText(Integer.toString((item).getStartTile().getyPos()));
 		e.addContent(startTile);
 		e.addContent(tile);
 
