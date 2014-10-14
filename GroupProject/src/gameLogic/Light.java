@@ -40,6 +40,7 @@ public class Light extends Item{
 	@Override
 	public boolean interactWith(Avatar avatar) {
 		tile.removeItem(this);
+		tile = null;
 		return avatar.getInventory().add(this);
 	}
 
@@ -52,7 +53,6 @@ public class Light extends Item{
 	@Override
 	public boolean pickItemUp(Avatar avatar) {
 		if(avatar.getInventory().size()==4) return false; 	//no space left in inventory
-		tile.removeItem(this);
 		return this.interactWith(avatar);
 	}
 
