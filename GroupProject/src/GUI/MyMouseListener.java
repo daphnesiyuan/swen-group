@@ -5,6 +5,8 @@ import gameLogic.Item;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.Box;
+
 public class MyMouseListener implements MouseListener {
 
 	Item item;
@@ -69,7 +71,8 @@ public class MyMouseListener implements MouseListener {
 	 * @param e
 	 */
 	private void doPop(MouseEvent e) {
-		InvoPopup menu = new InvoPopup(panel);
+		boolean b = item.getClass().equals(Box.class);
+		InvoPopup menu = new InvoPopup(panel, b);
 		menu.show(e.getComponent(), e.getX(), e.getY());
 		menu.getItem(item);
 	}
