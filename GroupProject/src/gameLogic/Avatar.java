@@ -68,7 +68,7 @@ public class Avatar implements Serializable {
 
 	private Cell cell;
 
-	private List <Item> Inventory;
+	private List <Item> inventory;
 
 	public Avatar(String name, Tile2D tile, Room room){
 		this.playerName = name;
@@ -77,7 +77,7 @@ public class Avatar implements Serializable {
 
 		updateLocations(tile, room);
 
-		this.Inventory = new ArrayList<Item>();
+		this.inventory = new ArrayList<Item>();
 		this.facing = Facing.North;
 
 		this.cell = new Cell(this);
@@ -119,19 +119,27 @@ public class Avatar implements Serializable {
 		return item.interactWith(this);
 	}
 
-	public void useItem(Item item){
-		//TODO
+	public boolean useItem(Item item){
+		if((item == null)||(!(inventory.contains(null)))) return false;
+
+		return true;
+
+
 	}
 
-	public void dropItem(){
+	public boolean dropItem(Item item){
+		if((item == null)||(!(inventory.contains(null)))) return false;
+
+		return true;
+
 
 	}
 
 	public void emptyInventory(){
-		for(Item item : Inventory){
+		for(Item item : inventory){
 			item.returnToStartPos();
 		}
-		this.Inventory = new ArrayList<Item>();
+		this.inventory = new ArrayList<Item>();
 	}
 
 	public boolean moveTo(Move move){
@@ -435,11 +443,11 @@ public class Avatar implements Serializable {
 	}
 
 	public List<Item> getInventory() {
-		return Inventory;
+		return inventory;
 	}
 
 	public void setInventory(List<Item> inventory) {
-		Inventory = inventory;
+		inventory = inventory;
 	}
 
 	public void setCurrentRoom(Room currentRoom) {
