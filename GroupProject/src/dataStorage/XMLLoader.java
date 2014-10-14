@@ -12,10 +12,12 @@ public class XMLLoader {
 	public XMLLoader(){}
 
 	public Game loadDefault(){
-		Game g = new Game(true);
+		Game g;
 		File file = new File("default.xml");
 		xmlLoad = new XMLLoadParser(file);
 		g = xmlLoad.loadGame();
+		System.out.println("load Game has finished");
+		System.out.println("Room size is "+g.getRoomsInGame().size());
 		return g;
 	}
 

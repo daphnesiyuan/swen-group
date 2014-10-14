@@ -78,10 +78,11 @@ public class XMLLoadParser {
 
 	public void parseRooms(List roomList) {
 		for (Object e : roomList) {
-			Tile2D[][] tiles = new Tile2D[1000][1000];
+			Tile2D[][] tiles = new Tile2D[50][50];
 			Room r = new Room(tiles, null);
 			Element ele = (Element) e;
 			String roomPlace = ele.getChildText("roomPlace");
+			r.setRoomPlace(roomPlace);
 			Room room = parseBasicTile(ele, r);
 			roomsInGame.add(room);
 
@@ -93,6 +94,9 @@ public class XMLLoadParser {
 			int index = roomsInGame.indexOf(r);
 			parseDoor((Element) roomList.get(index), r);
 			parseOtherTile((Element) roomList.get(index), r);
+		}
+		for(Room r : roomsInGame){
+			game.addRoom(r);
 		}
 		// Iterates through all the room elements, creates door tiles and
 		// other tiles
@@ -111,15 +115,13 @@ public class XMLLoadParser {
 
 		Element floors = e.getChild("floors");
 		List floorList = floors.getChildren();
-
 		Element walls = e.getChild("walls");
 		List wallList = walls.getChildren();
 
 		List basicTiles = new ArrayList();
 		basicTiles.addAll(floorList);
 		basicTiles.addAll(wallList);
-
-		Tile2D tile = new Tile2D(-9999, 0);
+		Tile2D tile = new Tile2D(-1000, 0);
 		for (Object t : basicTiles) {
 			Element ele = (Element) t;
 
@@ -128,14 +130,22 @@ public class XMLLoadParser {
 
 			if (ele.getName().equals("Wall")) {
 				tile = new Wall(xPos, yPos);
+				tile.setRoom(r);
+				r.getTiles()[yPos][xPos] = tile;
 			} else if (ele.getName().equals("Floor")) {
 				tile = new Floor(xPos, yPos);
-			}
-			if (tile.getxPos() != -1000) {
 				tile.setRoom(r);
 				r.getTiles()[yPos][xPos] = tile;
 			}
 		}
+
+//		for (int y = 0; y<r.getTiles().length;y++){
+//			for(int x = 0; x<r.getTiles()[x].length;x++)
+//			{
+//				System.out.println(r.getTiles()[y][x]);
+//			}
+//		}
+
 		return r;
 	}
 
