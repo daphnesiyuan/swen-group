@@ -15,7 +15,7 @@ public class XMLFile{
 
 
 		chooser = new JFileChooser();
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		//chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 		FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter("xml files (*.xml)", "xml");
 		chooser.setFileFilter(xmlfilter);

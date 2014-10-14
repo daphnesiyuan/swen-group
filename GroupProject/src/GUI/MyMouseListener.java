@@ -28,7 +28,7 @@ public class MyMouseListener implements MouseListener {
 
 		if (!panel.isStartMode()) { // must be in game mode for this to work
 
-			int itemIndex = panel.getInvo().findBox(e.getX(), e.getY());
+			itemIndex = panel.getInvo().findBox(e.getX(), e.getY());
 
 			if(checkInventory(itemIndex)){ //something is here
 				if (e.isPopupTrigger()) // for inventory interactions
@@ -42,11 +42,11 @@ public class MyMouseListener implements MouseListener {
 	public void mousePressed(MouseEvent e) {
 		if (!panel.isStartMode()) { // must be in game mode for this to work
 
-			int i = panel.getInvo().findBox(e.getX(), e.getY()); //gets index of item/box
+			itemIndex = panel.getInvo().findBox(e.getX(), e.getY()); //gets index of item/box
 
-			if(checkInventory(i)){ //something is here
+			if(checkInventory(itemIndex)){ //something is here
 				if (e.isPopupTrigger()) // for inventory interactions
-					item=item = panel.getGameClient().getAvatar().getInventory().get(i);
+					item=item = panel.getGameClient().getAvatar().getInventory().get(itemIndex);
 					doPop(e);
 			}
 		}
@@ -55,11 +55,11 @@ public class MyMouseListener implements MouseListener {
 	public void mouseReleased(MouseEvent e) {
 		if (!panel.isStartMode()) { // must be in game mode for this to work
 
-			int i = panel.getInvo().findBox(e.getX(), e.getY());
+			itemIndex = panel.getInvo().findBox(e.getX(), e.getY());
 
-			if(checkInventory(i)){ //something is here
+			if(checkInventory(itemIndex)){ //something is here
 				if (e.isPopupTrigger()) // for inventory interactions
-					item=item = panel.getGameClient().getAvatar().getInventory().get(i);
+					item=item = panel.getGameClient().getAvatar().getInventory().get(itemIndex);
 					doPop(e);
 			}
 		}
