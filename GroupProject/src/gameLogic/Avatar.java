@@ -89,20 +89,10 @@ public class Avatar implements Serializable {
 		this.tileXPos = (tileWidth/2);
 		this.tileYPos = (tileHeight/2);
 
-//		this.tileXPos = (tileWidth/16);
-//		this.tileYPos = (tileHeight/16);
-
-
-
-
-
 		// Avatars initial sprite image is the 0th element in the animation sequence
 		this.spriteIndex = 0;
 
-		if(name.startsWith("ai")){
-			this.isAI=true;
-			stepAmount = 82;
-		}
+		if(name.startsWith("ai")) this.isAI=true;
 		else this.isAI = false;
 
 		this.score = 0;
@@ -155,6 +145,7 @@ public class Avatar implements Serializable {
 		inventory.remove(item);
 
 		item.moveItemTo(dropTile);
+		if(item instanceof Shoes) stepAmount = 32;
 		return true;
 	}
 
@@ -171,7 +162,7 @@ public class Avatar implements Serializable {
 		if(item instanceof Box){
 			Box box = (Box)item;
 			if(box.getContains().size() == 0){
-				//System.out.println("Theres nothing in here!");
+				System.out.println("Theres nothing in here!");
 				return false;
 			}
 			Item inner = box.getContains().get(0);
@@ -185,13 +176,9 @@ public class Avatar implements Serializable {
 	}
 
 	public boolean moveTo(Move move){
-
 		if(move.getInteraction().equals("drop")) return dropItem(move);
-
 		if(move.getInteraction().equals("open")) return openItem(move);
-
 		if(move.getRenderDirection() == null) return false;
-
 		if(move.getInteraction() == null) return false;
 
 
@@ -202,7 +189,6 @@ public class Avatar implements Serializable {
 			charge(findTile());
 			return false;
 		}
-
 		this.renderDirection = move.getRenderDirection();
 
 		//change direction without moving
@@ -213,24 +199,11 @@ public class Avatar implements Serializable {
 			else if (move.getRenderDirection().toLowerCase().equals("west")){ facing = Game.Facing.West;}
 			return false;
 		}
-		//System.out.println("8");
-		//System.out.println(tileXPos + " " + tileYPos);
 
 		Tile2D newPosition = findTile(move);
-;
-
-		//System.out.println(tileXPos + " " + tileYPos);
 		if(!((newPosition instanceof Door)||(newPosition instanceof Floor))) return false;
-		//System.out.println("9");
+		if(newPosition.getAvatar() != null) return false;
 
-		//System.out.println("newPosition.getAvatar(): "+newPosition.getAvatar()+" this:"+this);
-
-		if(newPosition.getAvatar() != null){//&& !newPosition.getAvatar().equals(this)){
-			//System.out.println(newPosition.getAvatar().getPlayerName());
-			//System.out.println(tileXPos + " " + tileYPos);
-			return false;
-		}
-		//System.out.println("10");
 		if(newPosition instanceof Door){
 			Door oldPosition = (Door) newPosition;
 
@@ -281,11 +254,10 @@ public class Avatar implements Serializable {
 				updateLocations(door, arena);
 			}
 		}
-
 		else updateLocations(newPosition,room);
-		//System.out.println("11");
+
 		if(tile.getItems().size() != 0) interact(tile.getItems().get(0));
-		//System.out.println("12");
+
 		if(cell.isCharging()){
 			int result = charge(newPosition);
 			if(result == 0) cell.decExtraBattery();
@@ -308,7 +280,7 @@ public class Avatar implements Serializable {
 	 */
 	private int charge(Tile2D target1){
 		Tile2D target2 = findTile();
-		////System.out.println(target);
+		//System.out.println(target);
 		if(target1 instanceof Charger || target2 instanceof Charger) return useCharger();
 		else return attack(target1, target2);
 
@@ -338,12 +310,14 @@ public class Avatar implements Serializable {
 
 		Avatar enemy2 = target2.getAvatar();
 		if(enemy2 != null && !enemy2.equals(this)){// && enemy1 != null && enemy2.equals(enemy1)){
+			System.out.println(enemy2);
 			enemy2.takeDamage(damage);
 			enemy2.setLastHit(this);
 			return 1;
 		}
 		Avatar enemy1 = target1.getAvatar();
 		if(enemy1 != null && !enemy1.equals(this)){
+			System.out.println(enemy1);
 			enemy1.takeDamage(damage);
 			enemy1.setLastHit(this);
 			return 1;
@@ -365,7 +339,7 @@ public class Avatar implements Serializable {
 
 	private void die(){
 		score--;
-		//System.out.println(""+playerName+" died! Score is now: "+ score);
+		System.out.println(""+playerName+" died! Score is now: "+ score);
 		if(lastHit != null){
 			lastHit.addKill();
 		}
@@ -381,7 +355,7 @@ public class Avatar implements Serializable {
 
 	public void addKill(){
 		score++;
-		//System.out.println(""+playerName+" got a kill! Score is now: "+ score);
+		System.out.println(""+playerName+" got a kill! Score is now: "+ score);
 	}
 
 
@@ -591,10 +565,6 @@ public class Avatar implements Serializable {
 		return tileYPos;
 	}
 
-	public double getBatteryLife(){
-		return cell.getBatteryLife();
-	}
-
 	public int getSpriteIndex(){
 		return spriteIndex;
 	}
@@ -662,6 +632,11 @@ public class Avatar implements Serializable {
 		} else if (!playerName.equals(other.playerName))
 			return false;
 		return true;
+	}
+
+	public void setStepAmount(int i) {
+		this.stepAmount = i;
+
 	}
 
 }
