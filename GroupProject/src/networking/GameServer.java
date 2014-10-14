@@ -33,7 +33,8 @@ public class GameServer extends ChatServer {
 		super();
 
 		// Create a new game
-		gameServer = new Game();
+		XMLLoader loader = new XMLLoader();
+		gameServer = loader.loadDefault();
 
 		// Server listens for input directly to servers terminal Thread
 		Thread serverTextBox = new Thread(new ServerTextListener());

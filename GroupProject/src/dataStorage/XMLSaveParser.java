@@ -86,12 +86,12 @@ public class XMLSaveParser {
 		Element items = new Element("items");			//items
 		e.addContent(new Element("roomPlace").setText(room.getRoomPlace()));		//room place
 
-		//CHARACTERS
-		if(! room.getAvatars().isEmpty()){
-			for(Avatar a: room.getAvatars()){
-				avatars.addContent(parseAvatar(a));
-			}
-		}
+//		//CHARACTERS
+//		if(! room.getAvatars().isEmpty()){
+//			for(Avatar a: room.getAvatars()){
+//				avatars.addContent(parseAvatar(a));
+//			}
+//		}
 
 		if(! room.getItems().isEmpty()){
 			for(Item i: room.getItems()){
@@ -105,7 +105,7 @@ public class XMLSaveParser {
 
 				for(int i = 0; i<t.length;i++){
 					for(int j = 0;j<t[i].length;j++){
-						Tile2D thisTile = t[i][j];
+						Tile2D thisTile = t[j][i];		//switched for opposite x and y
 						if(thisTile instanceof Floor){
 							floors.addContent(parseFloor((Floor)thisTile));
 						}
