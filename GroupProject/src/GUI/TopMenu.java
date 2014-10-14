@@ -54,6 +54,7 @@ public class TopMenu implements ActionListener{
 	    }
 	    else if ( (e.getActionCommand()).equals("Quit") ){
 	    	System.out.println("quit");
+	    	Window.revertToStartMenu();
 	    }
 
 	}

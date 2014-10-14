@@ -321,6 +321,9 @@ public class DrawingPanel extends JPanel {
 	public void setGameMode() {
 		startMenu = false; }
 
+	public void setStartMode(){
+		startMenu = true; }
+
 	public KeyBoard getKeyB() {
 		return keyboard; }
 

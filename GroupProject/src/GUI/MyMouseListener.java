@@ -74,7 +74,7 @@ public class MyMouseListener implements MouseListener {
 		boolean b = item.getClass().equals(Box.class);
 		InvoPopup menu = new InvoPopup(panel, b);
 		menu.show(e.getComponent(), e.getX(), e.getY());
-		menu.getItem(item);
+		menu.sendItem(item);
 	}
 
 	public boolean checkInventory(int i){
