@@ -22,6 +22,7 @@ public class DrawHealth {
 	private static final double STARTWIDTH = 1280;
 	private static final double STARTSCOREHEIGHT = 135;
 	private static final int NUMCARDS = 7;
+	private static final int MAXHEALTH = 501;
 
 	public DrawHealth(JPanel panel) {
 		this.panel = panel;
@@ -46,7 +47,17 @@ public class DrawHealth {
 		g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
 		g.fillRoundRect(x, y, (int)width, (int)height, (int)buffer, (int)buffer);
 
-		g.setColor(Color.RED);
-		g.drawString(avatar.getCell().getBatteryLife()+"", x+10, y+20);
+//		g.setColor(Color.RED);
+//		g.drawString(avatar.getCell().getBatteryLife()+"", x+10, y+20);
+
+		int health = avatar.getCell().getBatteryLife();
+		g.setColor(new Color(10,200,10));
+		if (health < (MAXHEALTH/4.0)){
+			g.setColor(new Color(200,10,10));
+		}
+
+		int healthBarHeight = (int)(((height*1.0 - (buffer*2.0))/MAXHEALTH*1.0) * health);
+		int healthBarOffset = (int)(((height*1.0 - (buffer*2.0))/MAXHEALTH*1.0) * MAXHEALTH)-healthBarHeight;
+		g.fillRect((int)(x+buffer), (int)(y+buffer + healthBarOffset), (int)(width-buffer-buffer), healthBarHeight);
 	}
 }
