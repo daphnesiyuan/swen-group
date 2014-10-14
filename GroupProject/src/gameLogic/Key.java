@@ -38,7 +38,10 @@ public class Key extends Item {
 
 	@Override
 	public boolean interactWith(Avatar avatar) {
-		if(avatar.getInventory().size()==4) return false; 	//no space left in inventory
+		if(avatar.getInventory().size()==4){
+			System.out.println("Couldnt pick up "+this.getClass().getName() + ", Inventory is full!");
+			return false; 	//no space left in inventory
+		}
 		tile.removeItem(this);
 		tile = null;
 		return avatar.getInventory().add(this);
@@ -47,6 +50,7 @@ public class Key extends Item {
 	@Override
 	public void returnToStartPos() {
 		tile = startTile;
+		tile.addItem(this);
 
 	}
 

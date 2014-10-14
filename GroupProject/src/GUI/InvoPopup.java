@@ -47,6 +47,7 @@ public class InvoPopup extends JPopupMenu implements ActionListener{
 
 	    else if ( (e.getActionCommand()).equals("Drop") ){
 	    	Move move = new Move((panel.getGameClient()).getPlayer(), "drop", itemIndex );
+	    	System.out.println(itemIndex);
 
 	    	try {
 				panel.getGameClient().sendMoveToServer(move);
