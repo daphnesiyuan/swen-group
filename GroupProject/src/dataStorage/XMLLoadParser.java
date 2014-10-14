@@ -73,7 +73,6 @@ public class XMLLoadParser {
 			System.out.println(jdomex.getMessage());
 		}
 
-		System.out.println("Finished saving???");
 		return game;
 	}
 
@@ -123,7 +122,7 @@ public class XMLLoadParser {
 		Tile2D tile = new Tile2D(-9999, 0);
 		for (Object t : basicTiles) {
 			Element ele = (Element) t;
-			System.out.println(Integer.parseInt(ele.getChildText("xPos")));
+
 			int xPos = Integer.parseInt(ele.getChildText("xPos"));
 			int yPos = Integer.parseInt(ele.getChildText("yPos"));
 
@@ -184,12 +183,15 @@ public class XMLLoadParser {
 			if (type.equals("Tree")) {
 				Tree tr = new Tree(xPos, yPos);
 				r.getTrees().add(tr);
+				r.getTiles()[yPos][xPos] = tr;
 			} else if (type.equals("Column")) {
 				Column c = new Column(xPos, yPos);
 				r.getColumns().add(c);
+				r.getTiles()[yPos][xPos] = c;
 			} else if (type.equals("Charger")) {
 				Charger c = new Charger(xPos, yPos);
 				r.getChargers().add(c);
+				r.getTiles()[yPos][xPos] = c;
 			}
 		}
 	}
@@ -254,25 +256,25 @@ public class XMLLoadParser {
 	 * @param e
 	 */
 
-	public void parseAvatar(Element e, Room r) {
-		String faceString = e.getChildText("facing");
-		String playerName = e.getChildText("playerName");
-
-		Element cellEle = e.getChild("cell");
-		Cell cell = parseCell(cellEle);
-		int xPos = Integer.parseInt(e.getChildText("xPos"));
-		int yPos = Integer.parseInt(e.getChildText("yPos"));
-		Avatar a = new Avatar(playerName, r.getTiles()[yPos][xPos], r);
-		Element inventory = e.getChild("inventory");
-		List<Item> playerInventory = new ArrayList<Item>();
-		if (inventory.getChildren().size() != 0) {
-			for (int i = 0; i < inventory.getChildren().size(); i++) {
-				parseItem(inventory.getChildren().get(i), null, a);
-			}
-		}
-		a.setCell(cell);
-		a.setInventory(playerInventory);
-	}
+//	public void parseAvatar(Element e, Room r) {
+//		String faceString = e.getChildText("facing");
+//		String playerName = e.getChildText("playerName");
+//
+//		Element cellEle = e.getChild("cell");
+//		Cell cell = parseCell(cellEle);
+//		int xPos = Integer.parseInt(e.getChildText("xPos"));
+//		int yPos = Integer.parseInt(e.getChildText("yPos"));
+//		Avatar a = new Avatar(playerName, r.getTiles()[yPos][xPos], r);
+//		Element inventory = e.getChild("inventory");
+//		List<Item> playerInventory = new ArrayList<Item>();
+//		if (inventory.getChildren().size() != 0) {
+//			for (int i = 0; i < inventory.getChildren().size(); i++) {
+//				parseItem(inventory.getChildren().get(i), null, a);
+//			}
+//		}
+//		a.setCell(cell);
+//		a.setInventory(playerInventory);
+//	}
 
 	public void parseScores(Element scores) {
 		Score score = new Score();

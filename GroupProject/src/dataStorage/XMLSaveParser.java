@@ -86,12 +86,12 @@ public class XMLSaveParser {
 		Element items = new Element("items");			//items
 		e.addContent(new Element("roomPlace").setText(room.getRoomPlace()));		//room place
 
-		//CHARACTERS
-		if(! room.getAvatars().isEmpty()){
-			for(Avatar a: room.getAvatars()){
-				avatars.addContent(parseAvatar(a));
-			}
-		}
+//		//CHARACTERS
+//		if(! room.getAvatars().isEmpty()){
+//			for(Avatar a: room.getAvatars()){
+//				avatars.addContent(parseAvatar(a));
+//			}
+//		}
 
 		if(! room.getItems().isEmpty()){
 			for(Item i: room.getItems()){

@@ -47,7 +47,9 @@ public class Game{
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
 		activeAI = new ArrayList<AI>();
-
+		this.score = new Score();
+		this.environment = new Environment(this);
+		environment.start();
 	}		//ANTONIA: To be used when loading a file
 
 

@@ -1,5 +1,7 @@
 package GUI;
 
+import gameLogic.Game;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -29,7 +31,7 @@ public class XMLFile{
                 chooser.getSelectedFile().getName());
 
            XMLLoader xml = new XMLLoader();
-           xml.loadGame( chooser.getSelectedFile() );
+          Game game = xml.loadGame( chooser.getSelectedFile() );
         }
 	}
 
