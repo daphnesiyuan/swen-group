@@ -34,4 +34,10 @@ public class Score implements Serializable{
 		}
 	}
 
+
+	public void setScores(Map<String, Integer> scores) {
+		this.scores = scores;
+	}
+
+
 }
