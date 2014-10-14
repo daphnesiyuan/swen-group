@@ -53,8 +53,8 @@ public class Shoes extends Item{
 	@Override
 	public void returnToStartPos() {
 		tile = startTile;
-		tile.addItem(this);
-
+		if(tile == null) return;
+		else tile.addItem(this);
 	}
 
 	@Override

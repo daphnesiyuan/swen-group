@@ -18,9 +18,6 @@ import networking.Move;
  */
 public class Avatar implements Serializable {
 
-	/**
-	 * Saved
-	 */
 	private static final long serialVersionUID = 4723069455200795911L;
 
 	private String playerName;
@@ -92,7 +89,10 @@ public class Avatar implements Serializable {
 		// Avatars initial sprite image is the 0th element in the animation sequence
 		this.spriteIndex = 0;
 
-		if(name.startsWith("ai")) this.isAI=true;
+		if(name.startsWith("ai")){
+			stepAmount = 82;
+			this.isAI=true;
+		}
 		else this.isAI = false;
 
 		this.score = 0;
