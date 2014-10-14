@@ -21,9 +21,7 @@ import javax.swing.event.DocumentListener;
 import networking.GameClient;
 import networking.GameServer;
 
-
-
-public class StartGUI extends JFrame{
+public class StartGUI extends JFrame {
 
 	private JPanel jpanel;
 	private JButton connectButton;
@@ -36,7 +34,7 @@ public class StartGUI extends JFrame{
 
 	public StartGUI(DrawingPanel p, GameClient c, GameServer s) {
 		gc = c;
-		gs=s;
+		gs = s;
 		handler = new theHandler();
 		connectButton = new JButton("Connect");
 		connectButton.addActionListener(handler);
@@ -52,12 +50,10 @@ public class StartGUI extends JFrame{
 		jpanel.add(Box.createHorizontalStrut(30)); // a spacer
 		jpanel.add(new JLabel("Please fill in a username"));
 
-
-
 		this.add(jpanel);
 		this.setAlwaysOnTop(true); // ensures it pops up in front
 		this.setVisible(true);
-		//this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// user inputs
 		setTextField();
@@ -74,6 +70,29 @@ public class StartGUI extends JFrame{
 		jpanel.add(textName);
 	}
 
+	public void startGame() {
+		gc.setName(name);
+		try {
+			gc.connect(gs);
+
+			Room temp = gc.getRoom();
+			while (temp == null) {
+				panel.setGameMode();
+				temp = gc.getRoom();
+			}
+			dispose();
+			panel.startDrawWorld();
+			panel.setGameMode();
+
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
 	/**
 	 * This is an inner class which handles changes made in the text box for
 	 * player name and IP address
@@ -86,7 +105,7 @@ public class StartGUI extends JFrame{
 
 		public void removeUpdate(DocumentEvent e) {
 			name = textName.getText();
-			System.out.println("name="+name);
+			System.out.println("name=" + name);
 		}
 
 		public void changedUpdate(DocumentEvent e) {
@@ -107,32 +126,9 @@ public class StartGUI extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 
 			if (e.getSource() == connectButton) {
-				if ( name != null && name.length() > 0 ) { //input is valid
+				if (name != null && name.length() > 0) { // input is valid
 
-					gc.setName(name);
-					try {
-						gc.connect(gs);
-
-						Room temp = gc.getRoom();
-						while( temp == null){
-							panel.setGameMode();
-							temp = gc.getRoom();
-						}
-
-
-						dispose();
-						panel.startDrawWorld();
-						panel.setGameMode();
-						System.out.println("clicked connect");
-
-
-					} catch (UnknownHostException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					startGame();
 
 				} else {
 					sendFailure();
@@ -146,7 +142,6 @@ public class StartGUI extends JFrame{
 			JOptionPane.showMessageDialog(warning,
 					"Please input valid details!");
 		}
-
 
 	}
 }
