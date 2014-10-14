@@ -237,6 +237,10 @@ public class Game{
 		this.activeAI = activeAI;
 	}
 
+	public void setScore(Score score) {
+		this.score = score;
+	}
+
 
 
 

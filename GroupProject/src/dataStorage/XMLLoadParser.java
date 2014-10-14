@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import networking.AI;
+import networking.RandomAI;
+
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -277,7 +280,8 @@ public class XMLLoadParser {
 			int value = Integer.parseInt(current.getText());
 			scoreMap.put(name, value);
 		}
-		game
+		score.setScores(scoreMap);
+		game.setScore(score);
 	}
 
 	/**
@@ -287,7 +291,13 @@ public class XMLLoadParser {
 	 * @param ai an Element that stores information about the AI in the game
 	 */
 
-	public void parseAI(Element ai){}
+	public void parseAI(Element ai){
+		List aiList = ai.getChildren();
+		for(int i = 0 ; i<aiList.size();i++){
+			Element ele = (Element)aiList.get(i);
+			RandomAI a = new RandomAI((game.getRoomByName(ele.getText())),"ai"+i);
+		}
+	}
 
 
 	/**
