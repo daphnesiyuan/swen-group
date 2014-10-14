@@ -190,6 +190,8 @@ public class XMLLoadParser {
 
 	public Item parseItem(Element e, Room room, Avatar avatar) {
 		Item item = null;
+
+
 		if(room == null){}
 		else if(avatar == null){}
 		return item;
@@ -205,18 +207,20 @@ public class XMLLoadParser {
 	public void parseAvatar(Element e, Room r) {
 		String faceString = e.getChildText("facing");
 		String playerName = e.getChildText("playerName");
-		Element inventory = e.getChild("inventory");
-		List<Item> playerInventory = new ArrayList<Item>();
-		if (inventory.getChildren().size() != 0) {
-			for (int i = 0; i < inventory.getChildren().size(); i++) {
-				// TODO: add item to player inventory
-			}
-		}
+
 		Element cellEle = e.getChild("cell");
 		Cell cell = parseCell(cellEle);
 		int xPos = Integer.parseInt(e.getChildText("xPos"));
 		int yPos = Integer.parseInt(e.getChildText("yPos"));
 		Avatar a = new Avatar(playerName, r.getTiles()[xPos][yPos], r);
+		Element inventory = e.getChild("inventory");
+		List<Item> playerInventory = new ArrayList<Item>();
+		if (inventory.getChildren().size() != 0) {
+			for (int i = 0; i < inventory.getChildren().size(); i++) {
+				parseItem(inventory.getChildren().get(i), null,a);
+				// TODO: add item to player inventory
+			}
+		}
 		// a.setCell(cell);
 		a.setInventory(playerInventory);
 	}
