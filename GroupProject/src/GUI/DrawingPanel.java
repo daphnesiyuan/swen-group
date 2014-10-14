@@ -208,13 +208,10 @@ public class DrawingPanel extends JPanel {
 				} else if (sm.findButton(hoverX, hoverY).equals("help")) {
 					hoveredButton = "help";
 					sm.loadHoverButton("help");
-				}
-
-				else if (hoveredButton != "") {
+				} else if (hoveredButton != "") {
 					sm.resetUnHoverButton(hoveredButton);
 					// sends through the button which was last hovered on
-					hoveredButton = "";
-				}
+					hoveredButton = ""; }
 			}
 
 			else{ //must be in game play mode
@@ -238,6 +235,7 @@ public class DrawingPanel extends JPanel {
 				else if(i==2){
 					if (i < (getGameClient().getAvatar().getInventory().size())
 							&& (getGameClient().getAvatar().getInventory().get(2)) != null) {
+						System.out.println("hovered on space 2");
 						String d = getGameClient().getAvatar().getInventory().get(2).getDescription();
 						setToolTipText(d);
 					}
@@ -245,6 +243,7 @@ public class DrawingPanel extends JPanel {
 				else if(i==3){
 					if (i < (getGameClient().getAvatar().getInventory().size())
 							&& (getGameClient().getAvatar().getInventory().get(3)) != null) {
+						System.out.println("hovered on space 3");
 						String d = getGameClient().getAvatar().getInventory().get(3).getDescription();
 						setToolTipText(d);
 					}
@@ -252,6 +251,7 @@ public class DrawingPanel extends JPanel {
 				else if(i==4){
 					if (i < (getGameClient().getAvatar().getInventory().size())
 							&& (getGameClient().getAvatar().getInventory().get(4)) != null) {
+						System.out.println("hovered on space 4");
 						String d = getGameClient().getAvatar().getInventory().get(4).getDescription();
 						setToolTipText(d);
 					}
@@ -341,7 +341,7 @@ public class DrawingPanel extends JPanel {
 	public ArrayList<Integer> getKeysDown() {
 		return keysDown; }
 
-	//helper methods for leon and jimmy's chat stuff
+	//leon and jimmy's chat methods
 	public boolean isChatMode() {
 		return chatMode; }
 

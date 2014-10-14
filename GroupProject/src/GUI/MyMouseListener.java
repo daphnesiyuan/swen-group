@@ -5,8 +5,6 @@ import gameLogic.Item;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import rendering.InvoPopup;
-
 public class MyMouseListener implements MouseListener {
 
 	Item item;
@@ -29,8 +27,9 @@ public class MyMouseListener implements MouseListener {
 
 			int i = panel.getInvo().findBox(e.getX(), e.getY());
 
-			if(checkInventory(i)==true){ //something is here
+			if(checkInventory(i)){ //something is here
 				if (e.isPopupTrigger()) // for inventory interactions
+					item=item = panel.getGameClient().getAvatar().getInventory().get(i);
 					doPop(e);
 			}
 		}
@@ -40,10 +39,11 @@ public class MyMouseListener implements MouseListener {
 	public void mousePressed(MouseEvent e) {
 		if (!panel.isStartMode()) { // must be in game mode for this to work
 
-			int i = panel.getInvo().findBox(e.getX(), e.getY());
+			int i = panel.getInvo().findBox(e.getX(), e.getY()); //gets index of item/box
 
-			if(checkInventory(i)==true){ //something is here
+			if(checkInventory(i)){ //something is here
 				if (e.isPopupTrigger()) // for inventory interactions
+					item=item = panel.getGameClient().getAvatar().getInventory().get(i);
 					doPop(e);
 			}
 		}
@@ -54,8 +54,9 @@ public class MyMouseListener implements MouseListener {
 
 			int i = panel.getInvo().findBox(e.getX(), e.getY());
 
-			if(checkInventory(i)==true){ //something is here
+			if(checkInventory(i)){ //something is here
 				if (e.isPopupTrigger()) // for inventory interactions
+					item=item = panel.getGameClient().getAvatar().getInventory().get(i);
 					doPop(e);
 			}
 		}
@@ -70,6 +71,7 @@ public class MyMouseListener implements MouseListener {
 	private void doPop(MouseEvent e) {
 		InvoPopup menu = new InvoPopup(panel);
 		menu.show(e.getComponent(), e.getX(), e.getY());
+		menu.getItem(item);
 	}
 
 	public boolean checkInventory(int i){

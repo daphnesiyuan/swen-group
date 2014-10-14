@@ -21,8 +21,8 @@ public class TopMenu implements ActionListener{
 	private JMenuItem option;
 
 
-	private JMenuItem option1a;
-	private JMenuItem option1b;
+	private JMenuItem saveOption;
+	private JMenuItem quitOption;
 
 
 	public TopMenu(WindowFrame w, DrawingPanel p){
@@ -40,18 +40,20 @@ public class TopMenu implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	    if ((e.getActionCommand()).equals("Save")) {
-	    	System.out.println("do this ok");
-	    	if(panel.getGameServer().saveGame()){
-	    		System.out.println("game successfully saved");
-	    	}
-	    	else{
-	    		System.out.println("YOU FUCKED UP THE SAVING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+
+	    	if(!panel.isStartMode()){ //can only save if you're in game mode
+	    		if(panel.getGameServer().saveGame()){
+		    		System.out.println("game successfully saved");
+		    	}
+		    	else{
+		    		System.out.println("YOU FUCKED UP THE SAVING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+		    	}
 	    	}
 
 	    	mouse = true;
 	    }
-	    else if ( (e.getActionCommand()).equals("Do that") ){
-	    	System.out.println("do that ok");
+	    else if ( (e.getActionCommand()).equals("Quit") ){
+	    	System.out.println("quit");
 	    }
 
 	}
@@ -61,17 +63,17 @@ public class TopMenu implements ActionListener{
 	 */
 	public void setupMenuBar() {
 		mainDropDown = new JMenu("File");
-		option = new JMenu("Some option");
+		option = new JMenu("Game");
 
-		option1a = new JMenuItem("Save");
-		option1b = new JMenuItem("Do that");
+		saveOption = new JMenuItem("Save");
+		quitOption = new JMenuItem("Quit");
 
 		mainDropDown.add(option);
-		option.add(option1a);
-		option.add(option1b);
+		option.add(saveOption);
+		option.add(quitOption);
 
-		option1a.addActionListener(this);
-		option1b.addActionListener(this);
+		saveOption.addActionListener(this);
+		quitOption.addActionListener(this);
 
 		menuBar.add(mainDropDown);
 

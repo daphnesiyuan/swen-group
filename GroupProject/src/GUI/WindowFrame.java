@@ -14,9 +14,6 @@ public class WindowFrame extends JFrame {
 	private TopMenu topMenu;
 	private DrawingPanel panel;
 
-	public static GameClient gameClient;
-	public static Player player;
-
 
 	public WindowFrame() {
 		super("An Adventure Game");

@@ -1,4 +1,6 @@
-package rendering;
+package GUI;
+
+import gameLogic.Item;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,12 +8,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import GUI.DrawingPanel;
-
 public class InvoPopup extends JPopupMenu implements ActionListener{
 
 	JMenuItem Use;
 	JMenuItem Drop;
+	Item item;
 
 	DrawingPanel panel;
 
@@ -27,12 +28,16 @@ public class InvoPopup extends JPopupMenu implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 
 		if ((e.getActionCommand()).equals("Use")) {
-			panel.getGameClient().getAvatar().useItem(); //for item
+			panel.getGameClient().getAvatar().useItem(item); //for item
 	    }
 
 	    else if ( (e.getActionCommand()).equals("Drop") ){
-	    	panel.getGameClient().getAvatar().dropItem();
+	    	panel.getGameClient().getAvatar().dropItem(item);
 	    }
+	}
+
+	public void getItem(Item i){
+		item=i;
 	}
 }
 
