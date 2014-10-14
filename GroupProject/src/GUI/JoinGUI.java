@@ -99,6 +99,32 @@ public class JoinGUI extends JFrame{
 		}
 	}
 
+	public void startGame(){
+		gc.setName(name);
+
+		try {
+			System.out.println("testing");
+			if( gc.connect( ipAddress ) ){
+
+				Room temp = gc.getRoom();
+				while( temp == null){
+					temp = gc.getRoom();
+				}
+				dispose();
+
+				panel.startDrawWorld();
+				panel.setGameMode();
+			}
+
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
 	/**
 	 * This is a private class that implements action listener This class can
 	 * handle events in the set-up GUI It contains one method:
@@ -114,33 +140,7 @@ public class JoinGUI extends JFrame{
 			if (e.getSource() == connectButton) {
 				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0 ) { //input is valid
 					//MUST ADD NWEN CONNECT STUFF
-					gc.setName(name);
-
-					try {
-						System.out.println("testing");
-						if( gc.connect( ipAddress ) ){
-
-							Room temp = gc.getRoom();
-							while( temp == null){
-								temp = gc.getRoom();
-							}
-							dispose();
-
-							panel.startDrawWorld();
-							panel.setGameMode();
-						}
-
-					} catch (UnknownHostException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-
-
-
+					startGame();
 
 				} else {
 					sendFailure();
