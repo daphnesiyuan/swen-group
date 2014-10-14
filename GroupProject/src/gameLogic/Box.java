@@ -31,6 +31,7 @@ public class Box extends Item{
 	public boolean moveItemTo(Tile2D toTile) {
 		if(toTile == null) return false;
 		this.tile = toTile;
+		toTile.addItem(this);
 		return true;
 	}
 
