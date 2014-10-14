@@ -126,9 +126,12 @@ public class Avatar implements Serializable {
 
 	}
 
-	public boolean dropItem(Item item){
-		item.returnToStartPos();
-		return inventory.remove(item);
+	public boolean dropItem(Move move){
+		int remove = Direction.get(move.getRenderDirection());
+		Item item = inventory.get(remove);
+		inventory.remove(item);
+		item = null;
+		return true;
 	}
 
 	public void emptyInventory(){
@@ -141,6 +144,7 @@ public class Avatar implements Serializable {
 	public boolean moveTo(Move move){
 		if(move.getRenderDirection() == null) return false;
 		if(move.getInteraction() == null) return false;
+		if(move.getInteraction().equals("drop")) return dropItem(move);
 
 		updateFacing(move.getInteraction());
 

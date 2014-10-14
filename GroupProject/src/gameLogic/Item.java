@@ -34,11 +34,5 @@ public void setStartTile(Tile2D startTile) {
 	this.startTile = startTile;
 }
 
-@Override
-public abstract int hashCode();
-
-@Override
-public abstract boolean equals(Object obj);
-
 }
 

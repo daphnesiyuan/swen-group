@@ -15,7 +15,8 @@ public class Key extends Item {
 	@Override
 	public String getDescription() {
 		String desc = "";
-		return desc+ " Key object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
+		if(tile != null) return desc+ " Key object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
+		else return desc + "Key object, in inventory";
 	}
 
 	@Override
@@ -37,6 +38,7 @@ public class Key extends Item {
 
 	@Override
 	public boolean interactWith(Avatar avatar) {
+		if(avatar.getInventory().size()==4) return false; 	//no space left in inventory
 		tile.removeItem(this);
 		tile = null;
 		return avatar.getInventory().add(this);
@@ -50,7 +52,7 @@ public class Key extends Item {
 
 	@Override
 	public boolean pickItemUp(Avatar avatar) {
-		if(avatar.getInventory().size()==4) return false; 	//no space left in inventory
+
 		return this.interactWith(avatar);
 	}
 
