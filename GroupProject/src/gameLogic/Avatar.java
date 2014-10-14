@@ -90,7 +90,7 @@ public class Avatar implements Serializable {
 		this.spriteIndex = 0;
 
 		if(name.startsWith("ai")){
-			stepAmount = 82;
+			stepAmount = 102;
 			this.isAI=true;
 		}
 		else this.isAI = false;
