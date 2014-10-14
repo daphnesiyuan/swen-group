@@ -45,7 +45,9 @@ public class Shoes extends Item{
 		}
 		if(tile != null) tile.removeItem(this);
 		tile = null;
+		avatar.setStepAmount(52);
 		return avatar.getInventory().add(this);
+
 	}
 
 	@Override

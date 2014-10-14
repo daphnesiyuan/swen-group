@@ -142,6 +142,7 @@ public class Avatar implements Serializable {
 		inventory.remove(item);
 
 		item.moveItemTo(dropTile);
+		if(item instanceof Shoes) stepAmount = 32;
 		return true;
 	}
 
@@ -561,10 +562,6 @@ public class Avatar implements Serializable {
 		return tileYPos;
 	}
 
-	public double getBatteryLife(){
-		return cell.getBatteryLife();
-	}
-
 	public int getSpriteIndex(){
 		return spriteIndex;
 	}
@@ -632,6 +629,11 @@ public class Avatar implements Serializable {
 		} else if (!playerName.equals(other.playerName))
 			return false;
 		return true;
+	}
+
+	public void setStepAmount(int i) {
+		this.stepAmount = i;
+
 	}
 
 }

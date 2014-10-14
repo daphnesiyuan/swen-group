@@ -73,7 +73,7 @@ public class Game{
 	public Room addPlayer(String playerName){
 		if(playerName.startsWith("ai")){
 			Room room = roomsInGame.get(0);
-			Tile2D tile = room.getTiles()[3][3];
+			Tile2D tile = room.getTiles()[2][2];
 			new Avatar(playerName,tile,room);
 			return room;
 		}
