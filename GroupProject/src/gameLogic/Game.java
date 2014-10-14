@@ -23,6 +23,9 @@ public class Game{
 
 	private Thread environment;
 
+
+
+
 	public Game(){
 		this.roomNumber = 1; // RE: 0th room is arena
 
@@ -35,6 +38,7 @@ public class Game{
 
 		this.environment = new Environment(this);
 		environment.start();
+
 	}
 
 	public Game(Boolean loaded){

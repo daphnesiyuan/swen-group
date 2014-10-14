@@ -21,6 +21,8 @@ public class NewGame {
 
 	private String roomPlace;
 
+	private List<String> colors;
+
 
 	public NewGame(Game g){
 		game = g;
@@ -34,6 +36,12 @@ public class NewGame {
 
 	private List<Room> createRooms(){
 		List<Room> rooms = new ArrayList<Room>();
+		colors = new ArrayList<String>();
+		colors.add("Y");
+		colors.add("P");
+		colors.add("G");
+		colors.add("R");
+
 
 		URL a = NewGame.class.getResource("/gameLogic/arena.txt");
 		URL b = NewGame.class.getResource("/gameLogic/basic_room_north.txt");
@@ -73,9 +81,49 @@ public class NewGame {
 		arena.getDoors().get(3).setToRoom(s);
 		arena.getDoors().get(2).setToRoom(e);
 		arena.getDoors().get(1).setToRoom(w);
+
+		//colorLinks();
 	}
 
 
+	private void colorLinks(){
+		for(int i = 0; i < roomsInGame.size()-1; i++){
+			Room room = roomsInGame.get(i);
+			if(i==0){
+
+			}
+			else{
+				//if color pop = g / r/ p /y
+			//room.getDoors().get(0) =
+
+
+			}
+		}
+
+
+
+//		if(colors.get(0).equals("Y")){
+//		Tile2D door = new YellowDoor(x,y);
+//		tiles[y][x] = door;
+//		colors.remove("Y");
+//	}
+//	else if(colors.get(0).equals("G")){
+//		Tile2D door = new GreenDoor(x,y);
+//		tiles[y][x] = door;
+//		colors.remove("G");
+//	}
+//	else if(colors.get(0).equals("P")){
+//		Tile2D door = new PurpleDoor(x,y);
+//		tiles[y][x] = door;
+//		colors.remove("P");
+//	}
+//	else if(colors.get(0).equals("R")){
+//		Tile2D door = new RedDoor(x,y);
+//		tiles[y][x] = door;
+//		colors.remove("R");
+//	}
+
+	}
 
 	/**
 	 * Important to Note that if there is an IO exception thrown in this method, even if it is caught the method will return null.
@@ -136,6 +184,9 @@ public class NewGame {
 						tiles[y][x] = floor;
 					}
 					else if(tile.toUpperCase().equals("D")){
+
+
+
 						Tile2D door = new Door(x,y);
 						tiles[y][x] = door;
 					}

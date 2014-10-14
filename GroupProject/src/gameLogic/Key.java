@@ -53,5 +53,20 @@ public class Key extends Item {
 		return this.interactWith(avatar);
 	}
 
+	@Override
+	public int hashCode() {
+		return itemID * 11;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Item other = (Item) obj;
+		if (itemID != other.itemID) return false;
+		return true;
+	}
+
 
 }

@@ -13,9 +13,12 @@ public class Environment extends Thread implements Serializable{
 
 	private int count = 0;
 
+	// items in the game are identified using unique item ids.
+	private int itemID;
 
 	public Environment(Game game){
 		this.game = game;
+		this.itemID = 0;
 
 	}
 
@@ -39,6 +42,7 @@ public class Environment extends Thread implements Serializable{
 	private void genKey(int i){
 		Room room = game.getRoomsInGame().get(i);
 		Key key = new Key(room.getTiles()[1][5]);
+		key.setItemID(itemID++);
 		room.getTiles()[1][5].addItem(key);
 
 	}
@@ -46,6 +50,7 @@ public class Environment extends Thread implements Serializable{
 	private void genLight(int i){
 		Room room = game.getRoomsInGame().get(i);
 		Light light = new Light(room.getTiles()[1][1]);
+		light.setItemID(itemID++);
 		room.getTiles()[1][1].addItem(light);
 
 	}
