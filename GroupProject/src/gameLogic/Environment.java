@@ -45,14 +45,16 @@ public class Environment extends Thread implements Serializable{
 				}
 			}
 			count++;
-			try { this.sleep(30000); } catch (InterruptedException e) { e.printStackTrace(); }
+			try { this.sleep(10000); } catch (InterruptedException e) { e.printStackTrace(); }
 			genBox();
 		}
 	}
 
 	private void genBox(){
 		Room room = game.getRoomsInGame().get(0);
-		// 7 7
+		Box box = new Box(room.getTiles()[7][7]);
+		box.setItemID(itemID++);
+		room.getTiles()[7][7].addItem(box);
 	}
 
 
