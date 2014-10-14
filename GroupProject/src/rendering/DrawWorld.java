@@ -265,24 +265,6 @@ public class DrawWorld {
 		}
 		drawObject(g, pt, images.get(tileName+tileNum));
 
-//		if (tile instanceof Wall){
-//			drawObject(g, pt, images.get("Wall"+tileNum));
-//		}
-//		else if(tile instanceof Floor){
-//			//drawObject(g, pt, images.get("Floor"+tileNum));
-//		}
-//		else if(tile instanceof Door){
-//			drawObject(g, pt, images.get("Door"+tileNum));
-//		}
-//		else if(tile instanceof Column){
-//			drawObject(g, pt, images.get("Column"+tileNum));
-//		}
-//		else if(tile instanceof Tree){
-//			drawObject(g, pt, images.get("Tree"+tileNum));
-//		}
-//		else if(tile instanceof Charger){
-//			drawObject(g, pt, images.get("Charger"+tileNum));
-//		}
 	}
 
 	/**
@@ -322,19 +304,20 @@ public class DrawWorld {
 
 		//cases:
 		//avatar is ai
-		//avatar is charging
-		//avatar is player and is not charging
-		if(avatar.getCell().isCharging()){
-			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
-		}
-		else if (avatar.getPlayerName().startsWith("ai")){
+		//avatar is other player
+		//avatar is other player and charging
+		//avatar is current player
+		//avatar is current player and charging
+		if (avatar.getPlayerName().startsWith("ai")){ //AI
 			drawObject(g,pt,images.get("AvatarB"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 		}
-		else if(avatar.equals(character)){ drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
-//		System.out.println("this player.facing"+ avatar.getFacing().toString());
+		else if(avatar.equals(character) && avatar.getCell().isCharging()){ //Avatar = current player and is charging
+			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+"Charging"+avatar.getSpriteIndex()));
 		}
-		else{
-//			Direction.get(avatar.getFacing().toString());
+		else if(avatar.equals(character) && avatar.getCell().isCharging()){ //Avatar = current player and NOT charging
+			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
+		}
+		else if(avatar.getCell().isCharging()){ //Avatar != current player and charging
 			int avatarFacing = Direction.get(avatar.getFacing().toString());
 			int otherRenderingDirection = Direction.get(avatar.getRenderDirection());
 			int myRenderingDirection = Direction.get(direction);
@@ -342,20 +325,20 @@ public class DrawWorld {
 				myRenderingDirection = (myRenderingDirection+2)%4;
 			}
 			int combinedDirection = (otherRenderingDirection + avatarFacing + myRenderingDirection) % 4;
-
-//
 			String facing = Direction.get(combinedDirection);
-			//System.out.println(dir);
-			//System.out.println("other player.facing"+ avatar.getFacing().toString());
-			drawObject(g,pt,images.get("AvatarA"+facing+""+avatar.getSpriteIndex()));}
-		//else if(avatar.equals(character)) drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
-
-
-
-
-
-
-
+			drawObject(g,pt,images.get("AvatarA"+facing+"Charging"+avatar.getSpriteIndex()));
+		}
+		else{//Avatar != current player and NOT charging
+			int avatarFacing = Direction.get(avatar.getFacing().toString());
+			int otherRenderingDirection = Direction.get(avatar.getRenderDirection());
+			int myRenderingDirection = Direction.get(direction);
+			if(myRenderingDirection == 1 ||myRenderingDirection == 3){
+				myRenderingDirection = (myRenderingDirection+2)%4;
+			}
+			int combinedDirection = (otherRenderingDirection + avatarFacing + myRenderingDirection) % 4;
+			String facing = Direction.get(combinedDirection);
+			drawObject(g,pt,images.get("AvatarA"+facing+""+avatar.getSpriteIndex()));
+		}
 
 		//either draw a floating pointer if avatar is current player
 		//or draw the name above the avatar
