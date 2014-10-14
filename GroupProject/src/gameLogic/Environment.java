@@ -47,7 +47,7 @@ public class Environment extends Thread implements Serializable{
 			if(count == 0){		// initial environment item generation
 				for(int i = 1; i < 5; i++){		// at start - put lights in all rooms but arena.
 					genLight(i);
-					genKey(i);
+					//genKey(i);
 				}
 
 
