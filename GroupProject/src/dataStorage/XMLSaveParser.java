@@ -322,7 +322,6 @@ public class XMLSaveParser {
 	 * @return Element representing the Item in XML
 	 */
 	public Element parseItem(Item item){
-		System.out.println("Here1");
 		Element e = null;
 
 		if(item instanceof Key){

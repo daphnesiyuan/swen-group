@@ -1,17 +1,24 @@
 package dataStorage;
 
 import gameLogic.Avatar;
+import gameLogic.Box;
 import gameLogic.Cell;
 import gameLogic.Charger;
 import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Game;
+import gameLogic.GreenKey;
 import gameLogic.Item;
+import gameLogic.Light;
+import gameLogic.PurpleKey;
+import gameLogic.RedKey;
 import gameLogic.Room;
+import gameLogic.Shoes;
 import gameLogic.Tile2D;
 import gameLogic.Tree;
 import gameLogic.Wall;
+import gameLogic.YellowKey;
 
 import java.awt.Color;
 import java.io.File;
@@ -188,13 +195,48 @@ public class XMLLoadParser {
 	 *            Roon that contains the item
 	 */
 
-	public Item parseItem(Element e, Room room, Avatar avatar) {
+	public void parseItem(Element e, Room room, Avatar avatar) {
 		Item item = null;
+		Element tile = e.getChild("tile");
+		Element startTile = e.getChild("startTile");
+		int xPos = Integer.parseInt(tile.getChild("xPos").getText());
+		int yPos = Integer.parseInt(tile.getChild("yPos").getText());
+		int startXPos = Integer.parseInt(startTile.getChild("xPos").getText());
+		int startYPos = Integer.parseInt(startTile.getChild("yPos").getText());
 
+		Tile2D t = null;
+		Tile2D sT = room.getTiles()[startXPos][startYPos];
+		if(room != null){
+			t = room.getTiles()[xPos][yPos];
 
-		if(room == null){}
-		else if(avatar == null){}
-		return item;
+		}
+		if(e.getName().equals("key")){
+			String color = e.getChild("color").getText();
+			if(color.equals("red")){
+				item = new RedKey(t);
+			}
+			else if(color.equals("green")){
+				item = new GreenKey(t);
+			}
+			else if(color.equals("purple")){
+				item = new PurpleKey(t);
+			}
+			else{//yellow
+				item = new YellowKey(t);
+			}
+		}
+		if(e.getName().equals("light")){
+			item = new Light(t);
+		}
+		if(e.getName().equals("shoes")){
+			item = new Shoes(t);
+		}
+		if(e.getName().equals("box")){
+			item = new Box(t);
+		}
+
+		if(room == null){avatar.getInventory().add(item);}
+		else if(avatar == null){room.getItems().add(item);}
 	}
 
 	/**
@@ -218,7 +260,6 @@ public class XMLLoadParser {
 		if (inventory.getChildren().size() != 0) {
 			for (int i = 0; i < inventory.getChildren().size(); i++) {
 				parseItem(inventory.getChildren().get(i), null,a);
-				// TODO: add item to player inventory
 			}
 		}
 		// a.setCell(cell);
