@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class TopMenu implements ActionListener{
 
@@ -40,15 +41,16 @@ public class TopMenu implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	    if ((e.getActionCommand()).equals("Save")) {
+	    	System.out.println("clicked save");
 
-	    	if(!panel.isStartMode()){ //can only save if you're in game mode
+	    	if( !panel.isStartMode() ){ //can only save if you're in game mode
 	    		if(panel.getGameServer().saveGame()){
 		    		System.out.println("game successfully saved");
 		    	}
 		    	else{
-		    		System.out.println("YOU FUCKED UP THE SAVING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-		    	}
-	    	}
+		    		System.out.println("YOU FUCKED UP THE SAVING!!!!!!!!!!!!!!!!!!!!!1");
+		    	}	}
+	    	else{ Window.sendFailure(); }
 
 	    	mouse = true;
 	    }

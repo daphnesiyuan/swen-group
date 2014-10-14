@@ -10,6 +10,7 @@ import javax.swing.Box;
 public class MyMouseListener implements MouseListener {
 
 	Item item;
+	int itemIndex;
 
 	private DrawingPanel panel;
 	InvoPopup pop;
@@ -27,11 +28,11 @@ public class MyMouseListener implements MouseListener {
 
 		if (!panel.isStartMode()) { // must be in game mode for this to work
 
-			int i = panel.getInvo().findBox(e.getX(), e.getY());
+			int itemIndex = panel.getInvo().findBox(e.getX(), e.getY());
 
-			if(checkInventory(i)){ //something is here
+			if(checkInventory(itemIndex)){ //something is here
 				if (e.isPopupTrigger()) // for inventory interactions
-					item=item = panel.getGameClient().getAvatar().getInventory().get(i);
+					item=item = panel.getGameClient().getAvatar().getInventory().get(itemIndex);
 					doPop(e);
 			}
 		}
@@ -74,7 +75,7 @@ public class MyMouseListener implements MouseListener {
 		boolean b = item.getClass().equals(Box.class);
 		InvoPopup menu = new InvoPopup(panel, b);
 		menu.show(e.getComponent(), e.getX(), e.getY());
-		menu.sendItem(item);
+		menu.sendItem(item, itemIndex);
 	}
 
 	public boolean checkInventory(int i){

@@ -219,7 +219,7 @@ public class DrawingPanel extends JPanel {
 				if(i==0){
 					if (i <= (getGameClient().getAvatar().getInventory().size())
 							&& (getGameClient().getAvatar().getInventory().get(0)) != null) {
-						System.out.println("hovered on space 0");
+						//System.out.println("hovered on space 0");
 						String d = getGameClient().getAvatar().getInventory().get(0).getDescription();
 						setToolTipText(d);
 					}
@@ -227,7 +227,7 @@ public class DrawingPanel extends JPanel {
 				else if(i==1){
 					if (i < (getGameClient().getAvatar().getInventory().size())
 							&& (getGameClient().getAvatar().getInventory().get(1)) != null) {
-						System.out.println("hovered on space 1");
+						//System.out.println("hovered on space 1");
 						String d = getGameClient().getAvatar().getInventory().get(1).getDescription();
 						setToolTipText(d);
 					}
@@ -235,7 +235,7 @@ public class DrawingPanel extends JPanel {
 				else if(i==2){
 					if (i < (getGameClient().getAvatar().getInventory().size())
 							&& (getGameClient().getAvatar().getInventory().get(2)) != null) {
-						System.out.println("hovered on space 2");
+						//System.out.println("hovered on space 2");
 						String d = getGameClient().getAvatar().getInventory().get(2).getDescription();
 						setToolTipText(d);
 					}
@@ -243,7 +243,7 @@ public class DrawingPanel extends JPanel {
 				else if(i==3){
 					if (i < (getGameClient().getAvatar().getInventory().size())
 							&& (getGameClient().getAvatar().getInventory().get(3)) != null) {
-						System.out.println("hovered on space 3");
+						//System.out.println("hovered on space 3");
 						String d = getGameClient().getAvatar().getInventory().get(3).getDescription();
 						setToolTipText(d);
 					}
@@ -251,7 +251,7 @@ public class DrawingPanel extends JPanel {
 				else if(i==4){
 					if (i < (getGameClient().getAvatar().getInventory().size())
 							&& (getGameClient().getAvatar().getInventory().get(4)) != null) {
-						System.out.println("hovered on space 4");
+						//System.out.println("hovered on space 4");
 						String d = getGameClient().getAvatar().getInventory().get(4).getDescription();
 						setToolTipText(d);
 					}

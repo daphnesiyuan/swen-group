@@ -20,6 +20,8 @@ public class WindowFrame extends JFrame {
 
 	public WindowFrame() {
 		super("An Adventure Game");
+
+		panel = new DrawingPanel(this);
 		JFrameSetUp();
 		JPanelStuff();
 		closingWarningBox();
@@ -37,7 +39,6 @@ public class WindowFrame extends JFrame {
 	}
 
 	public void JPanelStuff() {
-		panel = new DrawingPanel(this);
 		add(panel, BorderLayout.CENTER); // add canvas
 		setVisible(true); // make sure we are visible!
 		panel.repaint(); // repaint susses the graphics object
@@ -66,5 +67,11 @@ public class WindowFrame extends JFrame {
 		if (confirmed == JOptionPane.YES_OPTION) {
 			panel.setStartMode();
 		}
+	}
+
+	public void sendFailure() {
+		JFrame warning = new JFrame();
+		JOptionPane.showMessageDialog(warning,
+				"You can only save while in game");
 	}
 }

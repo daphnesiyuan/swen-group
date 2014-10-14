@@ -4,15 +4,20 @@ import gameLogic.Item;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import networking.Move;
+import rendering.Direction;
 
 public class InvoPopup extends JPopupMenu implements ActionListener{
 
 	JMenuItem Open;
 	JMenuItem Drop;
 	Item item;
+	int itemIndex;
 
 	DrawingPanel panel;
 
@@ -41,19 +46,24 @@ public class InvoPopup extends JPopupMenu implements ActionListener{
 	    }
 
 	    else if ( (e.getActionCommand()).equals("Drop") ){
-	    	System.out.println("item is "+item);
+	    	Move move = new Move((panel.getGameClient()).getPlayer(), "drop", itemIndex );
 
-	    	System.out.println("items in invo before="+ panel.getGameClient().getAvatar().getInventory().size() );
-	    	panel.getGameClient().getAvatar().dropItem(item);
-	    	System.out.println("items in invo after="+ panel.getGameClient().getAvatar().getInventory().size() );
+	    	try {
+				panel.getGameClient().sendMoveToServer(move);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
-	    	panel.repaint();
 	    }
 	}
 
-	public void sendItem(Item i){
+	public void sendItem(Item i, int num){
 		item=i;
+		itemIndex=num;
 	}
+
+
 }
 
 
