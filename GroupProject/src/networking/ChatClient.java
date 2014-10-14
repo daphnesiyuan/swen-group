@@ -20,7 +20,7 @@ import networking.Server.ClientThread;
 public class ChatClient extends Client {
 
 	// Clients sides version of the current chat history
-	private Stack<ChatMessage> chatHistory = new Stack<ChatMessage>();
+	private ArrayList<ChatMessage> chatHistory = new ArrayList<ChatMessage>();
 
 	// Color of the clients messages
 	private Color chatMessageColor = new Color(new Random().nextInt(255), new Random().nextInt(255), new Random().nextInt(255));
