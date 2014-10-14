@@ -46,6 +46,8 @@ public class MakeImageMap {
 
 				//Avatar B
 				addToMap("AvatarB"+Direction.get(j)+""+i);
+				//Avatar B Charging
+				addToMap("AvatarB"+Direction.get(j)+"Charging"+i);
 			}
 		}
 		//Tiles
