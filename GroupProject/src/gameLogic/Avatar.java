@@ -128,12 +128,12 @@ public class Avatar implements Serializable {
 	}
 
 	public boolean dropItem(Move move){
-
 		Tile2D dropTile = null;
-		if(tile.getTileUp() != tile ) dropTile = tile.getTileUp();
-		else if(tile.getTileLeft() != tile) dropTile = tile.getTileLeft();
-		else if(tile.getTileRight() != tile) dropTile = tile.getTileRight();
-		else if (tile.getTileDown() != tile) dropTile = tile.getTileDown();
+		// Find a Tile close to the avatar that the item can be dropped on
+		if(tile.getTileUp() != tile && tile.getTileUp() instanceof Floor) dropTile = tile.getTileUp();
+		else if(tile.getTileLeft() != tile && tile.getTileLeft() instanceof Floor) dropTile = tile.getTileLeft();
+		else if(tile.getTileRight() != tile && tile.getTileRight() instanceof Floor) dropTile = tile.getTileRight();
+		else if (tile.getTileDown() != tile && tile.getTileDown() instanceof Floor) dropTile = tile.getTileDown();
 		else return false;
 
 		int remove = move.getIndex();

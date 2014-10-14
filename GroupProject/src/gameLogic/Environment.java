@@ -52,6 +52,9 @@ public class Environment extends Thread implements Serializable{
 
 	private void genBox(){
 		Room room = game.getRoomsInGame().get(0);
+		Tile2D tile = room.getTiles()[7][7];
+		if(tile.getItems().size() != 0) return;
+
 		Box box = new Box(room.getTiles()[7][7]);
 		box.setItemID(itemID++);
 		room.getTiles()[7][7].addItem(box);
