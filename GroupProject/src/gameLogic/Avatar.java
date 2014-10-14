@@ -18,6 +18,9 @@ import networking.Move;
  */
 public class Avatar implements Serializable {
 
+	/**
+	 * Saved
+	 */
 	private static final long serialVersionUID = 4723069455200795911L;
 
 	private String playerName;

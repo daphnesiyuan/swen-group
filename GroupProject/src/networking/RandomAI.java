@@ -10,7 +10,7 @@ import java.util.Random;
 import rendering.Direction;
 
 /**
- * Random AI that will walk around In a random direction every time it's told to think
+ * Random AI that will walk around In a random direction every time it's told to think and will attack players.
  * @author veugeljame
  *
  */
