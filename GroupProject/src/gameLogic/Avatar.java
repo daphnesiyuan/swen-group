@@ -127,7 +127,7 @@ public class Avatar implements Serializable {
 	}
 
 	public boolean dropItem(Move move){
-		int remove = Direction.get(move.getRenderDirection());
+		int remove = move.getIndex();
 		Item item = inventory.get(remove);
 		inventory.remove(item);
 		item = null;
