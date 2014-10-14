@@ -257,7 +257,7 @@ public class DrawWorld {
 		}
 
 		String tileName = tile.getClass().getName();
-		//remove the gamelogic.
+		//remove the "gamelogic."
 		tileName = tileName.substring(10);
 
 		if(tile instanceof Floor){
@@ -394,6 +394,15 @@ public class DrawWorld {
 
 		for (int i = 0; i < tile.getItems().size(); i++){
 			String itemName = tile.getItems().get(i).getClass().getName().substring(10);
+			if (images.get(itemName+tileNum) == null){
+				System.out.println(itemName);
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			drawObject(g,pt,images.get(itemName+tileNum));
 		}
 
