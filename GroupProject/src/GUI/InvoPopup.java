@@ -32,7 +32,7 @@ public class InvoPopup extends JPopupMenu implements ActionListener{
 		if(isOpenable){
 			Open = new JMenuItem("Open");
 			add(Open);
-			Drop.addActionListener(this);
+			Open.addActionListener(this);
 		}
 
 		count = 0;
@@ -40,10 +40,15 @@ public class InvoPopup extends JPopupMenu implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		System.out.println(e.getActionCommand());
 
 		if ((e.getActionCommand()).equals("Open")) {
-			panel.getGameClient().getAvatar().useItem(item); //for item
+			Move move = new Move((panel.getGameClient()).getPlayer(), "open", itemIndex );
+			try {
+				panel.getGameClient().sendMoveToServer(move);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 
 

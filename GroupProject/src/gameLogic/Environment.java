@@ -60,6 +60,11 @@ public class Environment extends Thread implements Serializable{
 		box.setItemID(itemID++);
 		room.getTiles()[7][7].addItem(box);
 		room.addItem(box);
+
+
+		Shoes shoes = new Shoes(null);
+		shoes.setItemID(itemID++);
+		box.getContains().add(shoes);
 	}
 
 
