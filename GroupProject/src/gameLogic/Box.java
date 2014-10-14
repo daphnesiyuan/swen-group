@@ -56,4 +56,14 @@ public class Box extends Item{
 		return this.interactWith(avatar);
 	}
 
+	public List<Item> getContains() {
+		return contains;
+	}
+
+	public void setContains(List<Item> contains) {
+		this.contains = contains;
+	}
+
+
+
 }

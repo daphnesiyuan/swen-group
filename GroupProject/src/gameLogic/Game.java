@@ -190,7 +190,14 @@ public class Game{
 		return count;
 	}
 
-
+	public Room getRoomByName(String roomName){
+		for(Room r: roomsInGame){
+			if(r.getRoomPlace().equals(roomName)){
+				return r;
+			}
+		}
+		return null;
+	}
 
 
 
