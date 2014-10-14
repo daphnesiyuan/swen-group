@@ -95,7 +95,7 @@ public class XMLSaveParser {
 
 		if(! room.getItems().isEmpty()){
 			for(Item i: room.getItems()){
-				items.addContent(parseItem(i));
+				items.addContent(parseItem(i,room,null));
 			}
 
 		}
@@ -154,7 +154,7 @@ public class XMLSaveParser {
 		e.addContent(new Element("facing").setText(avatar.getFacing().name()));			//Facing
 		if(!avatar.getInventory().isEmpty()){
 			for(Item i: avatar.getInventory()){		//iterate through list
-				inventory.addContent(parseItem(i));
+				inventory.addContent(parseItem(i,null, avatar));
 			}
 		}
 
@@ -321,7 +321,7 @@ public class XMLSaveParser {
 	 * @param item Item object from game
 	 * @return Element representing the Item in XML
 	 */
-	public Element parseItem(Item item){
+	public Element parseItem(Item item, Room r, Avatar a){
 		Element e = null;
 
 		if(item instanceof Key){
@@ -350,14 +350,15 @@ public class XMLSaveParser {
 		else if(item instanceof Box){
 			e = new Element("box");
 			for(Item i : ((Box) item).getContains()){
-				e.addContent(new Element("items").setContent(parseItem(i)));
+				e.addContent(new Element("items").setContent(parseItem(i, r, a)));
 			}
 		}
 		Element tile = new Element("tile");
 		Element startTile = new Element("startTile");
-
-		tile.addContent(new Element("xPos")).setText(Integer.toString((item.getTile().getxPos())));
-		tile.addContent(new Element("yPos")).setText(Integer.toString((item.getTile().getyPos())));
+		if(a == null){
+			tile.addContent(new Element("xPos")).setText(Integer.toString((item.getTile().getxPos())));
+			tile.addContent(new Element("yPos")).setText(Integer.toString((item.getTile().getyPos())));
+		}
 
 		tile.addContent(new Element("xPos")).setText(Integer.toString((item).getStartTile().getxPos()));
 		tile.addContent(new Element("yPos")).setText(Integer.toString((item).getStartTile().getyPos()));
