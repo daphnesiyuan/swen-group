@@ -87,8 +87,8 @@ public class TestSave extends javax.swing.JFrame {
 		}
 
 		 File xmlFile = new File("saved_at_1413081990882");
-//		 XMLLoader x = new XMLLoader();
-//		 Game g =x.loadGame(xmlFile);
+		 XMLLoader x = new XMLLoader();
+		 Game g =x.loadGame(xmlFile);
 
 	}
 
