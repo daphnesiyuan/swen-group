@@ -218,7 +218,7 @@ public class DrawingPanel extends JPanel {
 				int i=invo.findBox(hoverX, hoverY);
 				if(i==0){
 					if (i <= (getGameClient().getAvatar().getInventory().size())
-							&& (getGameClient().getAvatar().getInventory().get(0)) != null) {
+							&& (getGameClient().getAvatar().getInventory().size()>0) ) {
 						//System.out.println("hovered on space 0");
 						String d = getGameClient().getAvatar().getInventory().get(0).getDescription();
 						setToolTipText(d);
