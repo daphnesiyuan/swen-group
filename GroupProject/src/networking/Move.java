@@ -15,12 +15,22 @@ public class Move extends NetworkData {
 	public final String interaction;
 	public final Player player;
 	public final String renderDirection;
+	public final int index;
 
 	public Move(Player player, String interaction, String renderDirection){
 		this.interaction = interaction;
 		this.player = player;
 		this.renderDirection = renderDirection;
+		index = 0;
 	}
+
+	public Move(Player player, String interaction, int index){
+		this.interaction = interaction;
+		this.player = player;
+		this.index = index;
+		renderDirection = null;
+	}
+
 
 	/**
 	 * What to do when the move is performed
@@ -49,6 +59,10 @@ public class Move extends NetworkData {
 	 */
 	public String getRenderDirection() {
 		return renderDirection;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 
 }
