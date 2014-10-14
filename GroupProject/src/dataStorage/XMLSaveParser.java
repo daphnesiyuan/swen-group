@@ -12,20 +12,30 @@ import networking.AI;
 import org.jdom2.Element;
 
 import gameLogic.Avatar;
+import gameLogic.Box;
 import gameLogic.Cell;
 import gameLogic.Charger;
 import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Game;
+import gameLogic.GreenDoor;
+import gameLogic.GreenKey;
 import gameLogic.Item;
 import gameLogic.Key;
 import gameLogic.Light;
+import gameLogic.PurpleDoor;
+import gameLogic.PurpleKey;
+import gameLogic.RedDoor;
+import gameLogic.RedKey;
 import gameLogic.Room;
 import gameLogic.Score;
+import gameLogic.Shoes;
 import gameLogic.Tile2D;
 import gameLogic.Tree;
 import gameLogic.Wall;
+import gameLogic.YellowDoor;
+import gameLogic.YellowKey;
 
 /**
  * A class that acts as a parser for the XML saving process.
@@ -140,8 +150,10 @@ public class XMLSaveParser {
 		e.addContent(new Element("playerName").setText(avatar.getPlayerName()));		//player name
 		e.addContent(new Element("facing").setText(avatar.getFacing().name()));			//Facing
 		if(!avatar.getInventory().isEmpty()){
+			Element items = new Element("items");
 			for(Item i: avatar.getInventory()){		//iterate through list
-				inventory.addContent(new Element("item").setText(i.getDescription()));//add item to inventory element
+				items.addContent(parseItem(i));
+				inventory.addContent(items);//add item to inventory element
 			}
 		}
 
@@ -215,20 +227,21 @@ public class XMLSaveParser {
 	public Element parseDoor(Door door){
 
 		Element e = new Element("Door");
-
+		if(door instanceof RedDoor){
+			e.addContent("color").setText("red");
+		}
+		if(door instanceof YellowDoor){
+			e.addContent("color").setText("yellow");
+		}
+		if(door instanceof PurpleDoor){
+			e.addContent("color").setText("purple");
+		}
+		if(door instanceof GreenDoor){
+			e.addContent("color").setText("green");
+		}
 		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
 		e.addContent(new Element("toRoom").setText(door.getToRoom().getRoomPlace()));
-
-		if(door.getColor()!=null){
-		Element color = new Element("color");
-		color.addContent(new Element("Red").setText(Integer.toString((door.getColor().getRed()))));
-		color.addContent(new Element("Green").setText(Integer.toString((door.getColor().getGreen()))));
-		color.addContent(new Element("Blue").setText(Integer.toString((door.getColor().getBlue()))));
-		e.addContent(color);
-		}
-		if(!(door.getAvatar()==null))e.addContent(new Element("characterOnTile").setText(door.getAvatar().getPlayerName()));
-
 		return e;
 	}
 
@@ -309,30 +322,44 @@ public class XMLSaveParser {
 	 */
 	public Element parseItem(Item item){
 
-		Element e;
+		Element e = null;
 
 		if(item instanceof Key){
 			e = new Element("key");
+			if(item instanceof RedKey){
+				e.addContent("color").setText("red");
+			}
+			else if(item instanceof GreenKey){
+				e.addContent("color").setText("green");
+			}
+			else if(item instanceof PurpleKey){
+				e.addContent("color").setText("purple");
+			}
+			else if(item instanceof YellowKey){
+				e.addContent("color").setText("yellow");
+			}
 
-			Element color = new Element("color");
-			color.addContent(new Element("Red").setText(Integer.toString((((Key)item).getColor().getRed()))));
-			color.addContent(new Element("Green").setText(Integer.toString((((Key)item).getColor().getGreen()))));
-			color.addContent(new Element("Blue").setText(Integer.toString((((Key)item).getColor().getBlue()))));
-
-			e.addContent(color);
 		}
-		else{
+		else if(item instanceof Light){
 			e = new Element("light");
 		}
-
+		else if(item instanceof Shoes){
+			e = new Element("shoes");
+		}
+		else if(item instanceof Box){
+			e = new Element("box");
+			for(Item i : ((Box) item).getContains()){
+				e.addContent(new Element("items").setContent(parseItem(i)));
+			}
+		}
 		Element tile = new Element("tile");
 		Element startTile = new Element("startTile");
 
 		tile.addContent(new Element("xPos")).setText(Integer.toString((item.getTile().getxPos())));
 		tile.addContent(new Element("yPos")).setText(Integer.toString((item.getTile().getyPos())));
 
-		tile.addContent(new Element("xPos")).setText(Integer.toString(((Key)item).getStartTile().getxPos()));
-		tile.addContent(new Element("yPos")).setText(Integer.toString(((Key)item).getStartTile().getyPos()));
+		tile.addContent(new Element("xPos")).setText(Integer.toString((item).getStartTile().getxPos()));
+		tile.addContent(new Element("yPos")).setText(Integer.toString((item).getStartTile().getyPos()));
 		e.addContent(startTile);
 		e.addContent(tile);
 
