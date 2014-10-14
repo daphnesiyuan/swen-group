@@ -127,7 +127,7 @@ public class Avatar implements Serializable {
 	}
 
 	public boolean dropItem(Item item){
-		//if((item == null)||(!(inventory.contains(null)))) return false;
+		item.returnToStartPos();
 		return inventory.remove(item);
 	}
 
