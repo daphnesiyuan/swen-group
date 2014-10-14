@@ -89,7 +89,10 @@ public class Avatar implements Serializable {
 		// Avatars initial sprite image is the 0th element in the animation sequence
 		this.spriteIndex = 0;
 
-		if(name.startsWith("ai")) this.isAI=true;
+		if(name.startsWith("ai")){
+			stepAmount = 82;
+			this.isAI=true;
+		}
 		else this.isAI = false;
 
 		this.score = 0;
@@ -137,10 +140,12 @@ public class Avatar implements Serializable {
 		else return false;
 
 		int remove = move.getIndex();
+		if(remove >= inventory.size()) return false;
 		Item item = inventory.get(remove);
 		inventory.remove(item);
 
 		item.moveItemTo(dropTile);
+		if(item instanceof Shoes) stepAmount = 32;
 		return true;
 	}
 
@@ -151,8 +156,28 @@ public class Avatar implements Serializable {
 		this.inventory = new ArrayList<Item>();
 	}
 
+
+	public boolean openItem(Move move){
+		Item item = inventory.get(move.getIndex());
+		if(item instanceof Box){
+			Box box = (Box)item;
+			if(box.getContains().size() == 0){
+				System.out.println("Theres nothing in here!");
+				return false;
+			}
+			Item inner = box.getContains().get(0);
+			box.getContains().remove(inner);
+			return this.interact(inner);
+		}
+
+
+
+		return false;
+	}
+
 	public boolean moveTo(Move move){
 		if(move.getInteraction().equals("drop")) return dropItem(move);
+		if(move.getInteraction().equals("open")) return openItem(move);
 		if(move.getRenderDirection() == null) return false;
 		if(move.getInteraction() == null) return false;
 
@@ -376,7 +401,7 @@ public class Avatar implements Serializable {
 		tileYPos-=stepAmount;
 
 		if(tileYPos<tileMinPos){
-			if(!(( tileUp instanceof Floor ) || (tileUp instanceof Door ))){
+			if(!((tileUp instanceof Floor ) || (tileUp instanceof Door /*&& (!(checkHasKey(tileUp)))*/))){
 				tileYPos+=stepAmount;
 				return null;
 			}
@@ -437,6 +462,35 @@ public class Avatar implements Serializable {
 		}
 	}
 
+	private boolean checkHasKey(Tile2D door){
+		if(door instanceof GreenDoor){
+			for(Item item : inventory){
+				if(item instanceof GreenKey) return true;
+			}
+			return false;
+		}
+		if(door instanceof RedDoor){
+			for(Item item : inventory){
+				if(item instanceof RedKey) return true;
+			}
+			return false;
+		}
+		if(door instanceof YellowDoor){
+			for(Item item : inventory){
+				if(item instanceof YellowKey) return true;
+			}
+			return false;
+		}
+		if(door instanceof PurpleDoor){
+			for(Item item : inventory){
+				if(item instanceof PurpleKey) return true;
+			}
+			return false;
+		}
+		return false;
+	}
+
+
 
 	private void updateFacing(String dirKey){
 		if(dirKey.toLowerCase().equals("w")) facing = Facing.North;
@@ -446,24 +500,9 @@ public class Avatar implements Serializable {
 	}
 
 	private void centerAvatar(){
-		double xChange = tileXCenter - tileXPos;
-		double yChange = tileYCenter - tileYPos;
 		tileXPos = tileXCenter;
 		tileYPos = tileYCenter;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	public void setLastHit(Avatar lastHit){
@@ -524,14 +563,6 @@ public class Avatar implements Serializable {
 
 	public double getTileYPos(){
 		return tileYPos;
-	}
-
-	public double getBatteryLife(){
-		return cell.getBatteryLife();
-	}
-
-	public void setCharging(boolean charging){
-		this.cell.setCharging(charging);
 	}
 
 	public int getSpriteIndex(){
@@ -601,6 +632,11 @@ public class Avatar implements Serializable {
 		} else if (!playerName.equals(other.playerName))
 			return false;
 		return true;
+	}
+
+	public void setStepAmount(int i) {
+		this.stepAmount = i;
+
 	}
 
 }

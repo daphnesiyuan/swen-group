@@ -47,6 +47,7 @@ public class Environment extends Thread implements Serializable{
 			count++;
 			try { this.sleep(10000); } catch (InterruptedException e) { e.printStackTrace(); }
 			genBox();
+			try { this.sleep(30000); } catch (InterruptedException e) { e.printStackTrace(); }
 		}
 	}
 
@@ -58,6 +59,12 @@ public class Environment extends Thread implements Serializable{
 		Box box = new Box(room.getTiles()[7][7]);
 		box.setItemID(itemID++);
 		room.getTiles()[7][7].addItem(box);
+		room.addItem(box);
+
+
+		Shoes shoes = new Shoes(null);
+		shoes.setItemID(itemID++);
+		box.getContains().add(shoes);
 	}
 
 
@@ -69,24 +76,28 @@ public class Environment extends Thread implements Serializable{
 			RedKey key  = new RedKey(room.getTiles()[1][5]);
 			key.setItemID(itemID++);
 			room.getTiles()[1][5].addItem(key);
+			room.addItem(key);
 			keyColors.remove(0);
 		}
 		else if(keyColors.get(0).equals("G")){
 			GreenKey key = new GreenKey(room.getTiles()[1][5]);
 			key.setItemID(itemID++);
 			room.getTiles()[1][5].addItem(key);
+			room.addItem(key);
 			keyColors.remove(0);
 		}
 		else if(keyColors.get(0).equals("Y")){
 			YellowKey key = new YellowKey(room.getTiles()[1][5]);
 			key.setItemID(itemID++);
 			room.getTiles()[1][5].addItem(key);
+			room.addItem(key);
 			keyColors.remove(0);
 		}
 		else if(keyColors.get(0).equals("P")){
 			PurpleKey key = new PurpleKey(room.getTiles()[1][5]);
 			key.setItemID(itemID++);
 			room.getTiles()[1][5].addItem(key);
+			room.addItem(key);
 			keyColors.remove(0);
 		}
 	}
@@ -96,6 +107,7 @@ public class Environment extends Thread implements Serializable{
 		Light light = new Light(room.getTiles()[1][1]);
 		light.setItemID(itemID++);
 		room.getTiles()[1][1].addItem(light);
+		room.addItem(light);
 
 	}
 

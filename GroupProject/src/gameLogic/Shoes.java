@@ -43,16 +43,18 @@ public class Shoes extends Item{
 			System.out.println("Couldnt pick up "+this.getClass().getName() + ", Inventory is full!");
 			return false; 	//no space left in inventory
 		}
-		tile.removeItem(this);
+		if(tile != null) tile.removeItem(this);
 		tile = null;
+		avatar.setStepAmount(52);
 		return avatar.getInventory().add(this);
+
 	}
 
 	@Override
 	public void returnToStartPos() {
 		tile = startTile;
-		tile.addItem(this);
-
+		if(tile == null) return;
+		else tile.addItem(this);
 	}
 
 	@Override

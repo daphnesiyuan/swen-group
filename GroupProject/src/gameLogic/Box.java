@@ -46,7 +46,7 @@ public class Box extends Item{
 			System.out.println("Couldnt pick up "+this.getClass().getName() + ", Inventory is full!");
 			return false; 	//no space left in inventory
 		}
-		tile.removeItem(this);
+		if(tile != null) tile.removeItem(this);
 		tile = null;
 		return avatar.getInventory().add(this);
 	}

@@ -71,6 +71,10 @@ public class Room implements Serializable {
 		avatars.add(avatar);
 	}
 
+	public void addItem(Item item){
+		items.add(item);
+	}
+
 
 	public Item getItemAt(int x, int y){
 		return tiles[x][y].getTopItem();
