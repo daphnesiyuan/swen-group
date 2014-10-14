@@ -72,7 +72,11 @@ public class MyMouseListener implements MouseListener {
 	 * @param e
 	 */
 	private void doPop(MouseEvent e) {
-		boolean b = item.getClass().equals(Box.class);
+		boolean b = false;//item.getClass().equals(Box.class);
+		if (item.getClass().getName().contains("Box")){
+			b = true;
+		}
+
 		InvoPopup menu = new InvoPopup(panel, b);
 		menu.show(e.getComponent(), e.getX(), e.getY());
 		menu.sendItem(item, itemIndex);
