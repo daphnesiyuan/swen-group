@@ -1,8 +1,8 @@
 north
 W W W W W W W E
 W F F F F F W E
-W F F F F F W E
-W F F Z F F W E
+W T F F F F W E
+W F F Z F T W E
 W F F F F F W E
 W F F F F F W E
 W W W D W W W E
