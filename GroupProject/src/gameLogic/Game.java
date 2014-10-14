@@ -203,9 +203,6 @@ public class Game{
 		return null;
 	}
 
-
-
-
 	public void setActiveAvatars(List<Avatar> activeAvatars) {
 		this.activeAvatars = activeAvatars;
 	}

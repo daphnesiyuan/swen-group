@@ -11,7 +11,6 @@ public class Environment extends Thread implements Serializable{
 	private static final long serialVersionUID = 388911180114116326L;
 
 	private Game game;
-	private List<Light> lights;
 
 	private int count = 0;
 

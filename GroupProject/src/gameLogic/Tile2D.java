@@ -145,13 +145,14 @@ public class Tile2D implements Serializable{
 		this.avatarOnTile = avatarOnTile;
 	}
 
+
+
 	@Override
 	public int hashCode() {
-		final int prime = 37;
+		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((avatarOnTile == null) ? 0 : avatarOnTile.hashCode());
-
+		result = prime * result + xPos;
+		result = prime * result + yPos;
 		return result;
 	}
 
@@ -164,25 +165,12 @@ public class Tile2D implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Tile2D other = (Tile2D) obj;
-		if (avatarOnTile == null) {
-			if (other.avatarOnTile != null)
-				return false;
-		} else if (!avatarOnTile.equals(other.avatarOnTile))
-			return false;
-		if (itemsOnTile == null) {
-			if (other.itemsOnTile != null)
-				return false;
-		} else if (!itemsOnTile.equals(other.itemsOnTile))
-			return false;
-		if (room == null) {
-			if (other.room != null)
-				return false;
-		} else if (!room.equals(other.room))
-			return false;
 		if (xPos != other.xPos)
 			return false;
 		if (yPos != other.yPos)
 			return false;
 		return true;
 	}
+
+
 }
