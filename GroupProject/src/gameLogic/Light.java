@@ -16,7 +16,6 @@ public class Light extends Item{
 
 	@Override
 	public String getDescription() {
-		System.out.println("in description fetcher");
 		String desc = "";
 		return desc + "Light object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
 	}
@@ -52,6 +51,8 @@ public class Light extends Item{
 
 	@Override
 	public boolean pickItemUp(Avatar avatar) {
+		if(avatar.getInventory().size()==4) return false; 	//no space left in inventory
+		tile.removeItem(this);
 		return this.interactWith(avatar);
 	}
 

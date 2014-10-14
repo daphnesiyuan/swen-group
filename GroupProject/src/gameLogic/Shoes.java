@@ -1,47 +1,57 @@
 package gameLogic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Shoes extends Item{
+
+
+	public Shoes(Tile2D tile) {
+		this.tile = tile;
+		this.startTile = tile;
+		this.movable = true;
+	}
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		String desc = "";
+		return desc + "Shoes object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
 	}
 
 	@Override
 	public Tile2D getTile() {
-		// TODO Auto-generated method stub
-		return null;
+		return tile;
 	}
 
 	@Override
 	public boolean moveItemTo(Tile2D toTile) {
-		// TODO Auto-generated method stub
-		return false;
+		if(toTile == null) return false;
+		this.tile = toTile;
+		return true;
 	}
 
 	@Override
 	public int getWeight() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public boolean interactWith(Avatar avatar) {
-		// TODO Auto-generated method stub
-		return false;
+		tile.removeItem(this);
+		return avatar.getInventory().add(this);
 	}
 
 	@Override
 	public void returnToStartPos() {
-		// TODO Auto-generated method stub
+		tile = startTile;
 
 	}
 
 	@Override
 	public boolean pickItemUp(Avatar avatar) {
-		// TODO Auto-generated method stub
-		return false;
+		if(avatar.getInventory().size()==4) return false; 	//no space left in inventory
+		tile.removeItem(this);
+		return this.interactWith(avatar);
 	}
 
 }
