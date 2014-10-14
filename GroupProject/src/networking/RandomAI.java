@@ -46,19 +46,20 @@ public class RandomAI extends AI {
 
 		// Should we attack or move in a random direciton?
 		if( avatar.getCell().isCharging() ){
-			System.out.println("Charging off");
+			//System.out.println("Charging off");
 			avatar.moveTo(new Move(getPlayer(), "O", Direction.get(0)));
 		}
 		else if( facingAvatar(game) ){
 
 			// Turn on charge mode
 			avatar.moveTo(new Move(getPlayer(), "O", Direction.get(0)));
-			System.out.println(avatar.getCell().isCharging());
+			//System.out.println("Charging on");
 		}
 		else if( faceAvatarNearUs(game)){
-
+			//System.out.println("Facing a player");
 		}
 		else{
+			//System.out.println("Moving");
 			moveInRandomDirection(game);
 		}
 
@@ -130,7 +131,7 @@ public class RandomAI extends AI {
 	 * @param game Which game to call on the player
 	 */
 	public void moveInRandomDirection(Game game){
-		int nextMoveDirection = getRandomDirection();
+		int nextMoveDirection = new Random().nextInt(4);
 		String direction = "";
 		for(int counter = 0; counter < 4; counter++ ){
 
@@ -139,8 +140,8 @@ public class RandomAI extends AI {
 
 			// Attempt to move
 			if( avatar.moveTo(new Move(getPlayer(), direction, Direction.get(0))) ){
-				avatar.moveTo(new Move(getPlayer(), direction, Direction.get(0)));
-				System.out.println("\t" + direction);
+				//avatar.moveTo(new Move(getPlayer(), direction, Direction.get(0)));
+				//System.out.println("\t" + direction);
 				break;
 			}
 
@@ -156,18 +157,6 @@ public class RandomAI extends AI {
 	 */
 	public int getRotatedDirection(int direction){
 		return (direction+1)%4;
-	}
-
-	/**
-	 * Gets a random direction
-	 * @return String containing a direction
-	 */
-	public int getRandomDirection(){
-		Random rand = new Random();
-
-
-		int randomMove = rand.nextInt(4);
-		return randomMove;
 	}
 
 	/**
