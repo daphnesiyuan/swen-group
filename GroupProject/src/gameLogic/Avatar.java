@@ -94,6 +94,11 @@ public class Avatar implements Serializable {
 
 		this.score = 0;
 		this.lastHit = null;
+
+		inventory.add(new RedKey(null));
+		inventory.add(new GreenKey(null));
+		inventory.add(new YellowKey(null));
+		inventory.add(new PurpleKey(null));
 	}
 
 	public void updateLocations(Tile2D tile, Room room) {
@@ -130,7 +135,8 @@ public class Avatar implements Serializable {
 		int remove = move.getIndex();
 		Item item = inventory.get(remove);
 		inventory.remove(item);
-		item.returnToStartPos();
+		//item.returnToStartPos();
+		item = null;
 		return true;
 	}
 
@@ -171,6 +177,39 @@ public class Avatar implements Serializable {
 
 		if(newPosition instanceof Door){
 			Door oldPosition = (Door) newPosition;
+
+			boolean haveKey = false;
+
+
+			// Find the Door color, and check to see if the avatar has the same color key to get through it !
+			if(oldPosition instanceof GreenDoor){
+				for(Item item : inventory){
+					if(item instanceof GreenKey) haveKey = true;
+				}
+				if(!haveKey) return false;
+			}
+
+			else if(oldPosition instanceof RedDoor){
+				for(Item item : inventory){
+					if(item instanceof RedKey) haveKey = true;
+				}
+				if(!haveKey) return false;
+			}
+
+			else if(oldPosition instanceof YellowDoor){
+				for(Item item : inventory){
+					if(item instanceof YellowKey) haveKey = true;
+				}
+				if(!haveKey) return false;
+			}
+
+			else if(oldPosition instanceof PurpleDoor){
+				for(Item item : inventory){
+					if(item instanceof PurpleKey) haveKey = true;
+				}
+				if(!haveKey) return false;
+			}
+
 			if(room.getRoomPlace().equals("arena")){
 				Room room  = oldPosition.getToRoom();
 				Door door = room.getDoors().get(0);

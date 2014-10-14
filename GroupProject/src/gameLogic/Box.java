@@ -41,7 +41,7 @@ public class Box extends Item{
 
 	@Override
 	public boolean interactWith(Avatar avatar) {
-		if(avatar.getInventory().size()==4){
+		if(avatar.getInventory().size()==5){
 			System.out.println("Couldnt pick up "+this.getClass().getName() + ", Inventory is full!");
 			return false; 	//no space left in inventory
 		}

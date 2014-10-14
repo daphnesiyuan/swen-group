@@ -21,10 +21,15 @@ public class NewGame {
 
 	private String roomPlace;
 
-	private List<String> colors;
+
+	private int roomsMade;
+	private int doorCount;
 
 
 	public NewGame(Game g){
+		roomsMade = 0;
+		doorCount = 0;
+
 		game = g;
 		roomsInGame = createRooms();
 		linkRooms();
@@ -36,11 +41,7 @@ public class NewGame {
 
 	private List<Room> createRooms(){
 		List<Room> rooms = new ArrayList<Room>();
-		colors = new ArrayList<String>();
-		colors.add("Y");
-		colors.add("P");
-		colors.add("G");
-		colors.add("R");
+
 
 
 		URL a = NewGame.class.getResource("/gameLogic/arena.txt");
@@ -48,11 +49,17 @@ public class NewGame {
 		URL c = NewGame.class.getResource("/gameLogic/basic_room_south.txt");
 		URL d = NewGame.class.getResource("/gameLogic/basic_room_east.txt");
 		URL e = NewGame.class.getResource("/gameLogic/basic_room_west.txt");
+
 		Room arena = makeRoom(a);
+		roomsMade++;
 		Room start1 = makeRoom(b);
+		roomsMade++;
 		Room start2 = makeRoom(c);
+		roomsMade++;
 		Room start3 = makeRoom(d);
+		roomsMade++;
 		Room start4 = makeRoom(e);
+		roomsMade++;
 
 		rooms.add(arena);
 		rooms.add(start1);
@@ -81,47 +88,6 @@ public class NewGame {
 		arena.getDoors().get(3).setToRoom(s);
 		arena.getDoors().get(2).setToRoom(e);
 		arena.getDoors().get(1).setToRoom(w);
-
-		//colorLinks();
-	}
-
-
-	private void colorLinks(){
-		for(int i = 0; i < roomsInGame.size()-1; i++){
-			Room room = roomsInGame.get(i);
-			if(i==0){
-
-			}
-			else{
-				//if color pop = g / r/ p /y
-			//room.getDoors().get(0) =
-
-
-			}
-		}
-
-
-
-//		if(colors.get(0).equals("Y")){
-//		Tile2D door = new YellowDoor(x,y);
-//		tiles[y][x] = door;
-//		colors.remove("Y");
-//	}
-//	else if(colors.get(0).equals("G")){
-//		Tile2D door = new GreenDoor(x,y);
-//		tiles[y][x] = door;
-//		colors.remove("G");
-//	}
-//	else if(colors.get(0).equals("P")){
-//		Tile2D door = new PurpleDoor(x,y);
-//		tiles[y][x] = door;
-//		colors.remove("P");
-//	}
-//	else if(colors.get(0).equals("R")){
-//		Tile2D door = new RedDoor(x,y);
-//		tiles[y][x] = door;
-//		colors.remove("R");
-//	}
 
 	}
 
@@ -184,11 +150,43 @@ public class NewGame {
 						tiles[y][x] = floor;
 					}
 					else if(tile.toUpperCase().equals("D")){
-
-
-
-						Tile2D door = new Door(x,y);
-						tiles[y][x] = door;
+						if(roomsMade != 0){
+							if(roomPlace.equals("north")){
+								RedDoor door = new RedDoor(x,y);
+								tiles[y][x] = door;
+							}
+							else if(roomPlace.equals("south")){
+								GreenDoor door = new GreenDoor(x,y);
+								tiles[y][x] = door;
+							}
+							else if(roomPlace.equals("east")){
+								YellowDoor door = new YellowDoor(x,y);
+								tiles[y][x] = door;
+							}
+							else if(roomPlace.equals("west")){
+								PurpleDoor door = new PurpleDoor(x,y);
+								tiles[y][x] = door;
+							}
+						}
+						else{
+							if(doorCount == 0){
+								RedDoor door = new RedDoor(x,y);
+								tiles[y][x] = door;
+							}
+							else if(doorCount == 1){
+								PurpleDoor door = new PurpleDoor(x,y);
+								tiles[y][x] = door;
+							}
+							else if(doorCount == 2){
+								YellowDoor door = new YellowDoor(x,y);
+								tiles[y][x] = door;
+							}
+							else if(doorCount == 3){
+								GreenDoor door = new GreenDoor(x,y);
+								tiles[y][x] = door;
+							}
+						}
+						doorCount++;
 					}
 					else if(tile.toUpperCase().equals("C")){
 						Tile2D column = new Column(x,y);
