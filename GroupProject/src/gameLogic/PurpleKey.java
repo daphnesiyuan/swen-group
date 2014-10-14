@@ -10,7 +10,8 @@ public class PurpleKey extends Key {
 	@Override
 	public String getDescription() {
 		String desc = "";
-		return desc+ "Purple" + " Key object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
+		if(tile != null) return desc+ "Purple Key object, at X,Y: ("+tile.getxPos()+","+tile.getyPos()+")";
+		else return desc + " Purple Key object, in inventory";
 	}
 
 }
