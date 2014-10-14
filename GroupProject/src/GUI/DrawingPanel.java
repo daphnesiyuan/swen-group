@@ -268,7 +268,7 @@ public class DrawingPanel extends JPanel {
 		 */
 		public void mouseListener() {
 			String s = sm.findButton(mouseX, mouseY);
-			if (startMenu) {
+			if (startMenu && !help.isHelpMode()) {
 				if (s.equals("start")) {
 					gs = new GameServer();
 					startG = new StartGUI(DrawingPanel.this, gc, gs);
