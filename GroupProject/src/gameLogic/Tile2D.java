@@ -100,6 +100,7 @@ public class Tile2D implements Serializable{
 	}
 
 	public void removeAvatar(Avatar player) {
+		if (avatarOnTile == null) return;
 		if(avatarOnTile.equals(player)){
 			avatarOnTile = null;
 		}

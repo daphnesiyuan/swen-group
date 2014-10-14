@@ -74,6 +74,10 @@ public class Game{
 		if(playerName.startsWith("ai")){
 			Room room = roomsInGame.get(0);
 			Tile2D tile = room.getTiles()[2][2];
+			while (tile.getAvatar() != null && tile instanceof Floor){
+				int length = room.getTiles().length;
+				tile = room.getTiles()[length - tile.getxPos() - 1][tile.getyPos()];
+			}
 			new Avatar(playerName,tile,room);
 			return room;
 		}
