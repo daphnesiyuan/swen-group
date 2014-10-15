@@ -12,7 +12,7 @@ public class XMLLoader {
 	public XMLLoader(){}
 
 	public Game loadDefault(){
-		Game g;
+		Game g = new Game(false);
 		File file = new File("default.xml");
 		xmlLoad = new XMLLoadParser(file);
 		g = xmlLoad.loadGame();

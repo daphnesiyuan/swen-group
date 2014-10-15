@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,10 +79,16 @@ public class XMLLoadParser {
 
 	public void parseRooms(List roomList) {
 		for (Object e : roomList) {
-			Tile2D[][] tiles = new Tile2D[100][100];
-			Room r = new Room(tiles, null);
 			Element ele = (Element) e;
 			String roomPlace = ele.getChildText("roomPlace");
+			Tile2D[][] tiles = new Tile2D[15][15];
+			System.out.println("RoomPlace: "+ roomPlace);
+			if(!roomPlace.equals("arena")){
+				System.out.println("inside");
+				tiles = new Tile2D[7][7];}
+			System.out.println("Outside");
+
+			Room r = new Room(tiles, null);
 			r.setRoomPlace(roomPlace);
 			Room room = parseBasicTile(ele, r);
 			room.setTiles(tiles);
@@ -90,15 +97,23 @@ public class XMLLoadParser {
 		} // Iterates through all the room elements, creates rooms with their
 			// place name, and all the walls and floors
 		// The room in roomsInGame is at the same index as it is in roomList
-
+		for (int i = 0; i < roomsInGame.size(); i++) {
+			parseDoor((Element) roomList.get(i), roomsInGame.get(i));
+			parseOtherTile((Element) roomList.get(i), roomsInGame.get(i));
+		}
 		for (Room r : roomsInGame) {
-			int index = roomsInGame.indexOf(r);
-			parseDoor((Element) roomList.get(index), r);
-			parseOtherTile((Element) roomList.get(index), r);
-		}
-		for(Room r : roomsInGame){
 			game.addRoom(r);
+			System.out.println(r.getRoomPlace());
+			for (int i = 0; i < r.getTiles().length; i++) {
+				System.out.println();
+				for (int j = 0; j < r.getTiles().length; j++) {
+
+					System.out.print(r.getTiles()[i][j].getxPos() + " ");
+				}
+			}
 		}
+
+
 		// Iterates through all the room elements, creates door tiles and
 		// other tiles
 
@@ -151,6 +166,7 @@ public class XMLLoadParser {
 			String toRoomPlace = ele.getChildText("toRoom");
 			Door d = new Door(xPos, yPos);
 			d.setToRoom(game.getRoomByName(toRoomPlace));
+			r.tiles2DSet(yPos, xPos, d);
 
 		}
 	}
@@ -185,15 +201,15 @@ public class XMLLoadParser {
 			if (type.equals("Tree")) {
 				Tree tr = new Tree(xPos, yPos);
 				r.getTrees().add(tr);
-				r.getTiles()[yPos][xPos] = tr;
+				r.tiles2DSet(yPos, xPos, tr);
 			} else if (type.equals("Column")) {
 				Column c = new Column(xPos, yPos);
 				r.getColumns().add(c);
-				r.getTiles()[yPos][xPos] = c;
+				r.tiles2DSet(yPos, xPos, c);
 			} else if (type.equals("Charger")) {
 				Charger c = new Charger(xPos, yPos);
 				r.getChargers().add(c);
-				r.getTiles()[yPos][xPos] = c;
+				r.tiles2DSet(yPos, xPos, c);
 			}
 		}
 	}
@@ -258,25 +274,25 @@ public class XMLLoadParser {
 	 * @param e
 	 */
 
-//	public void parseAvatar(Element e, Room r) {
-//		String faceString = e.getChildText("facing");
-//		String playerName = e.getChildText("playerName");
-//
-//		Element cellEle = e.getChild("cell");
-//		Cell cell = parseCell(cellEle);
-//		int xPos = Integer.parseInt(e.getChildText("xPos"));
-//		int yPos = Integer.parseInt(e.getChildText("yPos"));
-//		Avatar a = new Avatar(playerName, r.getTiles()[yPos][xPos], r);
-//		Element inventory = e.getChild("inventory");
-//		List<Item> playerInventory = new ArrayList<Item>();
-//		if (inventory.getChildren().size() != 0) {
-//			for (int i = 0; i < inventory.getChildren().size(); i++) {
-//				parseItem(inventory.getChildren().get(i), null, a);
-//			}
-//		}
-//		a.setCell(cell);
-//		a.setInventory(playerInventory);
-//	}
+	// public void parseAvatar(Element e, Room r) {
+	// String faceString = e.getChildText("facing");
+	// String playerName = e.getChildText("playerName");
+	//
+	// Element cellEle = e.getChild("cell");
+	// Cell cell = parseCell(cellEle);
+	// int xPos = Integer.parseInt(e.getChildText("xPos"));
+	// int yPos = Integer.parseInt(e.getChildText("yPos"));
+	// Avatar a = new Avatar(playerName, r.getTiles()[yPos][xPos], r);
+	// Element inventory = e.getChild("inventory");
+	// List<Item> playerInventory = new ArrayList<Item>();
+	// if (inventory.getChildren().size() != 0) {
+	// for (int i = 0; i < inventory.getChildren().size(); i++) {
+	// parseItem(inventory.getChildren().get(i), null, a);
+	// }
+	// }
+	// a.setCell(cell);
+	// a.setInventory(playerInventory);
+	// }
 
 	public void parseScores(Element scores) {
 		Score score = new Score();

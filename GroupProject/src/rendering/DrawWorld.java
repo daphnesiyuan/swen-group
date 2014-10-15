@@ -96,9 +96,11 @@ public class DrawWorld {
 		Point tile = null;
 
 		Tile2D[][] tiles= room.getTiles().clone();
-
+		System.out.println( "The real tile is: "+room.getTiles());
+		System.out.println( "The FAKE tile is: "+tiles);
 		for (int i = 0; i < Direction.get(direction)+3; i++){
 			 tiles = rotate90(tiles);
+			 System.out.println( "The FAKE 2 tile is: "+tiles);
 		}
 		for(int i = 0; i < tiles.length; i++){
 			for(int j = 0; j < tiles.length; j++){
