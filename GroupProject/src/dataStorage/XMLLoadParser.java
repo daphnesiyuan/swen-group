@@ -169,11 +169,11 @@ public class XMLLoadParser {
 			int xPos = Integer.parseInt(ele.getChildText("xPos"));
 			int yPos = Integer.parseInt(ele.getChildText("yPos"));
 			String toRoomPlace = ele.getChildText("toRoom");
-			Door d = null;
-			if(color == "red"){d = new RedDoor(xPos, yPos);}
-			else if(color == "yellow"){d = new YellowDoor(xPos, yPos);}
-			else if(color == "purple"){d = new PurpleDoor(xPos, yPos);}
-			else if(color == "green"){d = new GreenDoor(xPos, yPos);}
+			Door d = new Door(xPos,yPos);
+			if(color.equals("red")){d = new RedDoor(xPos, yPos);}
+			else if(color.equals("yellow")){d = new YellowDoor(xPos, yPos);}
+			else if(color.equals("purple")){d = new PurpleDoor(xPos, yPos);}
+			else if(color.equals("green")){d = new GreenDoor(xPos, yPos);}
 
 			d.setToRoom(game.getRoomByName(toRoomPlace));
 			r.tiles2DSet(yPos, xPos, d);

@@ -41,6 +41,7 @@ public class ChatServer extends Server {
 		add(new ChatMessage("","- ADMIN COMMANDS -", chatMessageColor,true));
 		add(new ChatMessage("","/close -> closes the server", chatMessageColor,true));
 		add(new ChatMessage("","/addbot -> adds a random bot to the server", chatMessageColor,true));
+		add(new ChatMessage("","/kick 'name' -> kicks a player from the server", chatMessageColor,true));
 	}};
 
 	public ChatServer(){
@@ -197,6 +198,8 @@ public class ChatServer extends Server {
 				return parsePlayers(scan,data);
 			} else if( command.equals("/help")){
 				return parseHelp(scan,data);
+			} else if( command.equals("/kick")){
+				return parseKick(scan,data);
 			}
 
 			// Unknown command
@@ -218,6 +221,38 @@ public class ChatServer extends Server {
 			}
 
 			stopServer();
+			return false;
+		}
+
+		/**
+		 * ADMIN COMMAND
+		 * Kicks a player fro mthe server
+		 * @param scan Scanner with the following being a players name
+		 * @param data Information sent with the text
+		 * @return True if the the text should be displayed and sent to it's clients
+		 */
+		private boolean parseKick(Scanner scan, NetworkObject data) {
+
+			// Only admins can close the server
+			if( !isAdmin(data.getIPAddress()) ){
+				return true;
+			}
+
+			// Get name
+			if( !scan.hasNext() ){
+				return true;
+			}
+
+			String name = scan.next();
+			ClientThread client = getClientFromName(name);
+			boolean reconnecting = false;
+
+			if( scan.hasNext() ){
+				reconnecting = scan.nextBoolean();
+			}
+
+			// Remove the client from the server
+			removeClient(client,reconnecting);
 			return false;
 		}
 

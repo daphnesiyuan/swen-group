@@ -229,16 +229,16 @@ public class XMLSaveParser {
 
 		Element e = new Element("Door");
 		if(door instanceof RedDoor){
-			e.addContent("color").setText("red");
+			e.addContent(new Element ("color").setText("red"));
 		}
 		if(door instanceof YellowDoor){
-			e.addContent("color").setText("yellow");
+			e.addContent(new Element ("color").setText("yellow"));
 		}
 		if(door instanceof PurpleDoor){
-			e.addContent("color").setText("purple");
+			e.addContent(new Element ("color").setText("purple"));
 		}
 		if(door instanceof GreenDoor){
-			e.addContent("color").setText("green");
+			e.addContent(new Element ("color").setText("green"));
 		}
 		e.addContent(new Element("xPos").setText(Integer.toString(door.getxPos())));
 		e.addContent(new Element("yPos").setText(Integer.toString(door.getyPos())));
@@ -327,16 +327,16 @@ public class XMLSaveParser {
 		if(item instanceof Key){
 			e = new Element("key");
 			if(item instanceof RedKey){
-				e.addContent("color").setText("red");
+				e.addContent(new Element("color").setText("red"));
 			}
 			else if(item instanceof GreenKey){
-				e.addContent("color").setText("green");
+				e.addContent(new Element("color").setText("green"));
 			}
 			else if(item instanceof PurpleKey){
-				e.addContent("color").setText("purple");
+				e.addContent(new Element("color").setText("purple"));
 			}
 			else if(item instanceof YellowKey){
-				e.addContent("color").setText("yellow");
+				e.addContent(new Element("color").setText("yellow"));
 			}
 
 		}

@@ -1,15 +1,10 @@
 package rendering;
 
 import gameLogic.Avatar;
-import gameLogic.Charger;
-import gameLogic.Column;
-import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Light;
 import gameLogic.Room;
 import gameLogic.Tile2D;
-import gameLogic.Tree;
-import gameLogic.Wall;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -80,48 +75,7 @@ public class DrawWorld {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
 		drawLocation(g, room, direction);
-
-	}
-
-	/**
-	 * Makes the offset that everything needs to be drawn by to put the current
-	 * players avatar in the centre of the screen.
-	 *
-	 * @param direction
-	 * @param room
-	 * @author Leon North
-	 */
-	private void calibrateOffset(String direction, Room room) {
-
-		Point tile = null;
-
-		Tile2D[][] tiles= room.getTiles().clone();
-		for (int i = 0; i < Direction.get(direction)+3; i++){
-			 tiles = rotate90(tiles);
-		}
-		for(int i = 0; i < tiles.length; i++){
-			for(int j = 0; j < tiles.length; j++){
-				if(tiles[j][i].getAvatar() != null && tiles[j][i].getAvatar().equals(character)){
-					tile = new Point(j,i);
-					//System.out.println(i+" "+j);
-					break;
-				}
-			}
-		}
-
-		Point avatarOffset = avatarTilePos(tiles[tile.x][tile.y]);
-
-		tile.x = (tile.x * width);
-		tile.y = (tile.y * height);
-		tile = twoDToIso(tile);
-
-		tile.x = tile.x + avatarOffset.x;
-		tile.y = tile.y + avatarOffset.y;
-
-		tile.x = panel.getWidth() - (tile.x + (panel.getWidth() / 2));
-		tile.y = (panel.getHeight()/3) - (tile.y - (panel.getHeight() / 5));
-
-		offset = tile;
+		drawNight(g);
 	}
 
 	/**
@@ -162,83 +116,10 @@ public class DrawWorld {
 				drawCharacter(g, point, tiles[i][j]);
 			}
 		}
-		drawNight(g);
 	}
 
-	/**
-	 * Draws a night time mask over the map depending on system time.
-	 *
-	 * @param g: Graphics object
-	 * @author Leon North
-	 */
-	private void drawNight(Graphics g) {
-		long millis = System.currentTimeMillis();
-		int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
-		int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
-		int secondsCycle = seconds % 2;
-		int minuteCycle = minutes % 2;
-
-		Graphics2D g2d = (Graphics2D)g;
-
-		BufferedImage img = images.get("Night");
-		if (character == null){System.out.println(character == null);
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		}
-		if (character.getInventory() == null){System.out.println("character.getInventory() == null");
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}}
-		for(int i = 0; i < character.getInventory().size(); i++){
-			if(character.getInventory().get(i) instanceof Light){
-				img = images.get("NightLight");
-				break;
-			}
-		}
-
-		//make image transparent varying to the time of day (in meatspace)
-		float alpha = 0F;
-		if (minuteCycle == 1){
-			if (seconds == 0){alpha = (millis %1000)/1000F;}
-			else{alpha = 1.0F;}
-		}
-		else if (minuteCycle == 0){
-			if (seconds == 0){alpha = 1.0F -(millis %1000)/1000F;}
-			else{alpha = 0.0F;}
-		}
-		int rule = AlphaComposite.SRC_OVER;
-		AlphaComposite ac = java.awt.AlphaComposite.getInstance(rule, alpha);
-		g2d.setComposite(ac);
-		g2d.drawImage(img,0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
-		g2d.setComposite(java.awt.AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-	}
-
-	/**
-	 * Rotates the given 2d array 90 degrees
-	 *
-	 * @param Tile2D [][] tiles
-	 * @return Tile2D[][] newTiles
-	 * @author Leon North
-	 */
-	private Tile2D[][] rotate90(Tile2D[][] tiles) {
-		// TODO Auto-generated method stub
-		int width = tiles.length;
-		int height = tiles[0].length;
-		Tile2D[][] newTiles = new Tile2D[height][width];
-		for (int i = 0; i < height; ++i) {
-			for (int j = 0; j < width; ++j) {
-				newTiles[i][j] = tiles[width - j - 1][i];
-			}
-		}
-		return newTiles;
-	}
+	//-----------------------Drawing things in the location
+	//-----------------------Everything goes to drawObject() to actually draw
 
 	/**
 	 * Takes the name of the class and gets drawObject(...) to draw it.
@@ -250,36 +131,23 @@ public class DrawWorld {
 	 */
 	private void drawTile(Point pt, Tile2D tile, Graphics g) {
 
+		//pick the animation number
 		int tileNum = 0;
 		if (rotated90){
 			tileNum = 1;
 		}
 
 		String tileName = tile.getClass().getName();
-		//remove the "gamelogic."
+		//remove the "gamelogic." at the start of the name.
 		tileName = tileName.substring(10);
 
+		//We are not drawing floor tiles, it was a design choice.
 		if(tile instanceof Floor){
 			return;
 		}
+
+		//send the image and point off to get drawn
 		drawObject(g, pt, images.get(tileName+tileNum));
-
-	}
-
-	/**
-	 * Generic drawing method that gets called to draw Tile2D, GameCharacter,
-	 * Item. It will draw the image given to it at the point given to the graphics given.
-	 *
-	 * @param Graphics g
-	 * @param Point pt
-	 * @param java.net.URL imageURL
-	 * @author Leon North
-	 */
-	private void drawObject(Graphics g, Point pt, BufferedImage img) {
-		int imgHeight = ((int) img.getHeight(null) / 250);
-
-		g.drawImage(img, offset.x + pt.x - width, offset.y + pt.y
-				- ((width * imgHeight)), width * 2, height * imgHeight, null);
 	}
 
 	/**
@@ -321,25 +189,11 @@ public class DrawWorld {
 			drawObject(g,pt,images.get("AvatarA"+avatar.getFacing().toString()+""+avatar.getSpriteIndex()));
 		}
 		else if(avatar.getCell().isCharging()){ //Avatar != current player and charging
-			int avatarFacing = Direction.get(avatar.getFacing().toString());
-			int otherRenderingDirection = Direction.get(avatar.getRenderDirection());
-			int myRenderingDirection = Direction.get(direction);
-			if(myRenderingDirection == 1 ||myRenderingDirection == 3){
-				myRenderingDirection = (myRenderingDirection+2)%4;
-			}
-			int combinedDirection = (otherRenderingDirection + avatarFacing + myRenderingDirection) % 4;
-			String facing = Direction.get(combinedDirection);
+			String facing = otherAvatarFacing(avatar);
 			drawObject(g,pt,images.get("AvatarA"+facing+"Charging"+avatar.getSpriteIndex()));
 		}
 		else{//Avatar != current player and NOT charging
-			int avatarFacing = Direction.get(avatar.getFacing().toString());
-			int otherRenderingDirection = Direction.get(avatar.getRenderDirection());
-			int myRenderingDirection = Direction.get(direction);
-			if(myRenderingDirection == 1 ||myRenderingDirection == 3){
-				myRenderingDirection = (myRenderingDirection+2)%4;
-			}
-			int combinedDirection = (otherRenderingDirection + avatarFacing + myRenderingDirection) % 4;
-			String facing = Direction.get(combinedDirection);
+			String facing = otherAvatarFacing(avatar);
 			drawObject(g,pt,images.get("AvatarA"+facing+""+avatar.getSpriteIndex()));
 		}
 
@@ -354,29 +208,28 @@ public class DrawWorld {
 	}
 
 	/**
-	 * Returns the point within the tile that the avatar is standing
-	 * @param tile: The tile the avatar is standing on
-	 * @return Point: position the avatar is standing on within the tile
-	 * @author Leon North
+	 * This calculates the correct facing direction of other avatars relative to the direction
+	 * the current player is facing.
+	 * @param avatar : other avatar
+	 * @return string : the direction that the avatar is facing
 	 */
-	public Point avatarTilePos(Tile2D tile){
+	private String otherAvatarFacing(Avatar avatar) {
+		int avatarFacing = Direction.get(avatar.getFacing().toString());          //gets the direction that the avatar is facing
+																				  //relative to the direction they are viewing the world
 
-		double stepSize = width/100.0;
-		Avatar avatar = tile.getAvatar();
+		int otherRenderingDirection = Direction.get(avatar.getRenderDirection()); //the rendering direction of the other avatar
 
-		Point avatarPoint = new Point((int)avatar.getTileXPos(), (int)avatar.getTileYPos());
+		int myRenderingDirection = Direction.get(direction);                     // the direction the current avatar is facing  relative
+																			     //to the rendering direction
 
+		if(myRenderingDirection == 1 ||myRenderingDirection == 3){               // the current players rendering direction (it was buggy
+			myRenderingDirection = (myRenderingDirection+2)%4;                   // so I added code to plug the hole).
+		}
 
-		for(int i = 0; i < Direction.get(direction)*3; i++){
-			avatarPoint = new Point((100-avatarPoint.y),(avatarPoint.x));
-	    }
-
-		avatarPoint = twoDToIso(avatarPoint);
-
-		avatarPoint.x = (int)(avatarPoint.x * stepSize);
-		avatarPoint.y = (int)(avatarPoint.y * stepSize);
-
-		return avatarPoint;
+		int combinedDirection = (otherRenderingDirection + avatarFacing + myRenderingDirection) % 4;  //calculation to get other avatars facing direction
+																									  //relative to the current avatars rendering direction
+		String facing = Direction.get(combinedDirection);
+		return facing;
 	}
 
 	/**
@@ -390,25 +243,110 @@ public class DrawWorld {
 	private void drawItems(Graphics g, Point pt, Tile2D tile) {
 		if (tile.getItems() == null) return;
 
+		//pick the animation number
 		int tileNum = 0;
 		if (rotated90){
 			tileNum = 1;
 		}
 
+		//for each item in the inventory, get the corresponding image and send it to drawObject() to draw it
 		for (int i = 0; i < tile.getItems().size(); i++){
 			String itemName = tile.getItems().get(i).getClass().getName().substring(10);
-			if (images.get(itemName+tileNum) == null){
-				System.out.println(itemName);
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 			drawObject(g,pt,images.get(itemName+tileNum));
 		}
+	}
 
+	/**
+	 * Generic drawing method that gets called to draw Tile2D, GameCharacter,
+	 * Item. It will draw the image given to it at the point given to the graphics given.
+	 *
+	 * @param Graphics g
+	 * @param Point pt
+	 * @param java.net.URL imageURL
+	 * @author Leon North
+	 */
+	private void drawObject(Graphics g, Point pt, BufferedImage img) {
+		int imgHeight = ((int) img.getHeight(null) / 250);
+
+		g.drawImage(img, offset.x + pt.x - width, offset.y + pt.y
+				- ((width * imgHeight)), width * 2, height * imgHeight, null);
+	}
+
+	/**
+	 * Draws a night time mask over the map depending on system time.
+	 *
+	 * @param g: Graphics object
+	 * @author Leon North
+	 */
+	private void drawNight(Graphics g) {
+		long millis = System.currentTimeMillis();
+		int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
+		int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
+		int secondsCycle = seconds % 2;
+		int minuteCycle = minutes % 2;
+
+		Graphics2D g2d = (Graphics2D)g;
+
+		BufferedImage img = images.get("Night");
+
+		//check if the avatar is carying a light, if they are, use a lighter image as a night mask
+		for(int i = 0; i < character.getInventory().size(); i++){
+			if(character.getInventory().get(i) instanceof Light){
+				img = images.get("NightLight");
+				break;
+			}
+		}
+
+		//make image transparent varying to the time of day (in meatspace).
+		//1 second transition to night, night for 59 seconds, 1 second
+		//transition to day, day for 59 seconds, rinse repeat.
+		//pick the alpha depending on the previous rule.
+		float alpha = 0F;
+		if (minuteCycle == 1){
+			if (seconds == 0){alpha = (millis %1000)/1000F;}
+			else{alpha = 1.0F;}
+		}
+		else if (minuteCycle == 0){
+			if (seconds == 0){alpha = 1.0F -(millis %1000)/1000F;}
+			else{alpha = 0.0F;}
+		}
+
+		//set an alpha composite on the buffered image to make it transparent.
+		int rule = AlphaComposite.SRC_OVER;
+		AlphaComposite ac = java.awt.AlphaComposite.getInstance(rule, alpha);
+		g2d.setComposite(ac);
+		g2d.drawImage(img,0,0,(int)panel.getWidth(), (int)panel.getHeight(), null);
+		g2d.setComposite(java.awt.AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+	}
+
+	//-----------------------------------Utilities
+
+	/**
+	 * Returns the point within the tile that the avatar is standing
+	 * @param tile: The tile the avatar is standing on
+	 * @return Point: position the avatar is standing on within the tile
+	 * @author Leon North
+	 */
+	public Point avatarTilePos(Tile2D tile){
+
+		double stepSize = width/100.0; // 100 is the number of positions across a tile.
+		Avatar avatar = tile.getAvatar();
+
+		Point avatarPoint = new Point((int)avatar.getTileXPos(), (int)avatar.getTileYPos());
+
+		//rotate the ppoint around to the same direction the location is
+		for(int i = 0; i < Direction.get(direction)*3; i++){
+			avatarPoint = new Point((100-avatarPoint.y),(avatarPoint.x));
+	    }
+
+		//convert point to isometric view
+		avatarPoint = twoDToIso(avatarPoint);
+
+		//scale the change to fit with the drawn tile
+		avatarPoint.x = (int)(avatarPoint.x * stepSize);
+		avatarPoint.y = (int)(avatarPoint.y * stepSize);
+
+		return avatarPoint;
 	}
 
 	/**
@@ -419,9 +357,83 @@ public class DrawWorld {
 	 * @author Leon North
 	 */
 	private Point twoDToIso(Point point) {
+		//rotates points by -45 degrees, squeezes the y to 50%
 		Point tempPt = new Point(0, 0);
 		tempPt.x = point.x - point.y;
 		tempPt.y = (point.x + point.y) / 2;
 		return (tempPt);
+	}
+
+	/**
+	 * Rotates the given 2d array 90 degrees
+	 *
+	 * @param Tile2D [][] tiles
+	 * @return Tile2D[][] newTiles
+	 * @author Leon North
+	 */
+	private Tile2D[][] rotate90(Tile2D[][] tiles) {
+
+		//makes a new 2d array, takes each object and puts it into the corresponding
+		//position in the new array rotated by 90 degrees
+		int width = tiles.length;
+		int height = tiles[0].length;
+		Tile2D[][] newTiles = new Tile2D[height][width];
+		for (int i = 0; i < height; ++i) {
+			for (int j = 0; j < width; ++j) {
+				newTiles[i][j] = tiles[width - j - 1][i];
+			}
+		}
+		return newTiles;
+	}
+
+	/**
+	 * Makes the offset that everything needs to be drawn by to put the current
+	 * players avatar in the centre of the screen.
+	 *
+	 * @param direction
+	 * @param room
+	 * @author Leon North
+	 */
+	private void calibrateOffset(String direction, Room room) {
+
+		Point tile = null;
+
+		//copy the tiles
+		Tile2D[][] tiles= room.getTiles().clone();
+
+		//rotate the copied tiles to the correct direction we are facing
+		for (int i = 0; i < Direction.get(direction)+3; i++){//the 3 is to solve a bug that was not resolved but plugged
+			 tiles = rotate90(tiles);
+		}
+
+		//travers the 2d array to find the tile our avatar is in.
+		for(int i = 0; i < tiles.length; i++){
+			for(int j = 0; j < tiles.length; j++){
+				if(tiles[j][i].getAvatar() != null && tiles[j][i].getAvatar().equals(character)){
+					tile = new Point(j,i);
+					break;
+				}
+			}
+		}
+
+		//find the offset for where in the tile the avatar is
+		Point avatarOffset = avatarTilePos(tiles[tile.x][tile.y]);
+
+		//scale the offset by the panel width
+		tile.x = (tile.x * width);
+		tile.y = (tile.y * height);
+
+		//convert the point from 2d to isometric
+		tile = twoDToIso(tile);
+
+		//add the avatar offset
+		tile.x = tile.x + avatarOffset.x;
+		tile.y = tile.y + avatarOffset.y;
+
+		//center the offset
+		tile.x = panel.getWidth() - (tile.x + (panel.getWidth() / 2));
+		tile.y = (panel.getHeight()/3) - (tile.y - (panel.getHeight() / 5));
+
+		offset = tile;
 	}
 }
