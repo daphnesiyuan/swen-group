@@ -222,10 +222,12 @@ public class DrawWorld {
 		int myRenderingDirection = Direction.get(direction);                     // the direction the current avatar is facing  relative
 																			     //to the rendering direction
 
+		if (avatar.getCell().isCharging()){
+
 		if(myRenderingDirection == 1 ||myRenderingDirection == 3){               // the current players rendering direction (it was buggy
 			myRenderingDirection = (myRenderingDirection+2)%4;                   // so I added code to plug the hole).
 		}
-
+		}
 		int combinedDirection = (otherRenderingDirection + avatarFacing + myRenderingDirection) % 4;  //calculation to get other avatars facing direction
 																									  //relative to the current avatars rendering direction
 		String facing = Direction.get(combinedDirection);
