@@ -92,11 +92,6 @@ public class Avatar implements Serializable {
 
 		this.score = 0;
 		this.lastHit = null;
-
-		inventory.add(new PurpleKey(null));
-		inventory.add(new RedKey(null));
-		inventory.add(new YellowKey(null));
-		inventory.add(new GreenKey(null));
 	}
 
 	public void updateLocations(Tile2D tile, Room room) {
