@@ -48,7 +48,7 @@ public class ChatServer extends Server {
 		Thread clientChecker = new Thread(){
 
 			final int maxFailPings = 5;
-			final int pingTime = 5000;
+			final int pingTime = 500;
 
 			@Override
 			public void run(){

@@ -413,14 +413,15 @@ public abstract class Server implements Runnable{
 				sendData(name);
 
 				// See if this is a new client
-				if (!clients.contains(this)) {
+				ClientThread previousClient = getClientFromIP(getIPAddress());
+				if (previousClient == null) {
 
 					// Tell our sub server that we have a new clinet
 					newClientConnection(this);
 				}
 				else{
 					// Remove the old connection
-					removeClient(this,true);
+					removeClient(previousClient,true);
 
 					// We have rejoined
 					clientRejoins(this);

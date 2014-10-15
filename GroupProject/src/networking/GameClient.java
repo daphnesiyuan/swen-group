@@ -9,6 +9,8 @@ import java.net.UnknownHostException;
 
 import javax.swing.JComponent;
 
+import networking.ChatClient.ServerCheckerThread;
+
 /**
  *Chat Client that deals with the main aspects of the Chat program when it comes to the client
  * @author veugeljame
@@ -65,21 +67,10 @@ public class GameClient extends ChatClient {
 	 */
 	public Avatar getAvatar(){
 
-		// Check if we are connected first
-		if( !isConnected() ){
-			System.out.println("Not currently Connected to a server");
-			return null;
-		}
-
 		Room room = clientRoom;
 		if( room != null ){
 			Avatar avatar = clientRoom.getAvatar(getName());
-			if( avatar == null ){
-				throw new RuntimeException("NO AVATAR FOR CLIENT: |" + getName() + "|");
-			}
-			else{
-				return avatar;
-			}
+			return avatar;
 		}
 
 		// Get avatar according to our name
@@ -106,6 +97,14 @@ public class GameClient extends ChatClient {
 			// We were sent a move
 			retrievedUpdate((ClientUpdate)data.getData());
 		}
+	}
+
+	@Override
+	public void successfullyConnected(String playerName) {
+
+		// Reset to default
+		clientRoom = null;
+		clientScore = null;
 	}
 
 	/**

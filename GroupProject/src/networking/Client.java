@@ -114,18 +114,23 @@ public abstract class Client{
 
 		try {
 
+			System.out.println("Waiting for IP");
 			// Wait for new IP
 			ObjectInputStream in = new ObjectInputStream(temp.getInputStream());
 			player.setIPAddress((String)in.readObject());
 
+			System.out.println("Sending Name");
 			// Give the server our name
 			ObjectOutputStream out = new ObjectOutputStream(temp.getOutputStream());
 			out.writeObject(playerName);
 			out.flush();
 
+			System.out.println("Waiting for new name");
 			// Receive name from server
 			in = new ObjectInputStream(temp.getInputStream());
 			player.setName((String)in.readObject());
+
+			System.out.println("Received Name");
 
 			// Start our new socket
 			inputThread = new InputWaiter();

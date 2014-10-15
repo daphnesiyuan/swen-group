@@ -90,13 +90,8 @@ public class ChatClient extends Client {
 							failedPings++;
 
 							// Should we disconnect?
-							if( failedPings == maxFailPings ){
-
-								// Try and reconnect
-								reconnect(player.getName());
-
-							}
-							else if( failedPings > maxFailPings ){
+							if( failedPings >= maxFailPings ){
+								System.out.println("Disconnecting");
 
 								// Can't connect to the server
 								disconnect();
@@ -307,11 +302,16 @@ public class ChatClient extends Client {
 	@Override
 	public void successfullyConnected(String playerName) {
 
+		// Reset to default
+		clearChatHistory();
+		failedPings = 0;
+
 		// Change the name of the player
 		player.setName(playerName);
 
 		// Start checking the server
 		serverChecker = new ServerCheckerThread();
+		serverChecker.start();
 	}
 
 	/**
