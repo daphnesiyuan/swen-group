@@ -68,6 +68,10 @@ public class WindowFrame extends JFrame {
 						JOptionPane.YES_NO_OPTION);
 
 				if (confirmed == JOptionPane.YES_OPTION) {
+
+					if(panel.getGameServer()!=null){
+						panel.getGameServer().stopServer();
+					}
 					dispose();
 				}
 			}
@@ -84,6 +88,11 @@ public class WindowFrame extends JFrame {
 				JOptionPane.YES_NO_OPTION);
 
 		if (confirmed == JOptionPane.YES_OPTION) {
+
+			//panel.getGameClient().disconnect();
+			if(panel.getGameServer()!=null){
+				panel.getGameServer().stopServer();
+			}
 			panel.setStartMode();
 		}
 	}
