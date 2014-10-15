@@ -93,6 +93,10 @@ public class Avatar implements Serializable {
 		this.score = 0;
 		this.lastHit = null;
 
+		inventory.add(new PurpleKey(null));
+		inventory.add(new RedKey(null));
+		inventory.add(new YellowKey(null));
+		inventory.add(new GreenKey(null));
 	}
 
 	public void updateLocations(Tile2D tile, Room room) {
@@ -244,10 +248,14 @@ public class Avatar implements Serializable {
 				Room arena = oldPosition.getToRoom();
 				Door door = null;
 				System.out.println("TO ROOM" + oldPosition.getToRoom());
-				if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(0);
-				else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(3);
-				else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(2);
-				else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(1);
+//				if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(0);
+//				else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(3);
+//				else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(2);
+//				else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(1);
+				if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(1);
+				else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(2);
+				else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(3);
+				else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(0);
 				updateLocations(door, arena);
 			}
 		}

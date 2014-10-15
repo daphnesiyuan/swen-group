@@ -108,19 +108,7 @@ public class NewGame {
 			}
 		}
 
-		scan = new Scanner(NewGame.class.getResourceAsStream(v)); // reset the
-																	// scanner
-																	// for a
-																	// second
-																	// file
-																	// reading
-																	// iteration,
-																	// this time
-																	// the tiles
-																	// will
-																	// actually
-																	// be
-																	// created.
+		scan = new Scanner(NewGame.class.getResourceAsStream(v));
 		tile = null; // precautionary read reset
 		int x = 0;
 		int y = 0;
