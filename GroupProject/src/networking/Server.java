@@ -339,13 +339,13 @@ public abstract class Server implements Runnable{
 	 * What to do when a new client that has never joined the server before, joins the server
 	 * @param client Client that has joined the thread
 	 */
-	public abstract void newClientConnection(ClientThread client);
+	public abstract boolean newClientConnection(ClientThread client);
 
 	/**
 	 * The client that has rejoined the server
 	 * @param client Client that has rejoined
 	 */
-	public abstract void clientRejoins(ClientThread client);
+	public abstract boolean clientRejoins(ClientThread client);
 
 	/**
 	 * The server wants to message all clients
@@ -417,22 +417,29 @@ public abstract class Server implements Runnable{
 				if (previousClient == null) {
 
 					// Tell our sub server that we have a new clinet
-					newClientConnection(this);
+					if( !newClientConnection(this) ){
+
+						// Close the client
+						socket.close();
+						return;
+					}
 				}
 				else{
 					// Remove the old connection
 					removeClient(previousClient,true);
 
 					// We have rejoined
-					clientRejoins(this);
-				}
+					if( !clientRejoins(this) ){
 
+						// Close the client
+						socket.close();
+						return;
+					}
+				}
 
 				// Add the client to our list
 				clients.add(this);
 				start();
-
-
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -489,6 +496,8 @@ public abstract class Server implements Runnable{
 
 				} catch(InvalidClassException e){
 					System.out.println("Incoming object must be NetworkObject: " + e.classname);
+					e.printStackTrace();
+				} catch(StreamCorruptedException e){
 					e.printStackTrace();
 				}catch (SocketException e) {
 					e.printStackTrace();
@@ -570,12 +579,6 @@ public abstract class Server implements Runnable{
 					ObjectOutputStream outputStream;
 					try{
 						outputStream = new ObjectOutputStream(ClientThread.this.socket.getOutputStream());
-					}catch(SocketException e){
-						return false;
-					}
-
-					// Get packet to send
-					try{
 						outputStream.writeObject(data);
 					}catch(SocketException e){
 						return false;

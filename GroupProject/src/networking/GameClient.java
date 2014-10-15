@@ -100,11 +100,17 @@ public class GameClient extends ChatClient {
 	}
 
 	@Override
-	public void successfullyConnected(String playerName) {
+	public boolean successfullyConnected(String playerName) {
+		if( !super.successfullyConnected(playerName) ){
+			return false;
+		}
 
 		// Reset to default
 		clientRoom = null;
 		clientScore = null;
+
+		// Correct Connection
+		return true;
 	}
 
 	/**
