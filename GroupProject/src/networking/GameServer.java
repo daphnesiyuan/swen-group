@@ -42,6 +42,7 @@ public class GameServer extends ChatServer {
 
 		Thread tickThread = new Thread(new TickThread());
 		tickThread.start();
+		System.out.println("GameServer - constructor end reached");
 	}
 
 	/**
@@ -233,8 +234,10 @@ public class GameServer extends ChatServer {
 	}
 
 	@Override
-	public void newClientConnection(ClientThread cl) {
-		super.newClientConnection(cl);
+	public boolean newClientConnection(ClientThread cl) {
+		if( !super.newClientConnection(cl) ){
+			return false;
+		}
 
 
 		// Set new players current room
@@ -242,19 +245,28 @@ public class GameServer extends ChatServer {
 
 		// Send the room back to the client
 		if( currentRoom != null ){
-			cl.sendData(new ClientUpdate(currentRoom, gameServer.getScore()));
+			return cl.sendData(new ClientUpdate(currentRoom, gameServer.getScore()));
 		}
 
+		// Couldn't send new room
+		return false;
 	}
 
 	@Override
-	public void clientRejoins(ClientThread cl) {
-		super.clientRejoins(cl);
+	public boolean clientRejoins(ClientThread cl) {
+		if( !super.clientRejoins(cl) ){
+			return false;
+		}
 
+		// Try and send a room to the client
 		Room currentRoom = gameServer.getRoom(cl.getPlayerName());
 		if( currentRoom != null ){
-			cl.sendData(new ClientUpdate(currentRoom, gameServer.getScore()));
+			// Send new room to client
+			return cl.sendData(new ClientUpdate(currentRoom, gameServer.getScore()));
 		}
+
+		// Couldn't join the client
+		return false;
 	}
 
 	/**

@@ -119,6 +119,12 @@ public class JoinGUI extends JFrame{
 
 				Room temp = gc.getRoom();
 				while( temp == null){
+
+					if( !panel.getGameClient().isConnected() ){
+						sendFailure("The server is full, you cannot join this game");
+						return;
+					}
+
 					temp = gc.getRoom();
 				}
 				dispose();
@@ -128,12 +134,10 @@ public class JoinGUI extends JFrame{
 			}
 
 		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
-			sendFailure();
+			sendFailure("Cannot find server");
 
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			sendFailure();
+			sendFailure("Please input valid details!");
 		}
 	}
 
@@ -155,7 +159,7 @@ public class JoinGUI extends JFrame{
 					startGame();
 
 				} else {
-					JoinGUI.this.sendFailure();
+					JoinGUI.this.sendFailure("Input valid details");
 				}
 			}
 		}
@@ -166,9 +170,9 @@ public class JoinGUI extends JFrame{
 	 * @author Daphne Wang
 	 */
 
-	public void sendFailure() {
+	public void sendFailure(String message ) {
 		JFrame warning = new JFrame();
 		JOptionPane.showMessageDialog(warning,
-				"Please input valid details!");
+				message);
 	}
 }

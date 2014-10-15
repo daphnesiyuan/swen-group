@@ -10,7 +10,8 @@ import java.util.Random;
 import rendering.Direction;
 
 /**
- * Random AI that will walk around In a random direction every time it's told to think and will attack players.
+ * Random AI that will Randomly move when there are no enemies around.
+ * If there are Avatars near the AI, it will attack that player trying to kill them.
  * @author veugeljame
  *
  */

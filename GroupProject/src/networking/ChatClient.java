@@ -90,8 +90,7 @@ public class ChatClient extends Client {
 							failedPings++;
 
 							// Should we disconnect?
-							if( failedPings >= maxFailPings ){
-								System.out.println("Disconnecting");
+							if( isConnected() || failedPings >= maxFailPings ){
 
 								// Can't connect to the server
 								disconnect();
@@ -300,7 +299,10 @@ public class ChatClient extends Client {
 	}
 
 	@Override
-	public void successfullyConnected(String playerName) {
+	public boolean successfullyConnected(String playerName) {
+		if( !super.successfullyConnected(playerName) ){
+			return false;
+		}
 
 		// Reset to default
 		clearChatHistory();
@@ -312,6 +314,8 @@ public class ChatClient extends Client {
 		// Start checking the server
 		serverChecker = new ServerCheckerThread();
 		serverChecker.start();
+
+		return true;
 	}
 
 	/**

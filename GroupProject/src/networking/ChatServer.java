@@ -48,7 +48,7 @@ public class ChatServer extends Server {
 		Thread clientChecker = new Thread(){
 
 			final int maxFailPings = 5;
-			final int pingTime = 500;
+			final int pingTime = 5000;
 
 			@Override
 			public void run(){
@@ -67,15 +67,11 @@ public class ChatServer extends Server {
 
 						// Couldn't ping them
 						if( !pinged ){
-							System.out.println("Could not ping: " + client.getPlayerName());
 
 							// Should we remove them?
 							if( failCount >= maxFailPings ){
 								if( removeClient(client, false) ){
 									i--;
-								}
-								else{
-									System.out.println("NOT REMOVED");
 								}
 							}
 							else{
@@ -519,7 +515,7 @@ public class ChatServer extends Server {
 	}
 
 	@Override
-	public void newClientConnection(ClientThread cl) {
+	public boolean newClientConnection(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
 		messageAllClients(cl.getPlayerName() + " has Connected.", cl);
@@ -532,10 +528,11 @@ public class ChatServer extends Server {
 
 		// Add new failed Ping
 		failedPings.put(cl.getPlayerName(), 0);
+		return true;
 	}
 
 	@Override
-	public void clientRejoins(ClientThread cl) {
+	public boolean clientRejoins(ClientThread cl) {
 
 		// Tell everyone the new client has joined the server
 		messageAllClients(cl.getPlayerName() + " has Reconnected.", cl);
@@ -545,6 +542,7 @@ public class ChatServer extends Server {
 
 		// Reset current FailedPing
 		failedPings.put(cl.getPlayerName(), 0);
+		return true;
 	}
 
 	@Override
