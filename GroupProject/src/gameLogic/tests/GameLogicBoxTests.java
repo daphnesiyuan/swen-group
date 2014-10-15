@@ -50,11 +50,11 @@ public class GameLogicBoxTests {
 		game.addPlayer("P");
 
 		Avatar a = game.getAvatar("P");
+		int size = a.getInventory().size();
+
+		System.out.println(size);
 
 		assertTrue(box.interactWith(a));
-		assertTrue(box.interactWith(a));
-		assertTrue(box.interactWith(a));
-		assertTrue(box.interactWith(a));
-		assertTrue(box.interactWith(a));
+		assertTrue(a.getInventory().size() == (size+1));
 	}
 }
