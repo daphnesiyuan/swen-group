@@ -78,7 +78,7 @@ public class Game{
 			return room;
 		}
 		else{
-			if(roomNumber>=4){
+			if(roomNumber>=5){
 				System.out.println("Cannot add player - there are no rooms left !");
 				return null;
 			}

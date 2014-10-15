@@ -118,7 +118,7 @@ public class MakeImageMap {
 			addToMap("PurpleKey"+i);
 
 			//GreenKey
-			addToMap("GreenKey"+i);
+			addToMap("YellowKey"+i);
 		}
 
 		//Night time
