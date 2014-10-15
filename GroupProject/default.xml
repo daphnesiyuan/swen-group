@@ -854,25 +854,25 @@
     </walls>
     <doors>
       <Door>
-        purple
+        <color>purple</color>
         <xPos>0</xPos>
         <yPos>7</yPos>
         <toRoom>west</toRoom>
       </Door>
       <Door>
-        red
+        <color>red</color>
         <xPos>7</xPos>
         <yPos>0</yPos>
         <toRoom>north</toRoom>
       </Door>
       <Door>
-        green
+        <color>green</color>
         <xPos>7</xPos>
         <yPos>14</yPos>
         <toRoom>south</toRoom>
       </Door>
       <Door>
-        yellow
+        <color>yellow</color>
         <xPos>14</xPos>
         <yPos>7</yPos>
         <toRoom>east</toRoom>
@@ -1121,7 +1121,7 @@
     </walls>
     <doors>
       <Door>
-        red
+        <color>red</color>
         <xPos>3</xPos>
         <yPos>6</yPos>
         <toRoom>arena</toRoom>
@@ -1342,7 +1342,7 @@
     </walls>
     <doors>
       <Door>
-        green
+        <color>green</color>
         <xPos>3</xPos>
         <yPos>0</yPos>
         <toRoom>arena</toRoom>
@@ -1563,7 +1563,7 @@
     </walls>
     <doors>
       <Door>
-        yellow
+        <color>yellow</color>
         <xPos>0</xPos>
         <yPos>3</yPos>
         <toRoom>arena</toRoom>
@@ -1784,7 +1784,7 @@
     </walls>
     <doors>
       <Door>
-        purple
+        <color>purple</color>
         <xPos>6</xPos>
         <yPos>3</yPos>
         <toRoom>arena</toRoom>
@@ -1806,7 +1806,7 @@
     </other_tiles>
   </Room>
   <score>
-    <dfsd>0</dfsd>
+    <asda>0</asda>
   </score>
   <activeAI />
 </Game>
