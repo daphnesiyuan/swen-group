@@ -45,6 +45,8 @@ public class StartGUI extends JFrame {
 		connectButton = new JButton("Connect");
 		connectButton.addActionListener(handler);
 		panel = p;
+
+		getRootPane().setDefaultButton(connectButton); //line to hit enter which will submit automatically
 	}
 
 	/**
@@ -89,6 +91,7 @@ public class StartGUI extends JFrame {
 	 * @author Daphne Wang
 	 */
 	public void startGame() {
+		System.out.println("starting game");
 		gc.setName(name);
 		try {
 			gc.connect(gs);

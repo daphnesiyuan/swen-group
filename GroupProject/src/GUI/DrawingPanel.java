@@ -184,7 +184,6 @@ public class DrawingPanel extends JPanel {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("disconnected");
 			startMenu = true;
 		}
 	}

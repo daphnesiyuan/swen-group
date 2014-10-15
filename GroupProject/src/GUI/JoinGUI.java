@@ -64,6 +64,8 @@ public class JoinGUI extends JFrame{
 		// user inputs
 		setTextField();
 		jpanel.add(connectButton);
+
+		getRootPane().setDefaultButton(connectButton);
 	}
 
 	public void setTextField() {

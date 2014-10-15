@@ -59,8 +59,6 @@ public class InvoPopup extends JPopupMenu implements ActionListener{
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println(e.getActionCommand());
-
 		if ((e.getActionCommand()).equals("Open")) {
 			Move move = new Move((panel.getGameClient()).getPlayer(), "open", itemIndex );
 			try {
