@@ -53,15 +53,15 @@ public class GameServer extends ChatServer {
 	public GameServer(File gameToLoad) {
 		super();
 
+		// Load the game from a file a file
+		loadGame(gameToLoad);
+
 		// Server listens for input directly to servers terminal Thread
 		Thread serverTextBox = new Thread(new ServerTextListener());
 		serverTextBox.start();
 
 		Thread tickThread = new Thread(new TickThread());
 		tickThread.start();
-
-		// Load the game from a file a file
-		loadGame(gameToLoad);
 	}
 
 	/**
