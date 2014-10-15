@@ -50,8 +50,7 @@ public class XMLSaver {
 
 		Element activeAI = new Element("activeAI");
 		for(AI ai : game.getActiveAI()){
-			Element ele = activeAI.addContent(parser.parseAI(ai));
-			activeAI.addContent(ele);
+			activeAI.addContent(parser.parseAI(ai));
 		}
 		root.addContent(activeAI);
 

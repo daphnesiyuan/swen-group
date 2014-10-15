@@ -346,10 +346,13 @@ public class XMLSaveParser {
 		else{
 			e = new Element("PurpleKey");
 		}
+		if(item.getTile().equals(null)){}
+		else{
 		e.addContent(new Element("xPos").setText(item.getTile().getxPos()+""));
 		e.addContent(new Element("yPos").setText(item.getTile().getyPos()+""));
 		e.addContent(new Element("startXPos").setText(item.getStartTile().getxPos()+""));
-		e.addContent(new Element("startYPos").setText(item.getStartTile().getyPos()+""));
+		e.addContent(new Element("startYPos").setText(item.getStartTile().getyPos()+""));}
+
 		return e;
 
 	}

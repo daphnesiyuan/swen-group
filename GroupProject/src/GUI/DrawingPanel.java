@@ -286,7 +286,8 @@ public class DrawingPanel extends JPanel {
 					joinG.setup();
 
 				} else if (s.equals("load")) {
-					fileChooser = new XMLFile(wf);
+					gs = new GameServer();
+					fileChooser = new XMLFile(wf, DrawingPanel.this, gc , gs);
 
 				} else if (s.equals("help")) {
 					help.helpOn();
