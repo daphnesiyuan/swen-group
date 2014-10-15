@@ -51,7 +51,7 @@ public class Key extends Item {
 	@Override
 	public void returnToStartPos() {
 		tile = startTile;
-		tile.addItem(this);
+		if(tile!= null) tile.addItem(this);
 
 	}
 

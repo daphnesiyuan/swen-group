@@ -78,7 +78,6 @@ public class XMLLoadParser {
 			System.out.println(jdomex.getMessage());
 		}
 
-
 		return game;
 	}
 
@@ -106,8 +105,7 @@ public class XMLLoadParser {
 			parseItem((Element)roomList.get(i), roomsInGame.get(i));
 		}
 
-
-
+		System.out.println("Room place to test " + game.getRoomsInGame().get(0).getDoors().size());
 		// Iterates through all the room elements, creates door tiles and
 		// other tiles
 
@@ -176,7 +174,6 @@ public class XMLLoadParser {
 				Room arena =game.getRoomByName("arena");
 				if(d.getyPos() == 7){	//purple
 					d.setToRoom(arena);
-
 				}
 				else if(d.getxPos() == 14){	// yellow
 					d.setToRoom(arena);
@@ -188,11 +185,11 @@ public class XMLLoadParser {
 					d.setToRoom(arena);
 				}
 			}
+
 			r.getDoors().add(d);
 			r.tiles2DSet(yPos, xPos, d);
-
-
 		}
+
 	}
 
 	/**
