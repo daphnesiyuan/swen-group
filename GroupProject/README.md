@@ -3,6 +3,8 @@ swen-group
 1) Provide a short description on how to run the game.  That is, where the main method(s) are, how to start 
 the server / client, what files are required, etc.
 
+The game looks best in full screen
+
 When you start the game it will launch into the start menu screen containing a few buttons to begin playing the game.
 The start button will automatically set up your own server to play in and will require you to fill in a text field
 with a username of your choice. Hitting the enter key after putting the input or pressing the connect button will
