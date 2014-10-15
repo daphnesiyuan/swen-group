@@ -42,14 +42,9 @@ public class Game{
 
 	public Game(Boolean loaded){
 		roomNumber = 0; // RE: 0th room is arena
-
-
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
 		activeAI = new ArrayList<AI>();
-		this.score = new Score();
-		this.environment = new Environment(this);
-		environment.start();
 	}		//ANTONIA: To be used when loading a file
 
 
