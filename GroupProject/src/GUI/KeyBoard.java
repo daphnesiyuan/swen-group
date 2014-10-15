@@ -10,9 +10,9 @@ import rendering.Direction;
 import networking.ChatMessage;
 import networking.Move;
 /**
- *
+ * Class deals with anything to do with the keyboard, from moving around, typing in the chat box, changing angles
+ * and activating/deactivating the help screen
  * @author Daphne Wang and Leon North
- *
  */
 public class KeyBoard implements KeyListener{
 
@@ -43,12 +43,11 @@ public class KeyBoard implements KeyListener{
 			panel.addToCurrentMessage( Character.toString(e.getKeyChar()) );
 
 		}
-		actionKeys();
-		//repaint();
 	}
 
 
 	/**
+	 * Responds to pressing specfic keys on the keyboard
 	 * @author Daphne Wang and Leon North
 	 */
 	private void actionKeys() {
@@ -111,6 +110,9 @@ public class KeyBoard implements KeyListener{
 
 	}
 
+	/**
+	 * Helper method which sends direction to the server to register local changes
+	 */
 	private void sendDirection() {
 		String dir = Direction.get( panel.getDirection() );
 		if (dir.toLowerCase().equals("east")){ dir = "West";}
@@ -125,6 +127,7 @@ public class KeyBoard implements KeyListener{
 	}
 
 	/**
+	 * Method to deal with charging the battery/attacking with your avatar.
 	 * @author Leon North
 	 */
 	private void Charge() {

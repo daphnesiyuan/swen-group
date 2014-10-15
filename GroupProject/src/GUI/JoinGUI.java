@@ -20,7 +20,12 @@ import javax.swing.event.DocumentListener;
 
 import networking.GameClient;
 
-
+/**
+ * Class which handles the GUI that appears when you want to join a game.
+ * It takes A username, and IP address of the server you want to join
+ * @author wangdaph
+ *
+ */
 
 public class JoinGUI extends JFrame{
 
@@ -63,7 +68,6 @@ public class JoinGUI extends JFrame{
 
 	public void setTextField() {
 		JLabel label1 = new JLabel("\nIP Address:");
-		//label1.setToolTipText("hit enter to finalise ip address input");
 		textIP = new JTextField(20);
 		textIP.getDocument().addDocumentListener(new MyDocumentListener());
 		JLabel label2 = new JLabel("\nUsername");
@@ -91,7 +95,6 @@ public class JoinGUI extends JFrame{
 		public void removeUpdate(DocumentEvent e) {
 			ipAddress = textIP.getText();
 			name = textName.getText();
-			System.out.println("ip address="+ipAddress+" name="+name);
 		}
 
 		public void changedUpdate(DocumentEvent e) {
@@ -99,11 +102,17 @@ public class JoinGUI extends JFrame{
 		}
 	}
 
+	/**
+	 * Helper method to start the game when connecting. This sorts out the drawing and launching the actual game
+	 * This also deals with failures in case the IP address is invalid, then it will fire an error message
+	 * which means you cannot proceed with the game until a valid IP address is inputted
+	 *
+	 * @author Daphne Wang
+	 */
 	public void startGame(){
 		gc.setName(name);
 
 		try {
-			System.out.println("testing");
 			if( gc.connect( ipAddress ) ){
 
 				Room temp = gc.getRoom();
@@ -118,10 +127,11 @@ public class JoinGUI extends JFrame{
 
 		} catch (UnknownHostException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			sendFailure();
+
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			sendFailure();
 		}
 	}
 
@@ -130,7 +140,7 @@ public class JoinGUI extends JFrame{
 	 * handle events in the set-up GUI It contains one method:
 	 * actionPerformed(e)
 	 *
-	 * @author Daphne
+	 * @author Daphne Wang
 	 */
 
 	private class theHandler implements ActionListener {
@@ -138,23 +148,25 @@ public class JoinGUI extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 
 			if (e.getSource() == connectButton) {
-				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0 ) { //input is valid
+				if (ipAddress != null && ipAddress.length() > 0 && name != null && name.length() > 0) { //input is valid
 					//MUST ADD NWEN CONNECT STUFF
 					startGame();
 
 				} else {
-					sendFailure();
+					JoinGUI.this.sendFailure();
 				}
 			}
-
 		}
+	}
 
-		public void sendFailure() {
-			JFrame warning = new JFrame();
-			JOptionPane.showMessageDialog(warning,
-					"Please input valid details!");
-		}
+	/**
+	 * A mini method which deals with the GUI for invalid details during registration
+	 * @author Daphne Wang
+	 */
 
-
+	public void sendFailure() {
+		JFrame warning = new JFrame();
+		JOptionPane.showMessageDialog(warning,
+				"Please input valid details!");
 	}
 }

@@ -9,6 +9,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+/**
+ * A method which deals with the top menu bar where you can choose to either save or quit the game
+ * @author Daphne Wang
+ *
+ */
 public class TopMenu implements ActionListener{
 
 	boolean mouse = false;
@@ -18,7 +23,6 @@ public class TopMenu implements ActionListener{
 
 
 	private JMenuItem mainDropDown;
-	private JMenuItem innerCatagory;
 	private JMenuItem option;
 
 
@@ -37,32 +41,31 @@ public class TopMenu implements ActionListener{
 
 	/**
 	 * Action performed to respond to any interactions with the top menu
+	 * @author Daphne Wang
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	    if ((e.getActionCommand()).equals("Save")) {
-	    	System.out.println("clicked save");
-
 	    	if( !panel.isStartMode() ){ //can only save if you're in game mode
 	    		if(panel.getGameServer().saveGame()){
 		    		System.out.println("game successfully saved");
 		    	}
 		    	else{
-		    		System.out.println("YOU FUCKED UP THE SAVING!!!!!!!!!!!!!!!!!!!!!1");
+		    		System.out.println("Did not save properly");
 		    	}	}
 	    	else{ Window.sendFailure(); }
 
 	    	mouse = true;
 	    }
 	    else if ( (e.getActionCommand()).equals("Quit") ){
-	    	System.out.println("quit");
 	    	Window.revertToStartMenu();
 	    }
 
 	}
 
 	/**
-	 * Method to make any setups necessary for the top menu, such as options and inner menus
+	 * Method to make any setups necessary for the top menu, such as options and inner drop down menus
+	 * @author Daphne Wang
 	 */
 	public void setupMenuBar() {
 		mainDropDown = new JMenu("File");

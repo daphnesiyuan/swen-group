@@ -18,6 +18,14 @@ public class HelpMenu {
 	private DrawingPanel panel;
 	private boolean helpMode=false;
 
+	/**
+	 * This class takes care of the help screen which is activated with pressing the esc key or clicking help at the start of the game
+	 * This class is aware of whether it is currently being used or not with a boolean
+	 * @param p DrawingPanel
+	 *
+	 * @author Daphne Wang
+	 */
+
 	public HelpMenu(DrawingPanel p){
 		panel = p;
 		java.net.URL imageURL = WindowFrame.class.getResource("helpImage/help menu.png");
@@ -28,6 +36,11 @@ public class HelpMenu {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Identifies whether the game state is on the help screen or not
+	 * @return
+	 */
 
 	public boolean isHelpMode(){
 		return helpMode;
@@ -42,7 +55,7 @@ public class HelpMenu {
 	}
 
 	/**
-	 * Drawing method from leon's draw world class: DrawNight();
+	 * Drawing method similar leon's draw world class: DrawNight();
 	 * @param g Graphics object for drawing things
 	 */
 	public void drawHelp(Graphics g){

@@ -11,7 +11,12 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-
+/**
+ * Class which is the main start screen when opening the game. It contains all the basic
+ * buttons and enables you to start, join, load or view help options.
+ * Also runs the splash art too.
+ * @author wangdaph
+ */
 public class StartMenu {
 
 	private DrawingPanel panel;
@@ -40,7 +45,8 @@ public class StartMenu {
 
 	/**
 	 * A redraw method for the start menu: draws a white background and draws the buttons
-	 * @param g
+	 * @param g Graphics object
+	 * @author Daphne Wang
 	 */
 	public void redraw(Graphics g) {
 		g.setColor(Color.WHITE);
@@ -53,6 +59,12 @@ public class StartMenu {
 
 	}
 
+	/**
+	 * A helper method which loads the background art to support the style of the game
+	 * @param g
+	 *
+	 * @author Daphne Wang
+	 */
 	public void drawSplashArt(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;
 
@@ -82,6 +94,8 @@ public class StartMenu {
 	 * @param g: the Graphics object
 	 * @param i: i'th button being drawn
 	 * @param b: the image of the actual button
+	 *
+	 * @author Daphne Wang
 	 */
 	public void drawButton(Graphics g, int i, Image b){
 		i--;
@@ -100,11 +114,10 @@ public class StartMenu {
 	/**
 	 * Helper buttons for loading image resources, and populating the 3 arraylists: default buttons, hover buttons, and buttons appeared
 	 * @throws IOException
+	 *
+	 * @author Daphne Wang
 	 */
 	public void loadImages() throws IOException {
-
-		System.out.println("images being loaded from StartMenu");
-
 		java.net.URL imageURL = WindowFrame.class.getResource("startMenuImages/splash.png");
 
 		try {
@@ -192,6 +205,8 @@ public class StartMenu {
 	/**
 	 * Method to reset the image of a button after the mouse has moved away
 	 * @param button
+	 *
+	 * @author Daphne Wang
 	 */
 	public void resetUnHoverButton(String button){
 		if(button.equals("start")){
@@ -221,6 +236,8 @@ public class StartMenu {
 	 * @param x the x coordinate of the click
 	 * @param y the y coordinate of the click
 	 * @return the string name associated with the appropriate button
+	 *
+	 * @author Daphne Wang
 	 */
 	public String findButton(int x, int y) {
 
