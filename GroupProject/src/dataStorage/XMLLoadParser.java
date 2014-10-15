@@ -8,10 +8,13 @@ import gameLogic.Column;
 import gameLogic.Door;
 import gameLogic.Floor;
 import gameLogic.Game;
+import gameLogic.GreenDoor;
 import gameLogic.GreenKey;
 import gameLogic.Item;
 import gameLogic.Light;
+import gameLogic.PurpleDoor;
 import gameLogic.PurpleKey;
+import gameLogic.RedDoor;
 import gameLogic.RedKey;
 import gameLogic.Room;
 import gameLogic.Score;
@@ -19,6 +22,7 @@ import gameLogic.Shoes;
 import gameLogic.Tile2D;
 import gameLogic.Tree;
 import gameLogic.Wall;
+import gameLogic.YellowDoor;
 import gameLogic.YellowKey;
 
 import java.awt.Color;
@@ -161,10 +165,16 @@ public class XMLLoadParser {
 		List doorList = doors.getChildren();
 		for (Object t : doorList) {
 			Element ele = (Element) t;
+			String color = ele.getChildText("color");
 			int xPos = Integer.parseInt(ele.getChildText("xPos"));
 			int yPos = Integer.parseInt(ele.getChildText("yPos"));
 			String toRoomPlace = ele.getChildText("toRoom");
-			Door d = new Door(xPos, yPos);
+			Door d = null;
+			if(color == "red"){d = new RedDoor(xPos, yPos);}
+			else if(color == "yellow"){d = new YellowDoor(xPos, yPos);}
+			else if(color == "purple"){d = new PurpleDoor(xPos, yPos);}
+			else if(color == "green"){d = new GreenDoor(xPos, yPos);}
+
 			d.setToRoom(game.getRoomByName(toRoomPlace));
 			r.tiles2DSet(yPos, xPos, d);
 

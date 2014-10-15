@@ -185,6 +185,7 @@ public class DrawingPanel extends JPanel {
 				}
 			}
 			startMenu = true;
+			chatMode=false;
 		}
 	}
 

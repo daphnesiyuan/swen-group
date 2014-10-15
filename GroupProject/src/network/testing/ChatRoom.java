@@ -63,7 +63,6 @@ public class ChatRoom implements ActionListener{
 		setUpGui();
 
 		client.setPaintComponent(chatHistory);
-		client.repaintImage();
 	}
 
 	private void setUpGui(){
