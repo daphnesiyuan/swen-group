@@ -7,6 +7,7 @@ import gameLogic.Item;
 import gameLogic.Light;
 import gameLogic.Room;
 import gameLogic.Tile2D;
+import gameLogic.Wall;
 import networking.Player;
 
 import org.junit.Before;
@@ -70,12 +71,37 @@ public class GameLogicRoomTests {
 
 	@Test public void equals(){
 
-		/** Compare Tiles */
-		Room original = game.getRoom(player.getName());
-		Room room = new Room(original.getTiles(),null);
 
-		assertFalse(original.equals(room));
+		assertTrue(room.equals(room));
 
+		String fail = "FAILZ";
+		assertFalse(room.equals(fail));
+
+
+		assertFalse(room.equals(game.getRoomsInGame().get(0)));
+
+
+		Room test = new Room(room.getTiles(),null);
+		assertFalse(room.equals(test));
+
+		test.addAvatar(room.getAvatars().get(0));
+		assertFalse(room.equals(test));
+
+		test.getDoors().add(room.getDoors().get(0));
+		assertFalse(room.equals(test));
+
+		test.setFloors(room.getFloors());
+		assertFalse(room.equals(test));
+
+		for(Item item : room.getItems()){
+			test.addItem(item);
+		}
+		assertFalse(room.equals(test));
+
+		for(Wall wall: room.getWalls()){
+			test.getWalls().add(wall);
+		}
+		assertTrue(room.equals(test));
 	}
 
 	@Test public void setGetTiles(){
