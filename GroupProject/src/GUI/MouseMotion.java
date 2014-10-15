@@ -3,6 +3,13 @@ package GUI;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
+
+/**
+ * Small class to help with hovering and detecting when the mouse has moved and feeding back the new location
+ * onto the drawing panel
+ * @author Daphne Wang
+ *
+ */
 public class MouseMotion implements MouseMotionListener{
 
 	private DrawingPanel panel;

@@ -2,6 +2,13 @@ package GUI;
 
 import gameLogic.Item;
 
+/**
+ * The main mouse listener to deal with clicking on both the start menu mode and the actual game mode
+ * This integrates with the drawing panel for button responding, and also in game for interacting with the inventory
+ *
+ * @author Daphne Wang
+ */
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -20,8 +27,9 @@ public class MyMouseListener implements MouseListener {
 	}
 
 	/**
-	 * A helper method which registers when a mouse has been clicked and then
+	 * Inherited mouse methods which registers when a mouse has been clicked/pressed/released and then
 	 * sends the location of the mouse click to the panel
+	 * @author Daphne Wang
 	 */
 	public void mouseClicked(MouseEvent e) {
 		panel.sendClick(e.getX(), e.getY());
@@ -66,10 +74,9 @@ public class MyMouseListener implements MouseListener {
 	}
 
 	/**
-	 * Method to deal with the right clicking mini menu interacting with
-	 * inventory
-	 *
-	 * @param e
+	 * Method to deal with the right clicking mini menu interacting with the inventory
+	 * It sends the information about which inventory item has been clicked onto the InvoPopup via .sendItem
+	 * @param e MouseEvent
 	 */
 	private void doPop(MouseEvent e) {
 		boolean b = false;

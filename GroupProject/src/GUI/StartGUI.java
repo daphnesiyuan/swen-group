@@ -21,6 +21,12 @@ import javax.swing.event.DocumentListener;
 import networking.GameClient;
 import networking.GameServer;
 
+/**
+ * Class to deal with the GUI for when you start the game
+ * It takes only a username for the player and all the IP address and networking is done behind the scene to prepare
+ * a server ready for the user
+ * @author Daphne Wang
+ */
 public class StartGUI extends JFrame {
 
 	private JPanel jpanel;
@@ -41,6 +47,12 @@ public class StartGUI extends JFrame {
 		panel = p;
 	}
 
+	/**
+	 * Helper method to set up all the little things about the JFrame such as sizing
+	 * buttons and layouts
+	 *
+	 * @author Daphne Wang
+	 */
 	public void setup() {
 		new JFrame("The set up menu");
 		this.setSize(400, 200);
@@ -53,14 +65,16 @@ public class StartGUI extends JFrame {
 		this.add(jpanel);
 		this.setAlwaysOnTop(true); // ensures it pops up in front
 		this.setVisible(true);
-		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// user inputs
 		setTextField();
 		jpanel.add(connectButton);
-
 	}
 
+	/**
+	 * Mini method to set all the text fields
+	 * @author Daphne Wang
+	 */
 	public void setTextField() {
 		JLabel label2 = new JLabel("\n\nUsername");
 		textName = new JTextField(20);
@@ -70,6 +84,10 @@ public class StartGUI extends JFrame {
 		jpanel.add(textName);
 	}
 
+	/**
+	 * Method which sets up the game play
+	 * @author Daphne Wang
+	 */
 	public void startGame() {
 		gc.setName(name);
 		try {
@@ -85,17 +103,16 @@ public class StartGUI extends JFrame {
 			panel.setGameMode();
 
 		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			sendFailure();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			sendFailure();
 		}
 	}
 
 	/**
 	 * This is an inner class which handles changes made in the text box for
-	 * player name and IP address
+	 * player name, whether the user is inputting or backspacing on the content
+	 * @author Daphne Wang
 	 */
 	private class MyDocumentListener implements DocumentListener {
 		public void insertUpdate(DocumentEvent e) {
@@ -105,7 +122,6 @@ public class StartGUI extends JFrame {
 
 		public void removeUpdate(DocumentEvent e) {
 			name = textName.getText();
-			System.out.println("name=" + name);
 		}
 
 		public void changedUpdate(DocumentEvent e) {
@@ -114,11 +130,21 @@ public class StartGUI extends JFrame {
 	}
 
 	/**
+	 * Small GUI which deals with invalid inputs or failed server connection
+	 * @author Daphne Wang
+	 */
+	public void sendFailure() {
+		JFrame warning = new JFrame();
+		JOptionPane.showMessageDialog(warning,
+				"Error, try again!");
+	}
+
+	/**
 	 * This is a private class that implements action listener This class can
 	 * handle events in the set-up GUI It contains one method:
 	 * actionPerformed(e)
 	 *
-	 * @author Daphne
+	 * @author Daphne Wang
 	 */
 
 	private class theHandler implements ActionListener {
@@ -135,12 +161,6 @@ public class StartGUI extends JFrame {
 				}
 			}
 
-		}
-
-		public void sendFailure() {
-			JFrame warning = new JFrame();
-			JOptionPane.showMessageDialog(warning,
-					"Please input valid details!");
 		}
 
 	}
