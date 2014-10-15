@@ -19,7 +19,7 @@ public class GameClient extends ChatClient {
 	// Client side of the game
 	private Room clientRoom = null;
 
-	// Clients verision of the score
+	// Clients version of the score
 	private Score clientScore = null;
 
 	/**
@@ -114,6 +114,8 @@ public class GameClient extends ChatClient {
 	 * @param chatMessage Message that was sent from the given IP
 	 */
 	public synchronized void retrievedUpdate(ClientUpdate update){
+
+		//Save the newly updated room
 		clientRoom = update.updatedRoom;
 		clientScore = update.score;
 	}
