@@ -342,7 +342,7 @@ public class XMLLoadParser {
 		List aiList = ai.getChildren();
 		for (int i = 0; i < aiList.size(); i++) {
 			Element ele = (Element) aiList.get(i);
-			RandomAI a = new RandomAI((game.getRoomByName(ele.getText())), "ai"
+			RandomAI a = new RandomAI((game.getRoomsInGame().get(0)), "ai"
 					+ i);
 		}
 	}

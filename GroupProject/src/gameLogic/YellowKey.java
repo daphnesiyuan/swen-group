@@ -2,9 +2,12 @@ package gameLogic;
 
 public class YellowKey extends Key {
 
+
+	private static final long serialVersionUID = -4993294790727957747L;
+
 	public YellowKey(Tile2D tile) {
 		super(tile);
-		// TODO Auto-generated constructor stub
+
 	}
 
 	@Override
