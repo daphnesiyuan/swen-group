@@ -78,6 +78,7 @@ public class XMLLoadParser {
 			System.out.println(jdomex.getMessage());
 		}
 
+
 		return game;
 	}
 
@@ -95,25 +96,16 @@ public class XMLLoadParser {
 			room.setTiles(tiles);
 			roomsInGame.add(room);
 
-		} // Iterates through all the room elements, creates rooms with their
-			// place name, and all the walls and floors
+		}
+
+		game.setRoomsInGame(roomsInGame);// Iterates through all the room elements, creates rooms with their
 		// The room in roomsInGame is at the same index as it is in roomList
 		for (int i = 0; i < roomsInGame.size(); i++) {
 			parseDoor((Element) roomList.get(i), roomsInGame.get(i));
 			parseOtherTile((Element) roomList.get(i), roomsInGame.get(i));
 			parseItem((Element)roomList.get(i), roomsInGame.get(i));
 		}
-		for (Room r : roomsInGame) {
-			game.addRoom(r);
-			System.out.println(r.getRoomPlace());
-			for (int i = 0; i < r.getTiles().length; i++) {
-				System.out.println();
-				for (int j = 0; j < r.getTiles().length; j++) {
 
-					System.out.print(r.getTiles()[i][j].getxPos() + " ");
-				}
-			}
-		}
 
 
 		// Iterates through all the room elements, creates door tiles and
@@ -161,6 +153,7 @@ public class XMLLoadParser {
 	public void parseDoor(Element e, Room r) {
 		Element doors = e.getChild("doors");
 		List doorList = doors.getChildren();
+
 		for (Object t : doorList) {
 			Element ele = (Element) t;
 			String color = ele.getChildText("color");
@@ -168,13 +161,36 @@ public class XMLLoadParser {
 			int yPos = Integer.parseInt(ele.getChildText("yPos"));
 			String toRoomPlace = ele.getChildText("toRoom");
 			Door d = new Door(xPos,yPos);
+
 			if(color.equals("red")){d = new RedDoor(xPos, yPos);}
 			else if(color.equals("yellow")){d = new YellowDoor(xPos, yPos);}
 			else if(color.equals("purple")){d = new PurpleDoor(xPos, yPos);}
 			else if(color.equals("green")){d = new GreenDoor(xPos, yPos);}
+			d.setRoom(r);
+			System.out.println("Current door goes to: " + toRoomPlace + " the color is " + color);
+			if(toRoomPlace.equals("north")){ d.setToRoom(game.getRoomByName("north"));}
+			else if(toRoomPlace.equals("south")){d.setToRoom(game.getRoomByName("south"));}
+			else if(toRoomPlace.equals("east")){d.setToRoom(game.getRoomByName("east"));}
+			else if(toRoomPlace.equals("west")){d.setToRoom(game.getRoomByName("west"));}
+			else{
+				Room arena =game.getRoomByName("arena");
+				if(d.getyPos() == 7){	//purple
+					d.setToRoom(arena);
 
-			d.setToRoom(game.getRoomByName(toRoomPlace));
+				}
+				else if(d.getxPos() == 14){	// yellow
+					d.setToRoom(arena);
+				}
+				else if(d.getyPos() == 14){	//green
+					d.setToRoom(arena);
+				}
+				else{
+					d.setToRoom(arena);
+				}
+			}
+			r.getDoors().add(d);
 			r.tiles2DSet(yPos, xPos, d);
+
 
 		}
 	}

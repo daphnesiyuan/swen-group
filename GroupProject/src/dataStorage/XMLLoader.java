@@ -16,6 +16,7 @@ public class XMLLoader {
 		File file = new File("default.xml");
 		xmlLoad = new XMLLoadParser(file);
 		g = xmlLoad.loadGame();
+
 		return g;
 	}
 

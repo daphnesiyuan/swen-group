@@ -85,7 +85,6 @@ public class Game{
 			Room room = roomsInGame.get(roomNumber++);
 			Tile2D tile = null;
 			for(Room r: roomsInGame){
-				System.out.println(r.getRoomPlace());
 			}
 			// The Avatars start position will be infront of the charger, facing toward the arena.
 			if(room.getRoomPlace().equals("north")){
@@ -200,7 +199,12 @@ public class Game{
 	}
 
 	public Room getRoomByName(String roomName){
+		System.out.println("HERE FOR FUCKS SAKE");
+		System.out.println("Rooms in game size " + roomsInGame.size());
 		for(Room r: roomsInGame){
+			System.out.println("GET ROOM PLACE " + r.getRoomPlace());
+			System.out.println("GET ROOMNAME "+ roomName);
+
 			if(r.getRoomPlace().equals(roomName)){
 				return r;
 			}

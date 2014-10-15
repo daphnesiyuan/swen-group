@@ -248,6 +248,7 @@ public class Avatar implements Serializable {
 			else{
 				Room arena = oldPosition.getToRoom();
 				Door door = null;
+				System.out.println("TO ROOM" + oldPosition.getToRoom());
 				if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(0);
 				else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(3);
 				else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(2);
