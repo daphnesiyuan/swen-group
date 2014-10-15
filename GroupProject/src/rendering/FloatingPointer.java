@@ -17,10 +17,10 @@ import javax.imageio.ImageIO;
  */
 public class FloatingPointer {
 
-	int delay = 0;
-	int totalAnimations = 6;
-	int animationNum = 0;
-	Map<String, BufferedImage> images;
+	private int delay = 0;
+	private int totalAnimations = 6;
+	private int animationNum = 0;
+	private Map<String, BufferedImage> images;
 
 	public FloatingPointer() {
 		images = MakeImageMap.makeMap();
