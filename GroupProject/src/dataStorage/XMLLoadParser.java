@@ -78,6 +78,18 @@ public class XMLLoadParser {
 			System.out.println(jdomex.getMessage());
 		}
 
+		game.getRoomsInGame().get(1).getDoors().get(0).setToRoom(game.getRoomsInGame().get(0));
+		game.getRoomsInGame().get(2).getDoors().get(0).setToRoom(game.getRoomsInGame().get(0));
+		game.getRoomsInGame().get(3).getDoors().get(0).setToRoom(game.getRoomsInGame().get(0));
+		game.getRoomsInGame().get(4).getDoors().get(0).setToRoom(game.getRoomsInGame().get(0));
+
+		Room arena = roomsInGame.get(0);
+		Door door = null;
+		Tile2D oldPosition = arena.getDoors().get(0);
+		if(oldPosition.getRoom().getRoomPlace().equals("north")) door = arena.getDoors().get(0);
+		else if(oldPosition.getRoom().getRoomPlace().equals("south")) door = arena.getDoors().get(3);
+		else if(oldPosition.getRoom().getRoomPlace().equals("east")) door = arena.getDoors().get(2);
+		else if(oldPosition.getRoom().getRoomPlace().equals("west")) door = arena.getDoors().get(1);
 
 		return game;
 	}
@@ -106,8 +118,7 @@ public class XMLLoadParser {
 			parseItem((Element)roomList.get(i), roomsInGame.get(i));
 		}
 
-
-
+		System.out.println("Room place to test " + game.getRoomsInGame().get(0).getDoors().size());
 		// Iterates through all the room elements, creates door tiles and
 		// other tiles
 
@@ -176,7 +187,6 @@ public class XMLLoadParser {
 				Room arena =game.getRoomByName("arena");
 				if(d.getyPos() == 7){	//purple
 					d.setToRoom(arena);
-
 				}
 				else if(d.getxPos() == 14){	// yellow
 					d.setToRoom(arena);
@@ -188,11 +198,11 @@ public class XMLLoadParser {
 					d.setToRoom(arena);
 				}
 			}
+
 			r.getDoors().add(d);
 			r.tiles2DSet(yPos, xPos, d);
-
-
 		}
+
 	}
 
 	/**

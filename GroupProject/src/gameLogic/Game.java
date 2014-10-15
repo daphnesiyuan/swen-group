@@ -193,8 +193,6 @@ public class Game{
 	}
 
 	public Room getRoomByName(String roomName){
-		System.out.println("HERE FOR FUCKS SAKE");
-		System.out.println("Rooms in game size " + roomsInGame.size());
 		for(Room r: roomsInGame){
 			System.out.println("GET ROOM PLACE " + r.getRoomPlace());
 			System.out.println("GET ROOMNAME "+ roomName);
