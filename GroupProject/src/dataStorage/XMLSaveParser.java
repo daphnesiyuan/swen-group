@@ -327,16 +327,16 @@ public class XMLSaveParser {
 		if(item instanceof Key){
 			e = new Element("key");
 			if(item instanceof RedKey){
-				e.addContent("color").setText("red");
+				e.addContent(new Element("color").setText("red"));
 			}
 			else if(item instanceof GreenKey){
-				e.addContent("color").setText("green");
+				e.addContent(new Element("color").setText("green"));
 			}
 			else if(item instanceof PurpleKey){
-				e.addContent("color").setText("purple");
+				e.addContent(new Element("color").setText("purple"));
 			}
 			else if(item instanceof YellowKey){
-				e.addContent("color").setText("yellow");
+				e.addContent(new Element("color").setText("yellow"));
 			}
 
 		}
