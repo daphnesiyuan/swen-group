@@ -2,6 +2,13 @@ package gameLogic;
 
 import java.io.Serializable;
 
+/**
+ *
+ * @author griffiryan
+ *
+ *	The Cell class is directly attached to an avatar an represents an Avatars battery.
+ *	The cells charging can be toggle be toggled on off, and can increment and decremtent battery life.
+ */
 public class Cell implements Serializable {
 
 	private static final long serialVersionUID = 7833445205893995697L;

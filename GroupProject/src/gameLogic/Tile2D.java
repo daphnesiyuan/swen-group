@@ -6,7 +6,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
+/**
+ *
+ * @author griffiryan
+ *
+ * Tile2D is a generalization of any location in the playing world. It can hold avatars and items.
+ * A Tile2D operates as a graph structure, with access to its neighbouring tiles.
+ */
 public class Tile2D implements Serializable{
 
 
@@ -47,6 +53,11 @@ public class Tile2D implements Serializable{
 			}
 		});
 	}
+
+
+	/**
+	 * GRAPH STRUCTURE
+	 */
 
 
 	public Tile2D getTileRight(){

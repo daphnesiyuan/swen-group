@@ -3,7 +3,7 @@ package gameLogic;
 /**
  *
  * @author Ryan Griffin and Leon North
- *
+ * Avatars that contain a light object in their inventory can see better during the night cycle.
  */
 public class Light extends Item{
 

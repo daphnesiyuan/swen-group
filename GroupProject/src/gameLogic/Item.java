@@ -3,6 +3,11 @@ package gameLogic;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ *
+ * @author griffiryan
+ * Abstract super class to provide methods that must be implemented for all concrete item classes.
+ */
 public abstract class Item implements Serializable{
 
 private static final long serialVersionUID = 2903139965045313571L;

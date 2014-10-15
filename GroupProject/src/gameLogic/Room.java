@@ -5,7 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ *
+ * @author griffiryan
+ *
+ * The Room class exists to contain Collections of tiles, items and The Avatars that are currently in them.
+ */
 public class Room implements Serializable {
 
 

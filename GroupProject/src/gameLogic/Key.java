@@ -2,6 +2,12 @@ package gameLogic;
 
 import java.awt.Color;
 
+/**
+ *
+ * @author griffiryan
+ * Generilization of the Key class and specialization of the Item class.
+ *
+ */
 public class Key extends Item {
 
 

@@ -1,10 +1,14 @@
 package gameLogic;
-
+/**
+*
+* @author griffiryan
+*
+*	PurpleKey is a specialization of the Key class.
+*/
 public class PurpleKey extends Key {
 
 	public PurpleKey(Tile2D tile) {
 		super(tile);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

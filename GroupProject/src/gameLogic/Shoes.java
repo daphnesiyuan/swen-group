@@ -2,7 +2,12 @@ package gameLogic;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ *
+ * @author griffiryan
+ *
+ * Shoes class extends Item and overrides all of its methods. The shoes function is to increase the avatars speed if the avatar contains a Shoes item in their inventory.
+ */
 public class Shoes extends Item{
 
 

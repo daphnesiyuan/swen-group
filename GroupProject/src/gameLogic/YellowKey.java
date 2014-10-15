@@ -1,5 +1,10 @@
 package gameLogic;
-
+/**
+*
+* @author griffiryan
+*
+*	YellowKey is a specialization of the Key class.
+*/
 public class YellowKey extends Key {
 
 

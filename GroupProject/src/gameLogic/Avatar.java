@@ -98,7 +98,11 @@ public class Avatar implements Serializable {
 		inventory.add(new YellowKey(null));
 		inventory.add(new GreenKey(null));
 	}
-
+	/**
+	 * Every time an avatar move is performed, this method is called to update the avatars current room and tile postitions.
+	 * @param tile the new Tile position of the avatar.
+	 * @param room the new Room of the avatar.
+	 */
 	public void updateLocations(Tile2D tile, Room room) {
 
 		updateTile(tile);
@@ -130,6 +134,11 @@ public class Avatar implements Serializable {
 
 	}
 
+	/**
+	 *  Move the item from the avatars inventory
+	 * @param move
+	 * @return true iff the item is removed succesfully
+	 */
 	public boolean dropItem(Move move){
 		Tile2D dropTile = null;
 		// Find a Tile close to the avatar that the item can be dropped on
@@ -174,7 +183,11 @@ public class Avatar implements Serializable {
 
 		return false;
 	}
-
+	/**
+	 * Move position is calculated using the give Move object. The moveTo() method finds the new position and checks to see if the avatar can move there.
+	 * @param move
+	 * @return true if the move is completed succesfully
+	 */
 	public boolean moveTo(Move move){
 		if(move.getInteraction().equals("drop")) return dropItem(move);
 		if(move.getInteraction().equals("open")) return openItem(move);

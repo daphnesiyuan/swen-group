@@ -2,9 +2,15 @@ package gameLogic;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ *
+ * @author griffiryan
+ *
+ * The Box class is an Extension of Item, and overrides all of its methods.
+ */
 public class Box extends Item{
 
+	// The primary function of a Box object is to contain other Items.
 	private List <Item> contains;
 
 	public Box(Tile2D tile) {
@@ -40,6 +46,9 @@ public class Box extends Item{
 		return 0;
 	}
 
+	/**
+	 * The method checks whether the given avatar has enough room in their inventory, returns true iff there is space, removes it from the box and adds it to the inventory
+	 */
 	@Override
 	public boolean interactWith(Avatar avatar) {
 		if(avatar.getInventory().size()==5){

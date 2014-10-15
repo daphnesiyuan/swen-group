@@ -4,7 +4,12 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ *
+ * @author griffiryan
+ *
+ * Procedurally generates Items to be added to the game world. Operates as a thread and genrates items afet certain times.
+ */
 public class Environment extends Thread implements Serializable{
 
 
