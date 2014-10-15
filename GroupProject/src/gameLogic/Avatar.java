@@ -92,11 +92,6 @@ public class Avatar implements Serializable {
 
 		this.score = 0;
 		this.lastHit = null;
-
-		inventory.add(new PurpleKey(null));
-		inventory.add(new RedKey(null));
-		inventory.add(new YellowKey(null));
-		inventory.add(new GreenKey(null));
 	}
 	/**
 	 * Every time an avatar move is performed, this method is called to update the avatars current room and tile postitions.

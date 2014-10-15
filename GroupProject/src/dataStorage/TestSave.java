@@ -23,7 +23,7 @@ import networking.Player;
 
 
 /**
- *
+ * A testing class for the parsing and loading of the XML files.
  * @author northleon
  *
  */

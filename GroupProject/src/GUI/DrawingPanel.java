@@ -1,11 +1,10 @@
 package GUI;
 
-import gameLogic.Item;
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -270,6 +269,14 @@ public class DrawingPanel extends JPanel {
 		}
 
 		/**
+		 * Joins a game
+		 */
+		public void joinGame(){
+			joinG = new JoinGUI(DrawingPanel.this, gc);
+			joinG.setup();
+		}
+
+		/**
 		 * Handles the mouse clicking of the start menu buttons
 		 * @author Daphne Wang
 		 */
@@ -282,11 +289,14 @@ public class DrawingPanel extends JPanel {
 					startG.setup();
 
 				} else if (s.equals("join")) {
-					joinG = new JoinGUI(DrawingPanel.this, gc);
-					joinG.setup();
+					joinGame();
 
 				} else if (s.equals("load")) {
-					fileChooser = new XMLFile(wf);
+					File newLoad = XMLFile.getDefaultGame(wf, DrawingPanel.this, gc , gs);
+					if( newLoad != null ){
+						gs = new GameServer(newLoad);
+						joinGame();
+					}
 
 				} else if (s.equals("help")) {
 					help.helpOn();
