@@ -42,6 +42,7 @@ public class GameServer extends ChatServer {
 
 		Thread tickThread = new Thread(new TickThread());
 		tickThread.start();
+		System.out.println("GameServer - constructor end reached");
 	}
 
 	/**

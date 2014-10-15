@@ -13,7 +13,6 @@ public class Game{
 	private List<Avatar> activeAvatars;
 	private List<AI> activeAI;
 
-
 	public enum Facing { North, South, East, West; }
 
 	private int roomNumber;
@@ -22,12 +21,8 @@ public class Game{
 
 	private Thread environment;
 
-
-
-
 	public Game(){
 		this.roomNumber = 1; // RE: 0th room is arena
-
 
 		this.roomsInGame = new ArrayList<Room>();
 		this.activeAvatars = new ArrayList<Avatar>();
@@ -37,7 +32,6 @@ public class Game{
 
 		this.environment = new Environment(this);
 		environment.start();
-
 	}
 
 	public Game(Boolean loaded){
