@@ -925,15 +925,18 @@
     <roomPlace>north</roomPlace>
     <avatars />
     <items>
-      <light>
-        <startTile />
-        <tile>1</tile>
-      </light>
-      <key>
-        red
-        <startTile />
-        <tile>1</tile>
-      </key>
+      <Light>
+        <xPos>1</xPos>
+        <yPos>1</yPos>
+        <startXPos>1</startXPos>
+        <startYPos>1</startYPos>
+      </Light>
+      <RedKey>
+        <xPos>5</xPos>
+        <yPos>1</yPos>
+        <startXPos>5</startXPos>
+        <startYPos>1</startYPos>
+      </RedKey>
     </items>
     <floors>
       <Floor>
@@ -1146,15 +1149,18 @@
     <roomPlace>south</roomPlace>
     <avatars />
     <items>
-      <light>
-        <startTile />
-        <tile>1</tile>
-      </light>
-      <key>
-        green
-        <startTile />
-        <tile>1</tile>
-      </key>
+      <Light>
+        <xPos>1</xPos>
+        <yPos>1</yPos>
+        <startXPos>1</startXPos>
+        <startYPos>1</startYPos>
+      </Light>
+      <GreenKey>
+        <xPos>5</xPos>
+        <yPos>1</yPos>
+        <startXPos>5</startXPos>
+        <startYPos>1</startYPos>
+      </GreenKey>
     </items>
     <floors>
       <Floor>
@@ -1367,15 +1373,18 @@
     <roomPlace>east</roomPlace>
     <avatars />
     <items>
-      <light>
-        <startTile />
-        <tile>1</tile>
-      </light>
-      <key>
-        yellow
-        <startTile />
-        <tile>1</tile>
-      </key>
+      <Light>
+        <xPos>1</xPos>
+        <yPos>1</yPos>
+        <startXPos>1</startXPos>
+        <startYPos>1</startYPos>
+      </Light>
+      <YellowKey>
+        <xPos>5</xPos>
+        <yPos>1</yPos>
+        <startXPos>5</startXPos>
+        <startYPos>1</startYPos>
+      </YellowKey>
     </items>
     <floors>
       <Floor>
@@ -1588,15 +1597,18 @@
     <roomPlace>west</roomPlace>
     <avatars />
     <items>
-      <light>
-        <startTile />
-        <tile>1</tile>
-      </light>
-      <key>
-        purple
-        <startTile />
-        <tile>1</tile>
-      </key>
+      <Light>
+        <xPos>1</xPos>
+        <yPos>1</yPos>
+        <startXPos>1</startXPos>
+        <startYPos>1</startYPos>
+      </Light>
+      <PurpleKey>
+        <xPos>5</xPos>
+        <yPos>1</yPos>
+        <startXPos>5</startXPos>
+        <startYPos>1</startYPos>
+      </PurpleKey>
     </items>
     <floors>
       <Floor>
@@ -1806,7 +1818,7 @@
     </other_tiles>
   </Room>
   <score>
-    <asda>0</asda>
+    <sda>0</sda>
   </score>
   <activeAI />
 </Game>

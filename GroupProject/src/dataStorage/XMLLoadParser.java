@@ -86,11 +86,8 @@ public class XMLLoadParser {
 			Element ele = (Element) e;
 			String roomPlace = ele.getChildText("roomPlace");
 			Tile2D[][] tiles = new Tile2D[15][15];
-			System.out.println("RoomPlace: "+ roomPlace);
 			if(!roomPlace.equals("arena")){
-				System.out.println("inside");
 				tiles = new Tile2D[7][7];}
-			System.out.println("Outside");
 
 			Room r = new Room(tiles, null);
 			r.setRoomPlace(roomPlace);
@@ -104,6 +101,7 @@ public class XMLLoadParser {
 		for (int i = 0; i < roomsInGame.size(); i++) {
 			parseDoor((Element) roomList.get(i), roomsInGame.get(i));
 			parseOtherTile((Element) roomList.get(i), roomsInGame.get(i));
+			parseItem((Element)roomList.get(i), roomsInGame.get(i));
 		}
 		for (Room r : roomsInGame) {
 			game.addRoom(r);
@@ -233,14 +231,17 @@ public class XMLLoadParser {
 	 *            Roon that contains the item
 	 */
 
-	public void parseItem(Element e, Room room, Avatar avatar) {
+	public void parseItem(Element e, Room room) {
+		Element items = e.getChild("items");
+		List itemList = items.getChildren();
+		for(Object o: itemList){
+			Element ele = (Element) o;
+
 		Item item = null;
-		Element tile = e.getChild("tile");
-		Element startTile = e.getChild("startTile");
-		int xPos = Integer.parseInt(tile.getChild("xPos").getText());
-		int yPos = Integer.parseInt(tile.getChild("yPos").getText());
-		int startXPos = Integer.parseInt(startTile.getChild("xPos").getText());
-		int startYPos = Integer.parseInt(startTile.getChild("yPos").getText());
+		int xPos = Integer.parseInt(ele.getChild("xPos").getText());
+		int yPos = Integer.parseInt(ele.getChild("yPos").getText());
+		int startXPos = Integer.parseInt(ele.getChild("startXPos").getText());
+		int startYPos = Integer.parseInt(ele.getChild("startYPos").getText());
 
 		Tile2D t = null;
 		Tile2D sT = room.getTiles()[startYPos][startXPos];
@@ -248,31 +249,29 @@ public class XMLLoadParser {
 			t = room.getTiles()[yPos][xPos];
 
 		}
-		if (e.getName().equals("key")) {
-			String color = e.getChild("color").getText();
-			if (color.equals("red")) {
-				item = new RedKey(t);
-			} else if (color.equals("green")) {
-				item = new GreenKey(t);
-			} else if (color.equals("purple")) {
-				item = new PurpleKey(t);
-			} else {// yellow
-				item = new YellowKey(t);
-			}
+		if (ele.getName().equals("RedKey")) {
+			item = new RedKey(t);
 		}
-		if (e.getName().equals("light")) {
+		if (ele.getName().equals("GreenKey")) {
+			item = new GreenKey(t);
+		}
+		if (ele.getName().equals("YellowKey")) {
+			item = new YellowKey(t);
+		}
+		if (ele.getName().equals("PurpleKey")) {
+			item = new PurpleKey(t);
+		}
+		if (ele.getName().equals("Light")) {
 			item = new Light(t);
 		}
-		if (e.getName().equals("shoes")) {
+		if (ele.getName().equals("Shoes")) {
 			item = new Shoes(t);
 		}
-		if (e.getName().equals("box")) {
+		if (ele.getName().equals("Box")) {
 			item = new Box(t);
 		}
-
-		if (room == null) {
-			avatar.getInventory().add(item);
-		} else if (avatar == null) {
+			item.setStartTile(sT);
+			room.getTiles()[yPos][xPos].addItem(item);
 			room.getItems().add(item);
 		}
 	}

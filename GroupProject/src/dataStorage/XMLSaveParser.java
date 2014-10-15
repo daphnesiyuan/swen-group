@@ -95,8 +95,8 @@ public class XMLSaveParser {
 
 		if(! room.getItems().isEmpty()){
 			for(Item i: room.getItems()){
-				items.addContent(parseItem(i,room,null));
-			}
+				items.addContent(parseItem(i));
+				}
 
 		}
 		//TILES
@@ -154,7 +154,7 @@ public class XMLSaveParser {
 		e.addContent(new Element("facing").setText(avatar.getFacing().name()));			//Facing
 		if(!avatar.getInventory().isEmpty()){
 			for(Item i: avatar.getInventory()){		//iterate through list
-				inventory.addContent(parseItem(i,null, avatar));
+				//inventory.addContent(parseItem(i,null, avatar));
 			}
 		}
 
@@ -321,51 +321,37 @@ public class XMLSaveParser {
 	 * @param item Item object from game
 	 * @return Element representing the Item in XML
 	 */
-	public Element parseItem(Item item, Room r, Avatar a){
-		Element e = null;
+	public Element parseItem(Item item){
 
-		if(item instanceof Key){
-			e = new Element("key");
-			if(item instanceof RedKey){
-				e.addContent(new Element("color").setText("red"));
-			}
-			else if(item instanceof GreenKey){
-				e.addContent(new Element("color").setText("green"));
-			}
-			else if(item instanceof PurpleKey){
-				e.addContent(new Element("color").setText("purple"));
-			}
-			else if(item instanceof YellowKey){
-				e.addContent(new Element("color").setText("yellow"));
-			}
+		Element e;
 
-		}
-		else if(item instanceof Light){
-			System.out.println("Here2");
-			e = new Element("light");
-		}
-		else if(item instanceof Shoes){
-			e = new Element("shoes");
+		if (item instanceof Light){
+			e = new Element("Light");
 		}
 		else if(item instanceof Box){
-			e = new Element("box");
-			for(Item i : ((Box) item).getContains()){
-				e.addContent(new Element("items").setContent(parseItem(i, r, a)));
-			}
+			e = new Element("Box");
 		}
-		Element tile = new Element("tile");
-		Element startTile = new Element("startTile");
-		if(a == null){
-			tile.addContent(new Element("xPos")).setText(Integer.toString((item.getTile().getxPos())));
-			tile.addContent(new Element("yPos")).setText(Integer.toString((item.getTile().getyPos())));
+		else if(item instanceof RedKey){
+			e = new Element("RedKey");
 		}
-
-		tile.addContent(new Element("xPos")).setText(Integer.toString((item).getStartTile().getxPos()));
-		tile.addContent(new Element("yPos")).setText(Integer.toString((item).getStartTile().getyPos()));
-		e.addContent(startTile);
-		e.addContent(tile);
-
+		else if(item instanceof YellowKey){
+			e = new Element("YellowKey");
+		}
+		else if(item instanceof GreenKey){
+			e = new Element("GreenKey");
+		}
+		else if(item instanceof Shoes){
+			e = new Element("Shoes");
+		}
+		else{
+			e = new Element("PurpleKey");
+		}
+		e.addContent(new Element("xPos").setText(item.getTile().getxPos()+""));
+		e.addContent(new Element("yPos").setText(item.getTile().getyPos()+""));
+		e.addContent(new Element("startXPos").setText(item.getStartTile().getxPos()+""));
+		e.addContent(new Element("startYPos").setText(item.getStartTile().getyPos()+""));
 		return e;
+
 	}
 
 	public Element parseAI(AI ai){
