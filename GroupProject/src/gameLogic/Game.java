@@ -174,9 +174,9 @@ public class Game{
 			item.returnToStartPos();
 		}
 
-		//TODO update method for when player leaves - null case in updateLocations.
-		//leaving.updateLocations(null, null);
-
+		leaving.getCurrentRoom().removeAvatar(leaving);
+		leaving.getCurrentTile().removeAvatar(leaving);
+		score.getScore().remove(leaving.getPlayerName());
 		return activeAvatars.remove(leaving);
 	}
 

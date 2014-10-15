@@ -39,5 +39,9 @@ public class Score implements Serializable{
 		this.scores = scores;
 	}
 
+	public Map<String, Integer> getScores() {
+		return scores;
+	}
+
 
 }
