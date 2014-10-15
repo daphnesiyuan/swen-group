@@ -11,11 +11,6 @@ import java.util.List;
 import rendering.Direction;
 import networking.Move;
 
-/**
- *
- * @author Ryan Griffin and Leon North
- *
- */
 public class Avatar implements Serializable {
 
 	private static final long serialVersionUID = 4723069455200795911L;
@@ -540,7 +535,7 @@ public class Avatar implements Serializable {
 	}
 
 	public void setInventory(List<Item> inventory) {
-		inventory = inventory;
+		this.inventory = inventory;
 	}
 
 	public void setCurrentRoom(Room currentRoom) {

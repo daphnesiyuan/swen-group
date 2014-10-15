@@ -6,7 +6,15 @@ import java.util.List;
 
 import networking.*;
 
-
+/**
+ *
+ * @author griffiryan
+ * The Game class is used to initialize and store game state information. It utilizes an auxillary class - NewGame to setup game variables, if game loading/saving is not
+ * present. The Game class is responsible for maintaining information about players currently playing, and being added to the game. It Stores all game state information -
+ * all of the current players and their associated Avatar objects, Rooms in the game, and current active AI units. Typically, a usable game class will have commands sent
+ * to it from a server, which will instruct it to move an avatar(moveAvatar(Move move) is called), add a new player to the game (addPlayer() is called), instruct an Avatar
+ * to interact with an Item (avatarInteractWithItem()). Any game actions that effect the state of the game need to be communicated to the Game class.
+ */
 public class Game{
 
 	private List<Room> roomsInGame;
@@ -15,10 +23,13 @@ public class Game{
 
 	public enum Facing { North, South, East, West; }
 
+	// Avatars are created in unique rooms based on the number of roosm already created.
 	private int roomNumber;
+
 
 	private Score score;
 
+	// Enviroment thread - generate game items
 	private Thread environment;
 
 	public Game(){
@@ -50,6 +61,11 @@ public class Game{
 		new NewGame(this);
 	}
 
+	/**
+	 * Searches all ActiveAvatars in the game and returns that avatar if their playername matches the given playername string
+	 * @param playerName
+	 * @return Avatar that equals the given string
+	 */
 	public Avatar getAvatar(String playerName){
 		for(Avatar avatar: activeAvatars){
 			if(playerName.equals(avatar.getPlayerName())){
@@ -59,7 +75,11 @@ public class Game{
 		return null;
 	}
 
-
+	/**
+	 * Server calls addPlayer(playerName) with a name for the new Avatar, this method sets up the avatar and adds it to the game.
+	 * @param playerName
+	 * @return The room the created avatar starts in (Their home / spawn room)
+	 */
 	public Room addPlayer(String playerName){
 		if(playerName.startsWith("ai")){
 			Room room = roomsInGame.get(0);
@@ -101,7 +121,11 @@ public class Game{
 	}
 
 
-
+	/**
+	 * Finds the Avatar associated with the given move object, and commands them to perform the move associated with the given move object.
+	 * @param move
+	 * @return true iff the move is succesful.
+	 */
 	public boolean moveAvatar(Move move){
 		Avatar mover = null;
 
@@ -126,6 +150,7 @@ public class Game{
 	}
 
 	/**
+	 * Return the room in the game that a player with the given playername string has.
 	 * @param playerName - player identified with their name string
 	 * @return the Room the given player is in
 	 */
@@ -151,7 +176,12 @@ public class Game{
 		return false;
 	}
 
-
+	/**
+	 * Servercalls removePlayerFromGame(playerName) if they disconnect. This method finds the avatar in the game with a matching playername, returns all of the items
+	 * in their inventory to their starting positions and removes all references to the avatar.
+	 * @param playerName
+	 * @return true iff the Avatar is successfully removed from the game, and all referenced information is reset.
+	 */
 	public boolean removePlayerFromGame(String playerName){
 		Avatar leaving = null;
 		for(Avatar avatar : activeAvatars){
@@ -180,7 +210,10 @@ public class Game{
 		return activeAI.remove(ai);
 	}
 
-
+	/**
+	 * Server thread calls this method to systematically instruct AI to think / generate a movement.
+	 * @return an integer - the number of AI in game that think() was called on.
+	 */
 	public int tickAllAI(){
 		int count = 0;
 		for(AI ai : activeAI){
