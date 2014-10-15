@@ -178,6 +178,10 @@ public class Room implements Serializable {
 		return true;
 	}
 
+	public void tiles2DSet(int y, int x, Tile2D t){
+		t.setRoom(this);
+		tiles[y][x] = t;
+	}
 	public List<Column> getColumns() {
 		return columns;
 	}

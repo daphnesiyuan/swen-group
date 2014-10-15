@@ -16,8 +16,6 @@ public class XMLLoader {
 		File file = new File("default.xml");
 		xmlLoad = new XMLLoadParser(file);
 		g = xmlLoad.loadGame();
-		System.out.println("load Game has finished");
-		System.out.println("Room size is "+g.getRoomsInGame().size());
 		return g;
 	}
 

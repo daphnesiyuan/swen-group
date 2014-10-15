@@ -41,7 +41,7 @@ public class Game{
 	}
 
 	public Game(Boolean loaded){
-		roomNumber = 0; // RE: 0th room is arena
+		roomNumber = 1; // RE: 0th room is arena
 		roomsInGame = new ArrayList<Room>();
 		activeAvatars = new ArrayList<Avatar>();
 		activeAI = new ArrayList<AI>();
@@ -84,9 +84,13 @@ public class Game{
 			}
 			Room room = roomsInGame.get(roomNumber++);
 			Tile2D tile = null;
+			for(Room r: roomsInGame){
+				System.out.println(r.getRoomPlace());
+			}
 			// The Avatars start position will be infront of the charger, facing toward the arena.
 			if(room.getRoomPlace().equals("north")){
 				tile = room.getTiles()[4][3];
+				System.out.println("Tile is "+room.getTiles()[4][3]);
 			}
 			else if(room.getRoomPlace().equals("south")){
 				tile = room.getTiles()[2][3];

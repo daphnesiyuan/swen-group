@@ -78,12 +78,13 @@ public class XMLLoadParser {
 
 	public void parseRooms(List roomList) {
 		for (Object e : roomList) {
-			Tile2D[][] tiles = new Tile2D[50][50];
+			Tile2D[][] tiles = new Tile2D[100][100];
 			Room r = new Room(tiles, null);
 			Element ele = (Element) e;
 			String roomPlace = ele.getChildText("roomPlace");
 			r.setRoomPlace(roomPlace);
 			Room room = parseBasicTile(ele, r);
+			room.setTiles(tiles);
 			roomsInGame.add(room);
 
 		} // Iterates through all the room elements, creates rooms with their
@@ -130,21 +131,12 @@ public class XMLLoadParser {
 
 			if (ele.getName().equals("Wall")) {
 				tile = new Wall(xPos, yPos);
-				tile.setRoom(r);
-				r.getTiles()[yPos][xPos] = tile;
+				r.tiles2DSet(yPos, xPos, tile);
 			} else if (ele.getName().equals("Floor")) {
 				tile = new Floor(xPos, yPos);
-				tile.setRoom(r);
-				r.getTiles()[yPos][xPos] = tile;
+				r.tiles2DSet(yPos, xPos, tile);
 			}
 		}
-
-//		for (int y = 0; y<r.getTiles().length;y++){
-//			for(int x = 0; x<r.getTiles()[x].length;x++)
-//			{
-//				System.out.println(r.getTiles()[y][x]);
-//			}
-//		}
 
 		return r;
 	}

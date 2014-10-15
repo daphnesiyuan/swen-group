@@ -101,6 +101,7 @@ public class Avatar implements Serializable {
 	}
 
 	public void updateLocations(Tile2D tile, Room room) {
+
 		updateTile(tile);
 		updateRoom(room);
 	}
