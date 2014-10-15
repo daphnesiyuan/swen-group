@@ -43,6 +43,7 @@ public class KeyBoard implements KeyListener{
 			panel.addToCurrentMessage( Character.toString(e.getKeyChar()) );
 
 		}
+		actionKeys();
 	}
 
 

@@ -91,6 +91,7 @@ public class StartGUI extends JFrame {
 	 * @author Daphne Wang
 	 */
 	public void startGame() {
+		System.out.println("starting game");
 		gc.setName(name);
 		try {
 			gc.connect(gs);
