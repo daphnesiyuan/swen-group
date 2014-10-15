@@ -118,6 +118,9 @@ public class DrawWorld {
 		}
 	}
 
+	//-----------------------Drawing things in the location
+	//-----------------------Everything goes to drawObject() to actually draw
+
 	/**
 	 * Takes the name of the class and gets drawObject(...) to draw it.
 	 *
@@ -316,6 +319,8 @@ public class DrawWorld {
 		g2d.setComposite(java.awt.AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 	}
 
+	//-----------------------------------Utilities
+
 	/**
 	 * Returns the point within the tile that the avatar is standing
 	 * @param tile: The tile the avatar is standing on
@@ -358,7 +363,6 @@ public class DrawWorld {
 		tempPt.y = (point.x + point.y) / 2;
 		return (tempPt);
 	}
-
 
 	/**
 	 * Rotates the given 2d array 90 degrees
