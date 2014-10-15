@@ -31,15 +31,15 @@ a box you can click it and hit "open". You can also click on an item in the inve
 There is a map on the screen which will show your relative location to the room and enemies. Your avatar will show
 a bobbling arrow to identify you from other robots.
 Hit the alt key at any point to access chat and use features. The special key words are:
-/disconnect: Will disconnect you from the server
-/reconnect: Will reconnect you to the previously successfully connected server
-/ip: Will print out your IP address 
-/ping: Will print out the current ping
-and more
+/disconnect: Will disconnect you from the server. 
+/reconnect: Will reconnect you to the previously successfully connected server. 
+/ip: Will print out your IP address. 
+/ping: Will print out the current ping. 
+and more.
 
 Some commands are restricted to admins only such as:
-/addbot: Generates a random bot to the server
-/kick 'name': Kicks the named player from the server
+/addbot: Generates a random bot to the server. 
+/kick 'name': Kicks the named player from the server. 
 and more
 
 To view all the available commands with the chat feature, using /help will give you a list of all the commands possible in the chat box.
