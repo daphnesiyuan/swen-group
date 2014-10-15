@@ -45,6 +45,8 @@ public class StartGUI extends JFrame {
 		connectButton = new JButton("Connect");
 		connectButton.addActionListener(handler);
 		panel = p;
+
+		getRootPane().setDefaultButton(connectButton); //line to hit enter which will submit automatically
 	}
 
 	/**
